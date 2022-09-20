@@ -1,0 +1,10 @@
+<template name="link">
+	<a {{attributes}}>
+		{{#if allFalse icon label}}
+			{{> Template.contentBlock}}
+		{{else}}
+			{{#if icon}}<i class="fa fa-fw fa-{{icon}}"></i>{{/if}}
+			{{#if label}}<span>{{label}}</span>{{/if}}
+		{{/if}}
+	</a>
+</template>

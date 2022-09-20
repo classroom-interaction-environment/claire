@@ -1,0 +1,11 @@
+{
+  "unit": {
+    "title": "Unterrichtsvorlage"
+  },
+  "unitSelect": {
+    "search": "Suchbegriff hier eingeben",
+    "filter": "Auswahl filtern",
+    "withLessons": "Angelegte / Laufende anzeigen",
+    "hasLesson": "Bereits angelegt oder laufend"
+  }
+}

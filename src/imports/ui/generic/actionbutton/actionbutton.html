@@ -1,0 +1,35 @@
+<template name="actionButton">
+	{{#unless blocked}}
+		<button id="{{id}}"
+				title="{{title}}"
+				type="{{#if submit}}submit{{else}}button{{/if}}"
+				form="{{#if form}}{{form}}{{/if}}"
+				data-trigger="{{#if title}}manual{{/if}}"
+				disabled="{{#if disabled}}disabled{{/if}}"
+				data-toggle="{{#if useTooltip}}tooltip{{/if}}"
+				class="action-btn btn btn-{{#if type}}{{type}}{{else}}outline-primary{{/if}} {{#if sm}}btn-sm{{/if}} {{#if disabled}}disabled{{/if}} {{class}}"
+			{{dataAtts}}>
+			{{#if allFalse icon label}}
+				{{> Template.contentBlock}}
+			{{else}}
+				{{#if icon}}
+                    {{> icon fw=true name=icon}}
+                {{/if}}
+                {{#if label}}
+                    <span class="white-space-normal">{{label}}</span>
+                {{/if}}
+            {{/if}}
+		</button>
+	{{else}}
+		<button id="{{id}}"
+				class="btn btn-{{#if type}}{{type}}{{else}}outline-primary{{/if}} {{#if sm}}btn-sm{{/if}} {{class}} disabled"
+				disabled>
+			{{#if icon}}
+                {{> icon fw=true spin=true name="sync"}}
+            {{/if}}
+            {{#if label}}
+                <span>{{label}}</span>
+            {{/if}}
+		</button>
+	{{/unless}}
+</template>

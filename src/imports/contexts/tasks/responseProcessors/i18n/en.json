@@ -1,0 +1,11 @@
+{
+  "common": {
+    "settings": "Settings"
+  },
+  "response": {
+    "show": "Show response",
+    "hide":  "Hide response",
+    "showUser": "Show user",
+    "hideUser": "Hide user"
+  }
+}

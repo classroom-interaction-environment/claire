@@ -1,0 +1,14 @@
+<template name="tooltip">
+	<span {{attributes}}>
+		{{#unless labelOrIcon}}
+			{{> Template.contentBlock ..}}
+		{{else}}
+			{{#if icon}}
+                {{> icon fw=true name=icon}}
+            {{/if}}
+            {{#if label}}
+                <span>{{label}}</span>
+            {{/if}}
+		{{/unless}}
+	</span>
+</template>

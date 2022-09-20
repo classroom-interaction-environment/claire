@@ -1,0 +1,46 @@
+<template name="groupBuilder">
+    {{#if view "defineSettings"}}
+        {{> caroForm
+                id="createGroupsForm"
+                schema=createGroupsSchema
+                type="normal"
+                showLegend=false
+                collapse=false
+                doc=doc}}
+        <hr>
+
+        <div class="d-flex justify-content-between">
+            {{> actionButton type="warning"
+                    class="grp-init-btn"
+                    label=(i18n "groupBuilder.shuffle")
+                    data-target="auto"}}
+            {{> actionButton type="secondary"
+                    class="grp-init-btn"
+                    label=(i18n "groupBuilder.manual")
+                    data-target="manual"}}
+        </div>
+    {{/if}}
+
+    {{#if view "editGroups"}}
+        {{> caroForm
+                id="editGroupsForm"
+                schema=editGroupSchema
+                type="normal"
+                hideLegend=true
+                doc=groupsDoc}}
+        <hr>
+
+        <div class="d-flex justify-content-between">
+            {{> actionButton type="outline-secondary"
+                    class="grp-back-btn"
+                    icon="caret-left"
+                    label=(i18n "groupBuilder.settings")
+                    data-target="manual"}}
+            {{> actionButton type="success"
+                    submit=true
+                    form="editGroupsForm"
+                    data-target="auto"
+                    label=(i18n "actions.create")}}
+        </div>
+    {{/if}}
+</template>

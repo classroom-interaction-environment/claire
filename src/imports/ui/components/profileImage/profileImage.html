@@ -1,0 +1,9 @@
+<template name="profileImage">
+    {{#if hasProfileImage}}
+        {{> image profileImageAtts}}
+    {{else}}
+        <span {{placeholderAtts}}>
+            {{>icon fw=true name="user"}}
+        </span>
+    {{/if}}
+</template>

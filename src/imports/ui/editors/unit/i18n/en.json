@@ -1,0 +1,64 @@
+{
+  "editor": {
+    "unit": {
+      "title": "Unit-Editor",
+      "basicInfo": "Basic info",
+      "preview": "Preview",
+      "summary": "Summary",
+      "editInUnitEditor": "Edit in unit editor",
+      "continueToEdit": "Do you want to edit it now?",
+      "documentCreated": "{{title}} created",
+      "unitUpdated": "Unit updated",
+      "incomplete": "is incomplete or not yet edited.",
+      "confirmDeleteUnit": "You are about to delete this unit and all associaed material. Do you want to contrinue?",
+      "objectives": {
+        "title": "Competencies",
+        "add": "Add competency",
+        "create": "Create and add competencies",
+        "added": "Competencies in this unit",
+        "description": "You can filter the competency list."
+      },
+      "material": {
+        "title": "Material",
+        "create": "Create new {{title}}",
+        "select": "Select {{title}}",
+        "preview": "Preview",
+        "linkToPhase": "Link to phase",
+        "taskCreated": "Task created",
+        "linkWithPhase": "Link to phase",
+        "unlinkFromPhase": "Unlink from phase",
+        "unlinkedFromPhase": "Unlinked \"{{title}}\"",
+        "removeTask": "Möchten Sie wirklich die Aufgabe von der Sequenz entfernen? Die Aufgabe wird nicht gelöscht.",
+        "taskRemoved": "Aufgabe erfolgreich entfernt",
+        "deleteTask": "Möchten Sie wirklich die Aufgabe von der Sequenz entfernen und löschen?",
+        "taskDeleted": "Aufgabe erfolgreich entfernt und gelöscht",
+        "unexpected": "Unerwarter fehler",
+        "editTaskInEditor": "Im Aufgaben-Editor bearbeiten",
+        "confirmRemove": "Sie sind dabei, das Material \"{{title}}\" aus der Sequenz zu entfernen. Das Material wird nicht vollständig gelöscht und kann jederzeit erneut hinzugefügt werden.",
+        "confirmDelete": "Achtung! Sie sind dabei dieses Material endgültig zu löschen. Danach ist es nicht mehr verfügbar."
+      },
+      "phases": {
+        "title": "Phases",
+        "overallTime": "Time overall",
+        "timeLimitExceeded": "Time exceeded",
+        "expectedTime": "Time expected",
+        "editPhase": "Edit phase",
+        "isGlobal": "Global phases",
+        "editGlobalPhase": "You are about to edit a global phase. Do you want to continue?",
+        "editGlobalAnyway": "Edit anyway",
+        "createPhase": "Create phase",
+        "phaseCreated": "Phase created",
+        "selectPhase": "Select phase",
+        "selectPhaseDescription": "You can add selected phases multiple times",
+        "description": "You can create global phases, which you can reuse across many units",
+        "newPhase": "New phase",
+        "removePhase": "Remove phase",
+        "phaseRemoved": "Phase removed",
+        "deletePhase": "Delete phase",
+        "confirmRemove": "Do you really want to remove / delete this phase?"
+      },
+      "allDocsAdded": "All docs have already been added",
+      "codeView": "Raw data"
+    }
+  }
+}

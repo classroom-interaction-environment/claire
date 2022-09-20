@@ -1,0 +1,41 @@
+{
+  "codeRegister": {
+  "title": "Register with code",
+  "alreadyRegistered": "I am already a registered user",
+  "description": "Please complete this quick registration in order to join the classroom. If you have trouble please consult your teacher for conflict resolution.",
+  "code": "Registration code",
+  "userAlreadyExists": "This user already exists",
+  "registerNow": "Complete registration",
+  "registering": "Your account is about to be created",
+  "retry": "Retry registration",
+  "reportError": "Report error",
+  "retryCode": "Retry with this code",
+  "basics": {
+    "title": "Your name",
+    "description": "Please enter your full name."
+  },
+  "username": {
+    "title": "Account",
+    "description": "We need your email to send you a confirmation link."
+  },
+  "password": {
+    "title": "Set a password",
+    "description": "Please enter a password. Avoid terms that are easy to guess."
+  },
+  "terms": {
+    "title": "Terms and privacy",
+    "description": "Please takt your time to read the terms and privacy statement"
+  },
+  "profile": {
+    "title": "Adding a profile image (optional)",
+    "description": "You can still add a profile image later in your personal settings",
+    "success": "Profile successfully created.",
+    "continueWithoutImage": "Continue without profile image",
+    "uploadAndContinue": "Upload profile image and continue"
+  },
+  "failed": {
+    "title": "Registration failed",
+    "description": "There was an error during registration"
+  }
+}
+}

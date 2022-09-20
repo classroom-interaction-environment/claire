@@ -1,0 +1,7 @@
+<template name="TemplateLoader">
+    {{#unless loadComplete}}
+        {{> loading title=(i18n label) type="template"}}
+    {{else}}
+        {{> Template.dynamic template=template data=templateData}}
+    {{/unless}}
+</template>

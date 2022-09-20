@@ -1,0 +1,8 @@
+<template name="dimension">
+	<span class="dimension-badge badge p-2 {{class}}" {{attributes}}>
+		<i class="fa fa-fw fa-{{#if icon}}{{icon}}{{else}}cube{{/if}}" style="{{#if hideIcon}}color: {{color}};{{/if}}"></i>
+        {{#unless tooltip}}
+            <span>{{title}}</span>
+        {{/unless}}
+	</span>
+</template>

@@ -1,0 +1,70 @@
+<template name="rpCluster">
+	{{#unless loadComplete}}
+		{{> loading}}
+	{{else}}
+
+        {{!--
+            the preview mode is a static, non-editable view of the cluster, where elements
+            are placed in the same relative position as in edit mode, but without text --}}
+		{{#unless edit}}
+			<div class="w-100 preview-root disable-cluster">
+				<div id="preview-parent" class="w-100 border border-light">
+					<div id="cluster-preview-spawn" class="cluster-preview-spawn w-100 border border-light">
+						{{#each entry in values}}
+							<span class="draggable cluster-preview-card"
+								  style="{{#with spawnPos @index}}left: {{this}}px;top: {{this}}px;{{/with}}background-color: {{#if entry.c}}{{entry.c}}{{else}}{{defaultBg}}{{/if}};"
+								  id="{{entry.responseId}}"
+								  data-x="{{spawnPos @index}}"
+								  data-y="{{spawnPos @index}}">
+					            {{! entry.response}}
+				            </span>
+						{{/each}}
+					</div>
+				</div>
+			</div>
+		{{/unless}}
+	{{/unless}}
+
+	<!-- content -->
+	<div id="cluster-parent" class="cluster-parent bg-light {{#if saving}}disable-cluster{{/if}}"
+		 hidden="{{#unless edit}}hidden{{/unless}}">
+		<!-- spawn area -->
+		<div id="cluster-spawn" class="cluster-spawn">
+			{{#each entry in values}}
+					<div class="{{#unless isOptionTarget entry.responseId}}draggable{{/unless}} border border-dark text-container fit {{#if isCurrentDraggable entry.responseId}}border border-primary{{/if}}"
+						 style="{{#with spawnPos @index}}left: {{this}}px;top: {{this}}px;{{/with}}"
+						 id="{{entry.responseId}}"
+                         data-id="{{entry.responseId}}"
+						 data-x="{{spawnPos @index}}"
+						 data-y="{{spawnPos @index}}">
+                            {{#if isOptionTarget entry.responseId}}
+                            <div class="text-entry" data-id="{{entry.responseId}}">
+                                <input type="color"
+                                       id="color-input"
+                                       data-element="{{entry.responseId}}"
+                                       value="{{color entry.responseId}}">
+                            </div>
+                            {{else}}
+                            <div class="text-entry" data-id="{{entry.responseId}}">
+                                <span class="text no-select">{{entry.response}}</span>
+                            </div>
+                            {{/if}}
+					</div>
+
+			{{/each}}
+		</div>
+
+		<span class="top-right">
+			{{#if saving}}
+				{{> icon fw=true spin=true name="sync"}}
+                <span>{{i18n "actions.saving"}}</span>
+			{{/if}}
+			<button type="button" class="btn btn-outline-secondary" id="reset-artifacts-button">
+				<i class="fa fa-fw fa-bolt"></i> {{i18n 'actions.reset'}}
+			</button>
+			<button type="button" class="btn btn-primary edit-mode-button">
+				{{i18n "common.complete"}}
+			</button>
+		</span>
+	</div>
+</template>

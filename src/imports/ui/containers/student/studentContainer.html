@@ -1,0 +1,9 @@
+<template name="studentContainer">
+	{{> nav}}
+	{{> routeInfo id="route-info-container"}}
+	{{#main}}
+		{{>yield}}
+	{{/main}}
+	{{> footer}}
+	{{> disconnected}}
+</template>

@@ -1,0 +1,16 @@
+<template name="itemResultRawData">
+    <div class="card">
+	{{#with results}}
+		<ul class="list-group">
+			{{#each result in this}}
+				<li class="list-group-item text-left">
+					<div class="d-block font-weight-bold">{{username result.createdBy null 0}}</div>
+					<div class="d-block"><code>{{#if result.response}}{{stringify result.response}}{{/if}}</code></div>
+				</li>
+			{{/each}}
+		</ul>
+	{{else}}
+		{{> nodocs}}
+	{{/with}}
+    </div>
+</template>

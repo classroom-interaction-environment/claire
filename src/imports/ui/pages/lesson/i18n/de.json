@@ -1,0 +1,80 @@
+{
+  "lesson": {
+    "title": "Unterricht",
+    "groups": "Unterrichtsgruppen",
+    "forkedFrom": "Angepasste Kopie von",
+    "startedAt": "Unterricht gestartet",
+    "studentWait": "Bitte warte auf die nächste/n Aufgabe/n",
+    "overview": "Zusammenfassung der Sequenz",
+    "noMaterial": "Kein Material vorhanden",
+    "noFiles": "Keine Dateien hochgeladen",
+    "noReadings": "Keine weiterführende Literatur vorhanden",
+    "showStudents": "Lernende Anzeigen",
+    "present": "Präsentieren",
+    "evalResults": "Auswerten",
+    "presentResults": "Ergebnisse Präsentieren",
+    "results": "Ergebnisse",
+    "progress": "Unterrichtsverlauf",
+    "artifacts": "Ergebnisse",
+    "uploads": "Uploads",
+    "noStudents": "Es befinden sich noch keine Lernenden in diesem Kurs",
+    "completedAt": "Unterricht abgeschlossen am/um",
+    "showMoreLabels": "Beschriftungen anzeigen",
+    "wrongLesson": "Es läuft gerade Unterricht in einer anderen Sequenz",
+    "wrongLessonDescription": "Kehren Sie zu Ihrem Kurs zurück und betreten Sie die aktuelle Sequenz.",
+    "confirmRemove": "Sie sind dabei alle Materialien und Ergebnisse mitsamt dieses Unterrichts zu löschen.",
+    "actions": {
+      "restart": "Unterricht neu starten",
+      "restartConfirm": "Achtung! Wenn Sie den Unterricht neu starten werden alle Inhalte zurückgesetzt",
+      "complete": "Unterricht Abschließen",
+      "completeConfirm": "Unterricht jetzt abschließen?",
+      "start": "Unterricht starten",
+      "startConfirm": "Unterricht jetzt starten?",
+      "makeMobileInactive": "Für Lernende deaktivieren",
+      "makeMobileActive": "Für Lernende aktivieren",
+      "removeStudent": "Lernende aus Kurs entfernen",
+      "confirmRemoveStudent": "Sie sind dabei \"{{firstName}} {{lastName}}\" aus dem Kurs \"{{title}}\" zu entfernen. Möchten Sie fortfahren?"
+    },
+    "errors": {
+      "unexpectedState": "Unerwarteter Unterrichtsstatus",
+      "expectedIdle": "Erwartet war 'In Vorbereitung'",
+      "expectedRunning": "Erwartet war 'In Vorbereitung'",
+      "expectedRestartable": "Erwartet war ein restartbarer Zustand",
+      "expectedCompleted": "Erwartet war 'Abgeschlossen'",
+      "expectedToggleAble": "Erwarter war 'Läuft' oder 'Abgeschlossen'"
+    },
+    "states": {
+      "idle": "In Vorbereitung",
+      "running": "Unterricht läuft",
+      "completed": "Unterricht abgeschlossen"
+    },
+    "phases": {
+      "title": "Unterrichtsphasen",
+      "schema": "Artikulationsschema"
+    },
+    "material": {
+      "title": "Unterrichtsmaterial",
+      "preview": "Vorschau Unterrichtsmaterial",
+      "previewTemplate": "Vorschau",
+      "selectItemRp": "Visualisierung der Antworten auswählen"
+    },
+    "safeguard": {
+      "title": "Ergebnissicherung",
+      "artifacts": "Artefakte"
+    },
+    "info": {
+      "title": "Teilnehmer/innen",
+      "createGroups": "Gruppen anlegen"
+    },
+    "student": {
+      "docNotVisible": "Das Material wurde vermutlich durch die Lehrkraft deaktiviert."
+    }
+  },
+  "group": {
+    "title": "Gruppe",
+    "groups": "Gruppen",
+    "users": "Mitglieder",
+    "phases": "Auf Phasen beschränkt",
+    "material": "U. Material für Gruppen"
+  }
+}

@@ -1,0 +1,27 @@
+<template name="lessonSafeguard">
+	{{#with artifacts}}
+		<h5>{{i18n "lesson.safeguard.artifacts"}}</h5>
+
+		{{#with artifact}}
+			<ul class="list-group">
+				{{#each doc in this}}
+					<li class="list-group-item d-flex justify-content-between">
+						<span>
+							<i class="fa fa-fw fa-th-list"></i>
+						{{#with taskDoc doc.taskId}}
+							{{this.title}}
+							{{#with itemDoc this doc.itemId}}{{this.title}}{{/with}}
+						{{/with}}
+						</span>
+						<span>
+
+						</span>
+					</li>
+				{{/each}}
+			</ul>
+		{{/with}}
+
+        {{else}}
+        {{>nodocs}}
+	{{/with}}
+</template>

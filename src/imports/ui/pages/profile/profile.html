@@ -1,0 +1,282 @@
+<template name="userProfile">
+    {{#unless loadComplete}}
+        {{> loading}}
+    {{else}}
+        {{#with user}}
+            <h2 class="my-4">{{i18n "user.data"}}</h2>
+
+            <ul class="list-group" id="user-profile-overview">
+
+                {{!-- first name --}}
+
+                <li class="list-group-item">
+                    {{#unless edit "firstName"}}
+                        <div class="w-100 d-flex justify-content-between">
+                            <strong class="text-primary">{{i18n
+                                    "userProfile.firstName"}}</strong>
+                            {{> actionButton icon="edit" type="outline-secondary" class="edit-profile-button"
+                                    data-target="firstName" sm=true }}
+                        </div>
+                        <div class="text-secondary">{{this.firstName}}</div>
+                    {{else}}
+                        <div class="w-100">
+                            <strong class="text-primary">{{i18n
+                                    "userProfile.firstName"}}</strong>
+                            {{#caroForm hideLegend=true doc=user
+                                        id="editProfileForm"
+                                        schema=(profileSchema "firstName")
+                                        type="normal"}}
+                                {{>actionButton type="primary" icon="sync" submit=true label=(i18n "actions.update")}}
+                                {{>actionButton type="outline-secondary" label=(i18n "actions.cancel") class="cancel-edit-button"}}
+                            {{/caroForm}}
+                        </div>
+                    {{/unless}}
+                </li>
+
+                {{!-- last name --}}
+
+                <li class="list-group-item">
+                    {{#unless edit "lastName"}}
+                        <div class="w-100 d-flex justify-content-between">
+                            <strong class="text-primary">{{i18n
+                                    "userProfile.lastName"}}</strong>
+                            {{> actionButton icon="edit" type="outline-secondary" class="edit-profile-button"
+                                    data-target="lastName" sm=true }}
+                        </div>
+                        <div class="text-secondary">{{this.lastName}}</div>
+                    {{else}}
+                        <div class="w-100">
+                            <strong class="text-primary">{{i18n
+                                    "userProfile.lastName"}}</strong>
+                            {{#caroForm hideLegend=true doc=user
+                                        id="editProfileForm"
+                                        schema=(profileSchema "lastName")
+                                        type="normal"}}
+                                {{>actionButton type="primary" icon="sync" submit=true label=(i18n "actions.update")}}
+                                {{>actionButton type="outline-secondary" label=(i18n "actions.cancel") class="cancel-edit-button"}}
+                            {{/caroForm}}
+                        </div>
+                    {{/unless}}
+                </li>
+
+                {{!-- profileImage --}}
+                <li class="list-group-item" id="user-profile-image">
+                    {{#unless edit "profileImage"}}
+                        <div class="w-100 d-flex justify-content-between">
+                            <strong class="text-primary">{{i18n
+                                    "userProfile.image"}}</strong>
+                            {{#unless this.profileImage}}
+                            {{> actionButton icon="plus" type="outline-success" class="edit-profile-button"
+                                    data-target="profileImage" sm=true }}
+                            {{/unless}}
+                        </div>
+                        <div class="w-100 mt-1 d-flex justify-content-between">
+                            {{#if this.profileImage}}
+                                {{>image src=(profileImage this.profileImage) shadow=false class="img-fluid"}}
+                            {{else}}
+                                {{>imagePlaceholder shadow=true text=(i18n "userProfile.noImage")}}
+                            {{/if}}
+                            <span>
+                                {{#if this.profileImage}}
+                                    {{> actionButton icon="times"
+                                            type="outline-danger"
+                                            class="delete-profile-image"
+                                            blocked=deleteProfileImage
+                                            data-target="profileImage"
+                                            sm=true }}
+                                {{/if}}
+                            </span>
+                        </div>
+                    {{else}}
+                        <div class="w-100">
+                            <strong class="text-primary">{{i18n
+                                    "userProfile.image"}}</strong>
+                            {{#caroForm hideLegend=true doc=user
+                                        id="editProfileForm"
+                                        schema=(profileSchema "profileImage")
+                                        type="normal"}}
+                                {{>actionButton type="success" icon="check" submit=true label=(i18n "actions.select")}}
+                                {{>actionButton type="outline-secondary" label=(i18n "actions.cancel") class="cancel-edit-button"}}
+                            {{/caroForm}}
+                        </div>
+                    {{/unless}}
+                </li>
+
+                {{!-- language --}}
+                <li class="list-group-item">
+                    <div class="w-100 d-flex justify-content-between">
+                        <strong class="text-primary">{{i18n
+                                "userProfile.settings.currentLanguage"}}</strong>
+                        <span>{{> langselect}}</span>
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="list-group mt-3" id="user-fixed-data">
+                {{!-- emails --}}
+                <li class="list-group-item">
+                    <strong class="w-100 text-primary">{{i18n
+                            "userProfile.email"}}</strong>
+
+                    {{#each email in this.emails}}
+                        <div class="w-100 text-secondary">
+                            <span>{{email.address}}</span>
+                        </div>
+                    {{/each}}
+                </li>
+
+                {{!-- institution --}}
+                <li class="list-group-item">
+                    <strong class="w-100 text-primary">{{i18n
+                            "userProfile.institution"}}</strong>
+                    <div class="text-secondary">{{this.institution}}</div>
+                </li>
+
+
+                {{!-- createdAt --}}
+                {{#if this.createdAt}}
+                    <li class="list-group-item">
+                        <strong class="w-100 text-primary">{{i18n
+                                "userProfile.createdAt"}}</strong>
+                        <div class="text-secondary">{{toDate
+                                this.createdAt}}</div>
+                    </li>
+                {{/if}}
+
+                {{!-- role(s) --}}
+                <li class="list-group-item">
+                    <strong class="w-100 text-primary">{{i18n
+                            "userProfile.roles"}}</strong>
+                    <div class="w-100">
+                        {{roleLabel this.role}}
+                    </div>
+                </li>
+            </ul>
+
+                <h2 class="my-4">{{i18n "user.research.title"}}</h2>
+
+                <ul class="list-group" id="user-profile-research">
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between mt-3">
+                            <span class="text-primary">{{i18n
+                                    "user.research.participate"}}</span>
+                            <span>
+                                {{#if this.research.participate}}
+                                    {{> actionButton
+                                            type="outline-secondary"
+                                            lg=true
+                                            blocked=sendParticipation
+                                            class="research-optout-button"
+                                            label=(i18n "user.research.optOut")}}
+                                {{else}}
+                                    {{> actionButton
+                                            type="success"
+                                            lg=true
+                                            blocked=sendParticipation
+                                            class="research-optin-button"
+                                            label=(i18n "user.research.optIn")}}
+                                {{/if}}
+                            </span>
+                        </div>
+                        <div>
+                            {{#if this.research.participate}}
+                                {{i18n "common.yes"}}
+                            {{else}}
+                                {{i18n "common.no"}} / {{i18n "common.notYet"}}
+                            {{/if}}
+                        </div>
+                    </li>
+
+                    {{#if this.research.participate}}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between mt-3">
+                                <span class="text-primary">{{i18n
+                                        "user.research.confirmed"}}</span>
+                                <span>
+                                    {{#if this.research.confirmed}}
+                                        {{> icon name="check" fw=true class="text-success"}}
+                                    {{else}}
+                                        {{> actionButton
+                                                type="outline-secondary"
+                                                lg=true
+                                                icon="envelope"
+                                                blocked=sendParticipation
+                                                class="research-resend-button"
+                                                label=(i18n "actions.resend")}}
+                                    {{/if}}
+                                </span>
+                            </div>
+                            <div>
+                                {{#if this.research.confirmed}}
+                                    {{i18n "common.yes"}} ({{toDate
+                                        this.research.confirmedAt}})
+                                {{else}}
+                                    {{i18n "common.no"}} / {{i18n
+                                        "common.notYet"}}
+                                {{/if}}
+                            </div>
+                        </li>
+                    {{/if}}
+                </ul>
+
+            {{#if isAdmin}}
+                <h2 class="my-4">{{i18n "user.adminArea"}}</h2>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div>{{i18n "common.source"}}</div>
+                        <pre><code>{{stringify this}}</code></pre>
+                    </div>
+                </div>
+            {{/if}}
+        {{else}}
+            {{> docnotfound}}
+        {{/with}}
+
+        {{#modal id="resarch-optin-modal" static=true xl=true}}
+            {{> mheader title=(i18n "user.research.participate") class="bg-success text-light"}}
+            {{#mbody}}
+                {{#with settingsDoc}}
+                    <div class="card-body font-weight-normal">
+                        {{{this.research}}}
+                        <hr>
+                    </div>
+                    <form id="researchOptionsForm">
+                        {{#each this.researchOptions}}
+                            <div class="card-body font-weight-normal">
+                                {{this}}
+                                <select name="{{@index}}"
+                                        class="form-control research-option-select">
+                                    <option value="">{{i18n
+                                            "form.selectOne"}}</option>
+                                    <option value="1">{{i18n
+                                            "common.yes"}}</option>
+                                    <option value="">{{i18n
+                                            "common.no"}}</option>
+                                </select>
+                            </div>
+                        {{/each}}
+                    </form>
+                {{/with}}
+
+                {{#if sendParticipation}}
+                    {{> loading }}
+                {{/if}}
+            {{/mbody}}
+            {{#mfooter class="d-flex justify-content-between"}}
+                {{> actionButton type="success"
+                        submit=true
+                        form="researchOptionsForm"
+                        disabled=participateNotVisible
+                        blocked=sendParticipation
+                        label=(i18n "actions.complete")}}
+                {{> actionButton type="light"
+                        form="researchOptionsForm"
+                        class="deny-research-button"
+                        data-dismiss="modal"
+                        blocked=sendParticipation
+                        label=(i18n "actions.deny")}}
+            {{/mfooter}}
+        {{/modal}}
+    {{/unless}}
+</template>

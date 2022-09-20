@@ -1,0 +1,35 @@
+<template name="routeInfo">
+    <div class="w-100 p-0 py-sm-1 py-md-3 py-lg-5 nav-route-info d-print-none">
+        <div class="container{{#if fluid}}-fluid{{/if}}">
+            <div class="row  d-flex">
+                <div class="col-xs-12 col-sm-12 col-md-6">
+                    {{#with routeTitle}}
+                        {{#if i18nInitialized}}
+                            <h1 class="text-primary text-center text-md-left">{{i18n this}}</h1>
+                        {{else}}
+                            <h1 class="text-primary text-center text-md-left">{{this}}</h1>
+                        {{/if}}
+                    {{/with}}
+                    {{! ==================== }}
+                    {{! TELEPORT DESTINATION }}
+                    {{! ==================== }}
+                    <div id="route-subtitle-destination"
+                         class="p-0 col-xs-12 col-sm-12 col-md-6"></div>
+                    {{#with ref}}
+                        <span class="ml-auto">
+                            <a href="{{this.value}}">
+                                <i class="fa fa-fw fa-caret-left"></i>
+                                {{i18n 'routes.backToEdit'}}: {{i18n this.label}}
+                            </a>
+                        </span>
+                    {{/with}}
+                </div>
+                {{! ==================== }}
+                {{! TELEPORT DESTINATION }}
+                {{! ==================== }}
+                <div id="route-info-destination"
+                     class="col-xs-12 col-sm-12 col-md-6"></div>
+            </div>
+        </div>
+    </div>
+</template>

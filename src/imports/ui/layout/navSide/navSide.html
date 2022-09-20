@@ -1,0 +1,123 @@
+<template name="navSide">
+    {{! TODO - side nav: https://getbootstrap.com/docs/5.1/examples/sidebars/# }}
+
+    <nav class="d-flex flex-column flex-shrink-0 p-3 text-white bg-light nav-side border border-grey border-left-0 border-top-0 border-bottom-0 border-right">
+    <div class="nav-side-container">
+        <a class="d-flex align-items-center mb-3 mb-md-0 text-white text-decoration-none" href="/">
+            {{! TODO load logo from db, defined by admin }}
+            {{> image src="/main-logo.png" height="100"}}
+        </a>
+
+        {{!-- Toggler/collapsibe Button --}}
+        {{!--
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        --}}
+        {{#if currentUser}}
+            {{#onLoaded complete=loadComplete showLoading=false}}
+                <ul id="navbarDefaultMenu" class="nav nav-pills flex-column mb-auto mt-5">
+                    <li class="nav-item">
+                        {{> link href="/"
+                                label=(i18n "routes.dashboard")
+                                active=(active 'dashboard')
+                                icon="users"
+                                class="nav-link"}}
+                    </li>
+                    <li class="nav-item">
+                        {{>link href=(route "unitWizard")
+                                label=(i18n "nav.customUnits")
+                                active=(active 'unitWizard' 'unitEditor')
+                                icon="edit"
+                                class="nav-link"}}
+                    </li>
+                    <li class="nav-item">
+                        {{>link href=(route "prepare")
+                                label=(i18n "dashboard.prepare")
+                                active=(active 'prepare')
+                                icon="table"
+                                class="nav-link"}}
+                    </li>
+                    <li class="nav-item">
+                        {{>link href=(route "taskWizard")
+                                label=(i18n "wizard.task.title")
+                                active=(active 'taskWizard' 'taskEditor')
+                                icon="tasks"
+                                class="nav-link"}}
+                    </li>
+                    <li class="nav-item">
+                        {{>link href=(route "lessons")
+                                label=(i18n "dashboard.lesson")
+                                active=(active 'lessons' 'lesson')
+                                icon="chalkboard-user"
+                                class="nav-link"}}
+                    </li>
+                </ul>
+            {{/onLoaded}}
+
+        {{#onLoaded complete=loadComplete showLoading=false}}
+        <ul class="nav nav-pills flex-column mb-auto mt-4">
+            <li class="nav-item">
+                {{> beamer nav=true}}
+            </li>
+            <li class="nav-item">
+                {{>link id="globalShareButton" label=(i18n "common.share") icon="share-alt" class="nav-link"}}
+            </li>
+            <li class="nav-item">
+                {{> print nav=true}}
+            </li>
+        </ul>
+        {{/onLoaded}}
+
+            {{!-- user related --}}
+            {{#onLoaded complete=loadComplete showLoading=false}}
+                <ul class="nav nav-pills flex-column mb-auto mt-4">
+                    {{#if isCurriculum}}
+                        {{> link href=(route 'curriculum')
+                                icon="star"
+                                active=(active 'curriculum')
+                                label=(i18n "curriculum.title")
+                                class="nav-link"}}
+                    {{/if}}
+                    <li class="nav-item dropdown">
+                        {{#link id="navUserMenuDropdown" href="#"
+                                class="nav-link dropdown-toggle"
+                                active=(active 'admin' 'profile' 'inviteUser')
+                                data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false"}}
+                            {{> profileImage user=currentUser flex=false height=20 width=20 round=true}}
+                            {{i18n "nav.profile"}}
+                        {{/link}}
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navUserMenuDropdown">
+                            {{> link href=(route 'profile' currentUser._id)
+                                    icon="cog"
+                                    active=(active 'profile')
+                                    label=(i18n "nav.editProfile")
+                                    class="dropdown-item"}}
+                            {{#if hasAtLeastRole 'schoolAdmin'}}
+                                {{> link href=(route 'admin')
+                                        icon="user-cog"
+                                        active=(active 'admin')
+                                        label=(i18n "admin.title")
+                                        class="dropdown-item"}}
+                            {{/if}}
+                            {{#if hasAtLeastRole 'teacher'}}
+                                {{> link href=(route 'inviteUsers')
+                                        icon="envelope"
+                                        active=(active 'inviteUsers')
+                                        label=(i18n "codeInvitation.invite")
+                                        class="dropdown-item"}}
+                            {{/if}}
+                            <a href class="dropdown-item nav-logout-button">
+                                <i class="fa fa-sign-out-alt fa-fw"></i> {{i18n "nav.logout"}}
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            {{/onLoaded}}
+        {{/if}}
+
+        </div>
+    </nav>
+    {{> share}}
+</template>

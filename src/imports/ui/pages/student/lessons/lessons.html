@@ -1,0 +1,68 @@
+<template name="lessons">
+    {{#unless loadComplete}}
+        {{> loading title=(i18n "lessons.title")}}
+    {{else}}
+
+        {{#if hasMoreClasses}}
+            <select class="form-control current-class-select">
+                {{#with currentClass}}
+                    <option value="{{this._id}}">{{this.title}}</option>
+                {{/with}}
+                {{#each nonCurrentClasses}}
+                    <option value="{{this._id}}">{{this.title}}</option>
+                {{/each}}
+            </select>
+        {{else}}
+            {{#with currentClass}}
+                <div class="d-block text-center">{{this.title}}</div>
+            {{else}}
+                <div class="alert alert-warning">
+                    {{i18n "schoolClass.studentNoClasses"}}
+                </div>
+            {{/with}}
+        {{/if}}
+
+        <h6 class="text-center text-muted my-4">{{i18n "lessons.studentRunning"}}</h6>
+
+        {{#with runningLessons}}
+            {{> lessonListRendererSimple lessons=this liclass="bg-primary text-white"}}
+        {{else}}
+            {{> nodocs}}
+        {{/with}}
+
+        <h6 class="text-center text-muted my-4">{{i18n "lessons.studentCompleted"}}</h6>
+
+        {{#with completedLessons}}
+            {{> lessonListRendererSimple lessons=this}}
+        {{else}}
+            {{> nodocs}}
+        {{/with}}
+    {{/unless}}
+
+    {{#with loadErrors}}
+        {{#each error in this}}
+            <div class="alert alert-danger">{{i18n error.error}} {{i18n error.reason}} {{stringify error.details}}</div>
+        {{/each}}
+    {{/with}}
+
+</template>
+
+<template name="lessonListRendererSimple">
+    <div class="list-group">
+        {{#each lesson in lessons}}
+            <a href="{{route "lesson" lesson._id}}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-baseline {{liclass}}">
+                <span>
+                {{> lessonStatus lessonDoc=lesson class="p-0 ml-0 mr-2" bg=false}}
+                {{#with unit lesson.unit}}
+                    <span>{{this.title}}</span>
+                    {{else}}
+                    <span>{{lesson.unit}}</span>
+                {{/with}}
+                </span>
+                <span class="text-light font-weight-normal">
+                    {{toDate lesson.startedAt}}
+                </span>
+            </a>
+        {{/each}}
+    </div>
+</template>

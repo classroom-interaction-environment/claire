@@ -1,0 +1,15 @@
+{
+  "nav": {
+    "userProfile": "Profile",
+    "toggle": "Toggle",
+    "toggleFluid": "Toggle width",
+    "login": "Sign-in",
+    "logout": "Sign-out",
+    "forgotPassword": "Forgot password?",
+    "placeholder": {
+      "title": "Fasse den Fehler in ein paar Worten zusammen...",
+      "description": "Mache bitte möglichst präzise Angaben zum fehler..."
+    },
+    "tools": "Tools"
+  }
+}

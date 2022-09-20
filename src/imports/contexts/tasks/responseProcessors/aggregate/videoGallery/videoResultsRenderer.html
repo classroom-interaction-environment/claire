@@ -1,0 +1,29 @@
+<template name="videoResultsRenderer">
+    {{#onLoaded complete=loadComplete}}
+        {{#unless hasVideos}}
+            {{> nodocs}}
+        {{else}}
+            <div class="cssbox">
+                {{#each video in videos}}
+                    <a id="{{video._id}}" class="irr-thumbnail col-1" href="#{{video._id}}" data-target="{{video._id}}">
+                        {{#with link video "poster"}}
+                            <img class="cssbox_thumb" src="{{this}}"/>
+                        {{/with}}
+                        {{#with link video "original"}}
+                            <span class="cssbox_full">
+                                 <video controls poster="{{link video "poster"}}" preload="metadata" class="h-100" crossorigin="use-credentials">
+                                      <source src="{{this}}" type="{{video.type}}" data-src="{{this}}" data-type="{{video.type}}">
+                                      Your browser does not support the video tag.
+                                    </video>
+                                <caption>{{video.name}}</caption>
+                            </span>
+                        {{/with}}
+                    </a>
+                {{/each}}
+                <a class="cssbox_close" href="#void"></a>
+                {{#with prev}}<a class="cssbox_prev" data-target={{this}} href="#{{this}}">&lt;</a>{{/with}}
+                {{#with next}}<a class="cssbox_next" data-target={{this}} href="#{{this}}">&gt;</a>{{/with}}
+            </div>
+        {{/unless}}
+    {{/onLoaded}}
+</template>

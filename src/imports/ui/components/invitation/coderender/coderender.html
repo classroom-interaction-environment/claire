@@ -1,0 +1,7 @@
+<template name="codeRender">
+	{{#unless loadComplete}}
+		{{> loading}}
+	{{else}}
+	<canvas class="qrcode-canvas {{class}}"></canvas>
+	{{/unless}}
+</template>

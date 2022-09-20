@@ -1,0 +1,298 @@
+<template name="uephases">
+    {{#unless loadComplete}}
+        {{> loading type="data"}}
+    {{/unless}}
+
+        {{#with unitDoc}}
+            <div class="my-4 clearfix">
+				<span class="float-right d-print-none">
+					{{> info id="phasesInfo" sm=true outline=true label=(i18n 'editor.unit.phases.description')}}
+                    <button class="btn btn-sm btn-secondary uephases-select-button">
+						<i class="fa fa-fw fa-list"></i> {{i18n 'actions.add'}}
+					</button>
+					<button class="btn btn-sm btn-success uephases-insert-button">
+						<i class="fa fa-fw fa-plus"></i> {{i18n 'actions.create'}}
+					</button>
+				</span>
+
+                <h6>{{i18n 'editor.unit.phases.overallTime'}}:
+                    {{#with overallTime}}
+                        <span class="{{#if this.danger}}text-danger{{else}}text-success{{/if}}">
+                            {{this.value}}
+                        </span>
+                        <span class="{{#if this.danger}}text-danger{{else}}text-success{{/if}}">
+                            {{i18n 'time.minutes'}}
+                        </span>
+                    {{else}}
+                        <span>? {{i18n 'time.minutes'}}</span>
+                    {{/with}}
+                </h6>
+
+                <h6>{{i18n 'editor.unit.phases.expectedTime'}}: {{this.period}} {{i18n 'time.minutes'}}</h6>
+            </div>
+            <small>
+                <table class="table phases-table-full">
+                    <thead>
+                    <tr class="bg-transparent text-dark">
+                        {{#with phaseSchema}}
+                            <th class="d-print-none"></th>
+                            <th class="text-center">
+                                {{i18n "time.min"}}
+                            </th>
+                            <th>{{this.title.label}} / {{this.plot.label}}</th>
+                            <th>{{this.socialState.label}}</th>
+                            <th>{{this.method.label}}</th>
+                            <th>{{this.references.label}}</th>
+                            <th>{{this.notes.label}}</th>
+                            <th class="d-print-none"></th>
+                        {{/with}}
+                    </tr>
+                    </thead>
+                    <tbody class="uephase-table-body border-top-4">
+                    {{#each this.phases}}
+                        {{#with phaseDoc this}}
+                            <tr class="uephase-table-row bg-white uephases-selectable-row"
+                                data-target="{{this._id}}">
+
+                                {{! SORTABLE }}
+                                <td class="d-print-none text-center">
+                                    <a href
+                                       class="btn btn-sm btn-outline-secondary draggable-anchor uephase-table-body-handle border-0 {{#unless isSelected this._id}}passive{{/unless}}">
+                                        {{#unless dragUpdate this._id}}
+                                            {{> icon name="arrows-alt-v" fw=true title=(i18n "actions.sort")}}
+                                        {{else}}
+                                            {{> icon name="sync" pulse=true fw=true}}
+                                        {{/unless}}
+                                    </a>
+                                </td>
+
+                                {{! MIN / PERIOD }}
+                                <td class="text-right">
+                                    {{> link href="" label=this.period class="phase-edit-link text-dark" data-field="period" data-target=this._id }}
+                                </td>
+
+                                {{! TITLE + DESCRIPTION }}
+                                <td class="wrap-cell white-space-normal td-description">
+                                    <p class="font-weight-bold d-block">
+                                        {{> link href="" label=this.title class="phase-edit-link text-dark" data-field="title" data-target=this._id }}
+                                        {{#unless this.unit}}*{{/unless}}
+                                    </p>
+                                    <p>
+                                        {{#if this.plot}}
+                                            {{> link href="" label=this.plot class="phase-edit-link text-dark" data-field="plot" data-target=this._id }}
+                                        {{else if isSelected this._id}}
+                                            {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link" data-field="plot" data-target=this._id }}
+                                        {{/if}}
+                                    </p>
+                                </td>
+
+                                {{! SOCIALSTATE }}
+                                <td class="no-wrap white-space-normal">
+                                    {{#each this.socialState}}
+                                        {{#with socialState this}}
+                                            {{> link href="" label=this.label icon=this.icon class="no-wrap phase-edit-link text-dark" data-field="socialState" data-target=../../_id }}
+                                        {{/with}}
+                                    {{else if isSelected this._id}}
+                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link" data-field="socialState" data-target=this._id }}
+                                    {{/each}}
+                                </td>
+
+                                {{! METHOD }}
+                                <td class="wrap-cell white-space-normal td-method">
+                                    {{#if this.method}}
+                                        <p>
+                                            {{> link href="" label=this.method icon=this.icon class="phase-edit-link text-dark" data-field="method" data-target=this._id }}
+                                        </p>
+                                    {{else if isSelected this._id}}
+                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link" data-field="method" data-target=this._id }}
+                                    {{/if}}
+                                </td>
+
+                                {{! REFERENCES }}
+                                <td class="no-wrap white-space-normal">
+                                    {{#each this.references}}
+                                        {{# link href="" class="phase-edit-link text-dark" data-field="references"
+                                                 data-target=../_id }}
+                                            {{#with reference this}}
+                                                <div class="d-flex align-items-baseline p-1">
+                                                    <i class="fa fa-fw fa-{{this.icon}}"
+                                                       title="{{i18n this.label}}"></i>
+                                                    <span class="ml-1">
+                                                        {{#if true}}
+                                                            {{#if this.isFilesCollection}}
+                                                                {{this.doc.name}}
+                                                            {{else}}
+                                                                {{this.doc.title}}
+                                                            {{/if}}
+                                                        {{/if}}
+                                                    </span>
+                                                </div>
+                                            {{/with}}
+                                        {{/link}}
+                                    {{else if isSelected this._id}}
+                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link" data-field="references" data-target=this._id }}
+                                    {{/each}}
+                                </td>
+
+                                {{! NOTES }}
+                                <td class="white-space-normal td-notes">
+                                    <p>
+                                        {{#if this.notes}}
+                                            {{> link href="" label=this.notes icon=this.icon class="phase-edit-link text-dark" data-field="notes" data-target=this._id }}
+                                        {{else if isSelected this._id}}
+                                            {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link" data-field="notes" data-target=this._id }}
+                                        {{/if}}
+                                    </p>
+                                </td>
+                                <td class="d-print-none text-right no-wrap">
+                                    {{#if this.unit}}
+                                        {{> actionButton type="outline-danger"
+                                                icon="trash"
+                                                class="btn-sm uephases-remove-phase-button border-0"
+                                                disabled=(not (isSelected this._id))
+                                                data-index=@index
+                                                data-target=this._id
+                                                blocked=(removing @index)
+                                                title=(i18n 'actions.delete')}}
+                                    {{else}}
+                                        {{> actionButton type="outline-danger"
+                                                icon="times"
+                                                class="btn-sm uephases-remove-phase-button border-0"
+                                                disabled=(not (isSelected this._id))
+                                                data-index=@index
+                                                blocked=(removing @index)
+                                                title=(i18n 'actions.remove')}}
+                                    {{/if}}
+                                </td>
+                            </tr>
+                        {{/with}}
+                    {{else unless addPhase}}
+                        <tr>
+                            <td colspan="9">
+                                {{> nodocs}}
+                            </td>
+                        </tr>
+
+                    {{/each}}
+                    </tbody>
+                    <tfoot>
+                    <tr class="border-top-4">
+                        <td class="d-print-none"></td>
+                        <td class="text-right">
+                            {{#with overallTime}}
+                                <span class="{{#if
+                                        this.danger}}text-danger{{else}}text-success{{/if}}">{{this.value}}</span>
+                            {{/with}}
+                        </td>
+                        <td>{{i18n 'editor.unit.phases.overallTime'}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="d-print-none"></td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </small>
+        {{/with}}
+
+        {{! CREATE NEW PHASE MODAL }}
+
+        {{#modal id="uniteditor-phase-create-modal" large=true static=true}}
+            {{#mheader dismiss=true title=(i18n 'editor.unit.phases.createPhase')
+                       class="bg-success text-white"}}{{/mheader}}
+            {{>caroForm id="uecreatePhaseForm" schema=createPhaseSchema type=formType doc=createPhaseSchemaDoc}}
+            {{#mfooter}}
+                <button type="submit" form="uecreatePhaseForm" class="btn btn-success btn-sm">
+                    {{i18n "actions.create"}}
+                </button>
+            {{/mfooter}}
+        {{/modal}}
+
+
+        {{! EDIT PHASE FIELD MODAL }}
+
+        {{#modal id="uniteditor-phases-edit-modal" large=true static=true}}
+            {{#mheader dismiss=true title=(i18n 'editor.unit.phases.editPhase')
+                       class="bg-primary text-white"}}{{/mheader}}
+            {{#mbody}}
+                {{#with editPhase}}
+                    {{#caroForm id="editPhaseFieldForm" disabled=submitting type="normal" collapse=false doc=editDoc
+                                schema=(editSchema this.fieldName) hideLegend=true }}
+                        <div class="d-flex justify-content-between">
+                            {{> actionButton submit=true label=(i18n "actions.update") icon="sync" type="secondary" blocked=submitting form="editPhaseFieldForm"}}
+                            {{> actionButton data-dismiss="modal" label=(i18n "actions.close") type="outline-secondary" blocked=submitting}}
+                        </div>
+                    {{/caroForm}}
+                {{/with}}
+            {{/mbody}}
+        {{/modal}}
+
+
+        {{! ADD AN EXISTING GLOBAL PHASE MODAL }}
+
+        {{#modal id="uniteditor-phases-select-modal" large=true static=true}}
+            {{#mheader dismiss=true title=(i18n 'editor.unit.phases.selectPhase')
+                       class="bg-secondary text-white"}}{{/mheader}}
+            {{#mbody}}
+                {{#with globalPhases}}
+                    <p><i class="fa fa-info-circle"></i> {{i18n 'editor.unit.phases.selectPhaseDescription'}}</p>
+                    <table>
+                        {{#each this}}
+                            <tr>
+                                <td class="text-right">{{this.period}}</td>
+                                <td>{{this.title}}{{#unless this.unit}}*{{/unless}}</td>
+                                <td>{{this.plot}}</td>
+                                <td class="no-wrap">
+                                    {{#each this.socialState}}
+                                        {{#with socialState this}}
+                                            <i class="fa fa-fw fa-{{this.icon}}"></i> {{#if true}}{{this.label}}
+                                            <br> {{/if}}
+                                        {{/with}}
+                                    {{/each}}
+                                </td>
+                                <td class="no-wrap">
+                                    {{this.method}}
+                                </td>
+                                <td class="no-wrap">
+                                    {{#each this.references}}
+                                        {{#with reference this}}
+                                            <i class="fa fa-fw fa-{{this.icon}}" title="{{i18n this.label}}"></i>
+                                            {{#if true}}
+                                                {{#if this.isFilesCollection}}
+                                                    {{this.doc.name}}
+                                                {{else}}
+                                                    {{this.doc.title}}
+                                                {{/if}}
+                                                <br>
+                                            {{/if}}
+                                        {{/with}}
+                                    {{/each}}
+                                </td>
+                                <td>
+                                    {{this.notes}}
+                                </td>
+                                <td class="text-right">
+                                    <button class="btn btn-sm btn-outline-secondary uephases-add-phase-button"
+                                            data-target="{{this._id}}">
+                                        {{#if submitting}}
+                                            <i class="fa fa-fw fa-sync fa-spin"></i>
+                                        {{else}}
+                                            <i class="fa fa-fw fa-plus"></i>
+                                        {{/if}}
+                                    </button>
+                                </td>
+                            </tr>
+                        {{/each}}
+                    </table>
+                {{else}}
+                    {{> nodocs }}
+                {{/with}}
+            {{/mbody}}
+            {{#mfooter}}
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">{{i18n 'common.complete'}}</span>
+                </button>
+            {{/mfooter}}
+        {{/modal}}
+</template>

@@ -1,0 +1,11 @@
+{
+  "common": {
+    "settings": "Einstellungen"
+  },
+  "response": {
+    "show": "Antwort zeigen",
+    "hide":  "Antwort verbergen",
+    "showUser": "Name anzeigen",
+    "hideUser": "Name verbergen"
+  }
+}

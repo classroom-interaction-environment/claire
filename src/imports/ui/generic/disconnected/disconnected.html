@@ -1,0 +1,27 @@
+<template name="disconnected">
+    {{#modal id="global-disconnected-modal" static=true large=true}}
+        {{#mbody}}
+            {{#unless connected}}
+            <h1 class="text-warning">
+                {{i18n "connection.failed"}}
+            </h1>
+                {{else}}
+                <h1 class="text-success">
+                    {{i18n "connection.reconnected"}}
+                </h1>
+            {{/unless}}
+            <p class="my-2">{{i18n "connection.status"}}: {{i18n connectionStatus}} {{#unless connected}}{{> icon fw=true spin=true name="sync"}}{{/unless}}</p>
+        {{/mbody}}
+        {{#mfooter class="d-flex"}}
+            {{#unless connected}}
+            <button class="btn btn-outline-secondary btn-block reload-page-button">
+                {{i18n "connection.reloadPage"}}
+            </button>
+                {{else}}
+                <button class="btn btn-outline-primary btn-block" data-dismiss="modal">
+                    {{i18n "actions.continue"}}
+                </button>
+                {{/unless}}
+        {{/mfooter}}
+    {{/modal}}
+</template>

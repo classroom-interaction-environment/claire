@@ -1,0 +1,9 @@
+<template name="imageFileListRenderer">
+    <td>
+        {{#if hasThumbnail this}}
+            {{> image src=(linkThumbnail this) class="preview-image"}}
+        {{/if}}
+    </td>
+    <td class="w-100"><h6 class="wrap-text">{{this.name}}</h6></td>
+    <td class="no-wrap">{{b2mb this.size}} {{i18n 'fileSize.mb'}}</td>
+</template>

@@ -1,0 +1,27 @@
+<template name="footer">
+	<footer class="footer-root-container container-fluid w-100 bg-dark text-light py-3 d-print-none">
+		<div class="container{{#if fluid}}-fluid{{/if}}">
+			<div class="row">
+				<div class="col-12">
+					{{#each entry in legalLinks}}
+						{{> link href=(route "legal" entry) label=(legalLabel entry) data-target=entry class="mr-2"}}
+					{{/each}}
+				</div>
+				<div class="col-12">
+					<small>CARO - Care Reflection Online</small>
+					{{#with version}}
+						<small>v.{{this.tag}}-{{this.commit}}</small>
+					{{/with}}
+				</div>
+			</div>
+			<div class="row mt-4">
+				{{#each logo in logos}}
+					<div class="col-4 col-md-2 col-lg-1">
+						<img class="footer-logo img-fluid lozad" alt="{{logo.name}}"
+							 data-src="{{logo.url}}" />
+					</div>
+				{{/each}}
+			</div>
+		</div>
+	</footer>
+</template>

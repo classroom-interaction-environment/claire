@@ -1,0 +1,98 @@
+<template name="adminLogs">
+    {{#unless state "loadComplete"}}
+        {{> loading}}
+    {{else}}
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-primary" type="button" data-toggle="collapse"
+                    data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <i class="fa fa-fw fa-filter"></i> {{i18n "errors.filterLog"}}
+            </button>
+            <span>
+				<i class="fa fa-fw fa-file"></i> {{logCount}} / {{maxCount}}
+			</span>
+        </div>
+        <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+                {{> caroForm id="filterLogsForm" type="normal" schema=filterLogsSchema hideLegend=true collapse=false}}
+            </div>
+        </div>
+
+        <small>
+            <table class="table table-borderless table-hover my-4 bg-white">
+                <!--
+                    name: String,
+                    type: String,
+                    message: String,
+                    stack: String,
+                    details: {
+                      type: String,
+                      optional: true
+                    },
+                    isMethod: Boolean,
+                    isPublication: Boolean,
+                    isServer: Boolean,
+                    isClient: Boolean
+                -->
+                <thead>
+                <tr>
+                    <th>name</th>
+                    <th>type</th>
+                    <th>source</th>
+                    <th>message</th>
+                    <th>c</th>
+                    <th>s</th>
+                    <th>m</th>
+                    <th>p</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each error in errors}}
+                    <tr>
+                        <td>{{error.name}}</td>
+                        <td>{{error.type}}</td>
+                        <td>{{error.source}}</td>
+                        <td>{{error.message}}</td>
+                        <td>{{>logicon name="check" visible=error.isClient}}</td>
+                        <td>{{>logicon name="check" visible=error.isServer}}</td>
+                        <td>{{>logicon name="check" visible=error.isMethod}}</td>
+                        <td>{{>logicon name="check" visible=error.isPublication}}</td>
+                        <td>
+                            <button class="btn btn-outline-secondary errorlog-show-button" data-target="{{error._id}}">
+                                <i class="fa fa-fw fa-caret-{{#if show error._id}}down{{else}}left{{/if}}"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {{#if show error._id}}
+                        {{#each event in error.history}}
+                            <tr>
+                                <td class="no-wrap">{{toDate event.createdAt}}</td>
+                                <td colspan="9">{{username event.createdBy}}</td>
+                            </tr>
+                        {{/each}}
+                        <tr>
+                            <td colspan="10">Stacktrace:</td>
+                        </tr>
+                        <tr>
+                            <td colspan="10">
+                                <pre><code>{{error.stack}}</code></pre>
+                            </td>
+                        </tr>
+                        {{#if error.details}}
+                            <tr>
+                                <td colspan="10">
+                                    <pre><code>{{error.details}}</code></pre>
+                                </td>
+                            </tr>
+                        {{/if}}
+                    {{/if}}
+                {{/each}}
+                </tbody>
+            </table>
+        </small>
+    {{/unless}}
+</template>
+
+<template name="logicon">
+    {{#if visible}}<i class="fa fa-fw fa-{{name}}"></i>{{/if}}
+</template>

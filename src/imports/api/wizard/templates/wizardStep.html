@@ -1,0 +1,31 @@
+<template name="wizardStep">
+    {{#if visible}}
+        <div class="{{name}}-scrollanchor my-4"></div>
+        {{> wizardSpacer visible=arrow pos=arrow}}
+        {{#if description}}
+            <div class="card my-3">
+                <div class="card-body font-weight-light {{#if disabled}}text-muted{{/if}}">
+                    <div class="d-flex justify-content-between mb-4">
+                        {{#if num}}
+                            <h3>{{i18n "wizard.step"}} {{num}}{{#if max}} / {{max}}{{/if}}</h3>
+                        {{/if}}
+                        {{#if back}}
+                            {{> wizardBack hidden=disabled}}
+                        {{/if}}
+                        {{#if disabled}} {{! TODO use complete instead }}
+                            <h3>
+                                {{> icon class="text-success" name="check"}}
+                            </h3>
+                        {{/if}}
+                    </div>
+                    <div class="text-wrap mt-1">
+                        <span><i class="fa fa-info-circle"></i> {{description}}</span>
+                    </div>
+                </div>
+            </div>
+        {{/if}}
+        <div class="row {{#if disabled}}passive text-muted{{/if}}">
+            {{> Template.contentBlock ..}}
+        </div>
+    {{/if}}
+</template>

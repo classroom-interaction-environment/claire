@@ -1,0 +1,50 @@
+<template name="unitEditor">
+    {{#unless loadComplete}}
+        {{#unless docNotFound}}
+            {{>loading title=(i18n currentLoadState)}}
+        {{else}}
+            {{>docnotfound}}
+        {{/unless}}
+    {{else}}
+        {{#with unitDoc}}
+            {{#Teleport destination="#route-info-destination"}}
+                <div class="text-center text-md-right">
+                    <h4>{{unitDoc.title}}</h4>
+
+                    {{! if this is itself not a master document}}
+                    {{> documentState document=unitDoc original=originalUnit}}
+                </div>
+            {{/Teleport}}
+
+            {{#Teleport destination="#route-subtitle-destination"}}
+                {{#with classDoc}}
+                    <div class="font-weight-light my-2 w-100 text-center text-md-left">
+                        <span>{{i18n "schoolClass.title"}}</span>
+                        <span>"{{this.title}}"</span>
+                    </div>
+                {{/with}}
+            {{/Teleport}}
+
+            {{! display a route button to allow users to navigtate to the lesson }}
+            {{#submenu submenuData}}
+                <li class="nav-item ml-lg-auto">
+                    {{#with lessonDoc}}
+                        {{# routeButton
+                                class="nav-link d-block d-md-inline-block"
+                                type="primary"
+                                href=(route "lesson" this._id)
+                                title=(i18n "lessons.toLesson")}}
+                            <i class="fa fa-users"></i>
+                            <span class="d-lg-none">{{i18n
+                                    "lessons.toLesson"}}</span>
+                            <i class="fa fa-caret-right"></i>
+                        {{/routeButton}}
+                    {{/with}}
+                </li>
+            {{/submenu}}
+
+            {{> TemplateLoader currentView}}
+        {{/with}}
+    {{/unless}}
+    {{> confirm static=true}}
+</template>

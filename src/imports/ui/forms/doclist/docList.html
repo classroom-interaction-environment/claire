@@ -1,0 +1,16 @@
+<template name="afDocList">
+    <ul class="list-group">
+        {{#each doc in docs}}
+            {{#with renderer doc}}
+                {{> Template.dynamic template=this.template data=this.data}}
+            {{else}}
+                <li class="list-group-item px-3 py-2">
+                    <div class="d-block font-weight-bold">{{doc.title}}</div>
+                    {{#if doc.sub}}<small>{{doc.sub}}</small>{{/if}}
+                </li>
+            {{/with}}
+        {{else}}
+            {{> nodocs }}
+        {{/each}}
+    </ul>
+</template>

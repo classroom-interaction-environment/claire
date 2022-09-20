@@ -1,0 +1,627 @@
+<template name="lessonMaterial">
+
+    {{! TOP MENU (two big buttons) }}
+    <div class="row">
+
+        {{! left: invite button}}
+        <div class="col-xs-12 col-md-4 col-lg-6">
+            {{>actionButton
+                    type="outline-secondary btn-block"
+                    class="show-invitations-button h-100 mb-4"
+                    icon="paper-plane"
+                    label=(i18n "schoolClass.invite")
+                    blocked=isStarting}}
+        </div>
+
+        {{! right: edit in unit editor; view phases schema }}
+        <div class="col-xs-12 col-md-8 col-lg-6">
+            <div class="card bg-primary text-light">
+                <div class="card-body d-flex justify-content-end align-items-center">
+                    <strong>{{i18n "lesson.phases.schema"}}</strong>
+                    <span class="no-wrap ml-auto">
+						{{# routeButton
+                                href=(route "unitEditor" unitDoc._id 'phases')
+                                title=(i18n "editor.unit.editInUnitEditor")
+                                disabled=isNotIdle
+                                type="outline-light"}}
+                            <i class="fa fa-edit"></i>
+                            <i class="fa fa-caret-right"></i>
+                        {{/routeButton}}
+                        {{>actionButton
+                                type="outline-light"
+                                class="preview-all-phases-button"
+                                icon="eye"
+                                title=(i18n "common.preview")}}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{! full phases list; list all phases and their linked material and groups }}
+    <div class="my-4">
+        {{#each phase in lessonPhases}}
+            <ul class="list-group my-2">
+
+                {{! general phase informatio (title, plot, period) }}
+                <li class="list-group-item d-flex justify-content-between mt-1">
+                    <div class="flex-fill text-primary">
+                        {{#if phase.plot}}
+                            <a data-toggle="collapse" href="#phase-collapse-{{@index}}" role="button"
+                               aria-expanded="false" aria-controls="phase-collapse-{{@index}}">
+                                {{phase.title}}
+                            </a>
+                            <div class="collapse" id="phase-collapse-{{@index}}">
+                                <div class="card-body">{{phase.plot}}</div>
+                            </div>
+                        {{else}}
+                            {{phase.title}}
+                        {{/if}}
+                    </div>
+                    <span>{{phase.period}} {{i18n "time.min"}}</span>
+                </li>
+
+                {{#if feature "groups"}}
+                {{! phase-related groups and their linked material }}
+                {{#if hasGroups phase._id}}
+                    {{#each group in (groups phase._id)}}
+                        <div class="d-flex bg-transparent border-0 mt-1">
+
+                            {{! group default info }}
+                            <div class="bg-primary text-white p-1 rounded">
+                                {{group.title}}
+                            </div>
+
+                            {{! group material }}
+                            <ul class="list-group flex-fill ml-1">
+                                {{#each materialId in group.material}}
+                                    <li class="list-group-item d-flex">
+                                        {{#with resolvedReference materialId}}
+                                            {{! group material title }}
+                                            <span class="flex-fill">
+                                                {{#if this.isFilesCollection}}
+                                                    {{this.doc.name}}
+                                                {{else}}
+                                                    {{this.doc.title}}
+                                                {{/if}}
+                                            </span>
+
+                                            {{! group material actions }}
+                                            <span>
+                                                {{> actionButton
+                                                        class="preview-material-button"
+                                                        type="outline-primary"
+                                                        title=(i18n "common.preview")
+                                                        icon="eye"
+                                                        data-type=this.name
+                                                        data-phase=phase._id
+                                                        data-group=group._id
+                                                        data-reference=this.doc._id
+                                                        blocked=false}}
+                                                {{> actionButton
+                                                        type="outline-primary"
+                                                        class="material-download-button"
+                                                        title=(i18n "actions.download")
+                                                        icon="cloud-download-alt"
+                                                        data-phase=phase._id
+                                                        data-group=group._id
+                                                        data-type=this.name
+                                                        data-reference=this.doc._id
+                                                        disabled=(downloadButtonDisabled this.name)
+                                                        blocked=(downloading phase._id this.doc._id)}}
+                                                {{#if isActiveStudent this.doc._id group.visible}}
+                                                    {{> actionButton
+                                                            class="toggle-mobile-button"
+                                                            type="primary"
+                                                            title=(i18n "lesson.actions.makeMobileInactive")
+                                                            icon="mobile-alt"
+                                                            data-phase=phase._id
+                                                            data-group=group._id
+                                                            data-reference=this.doc._id
+                                                            data-type=this.name
+                                                            disabled=isIdle
+                                                            blocked=(updating phase._id this.doc._id)}}
+                                                {{else}}
+                                                    {{> actionButton
+                                                            class="toggle-mobile-button"
+                                                            type="outline-primary"
+                                                            title=(i18n "lesson.actions.makeMobileActive")
+                                                            icon="mobile-alt"
+                                                            data-phase=phase._id
+                                                            data-group=group._id
+                                                            data-reference=this.doc._id
+                                                            data-type=this.name
+                                                            disabled=isIdle
+                                                            blocked=(updating phase._id this.doc._id)}}
+                                                {{/if}}
+                                                {{#if showResults this.doc._id group._id}}
+                                                    {{> actionButton
+                                                            type="primary"
+                                                            class="lesson-show-results-button"
+                                                            title=(i18n "actions.showResults")
+                                                            icon="list"
+                                                            data-phase=phase._id
+                                                            data-group=group._id
+                                                            data-reference=this.doc._id
+                                                            disabled=(resultButtonDisabled this.name)
+                                                            blocked=false}}
+                                                {{else}}
+                                                    {{> actionButton
+                                                            type="outline-primary"
+                                                            class="lesson-show-results-button"
+                                                            title=(i18n "actions.showResults")
+                                                            icon="list"
+                                                            data-phase=phase._id
+                                                            data-group=group._id
+                                                            data-reference=this.doc._id
+                                                            disabled=(resultButtonDisabled this.name)
+                                                            blocked=false}}
+                                                {{/if}}
+                                                {{#if isOnBeamer this.doc._id}}
+                                                    {{> actionButton
+                                                            type="primary"
+                                                            class="toggle-beamer-material-button"
+                                                            title=(i18n "actions.presentResults")
+                                                            icon="video"
+                                                            data-context=this.name
+                                                            data-group=group._id
+                                                            data-reference=this.doc._id
+                                                            blocked=(sendingToBeamer this.doc._id)}}
+                                                {{else}}
+                                                    {{> actionButton
+                                                            type="outline-primary"
+                                                            class="toggle-beamer-material-button"
+                                                            title=(i18n "actions.presentResults")
+                                                            icon="video"
+                                                            data-context=this.name
+                                                            data-reference=this.doc._id
+                                                            data-group=group._id
+                                                            disabled=(presentButtonDisabled this.name)
+                                                            blocked=(sendingToBeamer this.doc._id)}}
+                                                {{/if}}
+                                         </span>
+                                        {{/with}}
+                                    </li>
+                                    {{! show task results if defined and activated by teacher }}
+                                    {{#with showResults materialId group._id}}
+                                        <li class="list-group-item">
+                                            {{> taskResultTable this}}
+                                        </li>
+                                    {{/with}}
+                                {{/each}}
+                            </ul>
+                        </div>
+                    {{/each}}
+                {{/if}}
+                {{/if}}{{! end if feature "group"}}
+
+                {{! phase referenced material }}
+                {{#each reference in phase.references}}
+                    <li class="list-group-item d-flex flex-wrap align-items-center">
+                        {{#with resolvedReference reference.document}}
+                            <span class="d-flex mr-2 align-items-start flex-fill">
+							{{>tooltip title=(i18n this.label) icon=this.icon}}
+                                <span class="text-wrap ml-2 d-none d-md-inline-flex">
+                                    {{#if this.isFilesCollection}}
+                                        {{this.doc.name}}
+                                    {{else}}
+                                        {{this.doc.title}}
+                                    {{/if}}
+                                </span>
+						    </span>
+
+                            {{! material actions }}
+                            <span class="ml-auto">
+                        {{> actionButton
+                                class="preview-material-button"
+                                type="outline-primary"
+                                title=(i18n "common.preview")
+                                icon="eye"
+                                data-type=this.name
+                                data-phase=phase._id
+                                data-reference=this.doc._id
+                                blocked=false}}
+                                {{> actionButton
+                                        type="outline-primary"
+                                        class="material-download-button"
+                                        title=(i18n "actions.download")
+                                        icon="cloud-download-alt"
+                                        data-phase=phase._id
+                                        data-type=this.name
+                                        data-reference=this.doc._id
+                                        disabled=(downloadButtonDisabled this.name)
+                                        blocked=(downloading phase._id this.doc._id)}}
+                                {{#if isActiveStudent this.doc._id false}}
+                                    {{> actionButton
+                                            class="toggle-mobile-button"
+                                            type="primary"
+                                            title=(i18n "lesson.actions.makeMobileInactive")
+                                            icon="mobile-alt"
+                                            data-phase=phase._id
+                                            data-reference=this.doc._id
+                                            data-type=this.name
+                                            disabled=isIdle
+                                            blocked=(updating phase._id this.doc._id)}}
+                                {{else}}
+                                    {{> actionButton
+                                            class="toggle-mobile-button"
+                                            type="outline-primary"
+                                            title=(i18n "lesson.actions.makeMobileActive")
+                                            icon="mobile-alt"
+                                            data-phase=phase._id
+                                            data-reference=this.doc._id
+                                            data-type=this.name
+                                            disabled=isIdle
+                                            blocked=(updating phase._id this.doc._id)}}
+                                {{/if}}
+                                {{#if showResults this.doc._id}}
+                                    {{> actionButton
+                                            type="primary"
+                                            class="lesson-show-results-button"
+                                            title=(i18n "actions.showResults")
+                                            icon="list"
+                                            data-phase=phase._id
+                                            data-reference=this.doc._id
+                                            disabled=(resultButtonDisabled this.name)
+                                            blocked=false}}
+                                {{else}}
+                                    {{> actionButton
+                                            type="outline-primary"
+                                            class="lesson-show-results-button"
+                                            title=(i18n "actions.showResults")
+                                            icon="list"
+                                            data-phase=phase._id
+                                            data-reference=this.doc._id
+                                            disabled=(resultButtonDisabled this.name)
+                                            blocked=false}}
+                                {{/if}}
+                                {{#if isOnBeamer this.doc._id}}
+                                    {{> actionButton
+                                            type="primary"
+                                            class="toggle-beamer-material-button"
+                                            title=(i18n "actions.presentResults")
+                                            icon="video"
+                                            data-context=this.name
+                                            data-reference=this.doc._id
+                                            blocked=(sendingToBeamer this.doc._id)}}
+                                {{else}}
+                                    {{> actionButton
+                                            type="outline-primary"
+                                            class="toggle-beamer-material-button"
+                                            title=(i18n "actions.presentResults")
+                                            icon="video"
+                                            data-context=this.name
+                                            data-reference=this.doc._id
+                                            disabled=(presentButtonDisabled this.name)
+                                            blocked=(sendingToBeamer this.doc._id)}}
+                                {{/if}}
+                        </span>
+                        {{/with}}
+                    </li>
+
+                    {{! show task results if defined and activated by teacher }}
+                    {{#with showResults reference.document}}
+                        <li class="list-group-item">
+                            {{> taskResultTable this}}
+                        </li>
+                    {{/with}}
+                {{/each}}
+
+            </ul>
+        {{/each}}
+
+
+        {{#with unassociatedMaterial}}
+
+            {{#nonPhaseMaterial material=this inline=false
+                                liclass="mt-1"
+                                phaseclass="text-white mt-4"}}
+                <span class="float-right no-wrap">
+					{{> actionButton
+                            class="preview-material-button"
+                            type="outline-primary"
+                            title=(i18n "common.preview")
+                            icon="eye"
+                            data-type=this.type
+                            data-phase=this.phaseId
+                            data-reference=this.refId
+                            blocked=false}}
+                    {{> actionButton
+                            type="outline-primary"
+                            class="material-download-button"
+                            title=(i18n "actions.download")
+                            icon="cloud-download-alt"
+                            data-phase=this.phaseId
+                            data-type=this.type
+                            data-reference=this.refId
+                            disabled=(downloadButtonDisabled this.type)
+                            blocked=(downloading this.phaseId this.refId)}}
+                    {{#if isActiveStudent this.refId false}}
+                        {{> actionButton
+                                class="toggle-mobile-button"
+                                type="primary"
+                                title=(i18n "lesson.actions.makeMobileInactive")
+                                icon="mobile-alt"
+                                data-phase=this.phaseId
+                                data-reference=this.refId
+                                data-type=this.type
+                                disabled=isIdle
+                                blocked=(updating this.phaseId this.refId)}}
+                    {{else}}
+                        {{> actionButton
+                                class="toggle-mobile-button"
+                                type="outline-primary"
+                                title=(i18n "lesson.actions.makeMobileActive")
+                                icon="mobile-alt"
+                                data-phase=this.phaseId
+                                data-reference=this.refId
+                                data-type=this.type
+                                disabled=isIdle
+                                blocked=(updating this.phaseId this.refId)}}
+                    {{/if}}
+                    {{#if showResults this.refId}}
+                        {{> actionButton
+                                type="primary"
+                                class="lesson-show-results-button"
+                                title=(i18n "actions.showResults")
+                                icon="list"
+                                data-phase=this.phaseId
+                                data-reference=this.refId
+                                disabled=(resultButtonDisabled this.type)
+                                blocked=false}}
+                    {{else}}
+                        {{> actionButton
+                                type="outline-primary"
+                                class="lesson-show-results-button"
+                                title=(i18n "actions.showResults")
+                                icon="list"
+                                data-phase=this.phaseId
+                                data-reference=this.refId
+                                disabled=(resultButtonDisabled this.type)
+                                blocked=false}}
+                    {{/if}}
+
+                    {{#if isOnBeamer this.refId}}
+                        {{> actionButton
+                                type="primary"
+                                class="toggle-beamer-material-button"
+                                title=(i18n "actions.presentResults")
+                                icon="video"
+                                data-context=this.type
+                                data-reference=this.refId
+                                blocked=(sendingToBeamer this.refId)}}
+                    {{else}}
+                        {{> actionButton
+                                type="outline-primary"
+                                class="toggle-beamer-material-button"
+                                title=(i18n "actions.presentResults")
+                                icon="video"
+                                data-phase=this.phaseId
+                                data-context=this.type
+                                data-reference=this.refId
+                                disabled=(presentButtonDisabled this.type)
+                                blocked=(sendingToBeamer this.refId)}}
+                    {{/if}}
+				</span>
+            <div class="d-block w-100"></div>
+            <div class="global-phase-results d-block w-100 mt-4">
+                {{#with showResults this.refId}}
+                    {{> taskResultTable this}}
+                {{/with}}
+            </div>
+            {{/nonPhaseMaterial}}
+        {{/with}}
+    </div>
+
+    {{! -------------------------- }}
+    {{! START AND COMPLETE BUTTONS }}
+    {{! -------------------------- }}
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            {{#if isIdle}}
+                {{>actionButton
+                        type="outline-primary btn-block"
+                        class="start-lesson-button h-100 mb-4"
+                        icon="rocket"
+                        label=(i18n "lesson.actions.start")
+                        blocked=isStarting}}
+            {{else if isRunning}}
+                {{>actionButton
+                        type="outline-secondary btn-block passive"
+                        class="h-100 mb-4"
+                        icon="play"
+                        label=(i18n "lesson.states.running")}}
+            {{/if}}
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            {{#if isRunning}}
+                {{>actionButton
+                        type="success btn-block"
+                        class="complete-lesson-button h-100 mb-4"
+                        icon="flag"
+                        label=(i18n "lesson.actions.complete")
+                        blocked=isStarting}}
+            {{else if isIdle}}
+                {{>actionButton
+                        type="outline-secondary btn-block passive"
+                        class="h-100 mb-4"
+                        icon="flag"
+                        label=(i18n "lesson.actions.complete")}}
+            {{/if}}
+        </div>
+
+    </div>
+
+    {{! ===================================================================== }}
+
+    {{! MODALS }}
+
+    {{! ===================================================================== }}
+
+    {{! BEAMER PREVIEW MODAL to preview content on the beamer and allow teacher
+        to control the beamer from within their own environment}}
+
+    {{#modal id="lesson-beamer-preview-modal" large=true static=true scrollable=true xl=true
+             contentClass="overflow-auto"}}
+        {{#mheader dismiss=true title=(i18n "actions.presentResults")
+                   class="bg-secondary text-white"}}{{/mheader}}
+        {{#with currentTaskDoc}}
+            {{#mbody}}
+            {{! general task information }}
+                <div class="font-weight-bold">{{../title}}</div>
+                {{#if ../description}}
+                    <p>{{../description}}</p>
+                {{/if}}
+            {{/mbody}}
+
+            {{! show all items of task }}
+            {{#itemList taskDoc=this ulclass="my-5" liclass="border-0" liclass="align-items-center"}}
+                <span class="mx-2">
+                    {{> icon name=item.context.icon}}
+                </span>
+
+                <div class="present-item-info flex-fill">
+                    <div class="font-weight-bold">
+                        <span>{{item.title}}</span>
+                    </div>
+                    <div>"{{this.item.label}}"</div>
+                </div>
+
+                <div class="present-item-actions no-wrap">
+
+                    <div class="dropdown d-inline">
+                        <button class="btn btn-{{#unless isOnBeamer ../_id
+                                                         item.itemId}}outline-{{/unless}}secondary dropdown-toggle"
+                                type="button"
+                                id="dropdownMenuButton"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            {{#with currentResponseProcessor item}}
+                                {{> icon name=this.icon}}
+                                {{i18n this.label}}
+                            {{/with}}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {{#each rp in item.responseProcessors}}
+                                <a class="dropdown-item select-item-rp-button"
+                                   href data-rp="{{rp.name}}" data-item="{{item.itemId}}">
+                                    {{> icon name=rp.icon}}
+                                    <span>{{i18n rp.label}}</span>
+                                </a>
+                            {{/each}}
+                        </div>
+                    </div>
+
+                    {{> actionButton
+                            class="toggle-beamer-material-button"
+                            type=(ternary (isOnBeamer ../_id this.item.itemId) "secondary" "outline-secondary")
+                            icon="video"
+                            data-meta=this.item.meta
+                            data-context="task"
+                            data-reference=../_id
+                            data-item=this.item.itemId
+                            data-defaultrp=(defaultResponseProcessor item)
+                            blocked=(sendingToBeamer ../_id this.item.itemId)}}
+                </div>
+            {{/itemList}}
+            {{#mbody class="py-5 text-center"}}
+                {{> icon name="info"}} {{i18n "lesson.material.selectItemRp"}}
+            {{/mbody}}
+        {{else}}
+            {{#mbody}}
+                <div class="alert alert-warning">{{i18n "errors.docNotFound"}}</div>
+            {{/mbody}}
+        {{/with}}
+    {{/modal}}
+
+    {{! MATERIAL PREVIEW MODAL to preview material before sending to students}}
+
+    {{#modal id="lesson-material-preview-modal" scrollable=true xl=true}}
+        {{#mheader dismiss=true title=(i18n "lesson.material.preview")
+                   class="bg-secondary text-white"}}{{/mheader}}
+        {{#mbody}}
+            {{#with previewData}}
+                <div id="preview-material-target">
+                    {{#if this.title}}
+                        <div class="card-body">
+                            <h5 class="card-title">{{this.title}}</h5>
+                        </div>
+                    {{/if}}
+                    {{> Template.dynamic template=this.template data=this.data}}
+                </div>
+            {{else}}
+                {{> loading title=(i18n "lesson.material.previewTemplate") type="view"}}
+            {{/with}}
+        {{/mbody}}
+        {{#mfooter class="d-flex justify-content-between"}}
+            <!--
+            {{#with previewTarget}}
+                {{#if isOnBeamer this.refId}}
+                    {{> actionButton
+                            type="primary"
+                            class="toggle-beamer-material-button"
+                            title=(i18n "actions.presentResults")
+                            icon="video"
+                            data-context=this.type
+                            data-reference=this.refId
+                            blocked=(sendingToBeamer this.refId)}}
+                {{else}}
+                    {{> actionButton
+                            type="outline-primary"
+                            class="toggle-beamer-material-button"
+                            title=(i18n "actions.presentResults")
+                            icon="video"
+                            data-phase=this.phaseId
+                            data-context=this.type
+                            data-reference=this.refId
+                            disabled=(presentButtonDisabled this.type)
+                            blocked=(sendingToBeamer this.refId)}}
+                {{/if}}
+            {{/with}}
+			-->
+            <button class="btn btn-outline-primary print-material-preview-button">
+                <i class="fa fa-fw fa-print"></i> {{i18n "actions.print"}}
+            </button>
+            <button class="btn btn-secondary" data-dismiss="modal">
+                {{i18n "actions.close"}}
+            </button>
+        {{/mfooter}}
+    {{/modal}}
+
+    {{! PREVIEW PHASES MODAL to preview all phases in a summary table }}
+
+    {{#modal id="lesson-material-preview-phases-modal" scrollable=true xl=true}}
+        {{> mheader title=(i18n "common.preview") class="bg-secondary text-light" dismiss=true}}
+        {{#with previewPhases}}
+            <div class="testimonial-group h-100">
+                <div class="row h-100">
+                    <div class="col h-100 landscape" id="lesson-preview-phases">
+                        <div class="font-weight-bold d-print-block">{{unitDoc.title}}</div>
+                        <div class="font-small font-weight-light">
+                            {{> phaseFullRenderer hidePlot=false phases=this unitDoc=unitDoc fluid=true responsive=true border=true actions=false}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{#mfooter class="d-flex justify-content-between"}}
+                {{> actionButton
+                        class="print-phases-table-button"
+                        data-target="lesson-preview-phases"
+                        type="outline-primary"
+                        label=(i18n "actions.print")
+                        icon="print"
+                        blocked=printing}}
+                <button class="btn btn-outline-secondary" data-dismiss="modal">
+                    {{i18n "actions.close"}}
+                </button>
+            {{/mfooter}}
+        {{else}}
+            {{#mbody}}
+                {{> loading}}
+            {{/mbody}}
+        {{/with}}
+    {{/modal}}
+    {{> confirm static=true}}
+</template>

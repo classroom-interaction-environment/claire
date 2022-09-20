@@ -1,0 +1,80 @@
+<template name="ongoingLessons">
+    {{#onLoaded complete=loadComplete}}
+    <h5>{{i18n "lesson.running"}} ({{maxRunning}})</h5>
+        <ul class="lessons-running list-group my-4">
+            {{#each lesson in runningLessons}}
+                {{#lessonListRenderer
+                        lesson=lesson
+                        showIcon=true
+                        showClass=true
+                        showPocket=true
+                        showTime=true}}
+                    {{#routeButton
+                            class="no-wrap"
+                            href=(route "lesson" this._id)
+                            title=(i18n "lesson.toLesson") type="primary"}}
+                        <i class="fa fa-users"></i>
+                        <i class="fa fa-caret-right"></i>
+                    {{/routeButton}}
+                {{/lessonListRenderer}}
+                {{else}}
+                <li class="list-group-item">
+                    {{#nodocs}}
+                        <div class="d-block text-center">
+                            {{> routeButton type="success" label=(i18n "actions.createNow") href=(route "prepare")}}
+                        </div>
+                    {{/nodocs}}
+                </li>
+            {{/each}}
+            {{#if hasMoreRunning}}
+                <li class="list-group-item">
+                    {{> actionButton type="outline-secondary" class="btn-block show-more-running-btn" icon="caret-down" }}
+                </li>
+            {{/if}}
+        </ul>
+
+    <h5>{{i18n "lesson.upcoming"}} ({{maxUpcoming}})</h5>
+        <ul class="short-upcoming list-group my-4">
+            {{#each lesson in upcomingLessons}}
+                {{#lessonListRenderer
+                        lesson=lesson
+                        showIcon=true
+                        showClass=true
+                        showPocket=true
+                        showTime=true}}
+                    <span class="no-wrap">
+                    {{#routeButton
+                            class="no-wrap"
+                            href=(route "unitEditor" this._id)
+                            title=(i18n "editor.unit.editInUnitEditor")
+                            disabled=(not (unit this.unit))
+                            type="outline-primary"}}
+                        <i class="fa fa-edit"></i>
+                        <i class="fa fa-caret-right"></i>
+                    {{/routeButton}}
+                    {{#routeButton
+                            class="no-wrap"
+                            href=(route "lesson" this._id)
+                            title=(i18n "lesson.toLesson") type="primary"}}
+                        <i class="fa fa-users"></i>
+                        <i class="fa fa-caret-right"></i>
+                    {{/routeButton}}
+                    </span>
+                {{/lessonListRenderer}}
+                {{else}}
+                <li class="list-group-item">
+                    {{#nodocs}}
+                        <div class="d-block text-center">
+                            {{> routeButton type="success" label=(i18n "actions.createNow") href=(route "prepare")}}
+                        </div>
+                    {{/nodocs}}
+                </li>
+            {{/each}}
+            {{#if hasMoreUpcoming}}
+                <li class="list-group-item">
+                    {{> actionButton type="outline-secondary" class="btn-block show-more-upcoming-btn" icon="caret-down" }}
+                </li>
+            {{/if}}
+        </ul>
+        {{/onLoaded}}
+</template>

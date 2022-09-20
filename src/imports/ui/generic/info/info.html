@@ -1,0 +1,27 @@
+<template name="info">
+    <button type="button" class="btn {{#if sm}}btn-sm{{/if}} btn-{{#if outline}}outline-{{/if}}{{#if type}}{{type}}{{else}}secondary{{/if}}"
+            data-toggle="modal"
+            title="{{title}}"
+            data-target="#{{id}}"
+            data-placement="top" data-content="{{content}}">
+        <i class="fa fa-fw fa-info-circle"></i>
+    </button>
+    {{!-- Modal --}}
+    <div class="modal fade" id="{{id}}" tabindex="-1" role="dialog" aria-labelledby="{{id}}" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="{{id}}Label">{{#if title}}{{title}}{{else}}{{i18n "common.info"}}{{/if}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {{#if label}}
+                    <div class="modal-body"><p>{{label}}</p></div>
+                {{else}}
+                    {{> Template.contentBlock ..}}
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</template>

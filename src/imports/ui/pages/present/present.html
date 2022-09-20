@@ -1,0 +1,150 @@
+<template name="present">
+    {{#unless loadComplete}}
+        {{> loading}}
+    {{else}}
+        {{#with beamerDoc}}
+        {{! invitation code wrapped in a card }}
+            {{#if this.invitationCode}}
+                <div class="row mt-5 h-100">
+                    <div class="col">
+                        <div class="card bg-transparent">
+                            <div class="card-header d-flex justify-content-between bg-transparent">
+                                <h5>{{i18n "codeInvitation.qrCode"}}</h5>
+                                {{! todo use actionButton }}
+                                <button class="btn btn-sm btn-warning remove-code-button">
+                                    <i class="fa fa-fw fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="card-body bg-transparent text-center">
+                                {{> codeRender code=this.invitationCode class="ml-auto mr-auto"}}
+                                <div class="w-100 text-center">
+                                    <code style="font-size: 8rem;"
+                                          class="d-block text-dark">{{codeUrl
+                                            this.invitationCode}}</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{/if}}
+
+            {{! referenced material to display }}
+            {{#with resolvedReferences}}
+                <div class="{{rowClass}} mt-5">
+                    {{#each reference in this}}
+                        <div class="{{colClass}}">
+                            <div class="card bg-transparent h-100">
+
+                                {{! material Icon and title }}
+                                <div class="card-header d-flex justify-content-between bg-transparent border-0 align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <span class="mr-3">
+                                            {{#with itemContext reference.itemId}}
+                                                {{> tooltip icon=this.icon title=(i18n this.label)}}
+                                            {{else}}
+                                                {{#with context reference.context}}
+                                                    {{> tooltip icon=this.icon title=(i18n this.label)}}
+                                                {{/with}}
+                                            {{/with}}
+                                        </span>
+                                        <span>{{reference.document.title}}</span>
+                                        {{#with getItem reference.itemId}}
+                                            <span>-</span>
+                                            <span>{{this.data.label}}</span>
+                                            <span>({{this.data.title}})</span>
+                                        {{/with}}
+                                    </div>
+
+                                    <span>
+                                    {{!-- renderers can define custom actions that are rendered here --}}
+                                        {{#each action in
+                                                (customActions reference)}}
+                                            {{#if action.visible}}
+                                                {{>actionButton
+                                                        type=action.type
+                                                        title=(i18n action.label)
+                                                        class="custom-action-button border-0"
+                                                        icon=action.icon
+                                                        data-id=action.id
+                                                        data-index=@index
+                                                        data-lesson=reference.lessonId
+                                                        data-context=reference.context
+                                                        data-reference=reference.referenceId
+                                                        data-item=reference.itemId}}
+                                            {{/if}}
+                                        {{/each}}
+
+                                        <div class="dropdown d-inline">
+                                            <button class="btn btn-outline-secondary dropdown-toggle border-0"
+                                                    type="button"
+                                                    id="dropdownMenuButton"
+                                                    data-toggle="dropdown"
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false">
+                                                {{#with responseProcessor reference}}
+                                                    {{log this}}
+                                                    {{> icon name=this.data.responseProcessor.icon}}
+                                                {{else}}
+                                                    {{> icon name="times"}}
+                                                {{/with}}
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                {{#each rp in (availableResponseProcessors reference)}}
+                                                    <a class="dropdown-item select-rp-button" href
+                                                       data-rp="{{rp.name}}"
+                                                       data-item="{{reference.itemId}}">
+                                                    {{> icon name=rp.icon}}
+                                                        <span>{{i18n rp.label}}</span>
+                                                </a>
+                                                {{/each}}
+                                            </div>
+                                        </div>
+
+
+                                        {{> actionButton
+                                                type="outline-secondary"
+                                                title=(i18n "actions.close")
+                                                class="remove-reference-button border-0"
+                                                icon="times"
+                                                blocked=(unloading reference)
+                                                data-index=@index
+                                                data-lesson=reference.lessonId
+                                                data-context=reference.context
+                                                data-reference=reference.referenceId
+                                                data-item=reference.itemId}}
+                                        </span>
+                                </div>
+
+                                {{! material content }}
+
+                                <div class="card-body bg-transparent text-center h-100 p-0">
+                                    {{#if reference.itemId}}
+                                        {{#unless responseProcessorLoaded
+                                                  reference.itemId}}
+                                            {{> loading title=reference.context }}
+                                        {{else}}
+                                        {{!--
+                                            tasks will have additionally an itemId
+                                            because we only evaluate / present
+                                            on an item level
+                                        --}}
+                                            {{#with responseProcessor
+                                                    reference}}
+                                                {{> Template.dynamic template=this.template data=this.data}}
+                                            {{/with}}
+                                        {{/unless}}
+                                    {{else}}
+                                    {{!--
+                                    everything else will be rendered by the
+                                    default renderer factory  --}}
+                                        {{> Template.dynamic template=(previewTemplate reference) data=(previewTemplateData reference)}}
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+            {{/with}}
+        {{/with}}
+    {{/unless}}
+</template>

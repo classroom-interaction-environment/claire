@@ -1,0 +1,18 @@
+{
+  "actions": {
+    "tryAgain": "Try again"
+  },
+  "form": {
+    "fileUpload": {
+      "label": "Upload {{name}}",
+      "description": "Allowed formats: {{accept}}",
+      "drop": "Drop files here to upload or",
+      "browse": "browse files",
+      "preUploadError": "Files could not be uploaded",
+      "noMultiple": "Multiple files are not allowed, but {{length}} files were selected.",
+      "notAccepted": "Invalid type for {{name}}: {{type}}. Allowed are: {{accept}}",
+      "sizeExceeded": "File {{name}} excedded the max. size of {{maxSize}} MB.",
+      "uploading": "Uploading now"
+    }
+  }
+}

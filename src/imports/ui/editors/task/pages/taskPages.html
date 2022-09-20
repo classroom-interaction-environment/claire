@@ -1,0 +1,89 @@
+<template name="taskPages">
+	<div class="my-4">
+		<div class="d-flex justify-content-between">
+			<ul class="nav nav-pills mr-4">
+				{{#each pages}}
+					{{#if isActive @index}}
+						<li class="nav-item no-wrap m-1">
+							<a href data-target="{{@index}}"
+							   class="nav-link page-tab-button {{#if isActive @index}}active{{/if}}">
+                                <span>{{getIndex @index}}.</span>
+								<span>{{toTitle this.title}}</span>
+								{{#unless hasContent @index}}
+									{{> tooltip
+											title=(i18n "editor.task.emptyPage")
+											icon="exclamation-triangle"
+											class="text-warning"}}
+								{{/unless}}
+							</a>
+						</li>
+					{{else}}
+						<li class="nav-item no-wrap m-1">
+							<a href data-target="{{@index}}"
+							   class="nav-link page-tab-button">
+								{{toTitle this.title}}
+								{{#unless hasContent @index}}
+									{{> tooltip
+											title=(i18n "editor.task.emptyPage")
+											icon="exclamation-triangle"
+											class="text-warning"}}
+								{{/unless}}
+							</a>
+						</li>
+					{{/if}}
+				{{/each}}
+			</ul>
+			<span class="text-nowrap">
+				<button class="btn btn-sm btn-success create-page-button"
+						disabled="{{#if submitting}}disabled{{/if}}">
+				<i class="fa fa-fw fa-plus"></i> {{i18n "editor.task.addPage"}}
+				</button>
+			</span>
+		</div>
+		<div class="my-4">
+			{{#with currentPage}}
+				<div class="card mb-4">
+					<div class="card-body d-flex">
+						<h5 class="card-title">{{i18n "common.title"}}: "{{toTitle this.title}}"</h5>
+						<span class="ml-auto no-wrap">
+							{{>actionButton
+									id="edit-pagetitle-button"
+									type="outline-primary"
+									class="btn-sm"
+									icon="edit"
+									data-target=(currentIndex)
+									blocked=submitting
+									title=(i18n "actions.edit")}}
+							{{>actionButton
+									id="update-pagetitle-delete-button"
+									type="outline-danger"
+									class="btn-sm"
+									icon="trash"
+									data-target=(currentIndex)
+									blocked=submitting
+									disabled=(isOnlyPage)
+									title=(i18n "actions.delete")}}
+						</span>
+					</div>
+				</div>
+				{{> taskPageContent task=task currentIndex=(state 'currentIndex')}}
+			{{/with}}
+		</div>
+	</div>
+	{{#modal id="newPageModal" large=true static=true}}
+		{{>mheader dismiss=true title=(i18n "editor.task.newPage") class="bg-success text-white"}}
+		{{> caroForm id="createPageForm" schema=taskPageTitleSchema type="normal"}}
+		{{#mfooter class="d-flex justify-content-between"}}
+			{{>actionButton type="success" blocked=submitting label=(i18n "actions.create") icon="plus" submit=true form="createPageForm"}}
+			{{>actionButton type="secondary" blocked=submitting label=(i18n "actions.cancel") data-dismiss="modal"}}
+		{{/mfooter}}
+	{{/modal}}
+	{{#modal id="editPageModal" large=true static=true}}
+		{{>mheader dismiss=true title=(i18n "editor.task.editPageTitle") class="bg-primary text-white"}}
+		{{> caroForm id="editPageForm" schema=taskPageTitleSchema type="normal" doc=pageTitleDoc}}
+		{{#mfooter class="d-flex justify-content-between"}}
+			{{>actionButton type="primary" blocked=submitting label=(i18n "actions.save") icon="save" submit=true form="editPageForm"}}
+			{{>actionButton type="secondary" blocked=submitting label=(i18n "actions.cancel") data-dismiss="modal"}}
+		{{/mfooter}}
+	{{/modal}}
+</template>

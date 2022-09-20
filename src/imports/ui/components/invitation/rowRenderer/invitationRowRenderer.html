@@ -1,0 +1,43 @@
+<template name="invitationRowRenderer">
+	{{#with invitation}}
+		{{#if ../status}}
+			{{#with getStatus this}}
+				<td class="text-{{type}} text-center">
+					<i class="fa fa-fw fa-{{this.icon}}" title="{{i18n this.label}}"></i>
+				</td>
+			{{/with}}
+		{{/if}}
+		{{#if ../users}}
+			<td class="no-wrap text-center">{{length registeredUsers}} / {{maxUsers}}</td>
+		{{/if}}
+		{{#if ../expiration}}
+			<td class="no-wrap">
+				{{expirationDate createdAt expires}}
+				{{#if isAdmin}}
+					{{!--<small><br>{{username createdBy}}, <code>{{code}}</code></small>--}}
+				{{/if}}
+			</td>
+		{{/if}}
+		{{#if ../countDownActive}}
+			<td class="no-wrap">
+				{{#if isExpired this}}
+					<span class="text-danger">{{i18n "codeInvitation.expired"}}</span>
+				{{else}}
+					{{../countdown}}
+				{{/if}}
+			</td>
+		{{/if}}
+		{{#if ../role}}
+			<td>{{roleLabel role}}</td>{{/if}}
+		{{#if ../details}}
+			<td>
+				{{#if or firstName lastname}}{{firstName}} {{lastName}}<br>{{/if}}
+				{{#if email}}{{email}}<br>{{/if}}
+				{{#if institution}}{{institution}}<br>{{/if}}
+				{{#if classId}}{{schoolClass classId}}{{/if}}
+			</td>
+		{{/if}}
+	{{else}}
+		{{> loading}}
+	{{/with}}
+</template>

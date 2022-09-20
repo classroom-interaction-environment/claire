@@ -1,0 +1,97 @@
+<template name="itemRenderer">
+    {{#onLoaded complete=loadComplete}}
+    {{#with item this.itemId}}
+        <div class="item-form-container">
+            {{#autoForm  id=(itemFormName this.itemId)
+                         validation="blur"
+                         type="normal"
+                         schema=(itemSchema this.itemId)
+                         doc=(value this.itemId)}}
+                <div>
+                    <fieldset disabled="{{#if itemDisabled ../itemId ../groupMode}}disabled{{/if}}">
+                        {{#each afFieldNames}}
+                            <div class="field-wrapper">
+                                <label class="font-weight-bold text-center text-md-left w-100 p-2">
+                                    {{../label}}
+                                </label>
+
+                                {{> afQuickField
+                                        name=this.name
+                                        options=afOptionsFromSchema
+                                        data-item=../itemId
+                                        data-group=../groupId
+                                        data-group-mode=../groupMode
+                                        label=false}}
+                            </div>
+                        {{/each}}
+                        {{#if neq ../groupMode "off"}}
+                            <small class="text-center d-block p-1">
+                                {{i18n (merge "groupMode." ../groupMode)}}
+                            </small>
+                        {{/if}}
+                    </fieldset>
+                </div>
+                {{#unless isPreview}}
+                    <div class="d-block d-print-none">
+                        {{#unless submitting this.itemId}}
+                            {{#if eq ../groupMode "merge"}}
+                                <button type="button"
+                                        class="btn btn-sm btn-block btn-outline-secondary"
+                                        data-target="{{this.itemId}}" disabled>
+                                    <i class="fa fa-users"></i> {{i18n "group.editing"}}
+                                </button>
+                            {{else if saved this.itemId}}
+                                <button type="button"
+                                        class="btn btn-sm btn-block btn-outline-primary itemrenderer-edit-button"
+                                        data-target="{{this.itemId}}">
+                                    <i class="fa fa-edit"></i> {{i18n "actions.edit"}}
+                                </button>
+                            {{else if (itemHasValue this.itemId)}}
+                                <button type="submit"
+                                        class="btn btn-sm btn-block btn-primary itemrenderer-submit-button">
+                                    <i class="fa fa-save"></i> {{i18n
+                                        "actions.save"}}
+                                </button>
+                            {{/if}}
+                        {{else if (itemHasValue this.itemId)}}
+                            <button type="submit"
+                                    class="btn btn-primary btn-block itemrenderer-submit-button btn-sm"
+                                    disabled>
+                                <i class="fa fa-sync fa-spin"></i> {{i18n
+                                    "actions.saving"}}
+                            </button>
+                        {{/unless}}
+                    </div>
+                    {{#with value this.itemId}}
+                        <div class="text-muted text-center">
+                            <small>{{i18n 'item.savedAt'}} {{toLocaleDate this.updatedAt}}</small>
+                        </div>
+                    {{/with}}
+                {{/unless}}
+            {{/autoForm}}
+        </div>
+    {{else}}
+        {{!--
+            ERROR MESSAGE
+            In case of a catched error (exception) we need to display this,
+            as a readable message, so the user can take actions, based on it
+        --}}
+        {{#with error}}
+            <div class="alert alert-danger d-print-none">
+                <div class="alert-heading d-block">
+                    <i class="fa fa-fw fa-exclamation-triangle"></i> {{i18n
+                        this.error }}
+                </div>
+                <div class="d-block">
+                    {{i18n this.reason}}
+                </div>
+            </div>
+        {{else}}
+            <div class="alert alert-info d-print-none">
+                <i class="fa fa-fw fa-pulse fa-spinner"></i>
+                {{i18n "common.loading" }} - {{i18n "item.title"}}
+            </div>
+        {{/with}}
+    {{/with}}
+    {{/onLoaded}}
+</template>

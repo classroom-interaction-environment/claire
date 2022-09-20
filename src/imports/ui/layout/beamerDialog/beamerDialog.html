@@ -1,0 +1,33 @@
+<template name="beamerDialog">
+	{{#modal id="beamerInitDialog" xl=true static=true}}
+		{{> mheader title=(i18n "beamer.initBeamer.title") bg="secondary" dismiss=true}}
+		{{#mbody}}
+            {{#onLoaded complete=initVisible}}
+			<div class="row">
+				<div class="col-12 col-md-6">
+					{{> image src="/img/open_beamer.svg"}}
+					{{> actionButton type="primary" class="btn-block open-beamer-local-button my-3" label=(i18n "beamer.initBeamer.local")}}
+					<p>{{i18n "beamer.initBeamer.choiceA"}}</p>
+				</div>
+				<div class="col-12 col-md-6">
+					{{> image src="/img/extend_beamer.svg"}}
+					{{> actionButton type="primary" class="btn-block open-beamer-external-button my-3" label=(i18n "beamer.initBeamer.external")}}
+					<p>{{i18n "beamer.initBeamer.choiceB"}}</p>
+				</div>
+			</div>
+            {{/onLoaded}}
+		{{/mbody}}
+	{{/modal}}
+
+	{{#modal id="beamerControlDialog" xxl=true static=true}}
+		{{> mheader title=(i18n "beamer.controlBeamer.title") bg="secondary" dismiss=true}}
+		{{#mbody class=beamerBackground}}
+			{{#onLoaded complete=controlVisible}}
+				{{> present}}
+			{{/onLoaded}}
+		{{/mbody}}
+		{{#mfooter class="d-flex justify-content-between"}}
+			{{> actionButton type="outline-secondary" class="end-beamer-button ml-auto" icon="power-off" label=(i18n "beamer.controlBeamer.end")}}
+		{{/mfooter}}
+	{{/modal}}
+</template>

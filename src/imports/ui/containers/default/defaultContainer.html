@@ -1,0 +1,9 @@
+<template name="defaultContainer">
+	{{> loggedoutNav}}
+	{{#main}}
+		{{>yield}}
+	{{/main}}
+	{{> footer}}
+	{{> disconnected}}
+</template>
+

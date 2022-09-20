@@ -1,0 +1,59 @@
+{
+  "admin": {
+    "title": "Administrator",
+    "definitions": "Definitionen verwalten",
+    "create": {
+      "admin": "Administrator anlegen",
+      "user": "Benutzer anlegen",
+      "now": "Jetzt anlegen",
+      "userSuccessful": "Benutzer erfolgreich angelegt"
+    },
+    "users": {
+      "title": "Benutzerverwaltung",
+      "resendInvitation": "Einladung erneut versenden",
+      "delete": "Benutzer/in endgültig löschen",
+      "confirmDelete": "Sie sind dabei den Account von \"{{name}}\" endgültig zu löschen.",
+      "view": "View user",
+      "edit": "Edit user"
+    },
+    "stats": {
+      "title": "Server-Monitor"
+    },
+    "settings": {
+      "title": "Admin-Einstellungen",
+      "ui": "UI Einstellungen",
+      "logos": "App-Bilder",
+      "themeSelect": "CSS Theme",
+      "customTheme": "Eigener CSS Theme",
+      "setCustomTheme": "Den eigenen CSS Code hier einfügen"
+    },
+    "logs": {
+      "title": "Logdaten"
+    },
+    "edit": {
+      "user": "Benutzer bearbeiten"
+    },
+    "methods": {
+      "createUser": {
+        "requiresUsername": "Benutzername benötigt um Benutzer anzulegen",
+        "requiresPassword": "Passwort benötigt um Benutzer anzulegen",
+        "requiresRole": "Rolle benötigt um Benutzer anzulegen"
+      },
+      "common": {
+        "notExist": "Benutzer existiert nicht.",
+        "userNotFound": "Benutzer nicht gefunden"
+      },
+      "permission": {
+        "notAdmin": "Verwehrt. Sie sind kein Administrator.",
+        "notUser": "Verwehrt. Sie sind kein registrierter nutzer."
+      },
+      "error": {
+        "enforceAdmin": "Es wird zwingend ein Administrator benötigt. Legen Sie zuerst einen Administrator an.",
+        "insufficientArgs": "Falsche oder unzureichende Argumente übergeben",
+        "userNotCreated": "Benutzer wurde nicht erstellt",
+        "userNotAdded": "Benutzer wurde nicht hinzugefügt",
+        "userNotLifted": "Benutzer wurde nicht mit neuen Rollen ausgestattet"
+      }
+    }
+  }
+}

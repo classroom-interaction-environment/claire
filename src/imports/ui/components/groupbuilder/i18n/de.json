@@ -1,0 +1,15 @@
+{
+  "group": {
+    "title": "Gruppe",
+    "maxUsers": "Max. Personen"
+  },
+  "groupBuilder": {
+    "defaultTitle": "Unterrichtsgruppe",
+    "materialForAllGroups": "Gleiches Material für alle Gruppen",
+    "materialAutoShuffle": "Material automatisch verteilen",
+    "shuffle": "Automatisch zuteilen",
+    "manual": "Manuell zuteilen",
+    "settings": "Gruppeneinstellungen",
+    "addGroup": "Weitere Gruppe anlegen"
+  }
+}

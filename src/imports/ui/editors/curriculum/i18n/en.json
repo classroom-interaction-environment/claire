@@ -1,0 +1,53 @@
+{
+  "editor": {
+    "didactics": {
+      "title": "Curriculum-Editor",
+      "navTitle": "Curriculum-Editor",
+      "heuristics": {
+        "title": "Heuristics",
+        "createDimension": "Create a new dimension",
+        "editContent": "Edit curriculum",
+        "targets": "Targets",
+        "actors": "Actors / institutions",
+        "layers": "Layers",
+        "lastEdited": "Last edited",
+        "addActor": "Actor",
+        "addLayer": "Layer",
+        "confirmDelete": "Warning! You are about to delete the dimension '{{title}}'. Units that link to this dimension will involve errors!",
+        "addDimension": "Add new dimension",
+        "updateDimension": "Edit dimension",
+        "removeDimension": "Die Kompetenz wird gelöscht. Es wird von allen Sequenzen entfernt, welche es verwenden. Möchten Sie fortfahren?",
+        "removedFromUnit": "Kompetenz von Sequenz entfernt",
+        "selectUnit": "Sequenzen mit dieser Bildungsdimension",
+        "createUnit": "Neue Sequenz anlegen",
+        "addObjective": "Kompetenz",
+        "uncategorized": "Nicht zugeordnet",
+        "linkedUnits": "Sequenzen mit dieser Kompetenz",
+        "nolinkedUnits": "Keine Sequenzen mit dieser Kompetenz",
+        "linkedPocket": "Gehört zu einer Lernsituation",
+        "nolinkedPocket": "Gehört zu keiner Lernsituation",
+        "confirmDeleteObjective": "Im folgenden wird die Kompetenz von allen verknüpften Sequenzen entfernt und gelöscht. Wirklich fortfahren?",
+        "objectiveRemoved": "Kompetenz wurde gelöscht",
+        "objectiveRemovedFromUnit": "Kompetenz erfolgreich entfernt von Sequenz"
+      },
+      "objectives": {
+        "title": "Competencies",
+        "addObjective": "Create competency",
+        "confirmDelete": "Warning! You are about to delete a competency \"{{title}}\", and {{count}} child entries:\n{{children}}\n\nUnits that link to this competency will involve errors!",
+        "addAsChild": "Add here to define as child",
+        "addChild": "Add new child competency",
+        "expandAll": "Show / hide all"
+      },
+      "pockets": {
+        "title": "Modules",
+        "create": "Create module",
+        "addPocket": "Add module",
+        "updatePocket": "Edit module",
+        "addUnit": "Add unit",
+        "cantDeletePocket": "Modules can only be deleted, once there are no units on them.",
+        "confirmDeleteUnit": "Warning! You are about to delete the unit \"{{title}}\". All associated material will be deleted, too.",
+        "confirmDeletePocket": "Warning! You are about to delete the module \"{{title}}\"."
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+<template name="routeButton">
+	<a id="{{id}}"
+	   href="{{href}}"
+	   title="{{title}}"
+       role="{{role}}"
+	   data-trigger="{{#if title}}manual{{/if}}"
+	   data-placement="{{#if placement}}{{placement}}{{else}}top{{/if}}"
+	   data-toggle="{{#if useTooltip}}tooltip{{/if}}"
+	   tabindex="{{#if disabled}}0{{/if}}"
+       disabled="{{#if disabled}}disabled{{/if}}"
+       target="{{#if target}}{{target}}{{/if}}"
+	   class="caro-route-button {{#unless noButton}}btn btn-{{/unless}}{{#if
+			   type}}{{type}}{{else}}outline-primary{{/if}} {{#if sm}}btn-sm{{/if}} {{#if disabled}}disabled{{/if}} {{class}} d-print-none"
+		{{dataAtts}}>
+		{{#if label}}
+			{{#if icon}}
+                {{>icon fw=true name=icon}}
+            {{/if}}
+            {{#if label}}
+                <span>{{label}}</span>
+            {{/if}}
+		{{else}}
+			{{> Template.contentBlock}}
+		{{/if}}
+	</a>
+</template>

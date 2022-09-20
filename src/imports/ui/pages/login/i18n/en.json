@@ -1,0 +1,39 @@
+{
+  "login": {
+    "title": "Sign-in",
+    "callToAction": "Welcome to {{siteName}}!",
+    "login": "Sign-in",
+    "loggingIn": "Signing you in",
+    "forgotPassword": "Forgot password?",
+    "failed": "Login failed, please check your credentials",
+    "usernameOrEmail": "Username or email address",
+    "registerWithCode": "Register with a code",
+    "registerWithRequest": "Request an account",
+    "welcome": "Willkommen to {{siteName}}",
+    "passwordHint": "Length: min. {{min}} / max. {{max}} characters. Allowed characters: {{allowed}}",
+    "confirm": "Confirm password",
+    "resetPassword": {
+      "title": "Reset password",
+      "description": "Please enter your email adress. We will send you a password-reset link",
+      "send": "Send link",
+      "sent": "Link sent. Please check your email inbox.",
+      "resetDescription": "Please enter the NEW PASSWORD and confirm the input",
+      "expired": "Registration link has expired, please request a new one",
+      "resend": "Resend invitation",
+      "resent": "Invitation resent to <{{email}}>.",
+      "success": "Password successfully reset."
+    },
+    "newPassword": "New password",
+    "password": {
+      "title": "Password",
+      "minimumChars": "Has a min. length of {{min}} characters",
+      "maximumChars": "Has a max. length of {{max}} characters",
+      "allowedChars": "Contains only {{allowed}}",
+      "notEasyToGuess": "Is not easy to guess",
+      "noPreviousCredentials": "Does not contain parts of your name or email",
+      "uppercase": "Contains at least 1 uppercase character",
+      "lowercase": "Contains at least 1 lowercase character",
+      "number": "Contains at least 1 digit"
+    }
+  }
+}

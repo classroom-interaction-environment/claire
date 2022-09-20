@@ -1,0 +1,18 @@
+{
+  "actions": {
+    "tryAgain": "Erneut auswählen"
+  },
+  "form": {
+    "fileUpload": {
+      "label": "{{name}} hochladen",
+      "description": "Erlaubt sind folgende Formate: {{accept}}",
+      "drop": "Ziehen Sie Dateien zum hochladen hier rein oder",
+      "browse": "wählen Sie Dateien aus einer Liste aus",
+      "preUploadError": "Dateien konnten nicht hochgeladen werden",
+      "noMultiple": "Es sind keine mehrfachen Dateien erlaubt, hinzugefügt wurden aber {{length}} Dateien.",
+      "notAccepted": "Ungültiges Dateiformat für {{name}}: {{type}}. Erlaubt sind folgende Formate: {{accept}}",
+      "sizeExceeded": "Die Datei {{name}} hat die zulässige Größe von max. {{maxSize}} MB überschritten.",
+      "uploading": "Dateien werden hochgeladen"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+<template name="fluidSwitch">
+	{{#link href=null label=(i18n "nav.toggleFluid") active=fluid class=(concat "toggle-container-fluid " class)}}
+		{{#if fluid}}
+			<i class="fa fa-fw fa-compress"></i>
+		{{else}}
+			<i class="fa fa-fw fa-expand"></i>
+		{{/if}}
+	{{/link}}
+</template>

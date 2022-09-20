@@ -1,0 +1,64 @@
+<template name="taskEditor">
+    {{#unless loadComplete}}
+        {{> loading type="data"}}
+    {{else}}
+
+    {{! basic info }}
+        {{#with getTaskDoc}}
+            {{#Teleport destination="#route-info-destination"}}
+                <div class="text-center text-md-right">
+                    <h4>{{getTaskDoc.title}}</h4>
+                    {{> documentState document=getTaskDoc}}
+
+                    {{#if unitDoc}}
+                        <div class="text-muted font-weight-light my-2 w-100 text-center text-md-right">
+                            <span>{{i18n "curriculum.unit"}}</span>
+                            <span>"{{unitDoc.title}}"</span>
+                        </div>
+                    {{/if}}
+
+                    {{#if pocketDoc}}
+                        <div class="text-muted font-weight-light my-2 w-100 text-center text-md-right">
+                            <span>{{i18n "curriculum.pocket"}}</span>
+                            <span>"{{pocketDoc.title}}"</span>
+                        </div>
+                    {{/if}}
+                </div>
+            {{/Teleport}}
+        {{/with}}
+
+        {{! pocket info}}
+        {{#with unitDoc}}
+            {{#Teleport destination="#route-subtitle-destination"}}
+                <div class="font-weight-light my-2 w-100 text-center text-md-left">
+                    {{> link href=(route "unitEditor" unitDoc._id 'material' 'tasks' task._id) class="border-0" icon="caret-left" label=(i18n "editor.task.backToUnit")}}
+                </div>
+            {{/Teleport}}
+        {{/with}}
+
+        {{! navbar }}
+        {{> submenu submenuData}}
+
+        {{! current view }}
+        {{> TemplateLoader currentView}}
+
+        {{!link to current unit in unit editor }}
+        {{#with unitDoc}}
+            <div class="d-block text-center">
+            {{> routeButton
+                    href=(join "" (route "unitEditor" this._id) "?tab=material")
+                    label=(i18n "editor.task.backToUnit")
+                    title=unitDoc.title
+                    icon="caret-left" }}
+            </div>
+        {{/with}}
+    {{/unless}}
+</template>
+
+<template name="taskEditorEditButton">
+    <button class="btn btn-{{#if
+            type}}{{type}}{{else}}secondary{{/if}} btn-sm edit-target-button"
+            data-target="{{this.target}}">
+        {{#if title}}{{title}} {{/if}}<i class="fa fa-fw fa-edit"></i>
+    </button>
+</template>

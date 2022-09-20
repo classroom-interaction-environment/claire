@@ -1,0 +1,76 @@
+<template name="adminSettings">
+
+	{{#unless loadComplete}}
+		{{> loading title=(i18n "admin.settings.title")}}
+	{{else}}
+		<h2 class="my-4">{{i18n 'admin.settings.ui'}}</h2>
+
+		<div class="card my-3">
+			<div class="card-header d-flex justify-content-between">
+				<h5 class="card-title">{{i18n 'admin.settings.logos'}}</h5>
+				{{> actionButton type="outline-secondary" title=(i18n "actions.edit")
+						icon="edit" class="edit-field-button" data-target="logos"}}
+			</div>
+			<div class="card-body">
+                {{! MAIN HEADER LOGO }}
+                {{#unless edit mainLogo}}
+
+                {{/unless}}
+
+                {{#unless edit "logos"}}
+					{{#each logo in logos}}
+						<img class="img-fluid" src="{{link logo}}">
+					{{else}}
+						{{> nodocs }}
+					{{/each}}
+				{{else}}
+					{{#caroForm id="logosForm"
+                                schema=logosSchema
+                                type="normal"
+                                doc=settingsDoc
+								collapse=false hideLegend=true class="my-3"}}
+						{{> actionButton submit=true form="logosForm" icon="sync" blocked=(isUpdating "logos") type="primary" label=(i18n "actions.update")}}
+					{{/caroForm}}
+				{{/unless}}
+			</div>
+		</div>
+
+
+		<div class="card my-3">
+			<div class="card-header">
+				<h5 class="card-title">{{i18n 'admin.settings.themeSelect'}}</h5>
+			</div>
+			<div class="card-body">
+				<h5 class="my-3">{{i18n "admin.settings.customTheme"}}</h5>
+
+				<textarea class="form-control custom-theme-area"  rows="10"
+						  placeholder="{{i18n 'admin.settings.setCustomTheme'}}">{{customTheme}}</textarea>
+				<button class="btn btn-block btn-primary update-custom-theme">{{i18n 'actions.update'}}</button>
+			</div>
+		</div>
+
+
+		<h2 class="my-4">{{i18n 'legal.title'}}</h2>
+
+		{{#each legal in legalFields}}
+			{{#if edit legal.name}}
+				{{#caroForm id=legal.formName schema=legal.schema type="normal" doc=settingsDoc
+							collapse=false hideLegend=true class="my-3"}}
+					{{> actionButton submit=true form=legal.formName icon="sync" blocked=(isUpdating legal.name)
+							type="primary" label=(i18n "actions.update")}}
+				{{/caroForm}}
+			{{else}}
+				<div class="card my-3">
+					<div class="card-header d-flex justify-content-between">
+						<h5 class="card-title">{{legal.label}}</h5>
+						{{> actionButton type="outline-secondary" title=(i18n "actions.edit")
+								icon="edit" class="edit-field-button" data-target=legal.name}}
+					</div>
+					<div class="card-body">
+						{{#with value legal.name}}{{{this}}}{{/with}}
+					</div>
+				</div>
+			{{/if}}
+		{{/each}}
+	{{/unless}}
+</template>

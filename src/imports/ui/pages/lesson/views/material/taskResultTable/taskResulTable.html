@@ -1,0 +1,50 @@
+<template name="taskResultTable">
+    <div class="task-results-header">
+        <span class="text-primary font-weight-bold">
+            {{i18n "taskResults.title"}} {{taskDoc.title}}
+        </span>
+    </div>
+    <small>
+        <table class="table table-hover task-result-table">
+            <tbody>
+            {{#each userDoc in users}}
+                {{#let progressIndex=@index}}
+                    <tr>
+                        {{> taskProgress userDoc=userDoc taskId=taskId lessonId=lessonId showUser=true }}
+                        <td>
+                            {{#unless showItems userDoc._id}}
+                                {{> actionButton type="outline-secondary" sm=true icon="caret-down" class="border-0 show-items-btn" data-target=userDoc._id}}
+                            {{else}}
+                                {{> actionButton type="secondary" sm=true icon="caret-up" class="border-0 show-items-btn" data-target=userDoc._id}}
+                            {{/unless}}
+                        </td>
+                    </tr>
+                    {{#if showItems userDoc._id}}
+                        {{#each item in currentItems}}
+                            <tr>
+                                <td>{{> tooltip icon=item.context.icon label=icon.context.label}}</td>
+                                <td>{{item.title}}</td>
+                                <td>{{item.groupMode}}</td>
+                                <td>{{item.label}}</td>
+                                <td>
+                                    {{#with taskResultDoc item.itemId taskId userDoc._id}}
+                                        {{#each value in this.response}}
+                                            {{#if item.renderer}}
+                                                {{> Template.dynamic template=item.renderer.template data=(item.renderer.data value)}}
+                                            {{else}}
+                                                {{value}}
+                                            {{/if}}
+                                        {{/each}}
+                                    {{/with}}
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        {{/each}}
+                    {{/if}}
+                {{/let}}
+            {{/each}}
+            </tbody>
+        </table>
+    </small>
+</template>

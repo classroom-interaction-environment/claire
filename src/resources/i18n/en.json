@@ -1,0 +1,1221 @@
+{
+  "Match failed": "Server error. Invalid request.",
+  "errors": {
+    "Error": "Error!",
+    "errorId": "Errorcode",
+    "source": "Source",
+    "message": "Message",
+    "reason": "Reason",
+    "details": "Details",
+    "too-many-requests": "Request-Limit exceeded",
+    "slowDown": "Please wait a few seconds until the function is free to use again.",
+    "unexpectedCodeReach": "Unexpected code reach",
+    "collectionNotFoundByName": "Collection not found by name",
+    "noPermission": "No permission",
+    "permissionDenied": "Access denied",
+    "forbiddenRole": "Forbidden role",
+    "notInRole": "Not in role",
+    "docNotFoundById": "{{value}} not found",
+    "docNotFound": "Document not found",
+    "expectServer": "Expected server environment",
+    "expectClient": "Expected client environment",
+    "invalidParameters": "Invalid parameter",
+    "error": "Error",
+    "400": "Faulty request",
+    "401": "Not authenticated",
+    "403": "Access denied",
+    "404": "Resource not found (404)",
+    "405": "Method not allowed",
+    "410": "Resource not accessible",
+    "500": "Server error",
+    "fatal": {
+      "title": "Fatal error",
+      "description": "A fatal error has occurred. Please relead the page. Please contact us if the error persists."
+    }
+  },
+  "accounts": {
+    "enroll": {
+      "subject": "Welcome to {{siteName}}",
+      "text": "Hallo {{name}},\n\nYou have been invited and are just a step away from starting with {{siteName}}.\n\nComplete the registration by clicking the following link:\n{{url}}\n\nThe link expires in {{expires}} day(s).\n\nWith best regards, your {{siteName}} Team"
+    },
+    "resetPassword": {
+      "subject": "Reset your Password",
+      "text": "Hallo {{name}},\n\nSie haben in {{siteName}} angefordert Ihr Passwort zurückzusetzen. Bitte folgen Sie dem nachstehenden Link und setzen Sie Ihr Passwort neu: {{url}}\n\nDer Link wird in {{expires}} Tag(en) ungültig.\n\n!!!Wichtig!!! Die Passwort zurücksetzen Funktion sendet nur Emails, wenn Sie diese vorher angefordert haben! Sollten Sie dennoch derartige Emails erhalten, öffnen Sie nicht die Links und wenden Sie sich an {{supportEmail}}"
+    },
+    "verifyEmail": {
+      "subject": "Verify your {{siteName}} account",
+      "text": "Welcome to {{siteName}}!\n\nHello {{name}},\n\nto use {{siteName}} in it's full potential we need you to verify your email address by clicking the following linnk: {{url}}\n\nNote: {{siteName}} never asks for credentials per email. In doubt please contact {{supportEmail}}."
+    },
+    "inform": {
+      "passwordReset": {
+        "subject": "{{siteName}} password reset",
+        "text": "Hello,\n\n{{name}} has reset their password on {{siteName}}."
+      }
+    }
+  },
+  "common": {
+    "deprecated": "Deprecated",
+    "ok": "Ok",
+    "linked": "Linked",
+    "or": "or",
+    "copy": "Copy",
+    "subCategories": "Subcategories",
+    "target": "Target",
+    "info": "Info",
+    "filter": "Filter",
+    "color": "Color",
+    "active": "Active",
+    "inactive": "Inactive",
+    "complete": "Complete",
+    "simpleView": "Simple View",
+    "extendedView": "Extended View",
+    "colorCode": "Color colde",
+    "resources": "Resources",
+    "embedCode": "Embed code",
+    "saving": "Saving",
+    "saved": "Saved",
+    "untitled": "(untitled)",
+    "on": "On",
+    "off": "Off",
+    "page": "Page",
+    "expectedResult": "Expected result, got none",
+    "successful": "Action successful",
+    "success": "Successful",
+    "overview": "Overview",
+    "join": "Join",
+    "noEntry": "No entry found",
+    "noDescription": "No description found",
+    "address": "Address",
+    "url": "Link / URL",
+    "noCount": "Expected document count, got non",
+    "copyToClipboard": "Copy (to clipboard)",
+    "dependencies": "Dependencies",
+    "register": "Register",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "language": "Language",
+    "status": "Status",
+    "title": "Title",
+    "entry": "Entry",
+    "entries": "Entries",
+    "document": "Document",
+    "requirements": "Requirements",
+    "value": "Value",
+    "domain": "Domain",
+    "description": "Description",
+    "code": "Shortcode",
+    "type": "Type",
+    "showMore": "Show more",
+    "newEntry": "New entry",
+    "actions": "Actions",
+    "yes": "Yes",
+    "no": "No",
+    "notYet": "Not yet",
+    "timeunit": "Time unit",
+    "search": "Search...",
+    "priority": "Priority",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "parent": "Parent element",
+    "index": "Index",
+    "notes": "Notes",
+    "async": "Asynchronuous",
+    "editor": "Editor",
+    "noentries": "No {{title}} found.",
+    "updateOrder": "Save order",
+    "loading": "Loading",
+    "loadData": "Loading data",
+    "loadTemplate": "Loading view",
+    "none": "None",
+    "start": "Start",
+    "end": "End",
+    "version": "Version",
+    "context": "Context",
+    "contextDoc": "Document-context",
+    "wizard": "Wizard",
+    "model": "Model",
+    "source": "Source",
+    "preview": "Preview",
+    "upload": "Upload",
+    "nothingSelected": "Nothing selected",
+    "reportError": "Report error",
+    "terms": "I agree with the terms for reporting errors",
+    "sendError": "Send error",
+    "category": "Category",
+    "fileName": "Filename",
+    "files": "Files",
+    "file": "File",
+    "asset": "Asset",
+    "assets": "Assets",
+    "assetLinks": "Asset-links",
+    "sourceUrl": "Source URL",
+    "sourceFile": "Source file",
+    "createdAt": "Created at",
+    "createdBy": "Created by",
+    "updatedAt": "Updated at",
+    "updatedBy": "Updated by",
+    "collection": "Collection",
+    "details": "Details",
+    "link": "Link",
+    "share": "Share",
+    "more": "More",
+    "clone": "Duplicate",
+    "users": "Users",
+    "roles": "Rolles",
+    "role": "Rolle",
+    "notAssociated": "Not associated",
+    "uploads": "Uploads",
+    "dropZone": "Drop here"
+  },
+  "confirm":{
+    "codeRequired": "Please enter the following code to continue:",
+    "delete": "You need to confirm the deletion of \"{{title}}\"."
+  },
+  "legal": {
+    "title": "Legal",
+    "privacy": "Privacy",
+    "imprint": "Imprint",
+    "terms": "Terms",
+    "termsStudent": "Terms students",
+    "contact": "Contact"
+  },
+  "share": {
+    "whatsapp": "Share via WhattsApp",
+    "email": "Share via Email",
+    "link": "Share link"
+  },
+  "codeInvitation": {
+    "title": "Register (with code)",
+    "code": "Code",
+    "createClass": "Create class",
+    "confirmDelete":"Do you really want to delete this invitation?",
+    "addedToClass": "Successfully added to class",
+    "setCurrentClass": "Do you want to set this class as your current?",
+    "pending": "Invitation pending",
+    "expired": "Expired",
+    "activeCodes": "Pending invitations",
+    "expiredCodes": "Expired invitations",
+    "complete": "Complete",
+    "expiresAt": "Expires at",
+    "qrCode": "QR-Code",
+    "expiredDetails": "Invitation expired, please create a new one.",
+    "expirationDays": "Days until expiration",
+    "maxUsers": "Maximum registrations with this code",
+    "count": "Count",
+    "role": "Invitee's role",
+    "institution": "Institution / Company",
+    "joinClass": "You have been added to the class \"{{className}}\". Your other classes remain untouched. Do you want to join?",
+    "invite": "Invite users",
+    "create": "Create invitaiton",
+    "createLink": "Create registration link",
+    "createQr": "Create QR-Code",
+    "registerFailed": "Registration failed",
+    "invalidLink": "Invalid registration link",
+    "invalidLinkReason": "The invitation link has expired. Please consult your teacher or colleague about this issue.",
+    "insufficientRoles": "You can only invite persons with a lower role than yours",
+    "errors": {
+      "invalidCode": "Invalid or expired"
+    }
+  },
+  "safeConfirm": {
+    "code": "Please confirm by entering the following code",
+    "failed": "Confirmation cancelled or failed"
+  },
+  "beamer": {
+    "title": "Whiteboard",
+    "controlBeamer": {
+      "title": "Control whiteboard",
+      "end": "Close whiteboard"
+    },
+    "initBeamer": {
+      "title": "Start whiteboard",
+      "choiceA": "This device is to be remote controlled by another device (tablet, PC)",
+      "choiceB": "Opens a new tab or window, which can be dragged to the second screen",
+      "local": "Remote control",
+      "external": "Second screen"
+    },
+    "errors": {
+      "expectedWindowClose": "Could not close whiteboard. Please close it manurally",
+      "expectedColor": "Invalid color",
+      "expectedGrid": "Invalid layout"
+    }
+  },
+  "gridLayout": {
+    "rows": "1 per row",
+    "cols2": "2 per row",
+    "cols3": "3 per row",
+    "cols4": "4 per row"
+  },
+  "actions": {
+    "preview": "Preview",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "resend": "Resend email",
+    "complete": "Complete",
+    "deny": "Deny",
+    "confirm": "Confirm",
+    "openInNewTab": "Open in new tab",
+    "refresh": "Refresh",
+    "continue": "Continue",
+    "toggleMobile": "Toggle visibility for students",
+    "showResults": "Show results",
+    "presentResults": "Present results",
+    "print": "Print",
+    "reportError": "Report error",
+    "login": "Sign in",
+    "sendViaMail": "Send via email",
+    "copyToClipboard": "Copy to clipboard",
+    "fixNow": "Fix now",
+    "toDashboard": "To bashboard",
+    "create": "Create",
+    "restart": "Restart",
+    "startAgain": "Start again",
+    "createNow": "Create now",
+    "update": "Update",
+    "select": "Select",
+    "edit": "Edit",
+    "view": "View",
+    "delete": "Delete",
+    "remove": "Remove",
+    "open": "Open",
+    "close": "Close",
+    "reset": "Reset",
+    "back": "Back",
+    "apply": "Apply",
+    "forward": "Continue",
+    "add": "Add",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving",
+    "export": "Export",
+    "download": "Download",
+    "sort": "Sort",
+    "upload": "Upload",
+    "confirmDelete": "Are your sure to delete this?",
+    "confirmCancel": "Are your sure to cancel this?",
+    "confirmClone": "Are your sure to clone this?",
+    "copied": "Copied",
+    "addCategory": "+ Category",
+    "selectAndUpload": "Select and upload",
+    "selectFile": "Select file",
+    "submit": "Submit",
+    "skip": "Skip",
+    "confirmLeave": "If you leave this page all unsaved data will be los. Are you sure?",
+    "toBeamer": "Show on whiteboard",
+    "removeFromBeamer": "Remove from whiteboard"
+  },
+  "upload": {
+    "title": "Upload",
+    "successfull": "Upload successful",
+    "maxSizeExceeded": "Files of this type need to be smaller {{maxSize}} MB",
+    "unsupportedExtension": "Files of this type '{{extension}}' are not supported. Support are: {{allowedFormats}}"
+  },
+  "time": {
+    "milliseconds": "Miliseconds",
+    "seconds": "Seconds",
+    "sec": "Seć",
+    "minutes": "Minutes",
+    "min": "Min",
+    "hours": "Hours",
+    "hrs": "Hrs",
+    "days": "Days",
+    "months": "Months",
+    "years": "Years",
+    "justNow": "Just now",
+    "someMinutesAgo": "A few minutes ago",
+    "today": "Today",
+    "yesterady": "Yesterday",
+    "beforeYesterday": "Before yesterday"
+  },
+  "viewMode": {
+    "all": "All",
+    "others": "Only others",
+    "mine": "Only mine"
+  },
+  "progress": {
+    "title": "Progress",
+    "showAll": "Show all",
+    "showCurrent": "Show current",
+    "setCurrent": "Als aktuellen Fortschritt setzen?",
+    "restart": "Achtung! Beim Neustart werden alle Ergebnisse zurückgesetzt. Diese Unterrichtseinheit neu starten?",
+    "notFoundById": "Lernfortschritt wurde anhand der ID nicht gefunden",
+    "docAlreadyExists": "Lernfortschritt existiert bereits in dieser Einstellung",
+    "schoolClassHasProgress": "Kurs besitzt bereits einen Fortschritt zu diesen Einstellungen"
+  },
+  "users": {
+    "title": "Users",
+    "teachers": "Teachers",
+    "teacher": "Teacher",
+    "students": "Students",
+    "student": "Student",
+    "admins": "Admins",
+    "admin": "Admin"
+  },
+  "curriculum": {
+    "unknownState": "Unknown state",
+    "mastersEditedByMe": "Master docs, edited by me",
+    "title": "Curriculum",
+    "master": "Curriculum Master",
+    "customFork": "Copy from master",
+    "global": "Own global material",
+    "custom": "Custom material",
+    "customUnits": "My custom units",
+    "cloneMaster": "You are about to edit a master document. We will create a personal copy for you. Do you want to continue?",
+    "externalResources": "External resources",
+    "collections": "Curriculum data",
+    "metaCollections": "Metadata",
+    "timeUnit": "TIme units",
+    "objective": "Competency",
+    "objectives": "Competencies",
+    "period": "Period in minutes",
+    "dimension": "Dimenions",
+    "dimensions": "Dimenions",
+    "layer": "Layer",
+    "actor": "Actor",
+    "heuristics": "Heuristics",
+    "method": "Method",
+    "methods": "Methods",
+    "tool": "Tool",
+    "tools": "Tools",
+    "socialState": "Social state",
+    "plenum": "Plenum",
+    "single": "Single",
+    "group": "Group",
+    "project": "Project",
+    "unit": "Unit",
+    "units": "Units",
+    "pocket": "Module",
+    "process": "Process",
+    "phase": "Phase",
+    "phases": "Phases",
+    "literature": "Literature",
+    "minStudents": "Min. students",
+    "maxStudents": "Max. students",
+    "minTeachers": "Min. teachers",
+    "maxTeachers": "Max. teachers",
+    "workflow": "Workflow",
+    "task": "Aufgabe",
+    "leaveUnitForGlobal": "Leave unit empty to create a global task",
+    "asset": "Assets",
+    "noHeuristicYet": "There are no heuristics yet.",
+    "noPocketYet": "There is no module yet"
+  },
+  "fileTypes": {
+    "image": "Image",
+    "audio": "Audio",
+    "video": "Video",
+    "pdf": "PDF",
+    "document": "Document",
+    "binary": "Archive or orogram",
+    "json": "JSON",
+    "text": "Text",
+    "binaryWarn": "Warning, the file is executable."
+  },
+  "fileList": {
+    "title": "Uploads",
+    "preview": "Preview",
+    "upload": "Upload a file"
+  },
+  "dimension": {
+    "layer": "Layer",
+    "actor": "Actor or institution"
+  },
+  "task": {
+    "title": "Task",
+    "unsavedItems": "There are unsaved items on this page!",
+    "saveHint": "Note, that items are only saved if your click the save-button!",
+    "loadFailed": "Error while loading the task",
+    "notVisible": "This task is not editable anymore",
+    "noUnitLinked": "This task is not yet connected to a unit",
+    "noPageContent": "This page has no content yet!",
+    "createInfo": "Add a descriptive title to the task",
+    "confirmDeleteElement": "Do you want to remove and finally delete this element?",
+    "header": {
+      "title": "Header",
+      "align": "Alignment",
+      "content": "Content",
+      "contentEntry": "Entry"
+    },
+    "footer": {
+      "title": "Footer",
+      "align": "Alignment",
+      "content": "Content",
+      "contentEntry": "Entry"
+    },
+    "pages": {
+      "title": "Pages",
+      "page": "Page",
+      "pageTitle": "Page title",
+      "content": "Page content"
+    },
+    "staticContent": "Always visible content",
+    "previousResults": "Previous response from user",
+    "noResponse": "No previous response found"
+  },
+  "taskContent": {
+    "title": "Task content",
+    "items": "Items",
+    "webResources": "Web-Resources",
+    "text": "Text-Elements",
+    "files": "Files"
+  },
+  "webResources": {
+    "title": "Web-Resources",
+    "embed": "Object",
+    "embeds": "Objects",
+    "embedCode": "Embed code",
+    "link": "Link",
+    "links": "Links",
+    "literature": "Literature",
+    "carefulNote": "External Website"
+  },
+  "taskResults": {
+    "workInProgress": "Work in progress",
+    "title": "Task results",
+    "skipped": "Skipped",
+    "isActive": "Active",
+    "results": "Results",
+    "online": "Online",
+    "complete": "Complete",
+    "saved": "Saved",
+    "previewChart": {
+      "chartOptions": "Chart-options",
+      "title": "Preview for chart",
+      "select": "Choose a chart",
+      "switchAxis": "Axen vertauschen"
+    }
+  },
+  "license": {
+    "title": "License",
+    "owner": "Owner",
+    "pd": "Public domain (PD)",
+    "ccby": "Attribution (CC-BY)",
+    "ccbysa": "Attribution, share alike (CC-BY-SA)",
+    "ccbync": "Attribution, non-commercial (CC-BY-NC)",
+    "ccbyncsa": "Attribution, share alike, non-commercial (CC-BY-NC-SA)",
+    "ccbynd": "Attribution, no changes allowed (CC-BY-ND)",
+    "ccbyncnd": "Attribution, non-commercial, no changes allowed (CC-BY-NC-ND)",
+    "ccOer": "Creative Commons / OER",
+    "ccNonOer": "Creative Commons / Non-OER",
+    "nonFreeOthers": "Other non-free license",
+    "copyright": "Copyright; not free"
+  },
+  "charts": {
+    "title": "Charts",
+    "simple": "Simple charts",
+    "bar": "Bar chart",
+    "pie": "Pie chart",
+    "scatter": "Scatter plot",
+    "line": "Line chart",
+    "histogram": "Histrogram"
+  },
+  "unit": {
+    "material": "Material",
+    "taskUnwantedComplete": "Click here to restore, in case you unintentionally completed",
+    "furtherReadings": "Further readonds",
+    "taskComplete": "Task completed",
+    "tasks": "Tasks",
+    "references": "References",
+    "task": "Task",
+    "phases": "Phases"
+  },
+  "phase": {
+    "nonPhaseMaterial": "Global material",
+    "plot": "Plot",
+    "intention": "Intention",
+    "references": "References",
+    "notes": "Notes"
+  },
+  "socialState": {
+    "plenum": "Plenum",
+    "single": "Single",
+    "partner": "Parnter",
+    "group": "Group",
+    "project": "Project",
+    "stations": "Stations"
+  },
+  "orientation": {
+    "title": "Orientation",
+    "h": "Horizontal",
+    "v": "Vertical",
+    "left": "Left",
+    "center": "Center",
+    "right": "Right",
+    "justify": "Justify"
+  },
+  "form": {
+    "title": "Form",
+    "history": "History",
+    "placeholder": "Placeholder",
+    "entry": "Entry",
+    "value": "Value",
+    "label": "Label",
+    "range": "Range",
+    "valueAlreadyExists": "Value already exists",
+    "choices": "Choices",
+    "minChars": "Min. characters",
+    "maxChars": "Max. characters",
+    "minCount": "Min. count",
+    "maxCount": "Max. count",
+    "minValue": "Min. value",
+    "maxValue": "Max. value",
+    "minLabel": "Label for min. value",
+    "maxLabel": "Label for max. value",
+    "defaultValue": "Default value",
+    "startValue": "Start value",
+    "step": "Step",
+    "pipCount": "Pips count",
+    "pipTypes": "Pips types",
+    "forbiddenChars": "Blocked characters",
+    "mandatoryField": "Mandatory field",
+    "mandatoryFields": "Mandatory fields",
+    "rows": "Rows",
+    "onlyOptions": "Only options available",
+    "options": "Options",
+    "header": "Document view",
+    "allFields": "Show all fields",
+    "onlyMandatoryFields": "Show only mandatory fields",
+    "noWhitespace": "No whitespace allowed",
+    "enterText": "Please enter text here....",
+    "allowedChars": "Allowed charatcers",
+    "insert": "Insert",
+    "update": "Update",
+    "required": "Required",
+    "read": "View document",
+    "userNameOrEmail": "Enter username or email",
+    "charsLeft": "Characters left",
+    "requiredFields": "Required fields",
+    "optionalField": "Optional field",
+    "optionalFields": "Optional fields",
+    "selectOne": "(Select one)",
+    "insertComplete": "Insert successful.",
+    "updateComplete": "Update successful.",
+    "resetComplete": "Reset successful",
+    "updatedDocsComplete": "Updated {{count}} documents",
+    "removeComplete": "Removed document.",
+    "insertFailed": "Insert failed.",
+    "updateFailed": "Update failed.",
+    "removeFailed": "Removal failed.",
+    "targetMissing": "Document to edit is not found",
+    "incomplete": "There are incomplete fields. Please check your input.",
+    "password": {
+      "notEqualConfirm": "Password does not equal confirmed password",
+      "hint": "Password requires at least 8 characters with 1 uppercase, 1 numbver and one special character",
+      "atLeastOneLowerCase": "Passwort requires at least {{chars}} lowercase characters",
+      "atLeastOneUpperCase": "Passwort requires at least {{chars}} uppercase characters",
+      "atLeastOneDigit": "Passwort requires at least {{chars}} digits",
+      "atLeastoneSpecialChar": "Passwort requires at least {{chars}} special characters of the following: {{{examples}}}"
+    },
+    "validation": {
+      "required": "{{label}} is required.",
+      "minString": "{{label}} requires {{min}} charcaters",
+      "maxString": "{{label}} must not exceed {{max}} charcaters.",
+      "minNumber": "{{label}} must be at least {{min}}.",
+      "maxNumber": "{{label}} must be at max. {{max}}.",
+      "minNumberExclusive": "{{label}} must be greater than {{min}}.",
+      "maxNumberExclusive": "{{label}} must be less than {{max}}.",
+      "minDate": "{{label}} must be newer than {{min}}.",
+      "maxDate": "{{label}} must not be older than {{max}}.",
+      "badDate": "{{label}} is not a valid date.",
+      "minCount": "Requires {{minCount}} entries.",
+      "maxCount": "Requires max. {{maxCount}} entries.",
+      "noDecimal": "'{{label}}' is not a decimal.",
+      "notAllowed": "'{{value}}' is not allowed.",
+      "expectedType": "{{label}} is not of type {{dataType}}",
+      "keyNotInSchema": "{{name}} is not supported by the schema.",
+      "notEqualConfirm": "Password does not equal confirmed password",
+      "regExFail": "Value does not match required pattern",
+      "userNotUnique": "Username is already used",
+      "uploadError": "Upload error"
+    }
+  },
+  "userProfile": {
+    "title": "User profile",
+    "summary": "Summary",
+    "rawData": "Raw data",
+    "username": "Username",
+    "userName": "Username",
+    "createdAt": "Created at",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "fullName": "Full name",
+    "password": "password",
+    "changePassword": "Change password",
+    "role": "Role",
+    "roles": "Roles",
+    "group": "Group",
+    "groups": "Groups",
+    "institution": "Institution",
+    "email": "Email",
+    "image": "Profile image",
+    "noImage": "No profile image",
+    "settings": {
+      "title": "Settings",
+      "language": "Language",
+      "currentLanguage": "Current language",
+      "ui": "User interface",
+      "fluid": "Toggle width",
+      "privacy": "Privaxcy"
+    }
+  },
+  "profile": {
+    "title": "Profile"
+  },
+  "logout": {
+    "loggingOut": "Signing you out",
+    "loggedOut": "You are signed out now"
+  },
+  "language": {
+    "de": "Deutsch",
+    "en": "English",
+    "switchSuccessfull": "Languaged changed"
+  },
+  "literature": {
+    "title": "Literature",
+    "authors": "Author(s)",
+    "year": "Year",
+    "issue": "Issue",
+    "volume": "Volume",
+    "city": "City",
+    "publisher": "Publisher",
+    "url": "URL"
+  },
+  "user": {
+    "data": "Data",
+    "adminArea": "Admin area",
+    "title": "User",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "birthday": "Date of birth",
+    "adress": "Address",
+    "city": "City",
+    "language": "Language",
+    "online": "Online",
+    "offline": "Offline",
+    "verified": "Verified",
+    "invited": "Invited",
+    "tokenInvalid": "Your code/token is invalid or has expired.",
+    "profile": {
+      "guide": "Your profile",
+      "overview": "This is your profile. You can edit it at any time.",
+      "image": "A profile image is options but also makes things friendlier.",
+      "fixed": "Some data is fixed. If you really need to change them, feel free to contact us.",
+      "research": "We are engaged to improve {{siteName}} in every way. This only works with your agreement. Participating in research is optional and has no effect on the app's functionality. We would be glad if you accept and support our research."
+    },
+    "research": {
+      "title": "Research data",
+      "optIn": "Opt in",
+      "optInComplete": "Successfully opted in. You can opt-out at any time.",
+      "optOut": "Opt out",
+      "optInMail": "Hello {{fullName}},\n\nPlease click the following link to complete participating in our research: {{url}}\n\nBest regards,\nYours {{siteName}} TEAM",
+      "participate": "Participating in research",
+      "confirmed": "Participation confirmed via email"
+    },
+    "enrollAccount": {
+      "title": "Your {{siteName}} registration",
+      "welcome": "Willkommen bei {{siteName}}, {{firstName}} {{lastName}}!",
+      "complete": "Complete registration",
+      "password": "Bitte setzen Sie hier ihr neues Passwort für {{siteName}}. Das Passwort muss die unten stehenden Mindeststandards erfüllen und durch erneute Eingabe bestätigt werden.",
+      "success": "Sie haben die Registrierung erfolgreich abgeschlossen. Sie werden nun zu Ihrem profil weitergeleitet.",
+      "description": "Herzlich willkommen bei {{siteName}}! Sie sind nur noch wenige Schritte davon entfernt loszulegen. Bitte füllen Sie noch das untenstehende Formular aus und dann kann es auch schon losgehen.",
+      "acceptTerms": {
+        "show": "Nutzungsbedingungen anzeigen",
+        "check": "Ich habe die {{siteName}} Nutzungsbedingungen gelesen und bin damit einverstanden"
+      },
+      "acceptPrivacy": {
+        "show": "Datenschutzerklärung anzeigen",
+        "check": "Ich habe die {{siteName}} Datenschutzerklärung gelesen und bin damit einverstanden"
+      }
+    },
+    "verifyEmail": {
+      "title": "E-Mail Bestätigen",
+      "description": "Bestätigen Sie Ihre Identität über einen Link in der Email",
+      "inProgress": "Prüfe Bestätigungscode",
+      "expired": "Der Bestätigungslink ist abgelaufen",
+      "resendComplete": "Bestätigungslink erneut versendet",
+      "resend": "Neuen Bestätigungslink anfordern",
+      "success": "Ihr Account wurde erfolgreich bestätigt",
+      "alreadyVerified": "Der Account wurde bereits bestätigt"
+    }
+  },
+  "passwordStrength": {
+    "title": "Passwortstärke",
+    "forbidden": "Nicht erlaubte Zeichen verwendet! Erlaubt sind Buchstaben (außer äöüß), Zahlen, sowie folgende Zeichen: $_!#*%&.-@",
+    "none": "Sehr schwaches Passwort",
+    "weak": "Schwaches Passwort",
+    "average": "Mittelmäßiges Passwort",
+    "strong": "Starkes Passwort",
+    "veryStrong": "Sehr starkes Passwort",
+    "confirmed": "Passwörter stimmen überein",
+    "confirmFailed": "Passwörter stimmen nicht überein"
+  },
+  "userCheck": {
+    "title": "Benutzernamen-Validierung",
+    "forbidden": "Ungültiger Benutzername. Zulässig sind mind. 4 bis max. 12 Buchstaben, Zahlen, sowie - _ $ @",
+    "getUser": "Benutzername wird bereits verwendet.",
+    "userNotExist": "Benutzername ist verfügbar.",
+    "userValid": "Benutzername is gültig",
+    "loading": "Überprüfe Benutzername"
+  },
+  "definitions": {
+    "title": "Grundkonfiguration",
+    "alreadyExists": "Es existiert bereits eine Grundkonfiguration",
+    "missing": "Es müssen grundlegende Konfigurationen vorgenommen werden, damit die Anwendung fehlerfrei funktioniert."
+  },
+  "emailCheck": {
+    "title": "Email-Validierung",
+    "emailExists": "Die Email Adresse wird bereits verwendet.",
+    "valid": "Gültige Email-Adresse",
+    "invalid": "Ungültige Emailadresse"
+  },
+  "wizard": {
+    "step": "Step",
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish",
+    "couldNotCompleteStep": "Could not complete step",
+    "newOrExisting": "Please select.",
+    "continueToEdit": "Continue to editor",
+    "pleaseSelect": "Please select between the following steps",
+    "summary": "Summary",
+    "createNewEntry": "No entry yet?",
+    "task": {
+      "title": "Task-Editor"
+    },
+    "unit": {
+      "title": "Unit-Editor"
+    },
+    "prepare": {
+      "createClass": {
+        "title": "Create class",
+        "selectOne": "Select existing class",
+        "createNew": "Create a new class",
+        "description": "Create a new class for which this lesson will be."
+      },
+      "unit": {
+        "title": "Select unit",
+        "description": "Select a unit to edit as your personal copy or create a custom one from scratch"
+      },
+      "phases": {
+        "title": "Preview of phases and material",
+        "description": "You can decide, whether you want to use this unit as it is, or if you want to edit it to your personal preferences.",
+        "missing": "No phases found for this unit."
+      },
+      "createUnit": {
+        "title": "Create a custom unit from scratch",
+        "description": "Hier können Sie eine eigene Sequenz als Unterrichtsvorlage anlegen. Füllen Sie dazu das ebtsprechende Formular aus."
+      },
+      "completeAndEdit": "Select and edit in unit editor",
+      "completeWithoutEdit": "Select as is"
+    }
+  },
+  "help": {
+    "title": "Title of this entry",
+    "period": "Usually an interger to define period in inutes",
+    "code": "Abkürzung bzw. interne ID eingeben",
+    "description": "Erweiterte Beschreibung des Eintrags eingeben",
+    "sourceUrl": "Eine externe Datei via vollständiger URL verlinken",
+    "sourceFile": "Eine Datei vom lokalen PC hochladen",
+    "type": "Einen Typ zur Kategorisierung des Eintrags auswählen",
+    "notes": "Notizen und Hinweise hinzufügen",
+    "plot": "Den Handlungsablauf umschreiben",
+    "intention": "Die Handlungsintention umschreiben",
+    "filterText": "Filter Begriff hier eingeben",
+    "comment": "Bitte geben Sie hier Ihr Kommentar ein"
+  },
+  "history": {
+    "title": "History"
+  },
+  "historyEvents": {
+    "insert": "Erstellt",
+    "update": "Aktualisiert",
+    "remove": "Entfernt"
+  },
+  "invitation": {
+    "expirationExceeded": "Code has expired",
+    "removeNoPermission": "No permission to remove code"
+  },
+  "revision": {
+    "title": "Revision",
+    "unrevised": "In Bearbeitung",
+    "inRevision": "In Revision",
+    "flagged": "Markiert / Achtung",
+    "complete": "Bereit für den Unterricht",
+    "allFlagged": "Alle markierten Dokumente"
+  },
+  "asset": {
+    "images": {
+      "title": "IMage"
+    },
+    "videos": {
+      "title": "Video"
+    },
+    "documents": {
+      "title": "Document"
+    },
+    "binaries": {
+      "title": "Binary"
+    }
+  },
+  "roles": {
+    "title": "Roles",
+    "role": "Role",
+    "admin": "Administrator",
+    "adminDescription": "Full administrative control.",
+    "schoolAdmin": "School-Admin",
+    "schoolAdminDescription": "Administraitve rights with exceptions for critical .",
+    "teacher": "Teacher",
+    "teacherDescription": "Manage units and lessons.",
+    "student": "Student",
+    "studentDescription": "Participate in lessons",
+    "curriculum": "Curriculum Editor",
+    "sync": "Sync account"
+  },
+  "editor": {
+    "summary": "Summary",
+    "pocket": {
+      "title": "Module-Editor"
+    },
+    "task": {
+      "title": "Task-Editor"
+    },
+    "heuristics": {
+      "title": "Heuristics-Editor"
+    }
+  },
+  "schoolClass": {
+    "title": "Class",
+    "teachers": "Teachers",
+    "students": "Students",
+    "members": "All members",
+    "createNew": "Create new class",
+    "toAftermath": "Aftermath",
+    "className": "Class name",
+    "notFoundById": "No class found by id",
+    "invalidSchoolYear": "Invalid year",
+    "noMember": "You are not a member of this class",
+    "inLesson": "In lesson",
+    "toLesson": "To lesson",
+    "createLesson": "Create lesson",
+    "lessonConnected": "Lesson created",
+    "invite": "Invite members",
+    "addStudents": "Add students",
+    "requestJoin": "Request membership",
+    "waitForTeacher": "There is no material visible right now. Please follow the teacher's instructions.",
+    "waitForTeacherToStartLesson": "Please wait until the teacher starts the lesson",
+    "enterLesson": "The lesson is already running, do you wish to join?",
+    "currentLessonCompleted": "The selected lesson has been completed.",
+    "confirmRemove": "You are about to delete all units, lessons and material associated with this class."
+  },
+  "lesson": {
+    "title": "Lesson",
+    "forkedFrom": "Copy from",
+    "startedAt": "Started at",
+    "studentWait": "Please wait for the next instructions",
+    "overview": "Overview of this unit",
+    "noMaterial": "No material present",
+    "noFiles": "No uploaded files",
+    "noReadings": "No further readings",
+    "showStudents": "Show students",
+    "present": "Present on whiteboard",
+    "evalResults": "Evaluate results",
+    "presentResults": "Present results",
+    "results": "Results",
+    "progress": "Progress",
+    "artifacts": "Artifacts",
+    "uploads": "Uploads",
+    "noStudents": "There are no students in this class",
+    "completedAt": "Completed at",
+    "showMoreLabels": "Show labels",
+    "confirmRemove": "You are about to delete this lesson and all it's associated data.",
+    "actions": {
+      "restart": "Restart lesson",
+      "restartConfirm": "All created data will be deleted, if you restart this lesson.",
+      "complete": "Complete lesson",
+      "completeConfirm": "Do you want to complete this lesson?",
+      "start": "Start lesson",
+      "startConfirm": "Do you want to start this lesson now?",
+      "makeMobileInactive": "Hide from students",
+      "makeMobileActive": "Activate for students",
+      "removeStudent": "Remove student",
+      "confirmRemoveStudent": "You are about to remove  \"{{firstName}} {{lastName}}\" from class \"{{title}}\". Are you sure?"
+    },
+    "errors": {
+      "unexpectedState": "Unexpected lesson state",
+      "expectedIdle": "Expected 'In preparation'",
+      "expectedRunning": "Expected 'Running'",
+      "expectedRestartable": "Expected restartable",
+      "expectedCompleted": "Expected 'Completed'",
+      "expectedToggleAble": "Expected 'Running' or 'Completed'"
+    },
+    "states": {
+      "idle": "In preparation",
+      "running": "Running",
+      "completed": "Completed"
+    },
+    "phases": {
+      "title": "Phases",
+      "schema": "Lesson schema"
+    },
+    "material": {
+      "title": "Material",
+      "preview": "Preview material",
+      "previewTemplate": "Preview",
+      "selectItemRp": "Select how to process the responses"
+    },
+    "safeguard": {
+      "title": "Aftermath",
+      "artifacts": "Artifacts"
+    },
+    "info": {
+      "title": "Members and settings",
+      "grouping": "Manage groups"
+    },
+    "student": {
+      "docNotVisible": "Material might have been hidden by the teacher"
+    }
+  },
+  "lessons": {
+    "title": "My lessons",
+    "ongoing": "Ongoing",
+    "completed": "Completed",
+    "running": "Running",
+    "upcoming": "Upcoming",
+    "toLesson": "To lesson",
+    "studentRunning": "Ongoing lessons",
+    "studentCompleted": "Completed lessons"
+  },
+  "settings": {
+    "title": "Settings"
+  },
+  "file": {
+    "title": "File"
+  },
+  "fileSize": {
+    "bit": "Bit",
+    "byte": "Byte",
+    "kilobyte": "Kilobyte",
+    "megabyte": "Megabyte",
+    "gigabyte": "Gigabyte",
+    "kb": "KB",
+    "mb": "MB",
+    "gb": "GB",
+    "title": "Filesize"
+  },
+  "response": {
+    "showUser": "Show username",
+    "hide": "Exclude repsonse",
+    "show": "Include repsonse",
+    "showAnswers": "Show hidden responses"
+  },
+  "agreements": {
+    "termsOfService": {
+      "title": "Terms of service",
+      "read": "I have read the terms of service and I agree"
+    },
+    "privacyPolicy": {
+      "title": "Privacy",
+      "read": "I have read the privacy policy and I agree"
+    }
+  },
+  "classes": {
+    "title": "Classes",
+    "myClasses": "My classes and lessons",
+    "createClass": "Create class / lesson"
+  },
+  "lmsConnection": {
+    "title": "Lernmanagement-System Verknüpfung",
+    "appTitle": "Titel der Anwendung",
+    "authUrl": "Webservice URL zum Authentifizieren der User"
+  },
+  "rolesCheck": {
+    "title": "Rollen-Validierung",
+    "rolesEmpty": "Ungültig: es muss Rolle angegeben werden",
+    "adminRequired": "Ungültig: es muss zuerst ein Benutzer mit der Rolle Admin angelegt werden",
+    "valid": "Gültige Rolle."
+  },
+  "comments": {
+    "added": "Komentar hinzugefügt",
+    "title": "Kommentare",
+    "addComment": "Kommentieren",
+    "comment": "Kommentar",
+    "noCommentsYet": "Es sind noch keine Kommentare vorhanden"
+  },
+  "admin": {
+    "title": "Administrator"
+  },
+  "theme": {
+    "bsDefault": "Defualt theme",
+    "custom": "Custom theme"
+  },
+  "createUser": {
+    "complete": "User created."
+  },
+  "inviteUsers": {
+    "title": "Invite users",
+    "description": "Create a register code to invite new users",
+    "timeLeft": "TIme left",
+    "expirationMinutes": "Expiration in days",
+    "code": "Register code",
+    "addCode": "Add code",
+    "createCode": "Create new code"
+  },
+  "tableView": {
+    "title": "Table view",
+    "all": "All",
+    "reduced": "Reduced",
+    "onlyDefaults": "Only defaults",
+    "onlyContext": "Only object context",
+    "quickFilter": "Quickfilter",
+    "documentsPerPage": "Documents per page",
+    "loadMore": "Load more"
+  },
+  "connection": {
+    "title": "Connection",
+    "status": "Status",
+    "reason": "Reason(s)",
+    "retryCount": "Retries",
+    "retryTime": "Next try",
+    "connected": "Connect",
+    "connecting": "Connecting",
+    "failed": "Connection failed",
+    "reconnected": "Connection restored",
+    "waiting": "Waiting",
+    "offline": "Offline",
+    "reloadPage": "Reload app"
+  },
+  "appinfo": {
+    "title": "App-Info",
+    "version": "Version",
+    "userId": "User-ID"
+  },
+  "prepare": {
+    "title": "Prepare lesson",
+    "createClass": "Create class / lesson",
+    "myClasses": "My classes and lessons"
+  },
+  "routes": {
+    "backToEdit": "Back to edit",
+    "backToLesson":"Backl to lesson",
+    "notFound": "Page not found",
+    "notFoundExplained": "The page you entered or navigated has not been found",
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "login": "Sign-in",
+    "logout": "Logout",
+    "collection": "Collection",
+    "workflow": "Workflow",
+    "lessons": "All lessons"
+  },
+  "textRenderer": {
+    "item": "One of your previous responses"
+  },
+  "text": {
+    "text": "Text",
+    "simpleText": "Simple text",
+    "hyphenActive": "Hyphenation active",
+    "newlineActive": "Newline active",
+    "size": "Font size",
+    "paragraph": "Paragraph",
+    "textArea": "Textarea",
+    "plain": "Plain",
+    "blockQuote": "Block quote",
+    "source": "Source",
+    "richtext": "Rich text",
+    "headline": {
+      "title": "Headline",
+      "h1": "1 - Extra large",
+      "h2": "2 - Larger",
+      "h3": "3 - Large",
+      "h4": "4 - Default",
+      "h5": "5 - Small",
+      "h6": "6 - Smaller"
+    },
+    "list": "List",
+    "listIcon": "Liste-Symbol",
+    "enum": "Enumeration",
+    "itemReference": {
+      "title": "Show previous response",
+      "hint": "Hint for item",
+      "taskId": "Task",
+      "refId": "Interaction"
+    }
+  },
+  "item": {
+    "title": "Item",
+    "label": "Question / assignment",
+    "text": "Text",
+    "textArea": "Textarea",
+    "savedAt": "Last saved at",
+    "tags": "Tags",
+    "singleChoice": "Single-Choice",
+    "singleSelect": "Single-Choice (Dropdown)",
+    "multipleChoice": "Multiple-Choice",
+    "multipleSelect": "Multiple-Choice (List)",
+    "number": "Number",
+    "range": "Range slider",
+    "fileUpload": "File-Upload",
+    "fileType": "File type",
+    "hint": {
+      "title": "Title of this item for you to associate within lesson",
+      "label": "Label, that will be displayed above item to students",
+      "required": "The input will be validated",
+      "fileType": "Limit to a certain file type",
+      "select": "",
+      "defaultChoice": "The default option that will be displayed; optional"
+    }
+  },
+  "itemTypes": {
+    "text": "Text",
+    "numerical": "Numerical",
+    "choices": "Choice",
+    "media": "File upload",
+    "other": "Other items",
+    "notCategorized": "Uncategorized"
+  },
+  "taskEditor": {
+    "edit": "Edit",
+    "preview": "Preview",
+    "codeView": "Raw data",
+    "pleaseSelectTask": "Select a task",
+    "createPage": "New page",
+    "addContent": "Add content",
+    "editAttributes": "Edit content",
+    "moveToPage": "Move to page",
+    "noAttributesYet": "This element has no attributes yet."
+  },
+  "files": {
+    "title": "Files",
+    "image": "Image",
+    "audio": "Audio",
+    "document": "Document",
+    "documents": "Documents",
+    "noPDF": "EMbedded PDF is not supported by your browser",
+    "images": "Images",
+    "video": "Video",
+    "videos": "Videos",
+    "upload": "Upload a file",
+    "uploadingFile": "Uploading file",
+    "uploadMultiple": "Upload multiple files",
+    "mimeError": "Expected format: [{{expected}}], actual format: [{{got}}/{{ending}}]",
+    "converting": "Converting your file. THis can take a while.",
+    "videoNotSupported": "Your browser does not support embedded videos."
+  },
+  "responseProcessors": {
+    "raw": "Raw data",
+    "cluster": {
+      "title": "Cluster"
+    },
+    "barChart": "Bar chart",
+    "pieChart": "Pie chart",
+    "imageGallery": "Image gallery",
+    "videoGallery": "Video gallery",
+    "audioList": "Audio list",
+    "documentList": "Document list",
+    "text": "Text"
+  }
+}

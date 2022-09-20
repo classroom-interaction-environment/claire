@@ -1,0 +1,20 @@
+<template name="verifyEmail">
+	{{#unless loadComplete}}
+		{{> loading title=(i18n "user.verifyEmail.inProgress") }}
+	{{else}}
+		{{#with error}}
+			{{#fail error=this}}
+				{{#if invitationResent}}
+					<p><i class="fa fa-fw fa-check text-success"></i> {{i18n "user.verifyEmail.resendComplete"}}</p>
+				{{else}}
+					{{> actionButton type="primary" class="resend-button" icon="envelope" label=(i18n "user.verifyEmail.resend") blocked=resendInvitation}}
+				{{/if}}
+			{{/fail}}
+		{{else}}
+			<div class="jumbotron">
+				<p><i class="fa fa-check text-success"></i> {{i18n "user.verifyEmail.success"}}</p>
+				{{> actionButton type="primary" class="complete-button" icon="envelope" label=(i18n "actions.forward") }}
+			</div>
+		{{/with}}
+	{{/unless}}
+</template>

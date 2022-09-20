@@ -1,0 +1,117 @@
+# Meteor packages used by this project, one per line.
+# Check this file (and the other files in this directory) into your repository.
+#
+# 'meteor add' and 'meteor remove' will edit this file for you,
+# but you can also edit it by hand.
+
+meteor-base@1.5.1             # Packages every Meteor app needs to have
+# mobile-experience@1.1.0       # Packages for a great mobile UX
+mongo@1.15.0                   # The database Meteor supports right now
+blaze-html-templates # Compile .html files into Meteor Blaze views
+jquery@3.0.0!                  # Wrapper package for npm-installed jquery
+reactive-var@1.0.11            # Reactive variable for tracker
+tracker@1.2.0                 # Meteor's client-side reactive programming library
+
+es5-shim@4.8.0                # ECMAScript 5 compatibility for older browsers
+ecmascript@0.16.2              # Enable ECMAScript2015+ syntax in app code
+typescript@4.5.4              # Enable TypeScript syntax in .ts and .tsx modules
+shell-server@0.5.0            # Server-side component of the `meteor shell` command
+
+# hot-module-replacement@0.3.0  # Update code in development without reloading the page
+# blaze-hot               # Update files using Blaze's API with HMR
+
+# uncomment on deploy
+# zodern:profile-require
+
+# UI OPTIMIZATION
+# underscore
+# appcache
+
+# put monitor here to capture Templates, added by packages
+# jkuester:template-monitor
+
+facts-base@1.0.1
+facts-ui@1.0.0
+
+#========================================
+# Accounts
+#========================================
+accounts-base@2.2.3
+accounts-password@2.3.1
+danimal:userpresence
+alanning:roles@3.3.0
+
+#========================================
+# MAIL SERVICE
+#========================================
+email@2.2.1
+
+#========================================
+# build system
+#========================================
+# standard-minifier-css@1.5.3   # CSS minifier run for production mode
+standard-minifier-js@2.8.0      # JS minifier run for production mode
+fourseven:scss
+seba:minifiers-autoprefixer  # replace css minifier to run with sass
+
+#========================================
+# COLLECTIONS
+#========================================
+aldeed:collection2
+dburles:mongo-collection-instances
+
+#========================================
+# FACTORIES
+#========================================
+leaonline:collection-factory
+leaonline:grid-factory
+ostrio:files@2.0.1
+leaonline:method-factory
+leaonline:publication-factory
+leaonline:ratelimit-factory
+
+#========================================
+# SECURITY
+#========================================
+audit-argument-checks@1.0.7
+force-ssl@1.1.0
+
+
+ostrio:i18n@3.1.0!
+ostrio:flow-router-extra # client side router
+http@2.0.0!
+
+#========================================
+# UI / CLIENT
+#========================================
+ccorcos:subs-cache # subscription cache
+jkuester:template-states
+arggh:teleport
+jkuester:template-loader
+aldeed:autoform@7.0.0!
+jkuester:reactive-queue
+
+#========================================
+# FORMS
+#========================================
+jkuester:autoform-tags
+jkuester:autoform-hint
+jkuester:autoform-password2
+jkuester:autoform-trix
+communitypackages:autoform-bootstrap4@1.0.6
+# ostrio:autoform-files@2.4.0
+
+#========================================
+# PUGINS
+#========================================
+claire:plugin-registry
+claire:item-textarea
+claire:item-range
+
+#========================================
+# TESTING
+#========================================
+meteortesting:mocha@2.0.2
+lmieulet:meteor-coverage@3.2.0
+hwillson:stub-collections
+

@@ -1,0 +1,18 @@
+<template name="textRendereritem">
+	<div class="card">
+		<div class="card-header">
+			<h5><i class="fa fa-random fa-fw"></i> {{this.hint}}</h5>
+		</div>
+		<div class="card-body">
+			{{#with answer}}
+                <blockquote class="blockquote">
+                    <p class="mb-0">{{this}}</p>
+                </blockquote>
+			{{else}}
+				<h5>
+					<i class="fa fa-fw fa-ban text-danger"></i> {{i18n 'task.noResponse'}}
+				</h5>
+			{{/with}}
+		</div>
+	</div>
+</template>

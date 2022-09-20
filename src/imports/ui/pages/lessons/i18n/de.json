@@ -1,0 +1,18 @@
+{
+  "editor": {
+    "unit": {
+      "editInUnitEditor": "Im Sequenz-Editor bearbeiten"
+    }
+  },
+  "unit": {
+    "custom": "Eigene Sequenz"
+  },
+  "pocket": {
+    "title": "Lernsituation"
+  },
+  "lesson": {
+    "running": "Laufende Unterrichte",
+    "upcoming": "Geplante Unterrichte",
+    "toLesson": "Unterricht durchführen"
+  }
+}

@@ -1,0 +1,2 @@
+import './sync'
+import './cleanFiles'

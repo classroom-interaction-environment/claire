@@ -1,0 +1,208 @@
+<template name="dashboard">
+    <div class="d-block text-right">
+        {{> actionButton
+                type="success"
+                label=(i18n "actions.createClass")
+                class="form-btn"
+                icon="plus"
+                data-target=schoolClassCtxName
+                data-action="create"}}
+    </div>
+        <div class="list-group mt-3">
+            {{#each schoolClass in classes}}
+                <li class="list-group-item">
+                    {{! =========================================
+                        SCHOOLCLASS RENDERER
+                        ========================================= --}}
+                    <div class="d-flex justify-content-between">
+                        <span class="flex-fill">
+                            <a class="load-lessons d-block" data-toggle="collapse" href="#class-collapse-{{@index}}" role="button" aria-expanded="false" aria-controls="class-collapse-{{@index}}"
+                                data-class="{{schoolClass._id}}">
+                                {{schoolClass.title}}
+                            </a>
+                            {{#if schoolClass.timeFrame}}
+                                <small>
+                                {{#if schoolClass.timeFrame.from}}
+                                    <span>{{i18n "common.from"}} {{toDate schoolClass.timeFrame.from "date"}}</span>
+                                {{/if}}
+                                    {{#if schoolClass.timeFrame.to}}
+                                        <span>{{i18n "common.to"}} {{toDate schoolClass.timeFrame.to "date"}}</span>
+                                    {{/if}}
+                                </small>
+                            {{/if}}
+                        </span>
+
+                        {{! =========================================
+                            SCHOOLCLASS ACTIONS
+                            ========================================= --}}
+                        <span class="class-actions">
+                            {{! users }}
+                            {{>actionButton
+                                    type="outline-secondary"
+                                    class="toggle-students-button"
+                                    data-target=schoolClass._id
+                                    disabled=(not schoolClass.students.length)
+                                    label=schoolClass.students.length
+                                    icon="user"
+                                    title=(i18n "schoolClass.members")}}
+
+                            {{! invite }}
+                            {{>actionButton
+                                    type="outline-secondary"
+                                    class="invite-to-class-button"
+                                    data-target=schoolClass._id
+                                    icon="paper-plane"
+                                    title=(i18n "schoolClass.invite")}}
+
+                            <a href="#class-collapse-{{@index}}"
+                                    class="load-lessons btn btn-outline-secondary"
+                                    title="{{i18n "lessons.title"}}"
+                                    data-toggle="collapse"
+                                    role="button"
+                                    aria-expanded="false"
+                                    data-class="{{schoolClass._id}}">
+                                <i class="fa fa-fw fa-caret-down"></i>
+                                {{lessonCount schoolClass._id}}
+                                <i class="fa fa-fw fa-th-large"></i>
+                            </a>
+
+                            {{! edit }}
+                            {{> actionButton
+                                    type="outline-primary"
+                                    icon="edit"
+                                    class="form-btn"
+                                    title=(i18n "actions.edit")
+                                    data-id=schoolClass._id
+                                    data-target=schoolClassCtxName
+                                    data-action="update"}}
+
+                            {{! delete }}
+                            {{> actionButton
+                                    type="outline-danger"
+                                    icon="trash"
+                                    class="form-btn"
+                                    title=(i18n "actions.delete")
+                                    data-id=schoolClass._id
+                                    data-class=schoolClass._id
+                                    data-target=schoolClassCtxName
+                                    data-action="remove"}}
+                        </span>
+                    </div>
+                </li>
+
+                {{! =========================================
+                        LESSONS FOR EACH CLASS
+                        ========================================= --}}
+                <div class="collapse pl-5" id="class-collapse-{{@index}}">
+                    {{#onLoaded complete=(lessonsLoaded schoolClass._id)}}
+                        {{#with (lessons schoolClass._id)}}
+                            <ul class="list-group">
+                                {{#each lesson in this}}
+                                    {{#lessonListRenderer
+                                            lesson=lesson
+                                            showIcon=true
+                                            showStatus=false
+                                            showPocket=true
+                                            showTime=true}}
+                                        {{#let lesson=this}}
+                                            <span class="no-wrap">
+                                            {{#routeButton
+                                                    href=(route "lesson" lesson._id)
+                                                    title=(i18n "lessons.toLesson")
+                                                    type="primary"}}
+                                                <i class="fa fa-users"></i>
+                                                <i class="fa fa-caret-right"></i>
+                                            {{/routeButton}}
+                                                {{#routeButton
+                                                        href=(route "unitEditor" lesson.unit)
+                                                        title=(i18n "actions.editInUnitEditor")
+                                                        disabled=(lessonIsNotIdle lesson)
+                                                        type="outline-primary"}}
+                                                    <i class="fa fa-edit"></i>
+											<i class="fa fa-caret-right"></i>
+                                                {{/routeButton}}
+                                                {{>actionButton
+                                                        type="outline-danger"
+                                                        class="form-btn"
+                                                        title=(i18n "actions.delete")
+                                                        disabled=(lessonIsRunning lesson)
+                                                        icon="trash"
+                                                        blocked=(deleting lesson._id)
+                                                        data-action="remove"
+                                                        data-lesson=lesson._id
+                                                        data-class=schoolClass._id
+                                                        data-target=unitCtxName}}
+									        </span>
+                                        {{/let}}
+                                    {{/lessonListRenderer}}
+                                {{/each}}
+                            </ul>
+                        {{else}}
+                            {{> nodocs title=(i18n "lessons.title")}}
+                        {{/with}}
+
+                        <div class="d-flex justify-content-start my-1">
+                            {{> actionButton
+                                    type="success"
+                                    label=(i18n "dashboard.createCustom")
+                                    class="form-btn"
+                                    data-target=unitCtxName
+                                    data-class=schoolClass._id
+                                    data-action="custom"}}
+                            {{> actionButton
+                                    type="secondary"
+                                    label=(i18n "dashboard.useMaster")
+                                    class="form-btn"
+                                    data-target=unitCtxName
+                                    data-class=schoolClass._id
+                                    data-action="master"}}
+                        </div>
+                    {{/onLoaded}}
+                </div>
+            {{else}}
+                <li class="list-group-item">
+                {{#nodocs title=(i18n "classes.title")}}
+                    <div class="d-block text-center">
+                        {{> actionButton
+                                type="success"
+                                label=(i18n "actions.createNow")
+                                class="form-btn"
+                                data-target=schoolClassCtxName
+                                data-action="create"}}
+                    </div>
+                {{/nodocs}}
+                </li>
+            {{/each}}
+        </div>
+
+    {{> formModal}}
+
+    {{#modal id="inviteToClassModal" xl=true static=false}}
+        {{> mheader title=(i18n "schoolClass.invite") class="bg-secondary text-white" dismiss=true}}
+        {{#mbody}}
+            {{#with inviteOptions}}
+                {{> inviteStudents classId=this.classId institution=this.institution countDownActive=invitationModalVisible}}
+            {{else}}
+                {{> loading type="data"}}
+            {{/with}}
+        {{/mbody}}
+    {{/modal}}
+
+    {{#modal id="showStudentsModal" large=true static=false}}
+        {{> mheader title=(i18n "schoolClass.members") class="bg-secondary text-white" dismiss=true}}
+        {{#mbody}}
+            {{#with showStudentsDoc}}
+                <div class="d-block text-muted">
+                    {{i18n "schoolClass.teachers"}}
+                </div>
+                {{> userListRenderer users=this.teachers classDoc=this liClass="border-0"}}
+                <div class="d-block text-muted">
+                    {{i18n "schoolClass.students"}}
+                </div>
+                {{> userListRenderer users=this.students classDoc=this liClass="border-0"}}
+            {{else}}
+                {{>loading type="data"}}
+            {{/with}}
+        {{/mbody}}
+    {{/modal}}
+</template>

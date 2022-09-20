@@ -1,0 +1,12 @@
+<template name="langselect">
+    <a class="{{#if nav}}nav-link{{/if}} dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{#if templateLoaded}}{{getFlagname}}{{/if}}
+    </a>
+    <div class="dropdown-menu {{#if right}}dropdown-menu-right{{/if}}" aria-labelledby="navbarDropdown">
+        {{#each availableLanguages}}
+            <a class="dropdown-item select-lang" data-lang="{{this.code}}" href>
+                {{getFlagname this.code}} {{this.name}}
+            </a>
+        {{/each}}
+    </div>
+</template>

@@ -1,0 +1,153 @@
+/* global describe it beforeEach */
+import { LessonRuntime } from '../runtime/LessonRuntime'
+import { Beamer } from '../../../beamer/Beamer'
+import { TaskResults } from '../../../tasks/results/TaskResults'
+//import { Files } from '../../../imports/api/decorators/methods/files/Files'
+
+import { Random } from 'meteor/random'
+import { mockCollection } from '../../../../../tests/testutils/mockCollection'
+import { expect } from 'chai'
+import { TaskWorkingState } from '../../../tasks/results/TaskWorkingState'
+import { Cluster } from '../../../tasks/responseProcessors/aggregate/cluster/Cluster'
+import { getCollection } from '../../../../api/utils/getCollection'
+import { ImageFiles } from '../../../files/image/ImageFiles'
+import { AudioFiles } from '../../../files/audio/AudioFiles'
+import { DocumentFiles } from '../../../files/document/DocumentFiles'
+
+// remove runtimedocs related
+
+// TODO 1.0
+// TODO we should have a function that we can call and
+// TODO that returns all the context names for those context
+// TODO that are related to the lesson runtime
+// TODO why?
+// TODO because in the furutre we want to have packages to be
+// TODO added, that can augment lessons with custom items
+// TODO and therefore custom artifacts, so they need to be
+// TODO registered somewhere and retrievable somehow
+
+const noSchema = { noSchema: true }
+const TaskResultCollection = mockCollection(TaskResults, noSchema)
+const ImageFilesCollection = mockCollection(ImageFiles, noSchema)
+const AudioFilesColection = mockCollection(AudioFiles, noSchema)
+const DocumentFilesCollection = mockCollection(DocumentFiles, noSchema)
+const TaskWorkingStateCollection = mockCollection(TaskWorkingState, noSchema)
+const ClusterCollection = mockCollection(Cluster, noSchema)
+// beamer related
+
+const BeamerCollection = mockCollection(Beamer)
+const randomReferences = (beamerDoc, lessonId) => {
+  const rand = Math.floor(Math.random() * 53)
+  let lessonRefs = 0
+  let nonLessonRefs = 0
+  for (let i = 0; i < rand; i++) {
+    let refLessonId
+
+    if (Math.random() > 0.53) {
+      refLessonId = lessonId
+      lessonRefs++
+    } else {
+      refLessonId = Random.id()
+      nonLessonRefs++
+    }
+
+    beamerDoc.references.push({
+      lessonId: refLessonId,
+      referenceId: Random.id(),
+      context: Random.id()
+    })
+  }
+
+  return { lessonRefs, nonLessonRefs }
+}
+
+describe(LessonRuntime.name, function () {
+  describe(LessonRuntime.resetBeamer.name, function () {
+    beforeEach(function () {
+      BeamerCollection.remove({})
+    })
+
+    it('returns -1, if no beamer doc exists for given query', function () {
+      const query = { lessonId: Random.id(), userId: Random.id() }
+      expect(LessonRuntime.resetBeamer(query)).to.equal(-1)
+    })
+
+    it('returns 0 if there are no references on the beamer doc', function () {
+      const query = { lessonId: Random.id(), userId: Random.id() }
+      BeamerCollection.insert({ createdBy: query.userId, ui: {}, references: [] })
+
+      expect(LessonRuntime.resetBeamer(query)).to.equal(0)
+    })
+
+    it('returns 0 if there are references but not related to the lessonId', function () {
+      const query = { lessonId: Random.id(), userId: Random.id() }
+      const beamerDocId = BeamerCollection.insert({
+        createdBy: query.userId,
+        ui: {},
+        references: [{ lessonId: Random.id(), referenceId: Random.id(), context: Random.id() }]
+      })
+
+      const diff = LessonRuntime.resetBeamer(query)
+      expect(diff).to.equal(0)
+
+      const beamerDoc = BeamerCollection.findOne(beamerDocId)
+      expect(beamerDoc.references.length).to.equal(1) // expect no removes
+    })
+
+    it('returns the diff if there are references related to the lessonId', function () {
+      const query = { lessonId: Random.id(), userId: Random.id() }
+      const insertDoc = { createdBy: query.userId, ui: {}, references: [] }
+      const { lessonRefs, nonLessonRefs } = randomReferences(insertDoc, query.lessonId)
+
+      const refLength = insertDoc.references.length
+
+      // sanity check for random reference builder
+      expect(refLength).to.equal(lessonRefs + nonLessonRefs)
+
+      const beamerDocId = BeamerCollection.insert(insertDoc)
+
+      // we expect this method to return the number of refs that have been removed
+      const actualDiff = LessonRuntime.resetBeamer(query)
+      expect(actualDiff).to.equal(lessonRefs)
+
+      // expect lessonId docs are removed
+      const beamerDoc = BeamerCollection.findOne(beamerDocId)
+      expect(beamerDoc.references.length).to.equal(nonLessonRefs) // expect no removes
+
+      beamerDoc.references.forEach(({ lessonId }) => {
+        expect(lessonId).to.not.equal(query.lessonId)
+      })
+    })
+  })
+
+  describe(LessonRuntime.removeDocuments.name, function () {
+    beforeEach(function () {
+      TaskResultCollection.remove({})
+      TaskWorkingStateCollection.remove({})
+      AudioFilesColection.remove({})
+      ImageFilesCollection.remove({})
+      DocumentFilesCollection.remove({})
+      ClusterCollection.remove({})
+    })
+    it('removes no documents if there are no docs for a given lesson', function () {
+      const removed = LessonRuntime.removeDocuments({ lessonId: Random.id() })
+      Object.values(removed).forEach(removedCount => expect(removedCount).to.equal(0))
+    })
+    it('removed documents, if there are docs for a given lesson', function () {
+      const lessonId = Random.id()
+      TaskResultCollection.insert({ lessonId })
+      TaskWorkingStateCollection.insert({ lessonId })
+      ClusterCollection.insert({ lessonId })
+
+      ImageFilesCollection.insert({ meta: { lessonId } })
+      AudioFilesColection.insert({ meta: { lessonId } })
+      DocumentFilesCollection.insert({ meta: { lessonId } })
+
+      const removed = LessonRuntime.removeDocuments({ lessonId })
+      Object.entries(removed).forEach(([context, removedCount]) => {
+        expect(removedCount).to.equal(1)
+        expect(getCollection(context).find().count()).to.equal(0)
+      })
+    })
+  })
+})

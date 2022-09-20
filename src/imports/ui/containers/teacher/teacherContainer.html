@@ -1,0 +1,15 @@
+<template name="teacherContainer">
+	<div class="teacher-container d-flex">
+        {{> navSide}}
+        <div class="teacher-container-content flex-fill pb-5">
+            <div class="container{{#if fluid}}-fluid{{/if}}">
+                {{> routeInfo id="route-info-container"}}
+                {{#main}}
+                    {{>yield}}
+                {{/main}}
+                {{> disconnected}}
+            </div>
+        </div>
+    </div>
+</template>
+

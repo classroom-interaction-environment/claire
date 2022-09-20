@@ -1,0 +1,9 @@
+<template name="print">
+	{{#unless nav}}
+		<button class="btn {{#if sm}}btn-sm{{/if}} {{#if lg}}btn-lg{{/if}} btn-outline-secondary global-print-button {{class}}">
+			{{> icon fw=true name="print"}}
+		</button>
+	{{else}}
+        {{> link title=(i18n "actions.print") label=(i18n (getLabel "actions.print"))  href=null class=(concat "nav-link global-print-button " class)  icon="print" }}
+	{{/unless}}
+</template>

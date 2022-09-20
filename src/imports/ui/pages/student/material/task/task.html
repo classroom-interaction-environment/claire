@@ -1,0 +1,28 @@
+<template name="task">
+    {{#unless loadComplete}}
+            {{> loading type="data" title=title}}
+    {{else}}
+        <div class="bg-white">
+            {{#unless taskNotVisible}}
+                {{#with taskData}}
+                    <div class="text-center text-md-left">
+                        {{> lessonStatus lessonStatusData}}
+                        <h6 class="my-2">{{this.title}}</h6>
+                    </div>
+                    {{> Template.dynamic template="taskRenderer" data=this}}
+                {{else}}
+                    {{> loading type="data"}}
+                {{/with}}
+            {{else}}
+                <div class="jumbotron text-center">
+                    <p>{{i18n "task.notVisible"}}</p>
+                    {{> link type="primary" href=(route "lesson" lessonId) icon="arrow-left" label=(i18n "routes.backToLesson") title=(i18n "routes.backToLesson")}}
+                </div>
+            {{/unless}}
+        </div>
+    {{/unless}}
+    {{#with loadError}}
+        {{> fail error=this}}
+    {{/with}}
+    {{> confirm static=true lg=true }}
+</template>

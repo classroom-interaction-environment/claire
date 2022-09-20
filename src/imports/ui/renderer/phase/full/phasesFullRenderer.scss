@@ -1,0 +1,19 @@
+.phases-full-preview-table th,
+.phases-full-preview-table td {
+  white-space: normal;
+}
+
+@media print {
+  .phases-full-preview-table thead {display: table-header-group;}
+
+  .phases-full-preview-table th,
+  .phases-full-preview-table td {
+    font-size: 85%;
+  }
+}
+
+.phases-full-preview-table-bordered,
+.phases-full-preview-table-bordered th,
+.phases-full-preview-table-bordered td {
+  border: solid 1px;
+}

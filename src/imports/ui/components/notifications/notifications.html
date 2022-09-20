@@ -1,0 +1,37 @@
+<template name="notifications">
+    {{#if loadComplete}}
+        <div id="notification-target"
+             class="position-fixed bottom-0 right-0 p-3 notification-target d-print-none">
+        </div>
+    {{/if}}
+</template>
+
+<template name="notification">
+    <div id="{{id}}" class="toast d-print-none" role="alert"
+         aria-live="assertive"
+         aria-atomic="true"
+         data-delay="{{delay}}"
+         data-animation="{{animation}}"
+         data-autohide="{{autohide}}">
+        <div class="toast-header bg-{{type}} text-white d-flex justify-content-between">
+            {{#if icon}}
+                {{> icon name=icon}}
+            {{/if}}
+            <span>
+                <strong>{{i18n title}}</strong>
+                <small>{{i18n subtitle}}</small>
+            </span>
+            {{#if dismiss}}
+                <button type="button" class="ml-2 mb-1 close"
+                        data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            {{/if}}
+        </div>
+        {{#if message}}
+            <div class="toast-body">
+                {{i18n message}}
+            </div>
+        {{/if}}
+    </div>
+</template>

@@ -1,0 +1,64 @@
+<template name="phasesCompact">
+	{{#each phase in phases}}
+		<ul class="list-group my-3 border-0">
+			{{#unless materialOnly}}
+				<li class="list-group-item d-flex justify-content-between align-items-start border-0 {{phaseclass}}">
+					<span>
+                        {{#if phase.plot}}
+                            <a data-toggle="collapse" href="#phase-collapse-{{@index}}" role="button" aria-expanded="false" aria-controls="phase-collapse-{{@index}}">{{phase.title}}</a>
+                            <div class="collapse" id="phase-collapse-{{@index}}">
+                                <div class="card-body">{{phase.plot}}</div>
+                            </div>
+                        {{else}}
+                            <strong class="text-primary">{{phase.title}}</strong>
+                        {{/if}}
+                    </span>
+					<span>
+                        {{#if inline}}
+							<span class="mr-1">
+								{{#each reference in (references phase.references)}}
+									{{#if reference.isFilesCollection}}
+										{{>tooltip title=reference.doc.name icon=reference.icon}}
+									{{else}}
+										{{>tooltip title=reference.doc.title icon=reference.icon}}
+									{{/if}}
+								{{/each}}
+							</span>
+						{{/if}}
+						<small class="ml-auto">{{phase.period}} {{i18n "time.min"}}</small>
+                    </span>
+				</li>
+			{{/unless}}
+			{{#unless inline}}
+				{{#each reference in (references phase.references)}}
+					<li class="list-group-item border-0 {{liclass}}">
+						<span class="d-flex mr-2 align-items-start">
+							{{>tooltip title=(i18n reference.label) icon=reference.icon}}
+							<span class="text-wrap ml-2 d-none d-md-inline-flex">
+								{{#if reference.isFilesCollection}}
+									{{reference.doc.name}}
+								{{else}}
+									{{reference.doc.title}}
+								{{/if}}
+							</span>
+						</span>
+						{{> Template.contentBlock refId=reference.doc._id phaseId=phase._id type=reference.name}}
+					</li>
+					<li class="d-md-none list-group-item border-0 mt-n1">
+						{{#if reference.isFilesCollection}}
+							{{reference.doc.name}}
+						{{else}}
+							{{reference.doc.title}}
+						{{/if}}
+					</li>
+				{{/each}}
+			{{/unless}}
+		</ul>
+		{{else}}
+		<ul class="list-group my-3 border-0">
+			<li class="list-group-item d-flex justify-content-between border-0 {{phaseclass}}">
+				<small>{{i18n "wizard.prepare.phases.missing"}}</small>
+			</li>
+		</ul>
+	{{/each}}
+</template>

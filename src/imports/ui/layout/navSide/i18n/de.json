@@ -1,0 +1,26 @@
+{
+  "nav": {
+    "profile": "Profil",
+    "editProfile": "Profil bearbeiten",
+    "toggle": "Auf/zuklappen",
+    "toggleFluid": "Breite anpassen",
+    "login": "Login",
+    "logout": "Ausloggen",
+    "forgotPassword": "Passwort vergessen",
+    "placeholder": {
+      "title": "Fasse den Fehler in ein paar Worten zusammen...",
+      "description": "Mache bitte möglichst präzise Angaben zum fehler..."
+    },
+    "tools": "Werkzeuge",
+    "customUnits": "Eigenen Unterricht planen"
+  },
+  "dashboard": {
+    "prepare": "Mustervorlagen",
+    "lesson": "Unterricht durchführen"
+  },
+  "editor": {
+    "task":{
+      "title": "Aufgaben-Editor"
+    }
+  }
+}

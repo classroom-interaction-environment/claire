@@ -1,0 +1,125 @@
+<template name="uesummary">
+    <div class="my-4">
+        {{!-- basic info --}}
+        {{#uesummarySection
+                target="basicInfo"
+                preview=isPreview
+                title=(i18n "editor.unit.basicInfo")
+                loadComplete=loadComplete
+                data=true}}
+            <ul class="list-group bg-white text-dark">
+                {{#each entry in baseData}}
+                    <li class="list-group-item d-flex">
+                        {{> tooltip icon=entry.icon title=(i18n entry.label)}}
+                        <span class="w-100 ml-3">
+                            {{entry.value}}
+                        </span>
+                    </li>
+                {{/each}}
+            </ul>
+        {{/uesummarySection}}
+
+
+        {{!-- dimensions --}}
+        {{#uesummarySection
+                target="basicInfo"
+                preview=isPreview
+                title=(i18n "curriculum.dimensions")
+                loadComplete=loadComplete
+                data=dimensions}}
+            <div class="card">
+                <div class="card-body">
+                    {{#each dimension in this}}
+                        <span class="badge p-3 mr-2 mb-2 font-weight-light"
+                              style="background-color: {{dimension.color}};color: {{contrastColor
+                                      dimension.color}};">
+                            {{dimension.title}}
+                        </span>
+                    {{/each}}
+                </div>
+            </div>
+        {{/uesummarySection}}
+
+
+        {{!-- objectives --}}
+        {{#uesummarySection
+                target="objectives"
+                preview=isPreview
+                title=(i18n "curriculum.objectives")
+                loadComplete=loadComplete
+                data=objectives}}
+            <ul class="list-group">
+                {{#each objectiveDoc in this}}
+                    <li class="list-group-item">
+                        {{> objective objectiveDoc}}
+                    </li>
+                {{/each}}
+            </ul>
+        {{/uesummarySection}}
+
+        {{!-- phases --}}
+        {{#uesummarySection
+                target="phases"
+                preview=isPreview
+                title=(i18n "curriculum.phases")
+                loadComplete=loadComplete
+                data=phases}}
+            {{#with unassociatedMaterial}}
+                {{> nonPhaseMaterial material=this inline=true inlineToggle=true flush=true}}
+            {{/with}}
+            {{> phasesCompact phases=this globalMaterial=globalMaterial inline=true flush=true}}
+        {{/uesummarySection}}
+    </div>
+</template>
+
+<template name="uesummarySection">
+    {{#with data}}
+        <div class="card border-0 bg-transparent mt-3 mb-1">
+            <div class="card-body d-flex justify-content-between">
+                <h5>{{../title}}</h5>
+                <span class="text-right d-print-none">
+                    {{#unless ../preview}}
+                        <button class="btn btn-outline-primary ml-auto uesummary-edit-button"
+                                data-target="{{../target}}"
+                                title="{{i18n 'actions.edit'}}">
+                            <i class="fa fa-fw fa-edit"></i>
+                        </button>
+                    {{/unless}}
+                </span>
+            </div>
+        </div>
+        {{#if ../loadComplete}}
+            {{> Template.contentBlock this}}
+            {{else}}
+            {{> loading title=../title}}
+        {{/if}}
+    {{else}}
+        {{#if loadComplete}}
+            {{#unless preview}}
+                <div class="card border-0 bg-transparent mt-5 mb-1">
+                    <div class="card-body d-flex justify-content-between">
+                        <h5>{{title}}</h5>
+                        <span class="text-right d-print-none">
+                            {{#unless preview}}
+                                <button href
+                                        class="btn btn-warning ml-auto uesummary-fix-button"
+                                        data-target="{{target}}"
+                                        title="{{i18n 'actions.fixNow'}}">
+                                    <i class="fa fa-fw fa-wrench"></i>
+                                </button>
+                            {{/unless}}
+                        </span>
+                    </div>
+                </div>
+                <div class="alert alert-warning d-flex">
+                    <span>
+                        <strong>"{{title}}"</strong>
+                        <span>{{i18n 'editor.unit.incomplete'}}</span>
+                    </span>
+                </div>
+            {{/unless}}
+        {{else}}
+            {{> loading type="data" title=title class="mt-4"}}
+        {{/if}}
+    {{/with}}
+</template>

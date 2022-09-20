@@ -1,0 +1,15 @@
+<template name="beamer">
+	{{!-- TODO add tooltips --}}
+	{{#unless nav}}
+		<button class="btn {{#if sm}}btn-sm{{/if}} {{#if
+				lg}}btn-lg{{/if}} btn-outline-secondary global-beamer-button {{class}}">
+			<i class="fa fa-fw fa-video-camera"></i>
+		</button>
+	{{else}}
+		{{#unless beamerIsActive}}
+			{{> link label=(i18n "beamer.initBeamer.title") href=null active=false class="nav-link global-beamer-button" icon="video"}}
+		{{else}}
+			{{> link label=(i18n "beamer.controlBeamer.title") href=null active=true class="nav-link global-beamer-button" icon="video" }}
+		{{/unless}}
+	{{/unless}}
+</template>

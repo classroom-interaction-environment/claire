@@ -1,0 +1,15 @@
+<template name="afGroupText">
+    {{#onLoaded complete=loadComplete}}
+        <div class="d-block text-center text-md-left">
+            {{i18n "groupText.my"}}
+        </div>
+        <textarea class="my-text form-control" rows="{{atts.rows}}" data-schema-key="{{dataSchemaKey}}"></textarea>
+
+        {{#each output in groupOutputs}}
+            <div class="d-block text-center text-md-left mt-3">
+                {{username output.createdBy}}
+            </div>
+            <div class="white-space-pre form-control h-auto">{{output.response}}</div>
+        {{/each}}
+    {{/onLoaded}}
+</template>

@@ -1,0 +1,281 @@
+<template name="uematerial">
+    <div class="my-4 clearfix">
+		<span class="float-right">
+			<button class="btn btn-sm btn-secondary uematerial-select-button" disabled="{{#unless selectEntries}}disabled{{/unless}}">
+                {{i18n 'actions.add'}}
+                {{#with selectEntries}}
+                    <span class="badge badge-pill text-light">
+                        {{this.count}}
+                    </span>
+                {{/with}}
+            </button>
+			<button class="btn btn-sm btn-success uematerial-insert-button">
+				<i class="fa fa-fw fa-plus"></i> {{i18n 'actions.create'}}
+			</button>
+		</span>
+
+        {{! sub view nav - each entry represents a material context }}
+        <ul class="nav nav-pills">
+            {{#each entry in subviewNames}}
+                <li class="nav-item">
+                    <a href class="nav-link {{#if active entry.name}}active{{/if}} uematerial-tab"
+                       data-target="{{entry.name}}">
+                        {{i18n entry.label}}
+                        {{#with entryCount entry.fieldName}}
+                            <span class="badge badge-light badge-pill">
+                                {{this}}
+                            </span>
+                        {{/with}}
+                    </a>
+                </li>
+            {{/each}}
+        </ul>
+    </div>
+
+    {{#unless loadComplete}}
+        {{> loading type="data"}}
+    {{else}}
+            {{#unless creating}}
+            <table class="table material-table">
+                <tbody>
+                {{#each entry in entries}}
+                    <tr class="uematerial-entry bg-white {{#if isTarget entry._id}}border border-primary{{/if}}"
+                        data-target="{{entry._id}}">
+
+                        <td>
+                            {{> documentState document=entry showLabel=false}}
+                        </td>
+
+                        {{! custom list renderer for material }}
+                        {{> Template.dynamic template=listRendererTemplate data=(withUnitDoc entry)}}
+
+                        <td class="text-right no-wrap">
+                            {{#if preview}}
+                                {{> actionButton
+                                        type="outline-secondary"
+                                        title=(i18n "editor.unit.material.preview")
+                                        class="btn-sm uematerial-preview-button"
+                                        icon='eye'
+                                        data-target=entry._id}}
+                            {{/if}}
+                            {{#if editable}}
+                                {{> actionButton
+                                        type="outline-secondary"
+                                        title=(i18n "actions.edit")
+                                        class="btn-sm uematerial-edit-button"
+                                        icon='edit'
+                                        data-target=entry._id
+                                        data-master=entry._master
+                                        blocked=(processing entry._id)}}
+                            {{/if}}
+                            {{> actionButton
+                                    type="outline-secondary"
+                                    title=(i18n "editor.unit.material.linkToPhase")
+                                    class="btn-sm uematerial-link-to-phase-button"
+                                    icon='th-list'
+                                    data-target=entry._id
+                                    blocked=(processing entry._id)}}
+
+                                {{!-- material can be deleted only
+                                    if this is either own material or,
+                                    if _master material and the user has
+                                    curriculum permissions --}}
+                            {{#if canDeleteMaterial entry}}
+                                {{> actionButton
+                                        type="outline-danger"
+                                        title=(i18n "actions.delete")
+                                        class="btn-sm uematerial-remove-button"
+                                        icon="trash"
+                                        data-target=entry._id
+                                        blocked=(processing entry._id) }}
+                            {{else}}
+                                {{> actionButton
+                                        type="outline-danger"
+                                        title=(i18n "actions.remove")
+                                        class="btn-sm uematerial-remove-button"
+                                        icon="times"
+                                        data-target=entry._id
+                                        blocked=(processing entry._id) }}
+                            {{/if}}
+                        </td>
+                    </tr>
+                {{else}}
+                    <tr>
+                        <td colspan="100%">
+                        {{> nodocs}}
+                        </td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+                {{else}}
+                {{> loading type="data"}}
+            {{/unless}}
+
+
+        {{! select existing material modal }}
+        {{#modal id="uematerial-select-modal" large=true}}
+            {{#mheader dismiss=true title=(label "select") class="bg-secondary text-white"}}{{/mheader}}
+            {{#with selectEntries}}
+                <!-- table list with tasks -->
+                <table class="table">
+                    {{#each entry in this}}
+                        <tr>
+                            <td>
+                                {{> documentState document=entry showLabel=false}}
+                            </td>
+                            {{> Template.dynamic
+                                    template=listRendererTemplate
+                                    data=(selectEntryModalData entry)}}
+                            <td class="text-right no-wrap">
+                                {{> actionButton type="outline-secondary"
+                                        class="btn-sm uematerial-add-button"
+                                        data-target=(entry._id)
+                                        title=(i18n "actions.add")
+                                        icon="plus"
+                                        blocked=(processing entry._id)}}
+                            </td>
+                        </tr>
+                    {{/each}}
+                </table>
+            {{else}}
+                {{>nodocs}}
+            {{/with}}
+        {{/modal}}
+
+        {{! create new material modal }}
+        {{#if create}}
+            {{#modal id="uematerial-create-modal" large=true static=true}}
+                {{#mheader dismiss=true title=(label "create") class="bg-success text-white"}}{{/mheader}}
+                {{#with createInfo}}
+                    <div class="card-body">
+                        <i class="fa fa-fw fa-info-circle"></i> {{i18n this}}
+                    </div>
+                    <hr>
+                {{/with}}
+                {{> caroForm id="createMaterialForm"
+                        schema=createMaterialSchema
+                        hideLegend=true
+                        type=(formState)}}
+                {{#mfooter}}
+                    {{#unless processing true}}
+                        <button class="btn btn-success mr-auto" type="submit" form="createMaterialForm">
+                            {{i18n 'actions.create'}}
+                        </button>
+                        <button class="btn btn-secondary ml-auto uematerial-cancel-insert-button">
+                            {{i18n 'actions.cancel'}}
+                        </button>
+                    {{else}}
+                        <button class="btn btn-success mr-auto disabled" disabled="disabled">
+                            <i class="fa fa-fw fa-sync fa-spin"></i> {{i18n 'actions.create'}}
+                        </button>
+                        <button class="btn btn-secondary ml-auto disabled" disabled="disabled">
+                            {{i18n 'actions.cancel'}}
+                        </button>
+                    {{/unless}}
+
+                {{/mfooter}}
+            {{/modal}}
+        {{/if}}
+
+        {{! edit material modal}}
+        {{#if edit}}
+            {{#modal id="uematerial-edit-modal" large=true static=true}}
+                {{#mheader dismiss=true title=(label "edit") class="bg-secondary text-white"}}{{/mheader}}
+                {{#with createInfo}}
+                    <div class="card-body">
+                        <i class="fa fa-fw fa-info-circle"></i> {{i18n this}}
+                    </div>
+                    <hr>
+                {{/with}}
+                {{#with editMaterialDoc}}
+                    {{> caroForm id="editMaterialForm"
+                            schema=createMaterialSchema
+                            hideLegend=true
+                            doc=this
+                            type=(formState)}}
+                {{else}}
+                    {{>loading}}
+                {{/with}}
+                {{#mfooter}}
+                    {{#unless processing true}}
+                        <button class="btn btn-secondary mr-auto" type="submit" form="editMaterialForm">
+                            {{i18n 'actions.update'}}
+                        </button>
+                        <button class="btn btn-secondary ml-auto" data-dismiss="modal">
+                            {{i18n 'actions.cancel'}}
+                        </button>
+                    {{else}}
+                        <button class="btn btn-secondary mr-auto disabled" type="submit" disabled="disabled">
+                            <i class="fa fa-fw fa-sync fa-spin"></i> {{i18n 'actions.update'}}
+                        </button>
+                        <button class="btn btn-secondary ml-auto disabled" disabled="disabled">
+                            {{i18n 'actions.cancel'}}
+                        </button>
+                    {{/unless}}
+
+                {{/mfooter}}
+            {{/modal}}
+        {{/if}}
+
+        {{! preview material modal, loading preview renderer }}
+        {{#if preview}}
+            {{#modal id="uematerial-preview-modal" large=true scrollable=true}}
+                {{#mheader dismiss=true title=(label "preview") class="bg-secondary text-white"}}{{/mheader}}
+                {{#mbody}}
+                    {{#with previewTarget}}
+                        {{#if this.title}}
+                            <div class="card-body">
+                                <h5 class="card-title">{{this.title}}</h5>
+                            </div>
+                        {{/if}}
+                        {{> Template.dynamic template=previewTemplate data=this}}
+                    {{/with}}
+                {{/mbody}}
+                {{#mfooter}}
+                    <button class="btn btn-secondary" data-dismiss="modal">
+                        {{i18n "actions.close"}}
+                    </button>
+                {{/mfooter}}
+            {{/modal}}
+        {{/if}}
+
+        {{! link material with phases modal }}
+        {{#modal id="uematerial-linkphase-modal" large=true}}
+            {{#mheader dismiss=true title=(i18n "editor.unit.material.linkToPhase")
+                       class="bg-secondary text-white"}}{{/mheader}}
+            {{#with materialToLink}}
+                <ul class="list-group">
+                    {{#each phase in phases}}
+                        <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            {{phase.title}}
+                        </span>
+                            <span>
+                                {{#if linkedWithPhase this phase}}
+                                    <span class="mr-2"><i class="fa fa-fw fa-check"></i> {{i18n "common.linked"}}</span>
+                                    {{>actionButton icon="minus" type="secondary" class="uematerial-phaselink-button"
+                                            title=(i18n "editor.unit.material.unlinkFromPhase") data-phase=phase._id blocked=(linkingPhase phase._id)}}
+                                {{else}}
+                                    {{>actionButton icon="plus" type="outline-secondary" class="uematerial-phaselink-button"
+                                            title=(i18n "editor.unit.material.linkWithPhase") data-phase=phase._id blocked=(linkingPhase phase._id)}}
+                                {{/if}}
+                            </span>
+                        </li>
+                        {{else}}
+                        <li>
+                            {{> nodocs title=(i18n "curriculum.phases")}}
+                        </li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                {{#mbody}}{{> loading}}{{/mbody}}
+            {{/with}}
+            {{#mfooter}}
+                <button class="btn btn-secondary" data-dismiss="modal">
+                    {{i18n "actions.close"}}
+                </button>
+            {{/mfooter}}
+        {{/modal}}
+    {{/unless}}
+</template>

@@ -1,0 +1,67 @@
+{
+  "editor": {
+    "unit": {
+      "title": "Sequenz-Editor",
+      "errors": {
+        "invalidLessonState": "Der Unterricht läuft oder ist beendet. Er kann daher nicht bearbeitet werden!"
+      },
+      "basicInfo": "Basisdaten",
+      "preview": "Vorschau",
+      "summary": "Zusammenfassung",
+      "editInUnitEditor": "Im Sequenz-Editor bearbeiten",
+      "continueToEdit": "Möchten Sie gleich weiter und das neue Material bearbeiten?",
+      "documentCreated": "{{title}} erfolgreich erstellt",
+      "unitUpdated": "Sequenz aktualisiert",
+      "incomplete": "ist unvollständig oder noch nicht bearbeitet.",
+      "confirmDeleteUnit": "Sie sind dabei, die Sequenz zu löschen. Es werden alle verknüpften Materialien entfernt und alle Unterrichtsphasen gelöscht. Möchten Sie wirklich fortfahren?",
+      "objectives": {
+        "title": "Kompetenzen",
+        "add": "Kompetenzen hinzufügen",
+        "create": "Kompetenz erstellen und hinzufügen",
+        "added": "Kompetenzen dieser Sequenz",
+        "description": "Hier können Sie die Kompetenzen der Lernsequenz zuordnen. Über die Filterfunktion können Sie gezielt nach Kompetenzen suchen."
+      },
+      "material": {
+        "title": "Materialien",
+        "create": "{{title}} neu erstellen",
+        "select": "{{title}} auswählen und hinzufügen",
+        "preview": "In Vorschau ansehen",
+        "linkToPhase": "Mit Unterrichtsphase verknüpfen",
+        "taskCreated": "Aufgabe erfolgreich erstellt",
+        "linkWithPhase": "Mit Unterrichtsphase verknüpfen",
+        "unlinkFromPhase": "Von Unterrichtsphase trennen",
+        "unlinkedFromPhase": "Von Unterrichtsphase \"{{title}}\" entfernt.",
+        "removeTask": "Möchten Sie wirklich die Aufgabe von der Sequenz entfernen? Die Aufgabe wird nicht gelöscht.",
+        "taskRemoved": "Aufgabe erfolgreich entfernt",
+        "deleteTask": "Möchten Sie wirklich die Aufgabe von der Sequenz entfernen und löschen?",
+        "taskDeleted": "Aufgabe erfolgreich entfernt und gelöscht",
+        "unexpected": "Unerwarter fehler",
+        "editTaskInEditor": "Im Aufgaben-Editor bearbeiten",
+        "confirmRemove": "Sie sind dabei, das Material \"{{title}}\" aus der Sequenz zu entfernen. Das Material wird nicht vollständig gelöscht und kann jederzeit erneut hinzugefügt werden.",
+        "confirmDelete": "Achtung! Sie sind dabei dieses Material endgültig zu löschen. Danach ist es nicht mehr verfügbar."
+      },
+      "phases": {
+        "title": "Unterrichtsphasen",
+        "overallTime": "Gesamtzeit",
+        "timeLimitExceeded": "Limit überschritten",
+        "expectedTime": "Vorgesehen",
+        "editPhase": "Unterrichtsphase bearbeiten",
+        "isGlobal": "Über diese Sequenz hinaus genutzte Unterrichtsphase",
+        "editGlobalPhase": "Sie sind dabei eine allgemeine (mehrfach verwendete) Unterrichtsphase zu bearbeiten. Änderungen können sich auf andere Sequenzen auswirken. Trotzdem bearbeiten?",
+        "editGlobalAnyway": "Trotzdem bearbeiten",
+        "createPhase": "Unterrichtsphase erstellen",
+        "phaseCreated": "Unterrichtsphase erfolgreich angelegt",
+        "selectPhase": "Allgemeine Unterrichtsphase auswählen",
+        "selectPhaseDescription": "Wählen Sie von den allgemeinen Unterrichtsphasen. Sie können eine Unterrichtsphase mehrmals hinzufügen.",
+        "description": "Sie können allgemeingültige Phasen (z.B. Begrüßung, Verabschiedungen) aus Vorlagen auswählen oder individuelle Unterrichtsphasen erstellen.",
+        "newPhase": "Neue Unterrichtsphase anlegen",
+        "removePhase": "Unterrichtsphase entfernen",
+        "phaseRemoved": "Unterrichtsphase entfernt",
+        "deletePhase": "Unterrichtsphase löschen",
+        "confirmRemove": "Möchten Sie wirklich diese Unterrichtsphase entfernen und löschen?"
+      },
+      "allDocsAdded": "Alle bestehenden Dokumente wurden bereits hinzugefügt",
+      "codeView": "Quellcode"
+    }
+  }
+}

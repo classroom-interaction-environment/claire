@@ -1,0 +1,26 @@
+<template name="joinClass">
+	{{#modal id="global-code-modal" large=true}}
+        {{#if loadComplete}}
+		    {{> mheader title=(i18n "codeInvitation.joinClassByCode")}}
+        {{/if}}
+		{{#mbody}}
+			{{#unless successful}}
+				{{> caroForm id="joinClassForm" type="normal" schema=joinClassSchema submitting=submitting}}
+			{{else}}
+				<span class="text-success">
+					{{> icon name="check"}} {{i18n "codeInvitation.addedToClass"}}
+				</span>
+			{{/unless}}
+		{{/mbody}}
+        {{#if loadComplete}}
+		{{#mfooter class="d-flex justify-content-between"}}
+			{{#unless successful}}
+				{{> actionButton type="primary" icon="lock" submit=true form="joinClassForm" label=(i18n "actions.join") blocked=submitting}}
+				{{> actionButton type="secondary" label=(i18n "actions.cancel") data-dismiss="modal"}}
+            {{else}}
+				{{> actionButton type="secondary" class="btn-block" label=(i18n "actions.close") data-dismiss="modal"}}
+			{{/unless}}
+		{{/mfooter}}
+        {{/if}}
+	{{/modal}}
+</template>

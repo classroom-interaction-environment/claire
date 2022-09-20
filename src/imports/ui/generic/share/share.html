@@ -1,0 +1,29 @@
+<template name="share">
+	<!-- hidden share modal -->
+	{{#modal id="shareModal" sm=true}}
+		{{#mheader dismiss=true}}
+			<i class="fa fa-share-alt"></i> {{i18n "common.share"}}
+		{{/mheader}}
+		{{#mbody class="text-center"}}
+			<a href="whatsapp://send?text={{getLink}}" class="btn btn-lg btn-secondary"
+	data-action="share/whatsapp/share" title="{{i18n 'share.whatsapp'}}">
+			<i class="fa fa-fw fa-whatsapp"></i>
+			</a>
+
+			<a href="mailto:?subject=caro-curriclum link&amp;body={{getLink}}" class="btn btn-lg btn-secondary"
+	title="{{i18n 'share.email'}}">
+			<i class="fa fa-fw fa-envelope"></i>
+			</a>
+
+			<form id="errorReportForm">
+				<div class="form-group" id="shareModalLinkTextGroup">
+					<input type="text" class="awesomplete form-control text-center" id="shareModalLinkTextInput"
+						   value="{{getLink}}" readonly>
+				</div>
+			</form>
+		{{/mbody}}
+		{{#mfooter}}
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">{{i18n "actions.close"}}</button>
+		{{/mfooter}}
+	{{/modal}}
+</template>

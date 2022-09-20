@@ -1,0 +1,14 @@
+{
+  "wizard": {
+    "unit": {
+      "title": "Eigenen Unterricht planen",
+      "description": "Dies sind Ihre angepassten Sequenzen.",
+      "custom": "Dies sind Ihre eigenen unabhängigen Sequenzen",
+      "selectOne": "Bestehende Sequenz auswählen",
+      "selectLastEdited": "Zuletzt bearbeitete Sequenzen",
+      "createNew": "Neue Sequenz anlegen",
+      "continueToEdit": "Sequenz bearbeiten",
+      "edit": "Im Sequenz-Editor bearbeiten"
+    }
+  }
+}

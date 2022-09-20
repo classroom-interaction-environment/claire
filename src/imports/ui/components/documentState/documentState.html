@@ -1,0 +1,50 @@
+<template name="documentState">
+    {{#with document}}
+        {{! if it's a master document}}
+        {{#if this._master}}
+            {{#unless hideLabel}}
+            <div class="badge badge-danger font-weight-light ">
+                {{> icon name="star" fw=true}}
+                <span>{{i18n "curriculum.master"}}</span>
+            </div>
+            {{else}}
+                {{> tooltip icon="star" title=(i18n "curriculum.master") class="badge badge-warning font-weight-light "}}
+            {{/unless}}
+
+        {{! it is either a fork}}
+        {{else if (isOriginal this._original original)}}
+            {{#unless hideLabel}}
+            <div class="badge badge-light font-weight-light ">
+                {{> icon name="code-branch" fw=true}}
+                <span>{{i18n "curriculum.customFork"}}</span>
+                {{#with original}}
+                    <span>"{{this.title}}"</span>
+                {{/with}}
+            </div>
+            {{else}}
+                {{> tooltip icon="code-branch" title=(i18n "curriculum.customFork") class="badge badge-light font-weight-light "}}
+            {{/unless}}
+
+        {{! or a custom unit from scratch}}
+        {{else if this._custom}}
+            {{#unless hideLabel}}
+            <div class="badge badge-light text-muted font-weight-light ">
+                {{> icon name="user" fw=true}}
+                <span>{{i18n "curriculum.global"}}</span>
+            </div>
+            {{else}}
+                {{> tooltip icon="user" title=(i18n "curriculum.global") class="badge badge-secondary font-weight-light "}}
+            {{/unless}}
+
+        {{else}}
+                {{#unless hideLabel}}
+                <div class="text-danger font-weight-light ">
+                    {{> icon name="exclamation-triangle"}}
+                        <span>{{i18n "curricuum.unknownState"}}</span>
+                </div>
+                {{else}}
+                    {{> tooltip icon="exclamation-triangle" title=(i18n "curriculum.unknownState") class="badge badge-danger font-weight-light "}}
+                {{/unless}}
+        {{/if}}
+    {{/with}}
+</template>

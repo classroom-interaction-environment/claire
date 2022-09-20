@@ -1,0 +1,8 @@
+<template name="prepare">
+    {{#unless loadComplete}}
+        {{> loading title=(i18n "lesson.lessons") type="data"}}
+    {{else}}
+        {{> TemplateLoader currentView}}
+    {{/unless}}
+    <span class="example"></span>
+</template>

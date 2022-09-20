@@ -1,0 +1,20 @@
+<template name="literatureRenderer">
+    <div class="border border-light card-body">
+        <p class="text-primary">
+            {{> icon name="book" fw=true}}
+            {{title}}
+        </p>
+        <p class="font-weight-normal">
+            {{authors}} ({{year}}). {{publisher}}{{#if city}}: {{city}}.{{/if}} {{issue}} {{#if volume}}
+            ({{volume}}).{{/if}}
+        </p>
+        {{#if url}}
+            <p class="font-weight-normal">
+                [<a href="{{url}}" rel="noopener" target="_blank">
+                    {{> icon name="external-link-alt"}}
+                    {{i18n "webResources.link"}}
+                </a>]
+            </p>
+        {{/if}}
+    </div>
+</template>

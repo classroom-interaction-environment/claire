@@ -1,0 +1,50 @@
+<template name="legal">
+    {{#Teleport destination="#route-subtitle-destination"}}
+        <div class="text-md-left text-center font-weight-bold">
+            {{i18n (concat "legal." currentType)}}
+        </div>
+    {{/Teleport}}
+
+    {{#Teleport destination="#route-info-destination"}}
+        <div class="text-center text-md-right w-100">
+            {{#routeButton href=getLastRoute type="outline-secondary"}}
+                {{> icon name="caret-left"}}
+                <span>{{i18n "actions.back"}}</span>
+            {{/routeButton}}
+        </div>
+    {{/Teleport}}
+
+    <h2 class="text-center my-4">{{i18n (concat "legal." currentType)}}</h2>
+
+
+    {{> legalLinks otherLegal=otherLegal}}
+
+    <div class="card my-4">
+        <div class="card-body">
+            {{#with currentLegal}}
+                {{{this}}}
+            {{/with}}
+        </div>
+    </div>
+
+    {{> legalLinks otherLegal=otherLegal}}
+
+    <div class="text-center w-100 my-4">
+        {{#routeButton href=getLastRoute type="outline-secondary"}}
+            {{> icon name="caret-left"}}
+            <span>{{i18n "actions.back"}}</span>
+        {{/routeButton}}
+    </div>
+</template>
+
+<template name="legalLinks">
+    <div class="d-print-none">
+        <hr>
+        <div class="text-center my-3">
+            {{#each legal in otherLegal}}
+                {{> link href=(route "legal" legal) label=(i18n (concat "legal." legal)) class="px-2" }}
+            {{/each}}
+        </div>
+        <hr>
+    </div>
+</template>

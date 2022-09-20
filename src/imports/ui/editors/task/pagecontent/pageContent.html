@@ -1,0 +1,304 @@
+<template name="taskPageContent">
+
+    <div class="add-content-buttons my-4 text-center">
+        {{#each taskPageContentType}}
+            {{#routeButton
+                    href=""
+                    type=(contentButtonType this.value)
+                    class="btn-sm add-content-entry"
+                    data-target=this.value
+                    data-index=0
+                    title=(i18n this.label)}}
+                {{> icon fw=true name="plus"}}
+                {{> icon fw=true name=this.icon}}
+            {{/routeButton}}
+        {{/each}}
+    </div>
+
+    {{#unless loadComplete}}
+        {{>loading type="data"}}
+    {{/unless}}
+
+    <ul class="list-group sortable-root">
+
+        {{! entries are content elements here }}
+        {{#with entries}}
+            {{#each entry in this}}
+            {{! display task element with renderer }}
+                <li class="list-group-item mt-1 pagecontent-edit-target
+                 {{#if isSelected entry.id}}selected-pagecontent-element{{/if}}
+                    {{#if isHovered entry.id}}border border-primary{{/if}}
+                    {{#if isPassive entry.id}}text-muted{{/if}}"
+                    data-index="{{@index}}" data-target="{{entry.id}}">
+
+                    <div class="d-flex justify-content-between mb-3
+                            {{#unless isHovered
+                                      entry.id}}text-muted{{/unless}}">
+
+                        {{! index and icons }}
+                        <span class="te-pagecontent-element-types">
+                            {{> tooltip
+                                    title=(i18n (taskPageContentLabel entry.type))
+                                    icon=(taskPageContentIcon entry.type)
+                                    class="text-muted"}}
+                            {{> tooltip
+                                    title=(i18n (taskPageMetaLabel entry.type entry.meta))
+                                    icon=(taskPageMetaIcon entry.type entry.meta)
+                                    class="text-muted"}}
+                        </span>
+
+                        {{! action buttons }}
+                        <span class="te-pagecontent-element-actions">
+                        {{> actionButton type="outline-secondary"
+                                class="task-content-move-entry-cursor btn-sm"
+                                data-target=entry.id
+                                data-index=@index
+                                data-content=entry.type
+                                data-meta=entry.meta
+                                disabled=(not (isHovered entry.id))
+                                title=(i18n 'editor.task.moveEntry')
+                                icon='arrows-alt-v'}}
+                            <span class="dropdown">
+                                {{> actionButton
+                                        id="dropdownMenuButton"
+                                        type="outline-secondary"
+                                        class="btn-sm dropdown-toggle"
+                                        aria-expanded="false"
+                                        title=(i18n 'editor.task.moveToPage')
+                                        disabled=(moveDisabled entry.id)
+                                        data-toggle="dropdown" aria-haspopup="true"
+                                        icon="copy"}}
+                                <div class="dropdown-menu"
+                                     aria-labelledby="dropdownMenuLink_{{entry.id}}">
+                                    {{#each pageIndex in (pageIndices @index)}}
+                                        {{#if samePage @index}}
+                                            <a href
+                                               class="dropdown-item text-muted disabled"
+                                               disabled>
+                                            {{i18n 'editor.task.moveToPage'}} {{pageIndex.label}}
+                                        </a>
+                                        {{else}}
+                                            <a href
+                                               class="dropdown-item page-content-move"
+                                               data-target="{{pageIndex.target}}"
+                                               data-page="{{pageIndex.value}}">
+                                            {{i18n 'editor.task.moveToPage'}} {{pageIndex.label}}
+                                        </a>
+                                        {{/if}}
+                                    {{/each}}
+                                </div>
+                                </span>
+                            {{> actionButton
+                                    type="outline-primary"
+                                    class="btn-sm edit-attributes"
+                                    data-target=entry.id
+                                    disabled=(editDisabled entry)
+                                    title=(i18n 'editor.task.editAttributes')
+                                    icon="edit"}}
+                            {{> actionButton
+                                    type="outline-danger"
+                                    class="btn-sm page-content-delete"
+                                    data-target=entry.id
+                                    disabled=(not (isHovered entry.id))
+                                    blocked=(submitting entry.id)
+                                    title=(i18n 'actions.delete')
+                                    icon="trash"}}
+                            </span>
+                    </div>
+
+                    {{!--
+                            task content preview rendering only if attributes are present,
+                            otherwise show options to edit attributes or select an
+                            existing task element from a given collection
+                    --}}
+
+                    {{> TaskRendererFactory type=entry.type attributes=(attributesDoc entry) }}
+                </li>
+            {{/each}}
+        {{else}}
+            <li class="list-group-item">
+                {{> nodocs}}
+            </li>
+        {{/with}}
+    </ul>
+
+
+    {{!-- there is always a final add-content buttons group at the end --}}
+
+    <div class="my-4 text-center">
+        {{#each taskPageContentType}}
+            {{#routeButton
+                    href=""
+                    type=(contentButtonType this.value)
+                    class="btn-sm add-content-entry"
+                    data-target=this.value
+                    data-index=0
+                    title=(i18n this.label)}}
+                {{> icon fw=true name="plus"}}
+                {{> icon fw=true name=this.icon}}
+            {{/routeButton}}
+        {{/each}}
+    </div>
+
+    {{! EDIT ENTRY - provides an edit form and a corresponding preview }}
+
+    {{#modal id="pageContentEditModal" xl=true static=true}}
+        {{#mheader dismiss=true class="bg-primary text-white"}}
+            {{> icon name="edit"}} {{i18n "editor.task.editContent"}}
+        {{/mheader}}
+        <div class="card-body taskeditor-item-area">
+            {{#with editTarget}}
+                <div class="row">
+
+                    {{! edit the entry in the right column }}
+                    <div class="col">
+                        {{# caroForm
+                                id="attributesForm"
+                                schema=(attributesSchema editTarget.type editTarget.meta)
+                                doc=(attributesDoc editTarget)
+                                blocked=submitting
+                                type="normal"}}
+                        {{/caroForm}}
+                    </div>
+
+                    {{! preview the entry in the left column }}
+                    <div class="col">
+                        <legend class="my-4 text-primary font-weight-light">
+                            {{i18n "common.preview"}}
+                        </legend>
+                        {{#with editPreview}}
+                            {{> TaskRendererFactory
+                                    type=editTarget.type
+                                    attributes=(attributesDoc this)}}
+                        {{/with}}
+                    </div>
+                </div>
+                {{#if showSchema editTarget.id}}
+                    <pre class="taskeditor-preformatted">
+                        {{printSchema this}}
+                    </pre>
+                {{/if}}
+            {{else}}
+                {{> loading type="data"}}
+            {{/with}}
+        </div>
+
+        {{#mfooter class="row"}}
+            <div class="col">
+                {{> actionButton
+                        label=(i18n "actions.save")
+                        submit=true
+                        form="attibutesForm"
+                        type="primary"
+                        class="save-attributes-form-button"
+                        sm=true
+                        icon="save"
+                        blocked=submitting}}
+                {{> actionButton
+                        label=(i18n "common.preview")
+                        type="outline-secondary"
+                        class="preview-attributes-form-button"
+                        sm=true
+                        blocked=submitting}}
+            </div>
+            <div class="col text-right">
+                {{> actionButton
+                        label=(i18n "actions.cancel")
+                        type="outline-secondary"
+                        class="cancel-edit-button"
+                        data-dismiss="modal"
+                        sm=true
+                        blocked=submitting}}
+            </div>
+        {{/mfooter}}
+    {{/modal}}
+
+
+
+    {{#modal id="pageContentAddModal" large=true static=true}}
+        {{#with addContentCategory}}
+            {{#mheader dismiss=true class="bg-success text-white"}}
+                <i class="fa fa-fw fa-{{this.icon}}"></i>
+                {{i18n "editor.task.addContent"}} - {{i18n this.label}}
+            {{/mheader}}
+        {{/with}}
+        {{#mbody}}
+            {{! ADD CONTENT CATEGORIES }}
+
+            {{#with addContentCategory}}
+                {{#each subCategory in (taskPageSubcategories this.value)}}
+                    <div class="d-block text-primary my-2">
+                        {{> icon name=subCategory.icon}}
+                        {{i18n subCategory.label}}
+                    </div>
+
+                    <div class="row">
+                        {{#each taskPageMetaType this.value subCategory.name}}
+                            <div class="col-sm-4 col-lg-3 element-select-col mb-2">
+                                <button class="btn {{#if newElement ../value
+                                                         this.name}}btn-secondary{{else}}btn-outline-secondary{{/if}} btn-block select-new-element-button h-100 text-center"
+                                        data-content="{{../value}}"
+                                        data-meta="{{this.name}}">
+                                    <h1>
+                                        <i class="fa fa-fw fa-{{this.icon}} mr-2"></i>
+                                    </h1>
+                                    <small>{{i18n this.label}}</small>
+                                </button>
+                            </div>
+                        {{/each}}
+                    </div>
+                {{else}}
+
+                    {{! elements with no categories will be listed all}}
+                    <div class="row">
+                        {{#each taskPageMetaType this.value}}
+                            <div class="col-sm-4 col-lg-3 element-select-col mb-2">
+                                <button class="btn {{#if newElement ../value
+                                                         this.name}}btn-secondary{{else}}btn-outline-secondary{{/if}} btn-block select-new-element-button h-100 text-center"
+                                        data-content="{{../value}}"
+                                        data-meta="{{this.name}}">
+                                    <h1>
+                                        <i class="fa fa-fw fa-{{this.icon}} mr-2"></i>
+                                    </h1>
+                                    <small>{{i18n this.label}}</small>
+                                </button>
+                            </div>
+                        {{/each}}
+                    </div>
+                {{/each}}
+
+            {{! EDIT FORM PART }}
+                {{#with newElementFormState}}
+                    {{> caroForm
+                            id="newElementForm"
+                            schema=(attributesSchema this.content this.meta)
+                            type="normal"
+                    }}
+                {{else if loadingElementForm}}
+                    {{> loading type="data"}}
+                {{else}}
+                    <div class="card-body">
+                        <p>
+                            <i class="fa fa-fw fa-info-circle"></i> {{i18n
+                                "editor.task.selectMeta"}}
+                        </p>
+                    </div>
+                {{/with}}
+            {{/with}}
+        {{/mbody}}
+        {{#mfooter}}
+            {{#if newElementFormState}}
+                {{> actionButton submit=true form="newElementForm"
+                        blocked=submitting
+                        type="success" class="mr-auto" icon="plus" label=(i18n "actions.create")}}
+
+            {{/if}}
+            <button class="btn btn-secondary" data-dismiss="modal">
+                {{i18n "actions.cancel"}}
+            </button>
+        {{/mfooter}}
+    {{/modal}}
+
+    {{> confirm static=true}}
+</template>
+

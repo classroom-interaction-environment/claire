@@ -1,0 +1,10 @@
+<template name="textRendererquote">
+    <div class="card-body">
+	<blockquote class="blockquote border-left border-info px-2 {{this.align}}">
+		<p>{{this.static}}</p>
+		{{#if this.source}}
+			<footer class="blockquote-footer">{{this.source}}</footer>
+		{{/if}}
+	</blockquote>
+    </div>
+</template>

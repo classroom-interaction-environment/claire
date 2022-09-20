@@ -1,0 +1,65 @@
+<template name="itemResultText">
+    {{#with results}}
+        <ul class="list-group">
+            {{#each result in this}}
+                {{#unless answerIsHidden result.createdBy}}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div class="w-100 {{#if shouldBeHidden
+                                                result.createdBy}}passive{{/if}}">
+                            <span class="text-left d-block">{{result.response}}</span>
+                            {{#if showUser result.createdBy}}
+                                <small class="text-left d-block">
+                                    {{username result.createdBy}}
+                                </small>
+                            {{/if}}
+                        </div>
+
+                        <div class="dropdown border-0">
+                            {{> actionButton
+                                    icon="cog"
+                                    sm=true
+                                    title=(i18n "common.settings")
+                                    type="outline-secondary"
+                                    class="dropdown-toggle boder-0"
+                                    blocked=(saving result.createdBy)
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false"}}
+                            <div class="dropdown-menu dropdown-menu-right">
+                                {{#if showUser result.createdBy}}
+                                    <a class="dropdown-item toggle-user-button"
+                                       href data-target={{result.createdBy}}>
+                                        {{>icon name="user-slash"}}
+                                        <span>{{i18n "response.hideUser"}}</span>
+                                    </a>
+                                {{else}}
+                                    <a class="dropdown-item toggle-user-button"
+                                       href data-target={{result.createdBy}}>
+                                        {{>icon name="user"}}
+                                        <span>{{i18n "response.showUser"}}</span>
+                                    </a>
+                                {{/if}}
+
+                                {{#unless shouldBeHidden result.createdBy}}
+                                    <a class="dropdown-item toggle-response-button"
+                                       href data-target={{result.createdBy}}>
+                                        {{>icon name="eye-slash"}}
+                                        <span>{{i18n "response.hide"}}</span>
+                                    </a>
+                                {{else}}
+                                    <a class="dropdown-item toggle-response-button"
+                                       href data-target={{result.createdBy}}>
+                                        {{>icon name="eye"}}
+                                        <span>{{i18n "response.show"}}</span>
+                                    </a>
+                                {{/unless}}
+                            </div>
+                        </div>
+                    </li>
+                {{/unless}}
+            {{/each}}
+        </ul>
+    {{else}}
+        {{> nodocs}}
+    {{/with}}
+</template>

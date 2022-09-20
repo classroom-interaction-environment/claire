@@ -1,0 +1,22 @@
+<template name="confirmResearch">
+    {{#unless loadComplete}}
+        {{> loading title=(i18n "user.research.optIn")}}
+    {{/unless}}
+
+    {{#if successful}}
+        <div class="jumbotron">
+            <h2>
+                {{> icon name="check" class="text-success"}}
+                <span>{{i18n "common.successful"}}</span>
+            </h2>
+            <p>{{i18n "user.research.optInComplete"}}</p>
+
+            {{> routeButton href=(route "profile" currentUser._id) label=(i18n "common.ok")}}
+        </div>
+    {{/if}}
+
+    {{#with error}}
+        {{> fail error=this}}
+        {{> routeButton href=(route "profile" currentUser._id) label=(i18n "common.ok")}}
+    {{/with}}
+</template>

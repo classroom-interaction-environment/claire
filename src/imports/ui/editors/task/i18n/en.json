@@ -1,0 +1,35 @@
+{
+  "editor": {
+    "task": {
+      "title": "Task-Editor",
+      "backToUnit": "Back to unit editor",
+      "addToUnit": "Link to unit",
+      "confirmUnlink": "DO you want to remove this task from unit '{{title}}'?",
+      "baseInfo": "Basic info",
+      "addPage": "Add page",
+      "editPages": "Page content",
+      "editInUnitEditor": "Edit in unit editor",
+      "staticContent": "Static content",
+      "headerContent": "Header",
+      "footerContent": "Footer",
+      "noStaticContent": "No static content",
+      "preview": "Preview",
+      "codeView": "Raw data",
+      "emptyPages": "This task contains empty pages!",
+      "emptyPage": "This page is empty!",
+      "editAttributes": "Edit element",
+      "noAttributes": "This element has no attributes yet",
+      "addContent": "Add content",
+      "selectMeta": "Select one of the following content types and add them to your task",
+      "moveToPage": "Move to page",
+      "selectExistingElement": "Select element",
+      "makePersistent": "Make persistent",
+      "linkedUnits": "Units",
+      "linkUnit": "Link unit",
+      "confirmDeletePage": "If you delete this page you also delete all it's content. Do you want to continue?",
+      "moveEntry": "Move element",
+      "create": "Create new task",
+      "editInTaskEditor": "Edit in task editor"
+    }
+  }
+}

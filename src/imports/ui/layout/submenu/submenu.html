@@ -1,0 +1,17 @@
+<template name="submenu">
+    {{!-- navigation --}}
+    <div class="my-4">
+        <ul {{navAtts}}>
+            {{#each view in views}}
+                {{#if visible (view currentUser)}}
+                <li class="nav-item">
+                    <a class="nav-link {{#if isCurrent view.name}}active{{/if}} submenu-tab" href data-target="{{view.name}}">
+                        {{i18n view.label}}
+                    </a>
+                </li>
+                {{/if}}
+            {{/each}}
+            {{> Template.contentBlock this}}
+        </ul>
+    </div>
+</template>

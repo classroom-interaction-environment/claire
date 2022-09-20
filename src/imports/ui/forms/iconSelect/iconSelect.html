@@ -1,0 +1,38 @@
+<template name="afIconSelect">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between">
+            <span>
+                <input type="search" class="form-control search-icon-input"
+                    disabled="{{#unless searchAvailable}}disabled{{/unless}}">
+            </span>
+            <span>
+            {{#if setIcon}}
+                <span>
+                    {{> icon name="spinner" fw=true pulse=true}}
+                </span>
+            {{else if selectedIcon}}
+                <span>
+                    {{> icon name=selectedIcon fw=true}}
+                </span>
+            {{/if}}
+            </span>
+        </div>
+        <div class="card-body row icon-select-container">
+            {{#each iconName in icons}}
+                <button class="icon-container col-1" data-index="{{@index}}"
+                      data-name="{{iconName}}">
+                    <span>{{iconName}}</span>
+                </button>
+            {{else}}
+                <div class="col-12">
+                    {{> loading type="data"}}
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    {{!-- ERRORS, VALIDATION ETC, --}}
+    <small class="help-block text-danger col-12"></small>
+
+    {{! autoform extension internals }}
+    <input type="hidden" class="hidden-input" {{inputAtts}}>
+</template>

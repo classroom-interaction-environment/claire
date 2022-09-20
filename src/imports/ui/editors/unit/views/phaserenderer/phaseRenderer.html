@@ -1,0 +1,149 @@
+<template name="uephaseRenderer">
+	{{#with phaseDoc}}
+
+		<!-- period -->
+		{{#ueprField context=(context 'title')}}
+			<div class="card-body">
+				<p>{{this.title}}</p>
+			</div>
+		{{/ueprField}}
+
+		<!-- period -->
+		{{#ueprField context=(context 'period')}}
+			<div class="card-body">
+				<p>{{this.period}} {{i18n 'time.minutes'}}</p>
+			</div>
+		{{/ueprField}}
+
+		<!-- plot -->
+		{{#ueprField context=(context 'plot')}}
+			<div class="card-body">
+				{{#with this.plot}}
+					<p class="text-justify">{{this}}</p>
+				{{else}}
+					<span class="text-muted">{{i18n "common.noEntry"}}</span>
+				{{/with}}
+			</div>
+		{{/ueprField}}
+
+		<!-- social state -->
+		{{#ueprField context=(context 'socialState')}}
+			<ul class="list-group list-group-flush">
+				{{#each this.socialState}}
+					{{#with socialState this}}
+						<li class="list-group-item">
+							<i class="fa fa-fw fa-{{this.icon}}"></i>
+							<span>{{this.label}}</span>
+						</li>
+					{{/with}}
+				{{else}}
+					{{> uephasenoEntries}}
+				{{/each}}
+			</ul>
+		{{/ueprField}}
+
+		<!-- methods -->
+		{{#ueprField context=(context 'method')}}
+			<div class="card-body">
+				{{#with this.method}}
+					<p class="text-justify">{{this}}</p>
+				{{else}}
+					<span class="text-muted">{{i18n "common.noEntry"}}</span>
+				{{/with}}
+			</div>
+		{{/ueprField}}
+
+		<!-- references -->
+		{{#ueprField context=(context 'references')}}
+			<ul class="list-group list-group-flush">
+				{{#each references}}
+					<li class="list-group-item">
+						<i class="fa fa-fw fa-{{this.icon}}"></i>
+						<h6>
+							{{#if this.isFilesCollection}}
+								{{this.doc.name}}
+							{{else}}
+								{{this.doc.title}}
+							{{/if}}
+						</h6>
+						<small class="text-muted">{{i18n this.label}}</small>
+					</li>
+				{{else}}
+					{{> uephasenoEntries}}
+				{{/each}}
+			</ul>
+		{{/ueprField}}
+
+		<!-- notes -->
+		{{#ueprField context=(context 'notes')}}
+			<div class="card-body">
+				{{#with this.notes}}
+					<p class="text-justify">{{this}}</p>
+				{{else}}
+					<span class="text-muted">{{i18n "common.noEntry"}}</span>
+				{{/with}}
+			</div>
+		{{/ueprField}}
+
+		{{#if isAdmin}}
+			<div class="card mt-4">
+				<div class="card-body">
+					<pre><code>{{stringify this}}</code></pre>
+				</div>
+			</div>
+		{{/if}}
+	{{else}}
+		{{> loading title=(i18n 'curriculum.phase')}}
+	{{/with}}
+</template>
+
+<template name="uephasenoEntries">
+	<li class="list-group-item text-muted">
+		{{i18n "common.noentries"}}
+	</li>
+</template>
+
+<template name="ueprField">
+	<div class="card mt-4">
+		<div class="card-header clearfix">
+				<span class="float-right">
+					{{#unless this.context.edit}}
+						{{> ueprEditButton field=this.context.field submitting=this.context.submitting}}
+					{{else}}
+						<a href class="uephase-renderer-cancel-button text-muted" data-field="{{field}}"
+						   disabled="{{#if submitting}}disabled{{/if}}">
+							{{#if submitting}}
+								<i class="fa fa-fw fa-sync fa-spin"></i>
+							{{else}}
+								<i class="fa fa-fw fa-times"></i>
+							{{/if}}
+						</a>
+					{{/unless}}
+				</span>
+			<h5>{{this.context.label}}</h5>
+		</div>
+		{{#unless this.context.edit}}
+			{{> Template.contentBlock ..}}
+		{{else}}
+			<div class="card-body">
+				{{> caroForm id="ueprEditFieldForm"
+						schema=editSchema
+						type="normal"
+						doc=this.context.doc
+						buttonClasses="btn btn-primary" buttonContent=(i18n "actions.update")
+				}}
+			</div>
+		{{/unless}}
+	</div>
+</template>
+
+<template name="ueprEditButton">
+	<a href class="btn btn-outline-primary uephase-renderer-edit-button" data-field="{{field}}"
+	   disabled="{{#if submitting}}disabled{{/if}}">
+		{{#if submitting}}
+			<i class="fa fa-fw fa-sync fa-spin"></i>
+		{{else}}
+			<i class="fa fa-fw fa-edit"></i>
+		{{/if}}
+	</a>
+</template>

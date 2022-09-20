@@ -1,0 +1,76 @@
+<template name="phaseFullRenderer">
+    <table class="table phases-table-full phases-full-preview-table {{#if
+            border}}border border-light{{/if}}" id="{{id}}">
+        <thead>
+        <tr class="text-dark {{#if border}}border border-light{{/if}}">
+            {{#with phaseSchema}}
+                <th class="text-center">
+                    {{i18n "time.min"}}
+                </th>
+                <th>{{this.title.label}} / {{this.plot.label}}</th>
+                <th>{{this.method.label}}</th>
+                <th>{{this.socialState.label}}</th>
+                <th>{{this.references.label}}</th>
+                <th>{{this.notes.label}}</th>
+            {{/with}}
+        </tr>
+        </thead>
+        <tbody class="uephase-table-body border-top-4">
+        {{#each phaseDoc in phases}}
+            <tr class="uephase-table-row">
+
+                {{! MIN / PERIOD }}
+                <td class="text-center">{{phaseDoc.period}}</td>
+
+
+                {{! TITLE + DESCRIPTION }}
+                <td class="wrap-cell white-space-normal w-25">
+                    <span class="font-weight-bold">{{phaseDoc.title}}</span>
+                    <p>{{phaseDoc.plot}}</p>
+                </td>
+
+                {{! METHOD }}
+                <td class="wrap-cell white-space-normal">
+                    {{phaseDoc.method}}
+                </td>
+
+                {{! SOCIALSTATE }}
+                <td class="no-wrap white-space-normal">
+                    {{#each phaseDoc.socialState}}
+                        {{#with socialState this}}
+                            <span class="no-wrap">
+							<i class="text-muted fa fa-fw fa-{{this.icon}}"
+                               title="{{this.label}}"></i> {{#if
+                                    ../../fluid}}{{this.label}}{{/if}}
+							</span>
+                        {{/with}}
+                    {{/each}}
+                </td>
+
+                {{! REFERENCES }}
+                <td class="no-wrap white-space-normal">
+                    {{#each phaseDoc.references}}
+                        {{#with reference this}}
+                            <div class="d-flex align-items-baseline p-1">
+                                {{> icon name=this.icon class="text-muted"}}
+                                <span class="ml-1">
+                                {{#if this.isFilesCollection}}
+                                    {{this.doc.name}}
+                                {{else}}
+                                    {{this.doc.title}}
+                                {{/if}}
+                                </span>
+                            </div>
+                        {{/with}}
+                    {{/each}}
+                </td>
+
+                {{! NOTES }}
+                <td class="white-space-normal">
+                    {{phaseDoc.notes}}
+                </td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</template>

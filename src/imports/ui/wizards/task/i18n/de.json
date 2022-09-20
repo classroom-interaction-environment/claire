@@ -1,0 +1,38 @@
+{
+  "wizard": {
+    "task": {
+      "selectLastEdited": "Zuletzt bearbeitete Aufgaben",
+      "description": "Dies sind Ihre angepassten Aufgaben aus den Sequenzen.",
+      "custom": "Dies sind Ihre eigens erstellten Aufgaben",
+      "createNew": "Neue Aufgabe anlegen",
+      "created": "Aufgabe erfolgreich angelegt",
+      "continueToEdit": "Weiter und Aufgabe bearbeiten",
+      "selectOne": "Existierende Aufgabe auswählen und bearbeiten",
+      "choose": {
+        "description": "Bitte wählen Sie aus folgenden Möglichkeiten aus"
+      },
+      "connect": {
+        "title": "Sequenz wählen (optional)",
+        "description": "Sie können hier (optional) eine Sequenz auswählen, für welche die Aufgabe erstellt werden soll. Wenn Sie keine Sequenz auswählen ist die Aufgabe für alle Lernsituationen verfügbar."
+      },
+      "preview": {
+        "title": "Vorschau",
+        "description": "Dies ist eine Vorschau des ausgewählten Dokuments. Wählen Sie 'Weiter und Aufgabe bearbeiten' um es im Aufgaben-Editor zur bearbeiten oder wählen Sie ein anderes Dokument aus."
+      },
+      "create": {
+        "title": "Aufgabe anlegen",
+        "description": "Hier legen Sie zunächst ein Aufgaben-Dokument an."
+      },
+      "complete": {
+        "title": "Bitte wählen Sie aus folgenden Möglichkeiten"
+      },
+      "continue": {
+        "title": "Bitte wählen Sie aus folgenden Möglichkeiten",
+        "description": "Geschafft! Wie möchten Sie nun weiter fortfahren?"
+      },
+      "confirmDeleteLinked": "Sie sind dabei die Aufgabe \"{{title}}\" endgültig zu löschen. Wenn Sie die Aufgabe löschen, wird sie aus folgenden verknüpften Sequenzen entfernt: {{units}}",
+      "confirmDelete": "Sie sind dabei die Aufgabe \"{{title}}\" endgültig zu löschen.",
+      "edit": "Im Aufgaben-Editor bearbeiten"
+    }
+  }
+}

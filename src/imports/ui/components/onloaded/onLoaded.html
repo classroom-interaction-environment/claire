@@ -1,0 +1,7 @@
+<template name="onLoaded">
+    {{#if complete}}
+        {{> Template.contentBlock }}
+    {{else if displayLoading}}
+        {{> loading type=type}}
+    {{/if}}
+</template>

@@ -1,0 +1,135 @@
+<template name="lessonInfo">
+    {{#onLoaded complete=loadComplete}}
+        <div class="row">
+            <div class="col-xs-12 col-md-4 col-lg-6">
+                {{>actionButton
+                        type="outline-secondary btn-block"
+                        class="show-invitations-button h-100 mb-4"
+                        icon="paper-plane"
+                        label=(i18n "schoolClass.invite")
+                        blocked=isStarting}}
+            </div>
+            <div class="col-xs-12 col-md-8 col-lg-6">
+                <div class="card bg-transparent border border-secondary">
+                    <div class="card-body d-flex justify-content-end align-items-center">
+                        <strong>{{> icon name="users" fw=true}} {{i18n "lesson.info.createGroups"}}</strong>
+                        <span class="no-wrap ml-auto">
+                            {{>actionButton
+                                    type="success"
+                                    class="group-action-btn"
+                                    icon="plus"
+                                    data-action="create"
+                                    title=(i18n "actions.create")}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{! =============================================================== }}
+        {{! GROUPS }}
+        {{! =============================================================== }}
+        {{#if feature "groups"}}
+        {{#with groups}}
+            <h3 class="mt-4">{{i18n "lesson.groups"}}</h3>
+            <ul class="list-group">
+                {{#each group in this}}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div class="flex-fill">
+                            {{! title and number of members }}
+                            <div class="d-flex justify-content-between w-100">
+                                <span>{{group.title}}</span>
+                                <span class="px-1 align-self-center">
+                                    {{group.users.length}} {{i18n "group.users"}}
+                                </span>
+                            </div>
+
+                            {{! users }}
+                            <div class="d-block text-secondary">
+                                <small>{{> icon name="users"}}</small>
+                                {{#each user in group.users}}
+                                    {{#with toUser user.userId}}
+                                        <small class="p-1 {{#unless isOnline this.presence}}text-muted{{/unless}}">
+                                            {{username this}} {{#if user.role}}({{user.role}}){{/if}}
+                                        </small>
+                                    {{/with}}
+                                {{/each}}
+                            </div>
+
+                            {{! phases}}
+                            {{#with (phaseDocs group.phases)}}
+                            <div class="d-block text-secondary">
+                                {{> icon name="shuffle"}}
+                                {{#each phase in this}}
+                                    <small class="p-1">{{phase.title}}</small>
+                                {{/each}}
+                            </div>
+                            {{/with}}
+
+                            {{! material}}
+
+                        </div>
+                        <span class="align-self-top">
+                        {{> actionButton class="group-action-btn"
+                                type="outline-secondary"
+                                icon="eye"
+                                data-action="view"
+                                title=(i18n "actions.preview")
+                                data-id=group._id}}
+                            {{> actionButton
+                                    class="group-action-btn"
+                                    type="outline-primary"
+                                    icon="edit"
+                                    data-action="update"
+                                    disabled=true
+                                    title=(i18n "actions.edit")
+                                    data-id=group._id}}
+                            {{> actionButton class="group-action-btn"
+                                    type="outline-danger"
+                                    icon="trash"
+                                    data-action="remove"
+                                    title=(i18n "actions.delete")
+                                    data-id=group._id}}
+                    </span>
+                    </li>
+                {{/each}}
+            </ul>
+        {{/with}}
+
+        {{#modal id="manageGroupModal" xl=true static=true}}
+            {{> mheader title=(i18n "lesson.info.createGroups") class="bg-success text-white" dismiss=true}}
+            {{#mbody}}
+                {{#onLoaded complete=groupBuilderAtts}}
+                    {{> groupBuilder groupBuilderAtts}}
+                {{/onLoaded}}
+            {{/mbody}}
+        {{/modal}}
+
+        {{/if}}{{! end if feature "group" }}
+
+        {{> formModal }}
+
+        {{! =============================================================== }}
+        {{! USERS }}
+        {{! =============================================================== }}
+        {{#with studentsForLesson}}
+            <h3 class="mt-4">{{i18n "users.title"}}</h3>
+            {{> userListRenderer users=this classDoc=classDoc class="my-4" liClass="border-0"}}
+        {{else}}
+            <div class="jumbotron my-4">
+                <p>{{i18n "lesson.noStudents"}}</p>
+            </div>
+        {{/with}}
+
+        {{#if canRestart}}
+            <div class="card border-warning my-4">
+                <div class="card-body">
+                    <button class="btn btn-warning restart-lesson-button">
+                        {{i18n "lesson.actions.restart"}}
+                    </button>
+                </div>
+            </div>
+        {{/if}}
+    {{/onLoaded}}
+    {{> confirm static=true}}
+</template>

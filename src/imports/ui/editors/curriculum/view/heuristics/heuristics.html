@@ -1,0 +1,97 @@
+<template name="curriculumHeuristics">
+
+    {{#unless loadComplete}}
+        {{> loading type="data"}}
+    {{/unless}}
+
+    <div class="d-flex w-100">
+        {{>actionButton
+                type="success"
+                class="ml-auto create-dimension-button text-nowrap"
+                label=(i18n "actions.create")
+                icon="plus"}}
+    </div>
+
+    <div class="row">
+        {{#each dimensionType in dimensionTypes}}
+            <div class="col-sm-12 col-md-6">
+                <h5>{{i18n dimensionType.label}}</h5>
+                {{#with entries dimensionType.value}}
+                    <ul class="list-group list-group-flush mt-3">
+                        {{#each dim in this}}
+                            <li class="list-group-item d-block">
+                                {{#unless edit dim._id}}
+                                    <div class="d-flex justify-content-between">
+                                        {{> dimension dim hideLabel=true hideIcon=true}}
+
+                                        <span>
+                                        {{> actionButton
+                                                type="outline-primary"
+                                                sm=true
+                                                class="edit-dimension-button"
+                                                data-target=dim._id
+                                                icon="edit"
+                                                title=(i18n "actions.edit")}}
+                                        {{> actionButton
+                                                type="outline-danger"
+                                                sm=true
+                                                class="delete-dimension-button"
+                                                data-target=dim._id
+                                                icon="trash"
+                                                blocked=(deleting dim._id)
+                                                title=(i18n "actions.delete")}}
+                                    </span>
+                                    </div>
+                                    <p>{{dim.description}}</p>
+                                {{else}}
+                                    {{#caroForm id="editDimensionForm"
+                                                schema=dimensionSchema
+                                                doc=dim hideLegend=true}}
+                                        <div class="d-flex justify-content-between">
+                                            {{> actionButton submit=true label=(i18n "actions.update")}}
+                                            {{> actionButton class="edit-dimension-button" data-target=null
+                                                    label=(i18n "actions.cancel")}}
+                                        </div>
+                                    {{/caroForm}}
+                                {{/unless}}
+                            </li>
+                        {{/each}}
+                    </ul>
+                {{else}}
+                    {{>nodocs}}
+                {{/with}}
+            </div>
+        {{/each}}
+    </div>
+
+    {{!-- create/edit modal --}}
+    {{#modal id="curriculumHeuristicsModal" large=true}}
+        {{#onLoaded complete=showForm}}
+        {{> mheader title=(i18n "editor.didactics.heuristics.createDimension") dismiss=true class="bg-success text-light"}}
+        {{#mbody}}
+            {{#caroForm id="editDimensionForm"
+                        schema=dimensionSchema
+                        blocked=(updating "new")
+                        hideLegend=true collapse=false}}
+            {{/caroForm}}
+        {{/mbody}}
+        {{#mfooter class="d-flex"}}
+            {{> actionButton
+                    submit=true
+                    form="editDimensionForm"
+                    type="success"
+                    blocked=(updating "new")
+                    icon="plus"
+                    label=(i18n "actions.create")}}
+            {{>actionButton
+                    blocked=(updating "new")
+                    data-dismiss="modal"
+                    type="outline-secondary"
+                    class="ml-auto"
+                    label=(i18n "actions.cancel")}}
+        {{/mfooter}}
+        {{/onLoaded}}
+    {{/modal}}
+
+    {{> confirm static=true}}
+</template>

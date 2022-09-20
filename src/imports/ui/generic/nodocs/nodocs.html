@@ -1,0 +1,11 @@
+<template name="nodocs">
+	<div class="jumbotron mb-0 {{className}}">
+		{{#unless hideTitle}}
+		<div class="text-center">
+			{{#if icon}}<i class="fa fa-{{icon}} fa-2x"></i>{{/if}}
+			<p>{{i18n "common.noentries" (ternary title title (i18n "common.entries"))}}</p>
+		</div>
+		{{/unless}}
+        {{> Template.contentBlock ..}}
+	</div>
+</template>

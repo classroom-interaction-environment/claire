@@ -1,0 +1,5 @@
+<template name="textRenderer">
+    {{#with this}}
+		{{> Template.dynamic template=(templateName this.meta) data=this}}
+	{{/with}}
+</template>

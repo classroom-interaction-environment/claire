@@ -1,0 +1,26 @@
+<template name="imageResultsRenderer">
+    {{#onLoaded complete=loadComplete}}
+        {{#unless hasImages}}
+            {{> nodocs}}
+        {{else}}
+        <div class="cssbox">
+            {{#each image in images}}
+            <a id="{{image._id}}" class="irr-thumbnail" href="#{{image._id}}" data-target="{{image._id}}">
+                {{#with link image "thumbnail"}}
+                    <img class="cssbox_thumb" src="{{this}}" />
+                {{/with}}
+                {{#with link image "original"}}
+                    <span class="cssbox_full">
+                        <img src="{{this}}" />
+                        <caption>{{image.name}}</caption>
+                    </span>
+                {{/with}}
+            </a>
+            {{/each}}
+            <a class="cssbox_close" href="#void"></a>
+            {{#with prev}}<a class="cssbox_prev" data-target={{this}} href="#{{this}}">&lt;</a>{{/with}}
+            {{#with next}}<a class="cssbox_next" data-target={{this}} href="#{{this}}">&gt;</a>{{/with}}
+        </div>
+        {{/unless}}
+    {{/onLoaded}}
+</template>

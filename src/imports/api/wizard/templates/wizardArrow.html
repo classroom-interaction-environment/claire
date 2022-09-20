@@ -1,0 +1,23 @@
+<template name="wizardArrow">
+    <div class="row {{class}}">
+        {{#if eq pos 'left'}}
+            <div class="col-6 text-center">
+                {{> icon name="arrow-down" class="fa-2x"}}
+            </div>
+            <div class="col-6">
+                {{> icon name="" class="fa-2x"}}
+            </div>
+        {{else if eq pos 'right'}}
+            <div class="col-6">
+                {{> icon name="" class="fa-2x"}}
+            </div>
+            <div class="col-6 text-center">
+                {{> icon name="arrow-down" class="fa-2x"}}
+            </div>
+        {{else}}
+            <div class="col text-center">
+                {{> icon name="arrow-down" class="fa-2x"}}
+            </div>
+        {{/if}}
+    </div>
+</template>

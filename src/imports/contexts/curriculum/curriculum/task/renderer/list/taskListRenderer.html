@@ -1,0 +1,57 @@
+<template name="taskListRenderer">
+    <td>
+        {{#with this.context}}
+            {{> icon title=(i18n this.label) name=this.icon}}
+        {{/with}}
+    </td>
+    <td class="w-100">
+        <strong class="m-0">
+            {{this.title}}
+        </strong>
+        {{#if this.description}}
+            <p class="font-weight-normal my-3">
+                {{> short length=100 text=this.description}}
+            </p>
+        {{/if}}
+    </td>
+    <td class="no-wrap">
+        {{#with emptyPages this.pages}}
+            {{> tooltip class="text-warning" title=(i18n "editor.task.emptyPages") icon="exclamation-triangle" label=this}}
+        {{/with}}
+    </td>
+    <td class="no-wrap">
+        {{#with pages this.pages}}
+            {{#if this.noPages}}
+                <span class="text-warning">
+                    <i class="fa fa-fw fa-copy"></i> 0
+                </span>
+            {{else}}
+                <i class="fa fa-fw fa-copy"></i> {{this.length}}
+            {{/if}}
+        {{/with}}
+    </td>
+    <td class="w-100"></td>
+    <td class="text-right">
+        {{#unless isModal}}
+            {{#unless copyRequired this currentUser._id}}
+                {{# routeButton
+                        href=(route 'taskEditor' this._id this.unitDoc._id tab sub)
+                        class="btn-sm uematerialtask-close-preview-modal no-wrap"
+                        title=(i18n "editor.unit.material.editTaskInEditor")}}
+                    <i class="fa fa-edit"></i>
+                    <i class="fa fa-caret-right"></i>
+                {{/routeButton}}
+            {{else}}
+                {{# actionButton
+                        class="btn-sm uematerial-edit-button no-wrap"
+                        data-target=this._id
+                        data-master=this._master
+                        data-redirect='taskEditor'
+                        title=(i18n "editor.unit.material.editTaskInEditor")}}
+                    <i class="fa fa-edit"></i>
+                    <i class="fa fa-caret-right"></i>
+                {{/actionButton}}
+            {{/unless}}
+        {{/unless}}
+    </td>
+</template>

@@ -1,0 +1,35 @@
+{
+  "wizard": {
+    "task": {
+      "selectLastEdited": "Last edited tasks",
+      "description": "These are your custom tasks, sorted by latest updated.",
+      "createNew": "Create new task",
+      "created": "Task created",
+      "continueToEdit": "Continue and edit task",
+      "selectOne": "Select existing task and edit",
+      "choose": {
+        "description": "Please choose between the following"
+      },
+      "connect": {
+        "title": "Select unit (optional)",
+        "description": "You can (optionally) select a unit that will be linked with this task. If you don't select a unit the task will be available to any of your units."
+      },
+      "preview": {
+        "title": "Preview",
+        "description": "This is a preview. Choose 'Continue and edit' to edit it with the task editor."
+      },
+      "create": {
+        "title": "Create task",
+        "description": "At this step you just create a new empty task."
+      },
+      "complete": {
+        "description": "Please choose between the following"
+      },
+      "continue": {
+        "title":"Please choose between the following",
+        "description": "Done! Do you wish to continue?"
+      },
+      "confirmDelete": "You are about to finally delete the task \"{{title}}\". Deletion will also remove it from the following units: {{units}}"
+    }
+  }
+}

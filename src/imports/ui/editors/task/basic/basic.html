@@ -1,0 +1,16 @@
+<template name="teBasicInfo">
+    {{> caroForm id="updateBasicDataForm"
+            schema=updateBasicInfoSchema
+            blocked=submitting
+            collapse=false
+            doc=doc
+            type="normal"}}
+    {{> actionButton
+            submit=true
+            form="updateBasicDataForm"
+            blocked=submitting
+            class="mt-3"
+            label=(i18n "actions.update")
+            icon="save"
+            type="primary"}}
+</template>

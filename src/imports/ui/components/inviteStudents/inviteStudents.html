@@ -1,0 +1,172 @@
+<template name="inviteStudents">
+	{{#unless loadComplete}}
+		{{> loading title=(i18n "schoolClass.invite")}}
+	{{else}}
+		{{#with activeInvitation}}
+			<table class="table table-borderless">
+				<thead>
+				<tr>
+					<th class="text-center">{{i18n "common.status"}}</th>
+					<th class="text-center"><span class="d-none d-md-block">{{i18n "codeInvitation.complete"}}</span>
+					</th>
+                    {{#if ../countDownActive}}
+					    <th>
+                            <span class="d-none d-md-block">
+                                {{i18n "codeInvitation.expiresAt"}}
+                            </span>
+                        </th>
+                    {{/if}}
+					{{!--<th>{{i18n "common.details"}}</th>--}}
+					<th class="text-right"><span class="d-none d-md-block">{{i18n "common.actions"}}</span></th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					{{> invitationRowRenderer
+                            invitation=this
+                            status=true
+                            users=true
+                            role=false
+                            expiration=false
+                            countDownActive=../countDownActive
+                            countdown=countDown}}
+					<td class="text-right no-wrap">
+						<button class="btn btn-sm btn-{{#unless
+								showList}}outline-{{/unless}}secondary show-invitationlist-button">
+							{{#if showList}}
+								{{> icon name="caret-up" fw=true}}
+							{{else}}
+								{{> icon name="caret-down" fw=true}}
+							{{/if}}
+						</button>
+						{{> actionButton type="outline-danger" class="refresh-invitation-button btn-sm"
+								blocked=forceInvalid
+								icon="trash"
+								title=(i18n "actions.delete")}}
+					</td>
+				</tr>
+				</tbody>
+
+				{{#if showList}}
+					<thead class="border border-top-1 border-left-0 border-right-0 border-bottom-0">
+					<tr>
+						<th class="text-center">{{i18n "common.status"}}</th>
+						<th class="text-center">
+							<span class="d-none d-md-block">{{i18n "userProfile.fullName"}}</span>
+						</th>
+						<th>
+							<span class="d-none d-md-block">{{i18n "userProfile.createdAt"}}</span>
+						</th>
+						<th><!--actions--></th>
+					</tr>
+					</thead>
+					<tbody>
+					{{#each user in (registeredUsers this.registeredUsers)}}
+						<tr>
+							<td class="text-center">
+                                {{#if user.registered}}
+                                    {{> icon name="check" fw=true class="text-success"}}
+                                {{else}}
+                                    {{> icon name="times" fw=true class="text-danger"}}
+                                {{/if}}
+							</td>
+							<td class="text-center">
+                                {{user.lastName}}, {{user.firstName}}
+                            </td>
+							<td>{{toDate user.createdAt}}</td>
+							<td></td>
+						</tr>
+					{{else}}
+						<tr>
+							<td colspan="4">
+								{{>nodocs}}
+							</td>
+						</tr>
+					{{/each}}
+					</tbody>
+				{{/if}}
+			</table>
+
+			{{#unless expiredOrComplete this}}
+				<div class="my-3 row">
+
+					{{!-- CODE ---}}
+                    <div class="col-12 col-md-6 col-xl-3">
+					    <div>{{i18n "codeInvitation.code"}}</div>
+                        <textarea id="linkSourceInput" type="text"
+                                  class="form-control monospace word-break-all font-large"
+                                  rows="1"
+                                  readonly>{{this.code}}</textarea>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-3">
+                        <div>{{i18n "codeInvitation.qrCode"}}</div>
+                        <div class="text-center">
+                            {{> codeRender code=this.code}}
+                        </div>
+                    </div>
+
+					{{!-- LINK ---}}
+					{{#with getLink this._id}}
+                    <div class="col-12 col-xl-6">
+						<div>{{i18n "common.link"}}</div>
+						<textarea id="linkSourceInput" type="text"
+                                  class="form-control monospace word-break-all"
+								  rows="4" readonly>{{this}}</textarea>
+                    </div>
+					{{/with}}
+				</div>
+
+
+                <div class="d-flex justify-content-between mt-3">
+                    {{!-- ACTION BUTTONS LEFT ALIGNED --}}
+                    <span>
+								{{!-- EMAIL BUTTON --}}
+                        <a href="{{encodeMail this}}" class="btn btn-outline-secondary send-via-mail-button">
+                            		<i class="fa fa-fw fa-send-o"></i> {{i18n "actions.sendViaMail"}}
+								</a>
+
+                        {{!-- ADD / REMOVE --}}
+                        {{#if codeOnBeamer code}}
+                            {{> actionButton type="secondary" class="code-to-beamer-button"
+                                    blocked=updateBeamer
+                                    icon="qrcode"
+                                    data-code=code
+                                    disabled=beamerDisabled
+                                    label=(i18n "actions.removeFromBeamer")}}
+                        {{else}}
+                            {{> actionButton type="outline-secondary" class="code-to-beamer-button"
+                                    blocked=updateBeamer
+                                    icon="qrcode"
+                                    data-code=code
+                                    disabled=beamerDisabled
+                                    label=(i18n "actions.toBeamer")}}
+                        {{/if}}
+							</span>
+
+                    {{!-- CLOSE BUTTON RIGHT ALIGNED --}}
+                    <button class="btn btn-outline-secondary" type="button" data-dismiss="modal">
+                        {{i18n "actions.close"}}
+                    </button>
+                </div>
+
+			{{else}}
+				<div class="alert alert-info d-flex justify-content-between">
+                    <span>
+						{{i18n "codeInvitation.expiredDetails"}}
+					</span>
+					<button class="btn btn-primary refresh-invitation-button">
+						<i class="fa fa-fw fa-sync"></i> {{i18n "actions.refresh"}}
+					</button>
+				</div>
+			{{/unless}}
+		{{else}}
+			{{#caroForm id="inviteStudentsForm" schema=inviteSchema doc=inviteDoc type="normal" hideLegend=true
+						collapse=false submitting=creating}}
+				<button class="btn btn-success" type="submit">
+					{{i18n "actions.create"}}
+				</button>
+			{{/caroForm}}
+		{{/with}}
+	{{/unless}}
+</template>

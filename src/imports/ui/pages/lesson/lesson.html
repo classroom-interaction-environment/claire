@@ -1,0 +1,43 @@
+<template name="lesson">
+
+    {{#Teleport destination="#route-subtitle-destination"}}
+        <div class="text-center text-md-left">
+            <span>{{classDoc.title}}</span>
+        </div>
+    {{/Teleport}}
+
+    {{#Teleport destination="#route-info-destination"}}
+        <div class="text-center text-md-right">
+            {{#with lessonDoc}}
+                {{> lessonStatus lessonDoc=this unitDoc=unit}}
+            {{/with}}
+        </div>
+    {{/Teleport}}
+
+    {{#unless loadComplete}}
+        {{>loading title=(i18n "lesson.title") type="data"}}
+    {{else}}
+    <ul class="nav nav-tabs nav-justified">
+        {{#each view in viewStates}}
+            <li class="nav-item">
+                <a class="nav-link {{#if active
+                                         view.name}}active{{/if}} lesson-main-tab"
+                   href
+                   data-target="{{view.name}}">{{i18n view.label}}</a>
+            </li>
+        {{/each}}
+    </ul>
+        <div class="my-4">
+            {{> Template.dynamic template=currenTemplate data=currentData}}
+        </div>
+        {{#modal id="inviteToClassModal" class="invitation-modal" xl=true
+                 static=true}}
+            {{> mheader title=(i18n "schoolClass.invite") class="bg-secondary text-white" dismiss=true}}
+            {{#mbody}}
+                {{#with inviteOptions}}
+                    {{> inviteStudents classId=this.classId institution=this.institution countDownActive=invitationModalVisible}}
+                {{/with}}
+            {{/mbody}}
+        {{/modal}}
+    {{/unless}}
+</template>

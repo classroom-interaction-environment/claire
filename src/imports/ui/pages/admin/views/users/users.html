@@ -1,0 +1,135 @@
+<template name="adminUsers">
+    <div class="card my-4">
+        <div class="card-body">
+            <button class="btn btn-success float-right create-user-button">{{i18n
+                    "admin.create.user"}}</button>
+            <h4><i class="fa fa-users"></i> {{i18n "common.users"}}</h4>
+        </div>
+    </div>
+    {{#unless loadUsersComplete}}
+        {{> loading}}
+    {{else}}
+        {{#each institutionNames}}
+            <div class="card my-4">
+                <div class="card-header d-flex justify-content-between">
+                    <h5>{{this}}</h5>
+                    {{#if showInstitution this}}
+                        <button class="btn btn-outline-secondary btn-sm toggle-inst"
+                                data-target="{{this}}">
+                            <i class="fa fa-fw fa-caret-up"></i>
+                        </button>
+                    {{else}}
+                        <button class="btn btn-outline-secondary btn-sm toggle-inst"
+                                data-target="{{this}}">
+                            <i class="fa fa-fw fa-caret-down"></i>
+                        </button>
+                    {{/if}}
+                </div>
+                {{#if showInstitution this}}
+                    <table class="table table-borderless table-hover">
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th>{{i18n "userProfile.lastName"}}</th>
+                            <th>{{i18n "userProfile.firstName"}}</th>
+                            <th>{{i18n "common.email"}}</th>
+                            <th>{{i18n "common.roles"}}</th>
+                            <th class="text-right">{{i18n
+                                    "common.actions"}}</th>
+                        </tr>
+                        {{#each getUsers this}}
+                            <tr>
+                                <td>
+                                    {{#if isOnline this.presence}}
+                                        {{> icon fw=true class="text-success" title=(i18n "user.online") name="circle"}}
+                                    {{else}}
+                                        {{> icon fw=true class="text-muted" type="far" title=(i18n "user.offline") name="circle"}}
+                                    {{/if}}
+                                </td>
+                                <td class="text-center">
+                                    {{#if isVerified this}}
+                                        {{> icon name="check" fw=true title=(i18n "user.verified") class="text-success"}}
+                                    {{else}}
+                                        {{> icon name="envelope" fw=true title=(i18n "user.invited") class="text-warning"}}
+                                    {{/if}}
+                                </td>
+                                <td>{{this.lastName}}</td>
+                                <td>{{this.firstName}}</td>
+                                <td>{{getUserEmail this}}</td>
+                                <td>
+                                    {{#with this.role}}
+                                        {{i18n (concat "roles." this)}}
+                                    {{/with}}
+                                </td>
+                                <td class="text-right">
+                                    {{> actionButton type="outline-secondary"
+                                            title=(i18n "admin.users.view")
+                                            blocked=(submitting this._id)
+                                            class="admin-view-btn btn-sm" icon="eye" data-target=(this._id)}}
+                                    <span class="{{#if isVerified
+                                                       this}}passive{{/if}}">
+                                        {{> actionButton type="outline-primary"
+                                                title=(i18n "admin.users.resendInvitation")
+                                                blocked=(submitting this._id)
+                                                class="admin-re-invite btn-sm" icon="envelope" data-target=(this._id)}}
+                                    </span>
+                                    <span class="{{#if isMe this._id}}passive{{/if}}">
+                                        {{> actionButton type="outline-warning"
+                                                title=(i18n "admin.users.edit")
+                                                blocked=(submitting this._id)
+                                                class="admin-edit-btn btn-sm"
+                                                icon="edit"
+                                                data-target=this._id}}
+                                        {{> actionButton type="outline-danger"
+                                                title=(i18n "admin.users.delete")
+                                                blocked=(submitting this._id)
+                                                class="delete-user-button btn-sm"
+                                                icon="trash"
+                                                data-target=this._id}}
+                                    </span>
+                                </td>
+                            </tr>
+                        {{/each}}
+                    </table>
+                {{/if}}
+
+            </div>
+        {{/each}}
+    {{/unless}}
+
+    {{#modal id="viewModal"}}
+        {{> mheader title=(i18n "admin.users.view")}}
+        {{#mbody}}
+            {{#with previewUser}}
+                <pre><code>{{this}}</code></pre>
+            {{/with}}
+        {{/mbody}}
+    {{/modal}}
+
+    {{#modal id="updateUserModal"}}
+        {{> mheader title=(i18n "admin.users.edit")}}
+        {{#mbody}}
+            {{#with updateUser}}
+                {{> caroForm id="updateUserForm" hideLegend=true schema=(updateUserSchema this.type) type="normal" doc=this.doc}}
+            {{else}}
+                {{> loading}}
+            {{/with}}
+        {{/mbody}}
+        {{#mfooter class="d-flex justify-content-between"}}
+            {{>actionButton submit=true form="updateUserForm" type="primary" label=(i18n "actions.update") blocked=(submitting "updateUserForm")}}
+            {{>actionButton type="outline-secondary" label=(i18n "actions.cancel") data-dismiss="modal"}}
+        {{/mfooter}}
+    {{/modal}}
+
+    {{#modal id="createUserModal" xl=true}}
+        {{> mheader title=(i18n "admin.create.user")}}
+        {{#mbody}}
+            {{> caroForm id="createUserForm" hideLegend=true schema=createUserSchema type="normal"}}
+        {{/mbody}}
+        {{#mfooter}}
+            {{>actionButton submit=true form="createUserForm" type="success" label=(i18n "actions.create") blocked=(submitting "createUserForm")}}
+        {{/mfooter}}
+    {{/modal}}
+
+    {{> confirm static=true}}
+</template>

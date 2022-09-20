@@ -1,0 +1,354 @@
+<template name="createClass">
+    {{#unless loadComplete}}
+        {{>loading }}
+    {{else}}
+
+
+    {{! display the following only if there are already classes for
+        the current user}}
+
+        {{#if hasClasses}}
+            {{#wizardStep name="choose" visible=(stateVisible "choose")
+                          description=(i18n "wizard.prepare.selectClass") num=1
+                          max=3 complete=(stepComplete 'choose')}}
+
+            {{!-- select existing unit --}}
+                {{#wizardComponent
+                        name="chooseClass"
+                        wasSelected=(wasSelected 'choose' 'chooseClass')}}
+                    <div class="col {{#if stepComplete
+                                          'choose'}}passive{{/if}}">
+                        <select class="form-control prepare-class-select"
+                                data-nextstate="preview"
+                                data-component="select">
+                            <option value="">{{i18n 'form.selectOne'}}</option>
+                            {{#each myClasses}}
+                                <option value="{{this._id}}">{{this.title}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                {{/wizardComponent}}
+            {{/wizardStep}}
+        {{/if}}
+
+
+
+        {{! SELECT UNIT - let the user select an existing unit from the master
+            documents which is used to create a user's copy of the unit}}
+        {{#wizardStep name="unit" back=true visible=(stateVisible 'unit') num=2
+                      max=3
+                      description=(i18n "wizard.prepare.selectUnit")
+                      disabled=(stepComplete "unit")}}
+
+            {{#wizardComponent
+                    name="selectUnit"
+                    bg="transparent"
+                    class="col-12"
+                    wasSelected=(wasSelected 'unit' "selectUnit") noBody=true}}
+
+
+            {{! provide optional filter by dimension}}
+                {{#unless stepComplete 'unit'}}
+                    <div class="card bg-transparent">
+                        <div class="card-body d-flex align-items-baseline py-0">
+                            {{> tooltip icon="filter" title=(i18n "wizard.prepare.filterByDimension")}}
+
+                            <div class="ml-2">
+                                {{#each dim in allDimension}}
+                                    {{#unless dimensionDisabled dim._id}}
+                                        {{>dimension
+                                                title=dim.title
+                                                color=dim.color
+                                                tooltip=true
+                                                hideIcon=true
+                                                class="m-1 filter-dimension-button clickable"
+                                                data-target=dim._id}}
+                                    {{else}}
+                                        {{>dimension
+                                                title=dim.title
+                                                color=dim.color
+                                                tooltip=true
+                                                hideIcon=true
+                                                class="m-1 bg-light text-white clickable filter-dimension-button"
+                                                data-target=dim._id}}
+                                    {{/unless}}
+                                {{/each}}
+                            </div>
+                        </div>
+                    </div>
+                {{/unless}}
+
+                <div class="testimonial-group">
+                    <div class="row flex-nowrap p-0 dragscroll">
+                        {{#each pocket in pockets}}
+                            <div class="col-10 col-lg-5 d-inline-block float-none my-2">
+                                <ul class="list-group">
+                                    <li class="list-group-item pocket-header-item">
+                                        {{#with context "pocket"}}
+                                            <h6 class="text-primary">
+                                                <i class="fa fa-fw fa-{{this.icon}}"></i>
+                                                <span>{{i18n this.label}}</span>
+                                            </h6>
+                                        {{/with}}
+                                        <h3 class="text-primary white-space-normal">
+                                            {{shorten 80 pocket.title}}
+                                        </h3>
+                                        <div class="d-flex">
+                                            {{#with unitsForPocket pocket._id}}
+                                                <span>{{count this}} {{i18n
+                                                        "curriculum.units"}}</span>
+                                                <span class="ml-auto">{{sumField
+                                                        this "period"}} {{i18n
+                                                        "time.min"}}</span>
+                                            {{else}}
+                                                <span>0 {{i18n
+                                                        "curriculum.units"}}</span>
+                                            {{/with}}
+                                        </div>
+                                    </li>
+                                    {{#unless pocketOpen pocket._id}}
+                                        <div class="w-100 text-center mb-1">
+                                            {{> actionButton class="pocket-toggle btn-block" type="outline-primary" icon="chevron-down" data-target=pocket._id}}
+                                        </div>
+                                    {{else}}
+                                        <div class="w-100 text-center mb-1">
+                                            {{> actionButton class="pocket-toggle btn-block" type="outline-primary" icon="chevron-up" data-target=pocket._id}}
+                                        </div>
+                                        {{#with unitsForPocket pocket._id}}
+                                            {{#each unit in this}}
+                                                <li class="list-group-item {{#if selectedUnit unit._id}}border-success{{/if}}">
+                                                    {{! unit info }}
+                                                    <h6 class="{{#if unitAlreadyCreated unit._id}}passive{{/if}}">
+                                                        <span class="word-break-headline">{{unit.index}} {{shorten 80 unit.title}}</span>
+                                                    </h6>
+                                                    <div class="d-flex justify-content-between">
+
+                                                        {{! unit dimensions}}
+                                                        <span class="{{#if
+                                                                unitAlreadyCreated
+                                                                unit._id}}passive{{/if}}">
+														{{#each dim in
+                                                                (dimensions unit.dimensions)}}
+                                                            {{#unless
+                                                                    dimensionDisabled
+                                                                    dim._id}}
+                                                                {{>dimension
+                                                                        title=dim.title
+                                                                        color=dim.color
+                                                                        tooltip=true
+                                                                        hideIcon=true}}
+                                                            {{else}}
+                                                                {{>dimension
+                                                                        title=dim.title
+                                                                        color=dim.color
+                                                                        tooltip=true
+                                                                        hideIcon=true
+                                                                        class="m-1 bg-light text-white"}}
+                                                            {{/unless}}
+                                                        {{/each}}
+                                                            <span>{{unit.period}} {{i18n
+                                                                    "time.min"}}</span>
+													        </span>
+
+                                                        {{! select unit button }}
+                                                        {{#unless or
+                                                                  (stepComplete 'unit')
+                                                                  (unitAlreadyCreated unit._id)}}
+                                                            {{> actionButton class="btn-sm  select-unit-button"
+                                                                    type="outline-primary" icon="arrow-down"
+                                                                    title=(i18n "actions.select")
+                                                                    data-target=unit._id}}
+                                                        {{/unless}}
+
+
+                                                        {{! edit unit in editor button }}
+                                                        {{#with unitAlreadyCreated
+                                                                unit._id}}
+                                                            {{#if lessonIsRunning
+                                                                  this}}
+                                                                {{#routeButton
+                                                                        type="outline-secondary"
+                                                                        href=(route "lesson" this._id)
+                                                                        class="btn-sm"
+                                                                        title=(i18n "schoolClass.toLesson")}}
+                                                                    {{> icon name="users"}}
+                                                                    {{> icon name="caret-right"}}
+                                                                {{/routeButton}}
+                                                            {{else if lessonIsIdle this}}
+                                                                {{#routeButton
+                                                                        type="outline-secondary"
+                                                                        href=(route "unitEditor" this.unit)
+                                                                        class="btn-sm"
+                                                                        title=(i18n "editor.unit.editInUnitEditor")}}
+                                                                    {{> icon name="edit"}}
+                                                                    {{> icon name="caret-right"}}
+                                                                {{/routeButton}}
+                                                            {{else}}
+                                                                {{#tooltip
+                                                                        title=(i18n "lesson.states.completed")}}
+                                                                    <div class="badge-success badge badge-pill">
+                                                                        {{> icon name="check" fw=true}}
+                                                                    </div>
+                                                                {{/tooltip}}
+                                                            {{/if}}
+                                                        {{/with}}
+                                                    </div>
+
+                                                    {{#if unit.description}}
+                                                        <div class="d-block w-100 mt-3 description-collapse">{{unit.description}}</div>
+                                                    {{/if}}
+                                                </li>
+                                            {{/each}}
+                                        {{/with}}
+                                    {{/unless}}
+                                </ul>
+                            </div>
+                        {{/each}}
+                    </div>
+                </div>
+            {{/wizardComponent}}
+        {{/wizardStep}}
+
+
+        {{! PREVIEW PHASES - show the user the current phases and material }}
+        {{#wizardStep name="phases" back=true visible=(stateVisible 'phases') disabled=false
+                      num=3 max=3 description=(i18n "wizard.prepare.phases.description")}}
+            {{#wizardComponent
+                    name="editPhases"
+                    back=true
+                    bg="transparent"
+                    wasSelected=(wasSelected 'editPhases') noBody=true}}
+                {{#unless phaseLoaded}}
+                    {{> loading}}
+                {{else}}
+                    {{#with unassociatedMaterial}}
+                        {{#nonPhaseMaterial
+                                liclass="d-flex"
+                                material=this inline=true inlineToggle=true
+                                flush=true}}
+                            {{#with reference this}}
+                                {{> actionButton
+                                        class="ml-auto phase-material-preview-btn"
+                                        sm=true
+                                        title=(i18n this.label)
+                                        icon=this.icon
+                                        data-collection=this.type
+                                        data-target=this.refId
+                                        type="outline-secondary"}}
+                            {{/with}}
+                            {{!-- TODO add preview
+                            {{>actionButton
+                                    icon="eye"
+                                    sm=true
+                                    type="outline-secondary"
+                                    title=(i18n "actions.preview")
+                                    class="ml-auto preview-material-button"}}
+                            --}}
+                        {{/nonPhaseMaterial}}
+                    {{/with}}
+
+                    {{#with phasesForUnit}}
+                        <ul class="list-group list-group-flush my-2">
+                            {{#each phase in this}}
+                                <li class="list-group-item p-0">
+                                    <table class="table table-borderless m-0">
+                                        <tbody>
+                                        <tr>
+                                            <td class="w-100">
+                                                {{! if we link a plot we add a
+                                                    collapse to show it --}}
+                                                {{#if phase.plot}}
+                                                <a data-toggle="collapse"
+                                                   href="#collapseExample{{@index}}"
+                                                   role="button"
+                                                   aria-expanded="false"
+                                                   aria-controls="collapseExample{{@index}}">
+                                                    {{phase.title}}
+                                                </a>
+                                                <div class="collapse" id="collapseExample{{@index}}">
+                                                    <p>{{phase.plot}}</p>
+                                                    {{!--
+                                                    <p>{{phase.methods}}</p>
+                                                    <p>{{phase.socialState}}</p>
+                                                    --}}
+                                                    <p>{{phase.notes}}</p>
+                                                </div>
+                                                {{else}}
+                                                    {{phase.title}}
+                                                {{/if}}
+                                            </td>
+                                            <td class="no-wrap">
+                                                {{#each phase.references}}
+                                                    {{#with reference this}}
+                                                        {{> actionButton
+                                                                class="phase-material-preview-btn"
+                                                                sm=true
+                                                                title=(i18n this.label)
+                                                                icon=this.icon
+                                                                data-collection=this.collection
+                                                                data-target=this.document
+                                                                type="outline-secondary"}}
+                                                    {{/with}}
+                                                {{/each}}
+                                            </td>
+                                            <td class="text-right no-wrap">
+                                                {{phase.period}} {{i18n
+                                                    "time.min"}}
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </li>
+                            {{/each}}
+                        </ul>
+                    {{else}}
+                        {{#nodocs hideTitle=true}}
+                            <h2 class="text-center">{{i18n
+                                    "wizard.prepare.phases.missing"}}</h2>
+                        {{/nodocs}}
+                    {{/with}}
+                {{/unless}}
+                <div class="card-footer d-flex justify-content-between">
+                    {{# actionButton
+                            type="primary"
+                            class="w-50 complete-phases-edit-button mr-1"
+                            block=submitting}}
+                        <i class="fa fa-fw fa-check"></i>
+                        <span>{{i18n "wizard.prepare.completeAndEdit"}}</span>
+                        <i class="fa fa-fw fa-caret-right"></i>
+                    {{/actionButton}}
+                    {{> actionButton
+                            type="outline-primary"
+                            class="w-50 complete-phases-button ml-1"
+                            block=submitting
+                            icon="check"
+                            label=(i18n "wizard.prepare.completeWithoutEdit")}}
+                </div>
+            {{/wizardComponent}}
+        {{/wizardStep}}
+    {{/unless}}
+
+    {{! preview material modal, loading preview renderer }}
+    {{#if previewMaterial}}
+        {{#modal id="material-preview-modal" large=true scrollable=true}}
+            {{#with previewMaterial}}
+            {{#mheader dismiss=true title=this.title class="bg-secondary text-white"}}{{/mheader}}
+            {{#mbody}}
+                    {{#if ../title}}
+                        <div class="card-body">
+                            <h5 class="card-title">{{../title}}</h5>
+                        </div>
+                    {{/if}}
+                    {{> Template.dynamic template=../template data=../data}}
+            {{/mbody}}
+            {{/with}}
+            {{#mfooter}}
+                <button class="btn btn-secondary" data-dismiss="modal">
+                    {{i18n "actions.close"}}
+                </button>
+            {{/mfooter}}
+        {{/modal}}
+    {{/if}}
+
+    <div class="my-5"></div>
+</template>

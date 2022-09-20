@@ -1,0 +1,66 @@
+<template name="teunits">
+	<div class="my-4">
+		<div class="mb-4 clearfix">
+            <span class="float-right">
+                <button class="btn btn-secondary select-unit-button">
+                    <i class="fa fa-fw fa-list"></i> {{i18n 'actions.add'}}
+                </button>
+            </span>
+		</div>
+		{{#with linkedUnits}}
+			<ul class="list-group">
+				{{#each this}}
+					<li class="list-group-item">
+						{{#teunitentry unit=this pocket=(linkedPocket this.pocket)}}
+							{{# routeButton
+									href=(route 'unitEditor' this._id)
+									class="btn-sm"
+									title=(i18n "editor.task.editInUnitEditor")}}
+								<i class="fa fa-edit"></i>
+								<i class="fa fa-caret-right"></i>
+							{{/routeButton}}
+                            {{> actionButton type="outline-danger" class="btn-sm teunits-remove-unit-button"
+                                    data-target=this._id icon="times" blocked=(updating this._id)}}
+						{{/teunitentry}}
+					</li>
+				{{/each}}
+			</ul>
+		{{else}}
+			<div class="jumbotron"><p>{{i18n "task.noUnitLinked"}}</p></div>
+		{{/with}}
+	</div>
+	{{#modal id="addToUnitModal" large=true }}
+		{{#mheader title=(i18n 'editor.task.linkUnit') dismiss=true class="bg-secondary text-white"}}{{/mheader}}
+		{{#with unlinkedUnits}}
+			<ul class="list-group list-group-flush">
+				{{#each this}}
+					<li class="list-group-item">
+						{{#teunitentry unit=this pocket=(linkedPocket this.pocket)}}
+                            {{> actionButton type="outline-secondary" class="btn-sm teunits-add-unit-button float-right"
+                                    data-target=this._id icon="plus" blocked=(updating this._id)}}
+						{{/teunitentry}}
+					</li>
+				{{/each}}
+			</ul>
+		{{else}}
+			{{> nodocs}}
+		{{/with}}
+	{{/modal}}
+</template>
+
+<template name="teunitentry">
+	<table class="table table-borderless">
+		<tbody>
+		<tr>
+			<td class="w-100">
+				<p><h5>{{unit.title}}</h5></p>
+                {{#if pocket}}<p><small>{{pocket.title}}</small></p>{{/if}}
+				<p class="text-muted">{{shorten 200 unit.description}}</p>
+			</td>
+			<td class="text-right no-wrap">
+				{{> Template.contentBlock ..}}
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</template>

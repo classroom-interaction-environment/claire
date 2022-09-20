@@ -1,0 +1,156 @@
+.disable-cluster {
+  pointer-events: none;
+}
+
+.cluster-parent {
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1099;
+}
+
+.cluster-spawn {
+  height: 80px;
+  position: relative;
+  width: 100%;
+}
+
+.cluster-preview-spawn {
+  cursor: pointer;
+  height: 20rem;
+  position: relative;
+}
+
+.draggable {
+  font-weight: bold;
+  left: 0;
+  padding: 8px;
+  position: absolute;
+  top: 0;
+  touch-action: none;
+}
+
+.draggable-transition {
+  transition: all 1.5s ease-in-out;
+}
+
+.top-right {
+  position: absolute;
+  right: 2rem;
+  top: 1rem;
+}
+
+.vh-50 {
+  min-height: 50vh;
+}
+
+.draggable-username {
+  font-size: 1em;
+}
+
+.cluster-quadrant-title {
+  background-color: #fff;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.quadrants {
+  border: 0;
+  border-collapse: separate;
+  height: 100%;
+  width: 100%;
+}
+
+.quadrants-wrap {
+  height: 100%;
+  width: 100%;
+}
+
+.quadrants-xs {
+  border: 0;
+  border-collapse: separate;
+  height: 100%;
+}
+
+.quadrants-head-row {
+  height: 1px;
+}
+
+.quadrant-col-xs {
+  width: 100%;
+}
+
+.quadrant {
+  border: solid 5px;
+  padding: 5px;
+  transition: background-color 0.3s;
+}
+
+/* */
+.drop-active {
+  border-color: #aaa;
+}
+
+.drop-target {
+  background-color: #d4d4d4;
+  border: solid #fff;
+}
+
+.drag-drop {
+  background-color: #d4d4d4;
+  border: solid 2px #fff;
+
+  color: #fff;
+  display: inline-block;
+  min-width: 40px;
+  padding: 2em 0.5em;
+
+  transform: translate(0, 0);
+  transition: background-color 0.3s;
+}
+
+.cluster-preview-card {
+  font-size: xx-small;
+  height: auto;
+  max-height: 2rem;
+  max-width: 2rem;
+  overflow: hidden;
+  width: auto;
+  word-wrap: normal;
+}
+
+.fit {
+  font-weight: bold;
+  line-height: 1;
+  margin: 0;
+}
+
+.text-container {
+  height: 100px;
+  width: 100px;
+  z-index: 1032;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.resizable {
+  resize: both;
+}
+
+.text-entry {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.text {
+  font-size: 12px;
+  display: block;
+  word-break: keep-all !important;
+}
+
+.no-select {
+  user-select: none;
+}

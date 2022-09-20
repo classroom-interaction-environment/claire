@@ -1,0 +1,81 @@
+<template name="formModal">
+    {{#modal id="formModal" xl=true static=true}}
+        {{#onLoaded complete=formState.loadComplete}}
+            {{#let data=formState}}
+                {{> mheader title=(i18n data.actionLabel) class=data.class dismiss=true}}
+                {{#if data.description}}
+                    {{#mbody}}
+                        {{i18n data.description}}
+                    {{/mbody}}
+                {{/if}}
+                {{#mbody}}
+                    {{> caroForm id=data.formId
+                            class="modal-form"
+                            schema=data.schema
+                            hideLegend=data.hideLegend
+                            collapse=data.collapse
+                            validation=data.validation
+                            type="normal"
+                            doc=data.doc
+                            blocked=formIsBlocked}}
+                {{/mbody}}
+                {{#with error}}
+                    {{#mbody}}
+                    <small class="d-block text-danger font-weight-bold p-3">
+                        {{i18n "error.occurred"}}:
+                        {{this.name}} {{this.message}}
+                    </small>
+                    {{/mbody}}
+                {{/with}}
+                {{#if data.codeRequired}}
+                    {{#mfooter}}
+                        <div class="text-center w-100">
+                            <p class="text-center">{{i18n "confirm.codeRequired"}}</p>
+                            <p class="text-center font-weight-bold">{{data.code}}</p>
+                            <input class="form-control confirm-input text-center" autofocus>
+                        </div>
+                    {{/mfooter}}
+                {{/if}}
+                {{#mfooter class="d-flex justify-content-between"}}
+                    {{#if successful}}
+                        <span>
+                            {{> icon name="check" class="text-success"}}
+                            <span>{{i18n "common.successful"}}</span>
+                        </span>
+                    {{else}}
+                    <span>
+                        {{#if data.custom}}
+                            {{#each custom in data.custom}}
+                                {{> actionButton
+                                        submit=true
+                                        form=data.formId
+                                        label=(i18n custom.label)
+                                        type=custom.type
+                                        icon=custom.icon
+                                        data-custom=custom.key
+                                        blocked=submitting
+                                        disabled=(submitDisabled data.codeRequired)}}
+                            {{/each}}
+                        {{else}}
+                            {{#unless eq data.action "view"}}
+                                {{> actionButton
+                                    submit=true
+                                    form=data.formId
+                                    type=data.color
+                                    icon=data.icon
+                                    blocked=submitting
+                                    disabled=(submitDisabled data.codeRequired)
+                                    label=(i18n data.actionLabel)}}
+                            {{/unless}}
+                        {{/if}}
+                    </span>
+                        {{> actionButton
+                                type="secondary"
+                                data-dismiss="modal"
+                                label=(i18n "actions.cancel")}}
+                    {{/if}}
+                {{/mfooter}}
+            {{/let}}
+        {{/onLoaded}}
+    {{/modal}}
+</template>

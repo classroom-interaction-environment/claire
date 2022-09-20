@@ -1,0 +1,48 @@
+<template name="audioFileRenderer">
+    {{#with this.error}}
+        <div class="alert alert-error">{{this}}</div>
+        <a href class="delete-audiofile-button">{{i18n "actions.delete"}}</a>
+    {{else}}
+    {{#unless this.processingComplete}}
+        {{> loading title=(i18n "files.converting" this)}}
+    {{/unless}}
+	{{#with getLink this}}
+		<div class="w-100 text-center">
+            <div class="d-block text-center">
+                {{../name}}
+            </div>
+
+			<audio src="{{this}}?play=true" controls="controls" class="audio-player w-100" preload="none">
+                <p>
+                    <span>¯\_(ツ)_/¯</span>
+                    <span>{{i18n 'browser.htmlAudioNotSuported'}}</span>
+                    <a href="{{this}}?download=true" download="{{../name}}" target="_top"
+                       class="btn btn-outline-secondary btn-sm border-0 file-image-download-button no-wrap">
+                        <i class="fa fa-download"></i>
+                        <span>({{b2mb ../size}} {{i18n 'fileSize.mb'}})</span>
+                    </a>
+                </p>
+			</audio>
+
+            {{!--
+            <a href class="delete-audiofile-button py-2 btn btn-sm btn-outline-danger border-0"
+               data-file="{{../_id}}">
+                <i class="fa fa-fw fa-trash"></i> {{i18n 'actions.delete'}}
+            </a>
+            --}}
+
+            <a href="{{this}}?download=true" download="{{../name}}" target="_top"
+               class="btn btn-outline-secondary btn-sm border-0 file-image-download-button no-wrap">
+                <small class="font-weight-normal py-2">
+                    <i class="fa fa-download"></i>
+                    <span>{{../name}}</span>
+                    <span>({{b2mb ../size}} {{i18n 'fileSize.mb'}})</span>
+                </small>
+
+            </a>
+		</div>
+    {{else}}
+		{{> loading type="data" title=name}}
+	{{/with}}
+    {{/with}}
+</template>

@@ -1,0 +1,313 @@
+<template name="curriculumPockets">
+
+    {{#unless loadComplete}}
+        {{> loading type="data" class="w-100"}}
+    {{/unless}}
+
+    <div class="w-100 d-flex justify-content-between">
+        {{>actionButton
+                type="outline-secondary"
+                class="expand-all-button"
+                icon="list-ul"
+                label=(i18n "editor.didactics.objectives.expandAll")
+                blocked=processing}}
+
+        {{>actionButton
+                type="success"
+                class="create-pocket-button"
+                icon="plus"
+                label=(i18n "actions.create")
+                blocked=processing}}
+    </div>
+
+    <ul class="list-group pocket-group mt-4">
+        {{#each pocket in pockets}}
+            <li class="list-group-item pocket-entry"
+                data-target="{{pocket._id}}">
+                <div class="white-space-normal d-flex">
+
+                    {{! pocket info }}
+                    <a href class="pocket-toggle-button" data-target={{pocket._id}}>
+                        <h5>
+                            {{#with pocketContext}}
+                                {{> icon fw=true name=this.icon title=(i18n this.label)}}
+                            {{/with}}
+                            <span>{{pocket.title}}</span>
+                        </h5>
+                    </a>
+
+                    {{! pocket actions }}
+                    <span class="ml-auto no-wrap {{#unless isHovered pocket._id}}passive{{/unless}}">
+                        {{> actionButton
+                                type=(ternary (isHovered pocket._id) "outline-success" "outline-light")
+                                data-pocket=pocket._id
+                                icon="plus"
+                                title=(i18n "editor.didactics.pockets.addUnit")
+                                class="border-0 add-unit-button"}}
+                        {{> actionButton
+                                type=(ternary (isHovered pocket._id) "outline-primary" "outline-light")
+                                data-target=pocket._id
+                                icon="edit"
+                                title=(i18n "actions.edit")
+                                class="border-0 edit-pocket-button"}}
+                        {{> actionButton
+                                type=(ternary (isHovered pocket._id) "outline-danger" "outline-light")
+                                data-target=pocket._id
+                                title=(i18n "actions.delete")
+                                icon="trash"
+                                class="border-0 delete-pocket-button"}}
+                    </span>
+                </div>
+                <p class="text-muted white-space-normal">
+                    {{#if pocket.description}}
+                        {{shorten 500 pocket.description}}
+                    {{/if}}
+                </p>
+
+                {{! units summary }}
+                {{#with units pocket._id}}
+                    <div class="w-100 d-flex justify-content-between text-dark">
+                        <a href class="pocket-toggle-button" data-target="{{pocket._id}}">
+                            {{#if expanded pocket._id}}
+                                {{> icon name="caret-down" fw=true }}
+                            {{else}}
+                                {{> icon name="caret-right" fw=true }}
+                            {{/if}}
+                            <span>{{count this}} {{i18n "curriculum.units"}}</span>
+                        </a>
+                        <span>
+                            {{> icon fw=true name="clock"}}
+                            {{sumField this "period"}} {{i18n "time.min"}}
+                        </span>
+                    </div>
+                {{else}}
+                    <div class="w-100 text-warning d-flex justify-content-between">
+                        <span>0 {{i18n "curriculum.units"}}</span>
+                        <span>
+                            {{> icon fw=true name="clock"}}
+                            0 {{i18n "time.min"}}
+                        </span>
+                    </div>
+                {{/with}}
+            </li>
+
+
+            {{! units sub-list }}
+            {{#with units pocket._id}}
+                <ul class="ml-4 list-group dep-sortable-root mt-1 mb-3 {{#unless expanded pocket._id}}d-none{{/unless}}"
+                    data-parent="{{pocket._id}}">
+                    {{#each unit in this}}
+                        <li class="list-group-item unit-entry"
+                            data-target="{{unit._id}}" data-index="{{@index}}">
+
+                            {{! unit header }}
+
+                            <div class="white-space-normal d-flex">
+
+                                {{! unit info }}
+                                <span class="font-weight-bold text-dark">
+                                    {{#with unitContext}}
+                                        {{> icon fw=true name=this.icon title=(i18n this.label)}}
+                                    {{/with}}
+                                    <span>{{unit.index}}.</span>
+                                    <span>{{unit.title}}</span>
+                                </span>
+
+                                {{! unit actions }}
+                                <span class="ml-auto no-wrap {{#unless isHovered unit._id}}passive text-muted{{/unless}}">
+                                    {{> actionButton
+                                            type=(ternary (isHovered unit._id) "outline-secondary" "outline-light")
+                                            icon="arrows-alt-v"
+                                            title=(i18n "actions.sort")
+                                            class="unit-sort-handle border-0"}}
+                                    {{#routeButton
+                                            href=(route "unitEditor" unit._id)
+                                            type=(ternary (isHovered unit._id) "outline-primary" "outline-light")
+                                            title=(i18n "editor.unit.editInUnitEditor")
+                                            data-target=unit._id
+                                            class="border-0"}}
+                                        {{> icon name="edit"}}
+                                        {{> icon name="caret-right"}}
+                                    {{/routeButton}}
+                                    {{> actionButton
+                                            type=(ternary (isHovered unit._id) "outline-primary" "outline-light")
+                                            data-target=unit._id
+                                            icon="edit"
+                                            title=(i18n "actions.edit")
+                                            class="border-0 edit-unit-button"}}
+                                    {{> actionButton
+                                            type=(ternary (isHovered unit._id) "outline-danger" "outline-light")
+                                            data-target=unit._id
+                                            icon="trash"
+                                            title=(i18n "actions.delete")
+                                            class="border-0 delete-unit-button"}}
+                                 </span>
+                            </div>
+
+                            {{! unit description }}
+
+                            <p class="text-dark white-space-normal">
+                                {{#if unit.description}}
+                                    {{unit.description}}
+                                {{/if}}
+                            </p>
+
+
+                            {{! unit dimensions and period }}
+
+                            <div class="d-flex justify-content-between text-dark">
+                                <span>
+                                    {{#each dim in (dimensions unit.dimensions)}}
+                                        {{> dimension dim hideLabel=true hideIcon=true}}
+                                    {{/each}}
+                                </span>
+                                <span>
+                                    {{> icon fw=true name="clock"}}
+                                    {{unit.period}} {{i18n "time.min"}}
+                                </span>
+                            </div>
+
+
+                            <div class="d-block my-2">
+
+                                {{! unit objectives }}
+                                    {{#with (count unit.objectives)}}
+                                        <span class="text-dark pr-2 no-wrap">
+                                            {{this}} {{i18n "curriculum.objectives"}}
+                                        </span>
+                                    {{else}}
+                                        <span class="text-danger pr-2 no-wrap">
+                                            0 {{i18n "curriculum.objectives"}}
+                                        </span>
+                                    {{/with}}
+
+                                <span>/</span>
+
+                                {{! unit phases }}
+                                {{#with (count unit.phases)}}
+                                    <span class="text-dark px-2 no-wrap">
+                                        {{this}} {{i18n "curriculum.phases"}}
+                                        </span>
+                                {{else}}
+                                    <span class="text-danger px-2 no-wrap">
+                                        0 {{i18n "curriculum.phases"}}
+                                        </span>
+                                {{/with}}
+
+                                <span>/</span>
+
+                                {{! unit material }}
+                                {{#with (unitMaterialCount unit)}}
+                                    <span class="text-dark px-2 no-wrap">
+                                        {{this}} {{i18n "unit.references"}}
+                                        </span>
+                                {{else}}
+                                    <span class="text-danger px-2 no-wrap">
+                                        0 {{i18n "unit.references"}}
+                                        </span>
+                                {{/with}}
+                            </div>
+
+
+
+                        </li>
+                    {{/each}}
+                </ul>
+            {{/with}}
+        {{/each}}
+    </ul>
+
+    {{! ----- edit Pocket ---- }}
+
+    {{#modal id="editPocketModal" large=true static=true}}
+
+        {{#with editDoc}}
+        {{! edit a pocket layout}}
+            {{> mheader title=(i18n "editor.didactics.pockets.edit") dismiss=true class="bg-primary text-light"}}
+            {{> caroForm
+                    id="editPocketForm"
+                    schema=pocketSchema
+                    doc=this
+                    blocked=(updating this._id)
+                    hideLegend=true collapse=false}}
+            {{#mfooter class="d-flex"}}
+                {{> actionButton
+                        submit=true
+                        form="editPocketForm"
+                        type="primary"
+                        blocked=(updating this._id)
+                        icon="save"
+                        label=(i18n "actions.update")}}
+                {{>actionButton
+                        blocked=(updating "new")
+                        data-dismiss="modal"
+                        type="outline-secondary"
+                        class="ml-auto"
+                        label=(i18n "actions.cancel")}}
+            {{/mfooter}}
+
+        {{else}}
+        {{! create a new pocket layout}}
+            {{> mheader title=(i18n "editor.didactics.pockets.create") dismiss=true class="bg-success text-light"}}
+            {{> caroForm
+                    id="editPocketForm"
+                    schema=pocketSchema
+                    blocked=(updating "newPocket")
+                    hideLegend=true collapse=false}}
+            {{#mfooter class="d-flex"}}
+                {{> actionButton
+                        submit=true
+                        form="editPocketForm"
+                        type="success"
+                        blocked=(updating "new")
+                        icon="plus"
+                        label=(i18n "actions.create")}}
+                {{>actionButton
+                        blocked=(updating "new")
+                        data-dismiss="modal"
+                        type="outline-secondary"
+                        class="ml-auto"
+                        label=(i18n "actions.cancel")}}
+            {{/mfooter}}
+        {{/with}}
+    {{/modal}}
+
+
+    {{! ----- edit Unit ---- }}
+
+    {{#modal id="editUnitModal" large=true static=true}}
+
+        {{#with unitDoc}}
+        {{! edit a unit layout }}
+            {{>mheader title=(i18n "editor.didactics.pockets.editUnit") dismiss=true class="bg-primary text-light"}}
+            {{> caroForm
+                    id="editUnitForm"
+                    type="normal"
+                    schema=createUnitSchema
+                    blocked=(updating "newUnit")
+                    doc=this
+                    hideLegend=true collapse=false}}
+            {{#mfooter}}
+                {{> actionButton type="primary" class="mr-auto" submit=true form="editUnitForm" label=(i18n "actions.update") icon="save" blocked=(updating "newUnit")}}
+                {{> actionButton type="secondary" class="ml-auto didactics-cancel-button" label=(i18n "actions.cancel") blocked=processing data-dismiss="modal"}}
+            {{/mfooter}}
+
+        {{else}}
+        {{! add a unit to pocket layout }}
+            {{>mheader title=(i18n "editor.didactics.pockets.addUnit") dismiss=true class="bg-success text-light"}}
+            {{> caroForm
+                    id="editUnitForm"
+                    type="normal"
+                    schema=createUnitSchema
+                    blocked=(updating "newUnit")
+                    doc=createUnitDoc
+                    hideLegend=true collapse=false}}
+            {{#mfooter}}
+                {{> actionButton type="success" class="mr-auto" submit=true form="editUnitForm" label=(i18n "actions.create") icon="plus" blocked=(updating "newUnit")}}
+                {{> actionButton type="secondary" class="ml-auto didactics-cancel-button" label=(i18n "actions.cancel") blocked=processing data-dismiss="modal"}}
+            {{/mfooter}}
+        {{/with}}
+    {{/modal}}
+
+    {{> confirm static=true}}
+</template>

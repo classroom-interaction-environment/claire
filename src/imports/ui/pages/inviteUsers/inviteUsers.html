@@ -1,0 +1,252 @@
+<template name="inviteUsers">
+    {{#unless loadComplete}}
+        {{> loading title="codeInvitation.title"}}
+    {{else}}
+        <div class="d-flex mb-3 justify-content-between align-items-baseline">
+            <h4>{{i18n "codeInvitation.activeCodes"}}</h4>
+            <button class="ml-auto btn btn-success create-invitation-button">
+                <i class="fa fa-fw fa-plus"></i> {{i18n "actions.create"}}
+            </button>
+        </div>
+        {{#with codes}}
+            {{#with activeCodes codes}}
+                <div class="card">
+                    <table class="table">
+                        <thead>
+                        <tr class="text-muted">
+                            <th></th>
+                            <th class="text-center">{{i18n
+                                    "common.status"}}</th>
+                            <th class="text-center">{{i18n
+                                    "codeInvitation.count"}}</th>
+                            <th>{{i18n "codeInvitation.expiresAt"}}</th>
+                            <th>{{i18n "common.role"}}</th>
+                            <!--<th>{{i18n "common.details"}}</th>-->
+                            <th class="text-right">{{i18n
+                                    "common.actions"}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#each this}}
+                            <tr>
+                                <td class="text-center"><code
+                                        class="text-muted">{{this.code}}</code>
+                                </td>
+                                {{>invitationRowRenderer invitation=this status=true users=true expiration=true role=true  deleting=(deleting deleting this._id)}}
+                                <td class="no-wrap text-right">
+                                    {{#if codeOnBeamer this.code}}
+                                        {{> actionButton
+                                                data-target=this.code
+                                                type="secondary"
+                                                class="btn-sm create-qr-button"
+                                                icon="qrcode"
+                                                title=(i18n "actions.removeFromBeamer")
+                                                disabled=beamerDisabled
+                                                blocked=(codeToBeamer this.code)}}
+                                    {{else}}
+                                        {{> actionButton
+                                                data-target=this.code
+                                                type="outline-secondary"
+                                                class="btn-sm create-qr-button"
+                                                icon="qrcode"
+                                                title=(i18n "actions.toBeamer")
+                                                disabled=beamerDisabled
+                                                blocked=(codeToBeamer this.code)}}
+                                    {{/if}}
+                                    {{> actionButton
+                                            data-target=this._id
+                                            type="outline-secondary"
+                                            class="btn-sm create-invitation-link-button"
+                                            icon="link"
+                                            title=(i18n "codeInvitation.createLink")
+                                            blocked=false}}
+                                    {{#if isAdmin}}
+                                        {{> actionButton
+                                                data-target=this._id
+                                                type="outline-danger"
+                                                class="btn-sm delete-invitation-button"
+                                                icon="trash"
+                                                title=(i18n "actions.delete")
+                                                blocked=(deleting this._id)}}
+                                    {{else}}
+                                        {{> actionButton
+                                                data-target=this._id
+                                                type="outline-danger"
+                                                class="btn-sm remove-invitation-button"
+                                                icon="times"
+                                                title=(i18n "actions.remove")
+                                                blocked=(deleting this._id)}}
+                                    {{/if}}
+                                </td>
+                            </tr>
+                        {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            {{/with}}
+
+
+            {{#with expiredCodes codes}}
+
+
+                <div class="d-flex mt-5 mb-3 justify-content-between align-items-baseline">
+                    <h4>{{i18n "codeInvitation.expiredCodes"}}</h4>
+                </div>
+
+                <div class="card">
+                    <table class="table">
+                        <thead>
+                        <tr class="text-muted">
+                            <th></th>
+                            <th class="text-center">{{i18n
+                                    "common.status"}}</th>
+                            <th class="text-center">{{i18n
+                                    "codeInvitation.count"}}</th>
+                            <th>{{i18n "codeInvitation.expiresAt"}}</th>
+                            <th>{{i18n "common.role"}}</th>
+                            <!--<th>{{i18n "common.details"}}</th>-->
+                            <th class="text-right">{{i18n
+                                    "common.actions"}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#each this}}
+                            <tr>
+                                <td class="text-center"><code
+                                        class="text-muted">{{this.code}}</code>
+                                </td>
+                                {{>invitationRowRenderer invitation=this status=true users=true expiration=true role=true deleting=(deleting deleting this._id)}}
+                                <td class="no-wrap text-right">
+                                    {{#if codeOnBeamer this.code}}
+                                        {{> actionButton
+                                                data-target=this.code
+                                                type="secondary"
+                                                class="btn-sm create-qr-button"
+                                                icon="qrcode"
+                                                title=(i18n "actions.removeFromBeamer")
+                                                disabled=beamerDisabled
+                                                blocked=false}}
+                                    {{else}}
+                                        {{> actionButton
+                                                data-target=this.code
+                                                type="outline-secondary"
+                                                class="btn-sm create-qr-button"
+                                                icon="qrcode"
+                                                title=(i18n "actions.toBeamer")
+                                                disabled=beamerDisabled
+                                                blocked=false}}
+                                    {{/if}}
+                                    {{> actionButton
+                                            data-target=this._id
+                                            type="outline-secondary"
+                                            class="btn-sm create-invitation-link-button"
+                                            icon="link"
+                                            title=(i18n "codeInvitation.createLink")
+                                            disabled=true
+                                            blocked=false}}
+                                    {{#if isAdmin}}
+                                        {{> actionButton
+                                                data-target=this._id
+                                                type="outline-danger"
+                                                class="btn-sm delete-invitation-button"
+                                                icon="trash"
+                                                title=(i18n "actions.delete")
+                                                blocked=(deleting this._id)}}
+                                    {{else}}
+                                        {{> actionButton
+                                                data-target=this._id
+                                                type="outline-danger"
+                                                class="btn-sm delete-invitation-button"
+                                                icon="trash"
+                                                title=(i18n "actions.delete")
+                                                disabled=true
+                                                blocked=(deleting this._id)}}
+                                    {{/if}}
+                                </td>
+                            </tr>
+                        {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            {{/with}}
+        {{else}}
+            {{> nodocs}}
+        {{/with}}
+
+        {{#modal id="createInvitationModal" static=true large=true}}
+            {{>mheader title=(i18n "codeInvitation.create") class="bg-success text-white" dismiss=true}}
+            {{> caroForm id="createInvitationForm"
+                    type="normal"
+                    doc=refreshDoc
+                    schema=createInvitationSchema
+                    hideLegend=true
+                    collapse=false
+                    validation="submit"}}
+            {{#mfooter class="d-flex"}}
+                {{> actionButton type="success"
+                        class="mr-auto"
+                        submit=true
+                        form="createInvitationForm"
+                        label=(i18n "actions.create")
+                        blocked=submitting
+                        icon="plus"}}
+            {{/mfooter}}
+        {{/modal}}
+        {{#modal id="createLinkModal" large=true}}
+            {{>mheader title=(i18n "codeInvitation.createLink") class="bg-secondary text-white" dismiss=true}}
+            {{#mbody}}
+                {{#with currentDoc}}
+                    {{#unless isExpired this}}
+                        <div class="my-3">
+                            {{#with getLink this._id}}
+                                <textarea id="linkSourceInput" type="text"
+                                          class="form-control monospace word-break-all"
+                                          rows="3" readonly>{{this}}</textarea>
+                                <div class=" d-flex justify-content-between mt-3">
+									<span>
+										<a href="{{encodeMail this}}"
+                                           class="btn btn-outline-secondary send-via-mail-button">
+											<i class="fa fa-fw fa-send-o"></i> {{i18n
+                                                "actions.sendViaMail"}}
+										</a>
+                                        {{#if codeOnBeamer ../code}}
+                                            {{> actionButton
+                                                    data-target=../code
+                                                    type="secondary"
+                                                    class="create-qr-button"
+                                                    icon="qrcode"
+                                                    label=(i18n "actions.removeFromBeamer")
+                                                    disabled=beamerDisabled
+                                                    blocked=(codeToBeamer ../code)}}
+                                        {{else}}
+                                            {{> actionButton
+                                                    data-target=../code
+                                                    type="outline-secondary"
+                                                    class="create-qr-button"
+                                                    icon="qrcode"
+                                                    label=(i18n "actions.toBeamer")
+                                                    disabled=beamerDisabled
+                                                    blocked=(codeToBeamer ../code)}}
+                                        {{/if}}
+									</span>
+                                    <button class="btn btn-outline-secondary"
+                                            type="button" data-dismiss="modal">
+                                        {{i18n "actions.close"}}
+                                    </button>
+                                </div>
+                            {{/with}}
+                        </div>
+                    {{else}}
+                        <div class="alert alert-info d-flex justify-content-between">
+                            <span>{{i18n
+                                    "codeInvitation.expiredDetails"}}</span>
+                            {{> actionButton icon="sync" data-target=this._id title=(i18n "actions.refresh") class="refresh-invitation-button" type="primary"}}
+                        </div>
+                    {{/unless}}
+                {{/with}}
+            {{/mbody}}
+        {{/modal}}
+    {{/unless}}
+
+    {{> confirm static=true }}
+</template>

@@ -1,0 +1,141 @@
+<template name="myClasses">
+    {{#with classes}}
+        {{#each schoolClass in this}}
+            <ul class="list-group my-4">
+                <li class="list-group-item">
+                    <table class="table table-borderless">
+                        <tbody>
+                        <tr>
+                            <td class="no-wrap">
+                                <h5>{{schoolClass.title}}</h5>
+                            </td>
+                            <td class="text-right no-wrap">
+                                {{#if loadComplete}}
+                                    {{#actionButton
+                                            type="outline-secondary"
+                                            class="toggle-students-button"
+                                            data-target=schoolClass._id
+                                            title=(i18n "schoolClass.members")}}
+                                        {{classUsers schoolClass}}
+                                        <i class="fa fa-fw fa-user"></i>
+                                    {{/actionButton}}
+                                    {{>actionButton
+                                            type="outline-secondary"
+                                            class="invite-to-class-button"
+                                            data-target=schoolClass._id
+                                            icon="paper-plane"
+                                            title=(i18n "schoolClass.invite")}}
+                                    {{#if selectedClass schoolClass._id}}
+                                        {{#actionButton
+                                                type="outline-secondary"
+                                                class="back-to-list-button"
+                                                data-target=schoolClass._id
+                                                title=(i18n "lessons.title")}}
+                                            <i class="fa fa-fw fa-caret-up"></i>
+                                            {{count (lessonsForClass schoolClass._id)}}
+                                            <i class="fa fa-fw fa-th-large"></i>
+                                        {{/actionButton}}
+                                    {{else}}
+                                        {{#actionButton
+                                                type="outline-secondary"
+                                                class="select-class-button"
+                                                data-target=schoolClass._id
+                                                title=(i18n "lessons.title")}}
+                                            <i class="fa fa-fw fa-caret-down"></i>
+                                            {{count (lessonsForClass schoolClass._id)}}
+                                            <i class="fa fa-fw fa-th-large"></i>
+                                        {{/actionButton}}
+                                    {{/if}}
+                                    {{>actionButton
+                                            type="outline-danger"
+                                            class="delete-schoolclass-button"
+                                            icon="trash"
+                                            title=(i18n "actions.delete")
+                                            blocked=(deleting schoolClass._id)
+                                            data-target=schoolClass._id}}
+                                {{else}}
+                                    <span>
+										<i class="fa fa-fw fa-spinner fa-pulse"></i>
+									</span>
+                                {{/if}}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </li>
+                {{#if selectedClass schoolClass._id}}
+                    {{#with lessons schoolClass._id}}
+                        <ul class="list-group">
+                            {{#each lesson in this}}
+                                {{#lessonListRenderer
+                                        lesson=lesson
+                                        liClass="ml-4"
+                                        showIcon=true
+                                        showPocket=true
+                                        showTime=true}}
+                                    {{#let lesson=this}}
+                                        <span class="no-wrap">
+                                            {{#routeButton
+                                                    href=(route "lesson" lesson._id)
+                                                    title=(i18n "lessons.toLesson")
+                                                    type="primary"}}
+                                                <i class="fa fa-users"></i>
+                                                <i class="fa fa-caret-right"></i>
+                                            {{/routeButton}}
+                                            {{#routeButton
+                                                    href=(route "unitEditor" lesson.unit)
+                                                    title=(i18n "editor.unit.editInUnitEditor")
+                                                    disabled=(lessonIsNotIdle lesson)
+                                                    type="outline-primary"}}
+                                                <i class="fa fa-edit"></i>
+											<i class="fa fa-caret-right"></i>
+                                            {{/routeButton}}
+                                            {{>actionButton
+                                                    type="outline-danger"
+                                                    class="delete-lesson-button"
+                                                    title=(i18n "actions.delete")
+                                                    disabled=(lessonIsRunning lesson)
+                                                    icon="trash"
+                                                    blocked=(deleting lesson._id)
+                                                    data-target=lesson._id}}
+									    </span>
+                                    {{/let}}
+                                {{/lessonListRenderer}}
+                            {{/each}}
+                        </ul>
+                    {{/with}}
+                {{/if}}
+            </ul>
+        {{/each}}
+
+        {{#modal id="inviteToClassModal" xl=true static=false}}
+            {{> mheader title=(i18n "schoolClass.invite") class="bg-secondary text-white" dismiss=true}}
+            {{#mbody}}
+                {{#with inviteOptions}}
+                    {{>inviteStudents classId=this.classId institution=this.institution}}
+                {{/with}}
+            {{/mbody}}
+        {{/modal}}
+
+        {{#modal id="showStudentsModal" large=true static=false}}
+            {{> mheader title=(i18n "schoolClass.members") class="bg-secondary text-white" dismiss=true}}
+            {{#mbody}}
+                {{#with showStudentsDoc}}
+                    <div class="d-block text-muted">
+                        {{i18n "schoolClass.teachers"}}
+                    </div>
+                    {{> userListRenderer users=this.teachers classDoc=this liClass="border-0"}}
+                    <div class="d-block text-muted">
+                        {{i18n "schoolClass.students"}}
+                    </div>
+                    {{> userListRenderer users=this.students classDoc=this liClass="border-0"}}
+                {{else}}
+                    {{>loading type="data"}}
+                {{/with}}
+            {{/mbody}}
+        {{/modal}}
+        {{> confirm static=true }}
+    {{else}}
+        {{>nodocs}}
+    {{/with}}
+</template>

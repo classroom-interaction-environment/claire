@@ -1,0 +1,21 @@
+<template name="itemList">
+    {{#unless loadComplete}}
+        {{> loading}}
+    {{else}}
+		<ul class="list-group {{ulclass}}">
+			{{#each item in itemsInTask}}
+				<li class="list-group-item {{../liclass}}">
+					<div class="w-100 d-flex justify-content-between {{../flexclass}}">
+                        {{! place custom content in here by parent template}}
+                        {{> Template.contentBlock item=item}}
+					</div>
+					{{#with item.type}}
+						{{i18n this.label}}
+					{{/with}}
+				</li>
+                {{else}}
+                <li>{{>nodocs}}</li>
+			{{/each}}
+        </ul>
+    {{/unless}}
+</template>

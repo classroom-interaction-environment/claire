@@ -1,0 +1,110 @@
+<template name="afUnitSelect">
+    <div class="d-block text-center p-2">
+        <btn class="btn btn-sm btn-outline-secondary btn-block border-0"
+             type="button"
+             data-toggle="collapse"
+             data-target="#unit-select-filter-collapse"
+             aria-expanded="false"
+             aria-controls="unit-select-filter-collapse">
+            {{> icon name="filter"}}
+            <span>{{i18n "unitSelect.filter"}}</span>
+        </btn>
+        <div class="collapse" id="unit-select-filter-collapse">
+            {{#each dim in allDimension}}
+                {{#unless dimensionDisabled dim._id}}
+                    {{>dimension
+                            title=dim.title
+                            color=dim.color
+                            tooltip=false
+                            hideIcon=false
+                            icon="check"
+                            class="m-1 filter-dimension-button clickable"
+                            data-target=dim._id}}
+                {{else}}
+                    {{>dimension
+                            title=dim.title
+                            color=dim.color
+                            tooltip=false
+                            hideIcon=false
+                            icon="times"
+                            class="m-1 bg-light text-dark clickable filter-dimension-button"
+                            data-target=dim._id}}
+                {{/unless}}
+            {{/each}}
+            {{#unless hideWithLessons}}
+                {{> actionButton
+                        label=(i18n "unitSelect.withLessons")
+                        icon="check"
+                        class="btn btn-sm btn-primary text-white filter-dimension-button"
+                        data-target="withLessons"}}
+                {{else}}
+                {{> actionButton
+                        label=(i18n "unitSelect.withLessons")
+                        icon="times"
+                        class="btn btn-sm btn-outline-primary border-0 text-dark filter-dimension-button"
+                        data-target="withLessons"}}
+                {{/unless}}
+            {{!-- TODO search
+            <div class="form-group">
+                <input type="search" class="form-control text-center" placeholder="{{i18n "unitSelect.search"}}">
+            </div>
+            --}}
+        </div>
+    </div>
+    <div class="row">
+        {{#each entry in availablePockets}}
+            <div class="col-12 mt-2">
+                <div class="card">
+                    <div class="card-header clickable d-flex justify-content-between"
+                         type="button"
+                         data-toggle="collapse"
+                         data-target="#unit-collapse-{{@index}}"
+                         aria-expanded="false"
+                         aria-controls="unit-collapse-{{@index}}">
+                        <span class="font-weight-bold">
+                            <span class="px-2">{{> icon name=pocketCtx.icon}}</span>
+                            {{entry.pocket.title}}
+                        </span>
+                        <span>
+                            {{> icon name="file" }} {{entry.count}}
+                        </span>
+                    </div>
+                    <ul class="list-group collapse show" id="unit-collapse-{{@index}}">
+                        {{#each unit in entry.units}}
+                            <li class="list-group-item p-3 d-flex justify-content-between {{#unless unit.lesson}}select-unit clickable{{/unless}} {{#if isSelected unit._id}}bg-primary text-white{{/if}}"
+                                data-target="{{unit._id}}">
+                                {{#with unit.lesson}}
+                                    <span class="text-muted">
+                                        {{unit.title}}
+                                    </span>
+                                    <span class="text-muted">
+                                        ({{i18n "unitSelect.hasLesson"}})
+                                        {{> lessonStatus lessonDoc=this}}
+                                    </span>
+                                {{else}}
+                                    <span>
+                                        <span class="d-block">{{unit.title}}</span>
+                                        <span class="d-block">{{unit.description}}</span>
+
+                                        <span class="d-block">
+                                            {{#each dim in (dimensions unit.dimensions)}}
+                                                {{>dimension
+                                                        title=dim.title
+                                                        color=dim.color
+                                                        tooltip=true
+                                                        hideIcon=true}}
+                                            {{/each}}
+                                        </span>
+                                    </span>
+                                    {{> icon name="plus"}}
+                                {{/with}}
+                            </li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+    {{! autoform extension internals }}
+    <input type="hidden" class="hidden-input" {{inputAtts}}>
+</template>

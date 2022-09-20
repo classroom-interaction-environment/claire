@@ -1,0 +1,45 @@
+<template name="modal">
+	{{!-- Modal --}}
+	<div id="{{id}}"
+		 class="modal fade {{class}}"
+		 role="dialog"
+         tabindex="-1" aria-labelledby="{{id}}"
+         aria-hidden="true"
+		 data-backdrop="{{#if static}}static{{else}}none{{/if}}"
+		 data-keyboard="{{#if static}}true{{else}}false{{/if}}">
+		<div class="modal-dialog {{#if scrollable}}modal-dialog-scrollable{{/if}} {{#if sm}}modal-sm{{/if}} {{#if large}}modal-lg{{/if}} {{#if xl}}modal-xl{{/if}} {{#if xxl}}modal-xxl m-2 pr-3 h-100{{/if}}" role="document">
+			{{!-- Modal content--}}
+			<div class="modal-content {{#if xxl}}h-100{{/if}} {{contentClass}}">
+				{{> Template.contentBlock ..}}
+			</div>
+		</div>
+	</div>
+</template>
+
+<template name="mheader">
+	<div class="modal-header {{class}}">
+		<h5 class="modal-title">
+            {{#if icon}}<i class="fa fa-fw fa-{{icon}}"></i>{{/if}}
+            {{#if title}}{{title}}{{/if}}
+            {{> Template.contentBlock ..}}
+        </h5>
+		{{#if dismiss}}
+            <button type="button" class="close" data-dismiss="modal" aria-label="X">
+                <span aria-hidden="true">&times;</span>
+            </button>
+		{{/if}}
+	</div>
+</template>
+
+<template name="mbody">
+	<div class="modal-body  {{class}}" id="{{id}}">
+		{{> Template.contentBlock ..}}
+	</div>
+</template>
+
+<template name="mfooter">
+	<div class="modal-footer  {{class}}">
+		{{> Template.contentBlock ..}}
+	</div>
+</template>
+

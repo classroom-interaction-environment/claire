@@ -1,0 +1,35 @@
+{
+  "editor": {
+    "task": {
+      "title": "Aufgaben-Editor",
+      "backToUnit": "Zurück zum Sequenz-Editor",
+      "addToUnit": "Mit Sequenz verknüpfen",
+      "confirmUnlink": "Möchten Sie wirklich diese Aufgabe von der Sequenz '{{title}}' entfernen?",
+      "baseInfo": "Basis Angaben",
+      "addPage": "Neue Seite",
+      "editPages": "Seiteninhalte",
+      "editInUnitEditor": "Im Sequenz-Editor bearbeiten",
+      "staticContent": "Globale Inhalte",
+      "headerContent": "Kopfzeile",
+      "footerContent": "Fußzeile",
+      "noStaticContent": "Keine globalen Inhalte hinzugefügt",
+      "preview": "Vorschau",
+      "codeView": "Quellcode",
+      "emptyPages": "Diese Aufgabe enthält noch Seiten ohne Inhalte",
+      "emptyPage": "Diese Seite enthält noch keine Inhalte.",
+      "editAttributes": "Element bearbeiten",
+      "noAttributes": "Ohne weitere Einstellungen kann dieses Element noch nicht korrekt verwendet werden.",
+      "addContent": "Element hinzufügen",
+      "selectMeta": "Wählen Sie einen der angezeigten Elementtypen aus um den Inhalt zu bearbeiten.",
+      "moveToPage": "Verschiebe nach Seite",
+      "selectExistingElement": "Element auswählen",
+      "makePersistent": "Dauerhaft speichern",
+      "linkedUnits": "Sequenzen",
+      "linkUnit": "Sequenzen verknüpfen",
+      "confirmDeletePage": "Möchten Sie die Seite wirklich löschen? Alle ungespeicherten Inhalte gehen dann verloren. Fortfahren und löschen?",
+      "moveEntry": "Element verschieben",
+      "create": "Neue Aufgabe erstellen",
+      "editInTaskEditor": "Im Aufgaben-Editor bearbeiten"
+    }
+  }
+}

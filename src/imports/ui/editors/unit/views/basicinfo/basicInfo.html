@@ -1,0 +1,25 @@
+<template name="uebasicInfo">
+    <div class="my-4">
+        {{#unless loadComplete}}
+            {{> loading type="data"}}
+        {{else}}
+            {{> caroForm
+                    id='basicInfoForm'
+                    collapse=false
+                    doc=unitDoc
+                    schema=basicInfoSchema
+                    type=formType
+                    hideLegend=true
+                    submitting=submitting
+                    buttonClasses="d-none"
+                    class="p-4 mb-4"}}
+            {{> actionButton
+                    submit=true
+                    form="basicInfoForm"
+                    type="primary"
+                    icon="save"
+                    blocked=submitting
+                    label=(i18n "actions.update")}}
+        {{/unless}}
+    </div>
+</template>

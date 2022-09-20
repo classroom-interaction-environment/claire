@@ -1,0 +1,11 @@
+<template name="audioFileListRenderer">
+    <td><i class="fa fa-fw fa-file-audio"></i></td>
+    <td class="w-25"><h6>{{this.name}}</h6></td>
+    <td class="no-wrap">{{b2mb this.size}} {{i18n 'fileSize.mb'}}</td>
+    <td class="w-100"></td>
+    <td>
+        {{#unless this.processingComplete}}
+            {{> icon name="cogs" title=(i18n "file.processing")}}
+        {{/unless}}
+    </td>
+</template>

@@ -1,0 +1,17 @@
+{
+  "wizard": {
+    "pleaseSelect": "Bitte wählen Sie",
+    "prepare": {
+      "selectClass": "Bitte wählen Sie zuerst einen Kurs aus, für den Sie den Unterricht anlegen möchten.",
+      "selectUnit": "Wählen Sie eine der Lernsequenzen aus, die als Kopie für Sie angelegt wird und beliebig anpassbar ist.",
+      "filterByDimension": "Auswahl nach Dimensionen filtern",
+      "phases": {
+        "title": "Unterrichtsphasen der Lernsequenz",
+        "description": "An dieser Stelle können Sie entscheiden, ob Sie die ausgewählte Lernsequenz weiter bearbeiten möchten oder im Original für Ihren Unterricht nutzen wollen.",
+        "missing": "Für diese Sequenz wurden bisher keine Unterrichtsphasen angelegt."
+      },
+      "completeAndEdit": "Abschließen und im Editor weiter bearbeiten",
+      "completeWithoutEdit": "Abschließen und im Original übernehmen"
+    }
+  }
+}

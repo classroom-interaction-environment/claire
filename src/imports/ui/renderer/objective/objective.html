@@ -1,0 +1,21 @@
+<template name="objective">
+    <div class="caro-objective w-100">
+        <h6 class="d-flex w-100">
+            <span class="objective-index">{{index}}</span>
+            <span class="w-100">- {{title}}</span>
+        </h6>
+        <div>
+            {{#each dimensions}}
+                {{#with dimensionDoc this}}
+                    {{> dimension
+                            title=dimensionDoc.title
+                            color=dimensionDoc.color
+                            hideLabel=true}}
+                {{/with}}
+            {{/each}}
+        </div>
+        <div>
+            <small>{{desciption}}</small>
+        </div>
+    </div>
+</template>

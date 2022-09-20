@@ -1,0 +1,8 @@
+<template name="admin">
+	{{#unless loadComplete}}
+		{{> loading}}
+	{{else}}
+        {{> submenu submenuData}}
+        {{> TemplateLoader templateAtts}}
+	{{/unless}}
+</template>

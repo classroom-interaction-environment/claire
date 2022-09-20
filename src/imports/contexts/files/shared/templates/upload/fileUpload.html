@@ -1,0 +1,97 @@
+<template name="afCustomFileUpload">
+    {{#if loadComplete}}
+        {{#if view "select"}}
+            <h5>{{i18n "form.fileUpload.label" name=(i18n label)}}</h5>
+
+            {{#if showUpload}}
+            <span>{{i18n "form.fileUpload.description" accept=accept}}</span>
+
+            <div class="{{#unless uploading}}upload-drop-zone{{/unless}} mt-3 border border-{{#if dragOver}}primary bg-light{{else}}light{{/if}} dashed rounded p-5 text-center d-block w-100">
+                {{#if uploading}}
+                    {{> icon name="spinner" pulse=true}}
+                    <p>{{i18n "form.fileUpload.uploading"}}</p>
+                {{else}}
+                    <div>{{> icon name="upload" class="fa-3x"}}</div>
+                    <div class="text-center">{{i18n "form.fileUpload.drop"}}</div>
+
+                    <label for="af-file-upload-capture-{{id}}">
+                        <span class="btn btn-link">{{i18n "form.fileUpload.browse"}}</span>
+                        {{#unless atts.preview}}
+                        <input data-files-collection-upload
+                               id="af-file-upload-capture-{{id}}"
+                               class="d-none"
+                               type="file"
+                               disabled="{{disabled}}"
+                               accept="{{accept}}"
+                               capture="{{capture}}"
+                               multiple="{{multiple}}"
+                               data-id="{{id}}" />
+                        {{/unless}}
+                    </label>
+                {{/if}}
+            </div>
+            {{/if}}
+
+            {{#each file in files}}
+                {{#if atts.preview}}
+                    <div class="card-body border border-light p-3 mt-2 text-center">
+                        <p>{{i18n "fileUpload.preview"}}</p>
+                        <p>{{file.name}} ({{b2mb file.size}} MB)</p>
+                    </div>
+                {{else if previewData file}}
+                    <div class="card-body border border-light p-3 mt-2 d-flex">
+                        {{> Template.dynamic template=previewTemplate data=file.doc}}
+                    </div>
+                {{/if}}
+                <div class="card-body border border-light p-3 mt-2 d-flex">
+                    {{#unless file.error}}
+                        <div class="flex-fill">
+                            {{> icon name=fileIcon}}
+                            {{file.name}}
+                        </div>
+                    {{else}}
+                        <div class="flex-fill">
+                            {{> icon name="exclamation-triangle" class="text-danger"}}
+                            <div>
+                                {{file.name}}
+                                <p>{{i18n file.error.reason file.error.details}}</p>
+                            </div>
+                        </div>
+                    {{/unless}}
+                    <div>
+                            {{#if file.complete}}
+                                {{> actionButton label=(i18n "actions.delete")
+                                    type="outline-danger"
+                                    disabled=disabled
+                                    class="border-0 delete-btn"
+                                    icon="trash"
+                                    blocked=(deleting file.id)
+                                    data-target=file.doc._id
+                                    data-id=file.id}}
+                            {{else}}
+                                {{> icon name="spinner" pulse=true}}
+                                {{file.progress}}%
+                            {{/if}}
+                    </div>
+                </div>
+            {{/each}}
+        {{/if}}
+
+        {{#if view "preUploadError"}}
+            <div class="pre-upload-error mt-3 p-5 border border-danger">
+                {{#with error}}
+                    <h5>{{i18n error.error}}</h5>
+                    <p>{{i18n error.reason error.details}}</p>
+                {{/with}}
+
+                <div class="w-100 d-block text-center">
+                    <button class="btn btn-secondary state-btn" data-target="select" disabled="{{disabled}}">
+                        {{i18n "actions.tryAgain"}}
+                    </button>
+                </div>
+            </div>
+        {{/if}}
+    {{/if}}
+
+    <input id="afFileHiddenInput-{{id}}" type="hidden" data-schema-key="{{dataSchemaKey}}">
+</template>

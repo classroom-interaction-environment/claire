@@ -1,0 +1,10 @@
+<template name="textRendererenum">
+	<table class="table">
+		{{#each this.entries}}
+			<tr>
+				<td class="border-0 text-right">{{correctIndex @index}}.</td>
+				<td class="border-0 w-100">{{this}}</td>
+			</tr>
+		{{/each}}
+	</table>
+</template>

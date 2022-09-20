@@ -1,0 +1,15 @@
+{
+  "items": {
+    "itemRange": {
+      "range": "Intervall",
+      "step": "Schritte",
+      "minValue": "Min. Wert",
+      "maxValue": "Max. Wert",
+      "minLabel": "Bezeichnung Min. Wert",
+      "maxLabel": "Bezeichnung Max. Wert",
+      "startValue": "Start-Wert",
+      "pipTypes": "Skalen-Typ",
+      "pipCount": "Skalen-Dichte"
+    }
+  }
+}

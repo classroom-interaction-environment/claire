@@ -1,0 +1,10 @@
+<template name="createForm">
+	{{>actionButton type="success" class="create-form-button no-wrap" label=(i18n "actions.create") icon="plus"}}
+	{{#modal id="createModal" lg=true static=true}}
+		{{> mheader bg="primary" title=title dismiss=true}}
+		{{> caroForm id=id schema=schema type="normal" hideLegend=hideLegend doc=doc}}
+		{{#mfooter}}
+			{{> actionButton type="success" form=id submit=true class="btn-block" blocked=submitting icon="plus" label=(i18n "actions.create")}}
+		{{/mfooter}}
+	{{/modal}}
+</template>

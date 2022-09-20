@@ -1,0 +1,19 @@
+<template name="loading">
+    <div {{divAtts type}}>
+        <h2>
+            <span><i {{iconAtts type}}></i></span>
+            {{#if i18nInitialized}}
+                <span>{{i18n (label type)}}</span>
+            {{/if}}
+            {{#if title}}-
+                <span class="loading-data-notification-title">
+                    {{#if allTrue requireTranslate i18nInitialized}}
+                        <strong>{{i18n title}}</strong>
+                    {{else}}
+                        <strong>{{title}}</strong>´
+                    {{/if}}
+                </span>
+            {{/if}}
+        </h2>
+    </div>
+</template>

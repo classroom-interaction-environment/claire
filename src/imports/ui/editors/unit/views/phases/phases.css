@@ -1,0 +1,25 @@
+.phases-table-full {
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+}
+
+.phases-table-full .table th,
+.table td {
+  padding: 0.5rem;
+}
+
+.w-33 {
+  width: 33%;
+}
+
+.td-method {
+  hyphens: auto;
+}
+
+.td-description {
+  min-width: 22.5%;
+}
+
+.td-notes {
+  min-width: 22.5%;
+}

@@ -1,0 +1,25 @@
+{
+  "common": {
+    "reason": "Fehlerursache"
+  },
+  "taskWorkingState": {
+    "taskNotEditable": "Aufgabe kann nicht geöffnet werden",
+    "notVisible": "Aufgabe ist nicht zum bearbeiten freigeschaltet"
+  },
+  "group": {
+    "editing": "Gruppe bearbeitet"
+  },
+  "groupMode": {
+    "title": "Gruppen-Modus",
+    "off": "Nicht aktiv",
+    "merge": "Antworten werden zusammengeführt",
+    "override": "Eine/r antwortet für die Gruppe",
+    "split": "Jede/r antwortet für sich"
+  },
+  "lesson": {
+    "unexpectedState": "Unterricht noch nicht bereit",
+    "errors": {
+      "expectedRunningOrComplete": "Laufender oder abgeschlossener Unterricht wird benötigt"
+    }
+  }
+}

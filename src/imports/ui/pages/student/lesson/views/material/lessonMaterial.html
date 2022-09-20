@@ -1,0 +1,28 @@
+<template name="lessonMaterial">
+    {{#with visibleMaterial}}
+
+    {{! list material in categories }}
+        {{#each category in this}}
+
+            <h6 class="text-center text-muted">{{i18n category.label}}</h6>
+            <div class="list-group">
+
+                {{#each material in category.documents}}
+                    {{! each category uses a different route resolver }}
+                    <a href="{{category.route material._id}}"
+                       class="list-group-item list-group-item-action lesson-material py-3">
+                        <h5 class="d-flex">
+                            <i class="text-primary p-1 fa fa-fw fa-{{category.icon}}"
+                               title="{{i18n category.label}}"></i>
+                            <span class="ml-2">{{material.title}}{{material.name}}</span>
+                        </h5>
+
+                        {{#if isTask category.name}}
+                            {{> taskWorkingStatus taskId=material.document._id lessonId=../lessonDoc._id}}
+                        {{/if}}
+                    </a>
+                {{/each}}
+            </div>
+        {{/each}}
+    {{/with}}
+</template>

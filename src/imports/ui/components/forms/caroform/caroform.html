@@ -1,0 +1,71 @@
+<template name="caroForm">
+    {{#unless loadComplete}}
+        {{> loading}}
+    {{else}}
+        {{#autoForm id=id schema=schema type=type doc=doc validation=(getValidation validation)
+                    class=classNames}}
+            {{#unless custom}}
+                <fieldset {{fieldSetAtts}}>
+                    {{#unless hideLegend}}
+                        <legend class="mb-4 text-primary font-weight-light">{{i18n "form.mandatoryFields"}}</legend>
+                    {{/unless}}
+                    {{#each mandatoryFields afFieldNames schema}}
+                        {{> afQuickField
+                                name=this.name
+                                options=afOptionsFromSchema
+                                disabled=inputIsDisabled
+                        }}
+                    {{/each}}
+                </fieldset>
+
+                {{#with optionalFields afFieldNames schema}}
+                    {{#unless preventCollapse ../collapse}}
+                        <button class="btn btn-block btn-outline-secondary my-4"
+                                type="button"
+                                data-toggle="collapse"
+                                data-target="#{{id}}_collapseTarget"
+                                aria-expanded="false"
+                                aria-controls="collapseExample">
+                            {{i18n "form.optionalFields"}} <i
+                                class="fa fa-fw fa-caret-down"></i>
+                        </button>
+                    {{/unless}}
+                    <div class="{{#unless preventCollapse
+                                          ../collapse}}collapse{{/unless}}"
+                         id="{{id}}_collapseTarget">
+                        <fieldset {{fieldSetAtts}}>
+                            {{#unless ../hideLegend}}
+                                <legend class="my-4 text-primary font-weight-light">{{i18n "form.optionalFields"}}</legend>
+                            {{/unless}}
+                            {{#each this}}
+                                {{> afQuickField name=this.name options=afOptionsFromSchema}}
+                            {{/each}}
+                        </fieldset>
+                    </div>
+                {{/with}}
+                {{#if buttonContent}}
+                    {{#unless submitting}}
+                        <button class="{{#if
+                                buttonClasses}}{{buttonClasses}}{{else}}btn btn-primary{{/if}}"
+                                type="submit"
+                                form="{{id}}">
+                            {{#if icon}}
+                                <i class="fa fa-fw fa-{{icon}}"></i>{{/if}} {{buttonContent}}
+                        </button>
+                    {{else}}
+                        <button class="{{#if
+                                buttonClasses}}{{buttonClasses}}{{else}}btn btn-primary{{/if}}"
+                                disabled>
+                            {{#if icon}}
+                                <i class="fa fa-fw fa-refresh fa-spin"></i>{{/if}} {{buttonContent}}
+                        </button>
+                    {{/unless}}
+                {{else}}
+                    {{> Template.contentBlock ..}}
+                {{/if}}
+            {{else}}
+                {{> Template.contentBlock ..}}
+            {{/unless}}
+        {{/autoForm}}
+    {{/unless}}
+</template>

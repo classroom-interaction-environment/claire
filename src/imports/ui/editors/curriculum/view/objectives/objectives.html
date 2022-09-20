@@ -1,0 +1,167 @@
+<template name="curriculumObjectives">
+    {{#unless loadComplete}}
+        {{> loading type="data"}}
+    {{/unless}}
+
+    <div class="w-100 d-flex justify-content-between">
+        {{>actionButton
+                type="outline-secondary"
+                class="expand-all-button"
+                icon="list-ul"
+                label=(i18n "editor.didactics.objectives.expandAll")
+                blocked=processing}}
+        {{>actionButton
+                type="success"
+                class="create-objective-button"
+                icon="list-ul"
+                label=(i18n "actions.create")
+                blocked=processing}}
+    </div>
+
+    {{! root node for our recursive objectives tree}}
+    <div class="mt-4">
+        {{#if loadComplete}}
+            {{> deObjective}}
+        {{/if}}
+    </div>
+
+    {{!-- create/edit modal --}}
+    {{#modal id="curriculumObjectivesModal" large=true}}
+        {{#with editDoc}}
+
+        {{! create modal layout for editing entries}}
+
+            {{> mheader title=(i18n "editor.didactics.objectives.edit") dismiss=true class="bg-primary text-light"}}
+            {{#mbody}}
+                {{#onLoaded complete=loadComplete}}
+                {{#caroForm
+                        id="editObjectiveForm"
+                        schema=objectiveSchema
+                        blocked=(updating ../_id)
+                        doc=..
+                        hideLegend=true collapse=false}}
+                {{/caroForm}}
+                {{/onLoaded}}
+            {{/mbody}}
+            {{#mfooter class="d-flex"}}
+                {{> actionButton
+                        submit=true
+                        form="editObjectiveForm"
+                        type="primary"
+                        blocked=(updating ../_id)
+                        icon="save"
+                        label=(i18n "actions.update")}}
+                {{>actionButton
+                        blocked=(updating "new")
+                        data-dismiss="modal"
+                        type="outline-secondary"
+                        class="ml-auto"
+                        label=(i18n "actions.cancel")}}
+            {{/mfooter}}
+        {{else}}
+
+        {{! create modal layout for new entries}}
+
+            {{> mheader title=(i18n "editor.didactics.objectives.edit") dismiss=true class="bg-success text-light"}}
+            {{#mbody}}
+                {{#caroForm
+                        id="editObjectiveForm"
+                        schema=objectiveSchema
+                        blocked=(updating "new")
+                        doc=newDoc
+                        hideLegend=true collapse=false}}
+                {{/caroForm}}
+            {{/mbody}}
+            {{#mfooter class="d-flex"}}
+                {{> actionButton
+                        submit=true
+                        form="editObjectiveForm"
+                        type="success"
+                        blocked=(updating "new")
+                        icon="save"
+                        label=(i18n "actions.create")}}
+                {{>actionButton
+                        blocked=(updating "new")
+                        data-dismiss="modal"
+                        type="outline-secondary"
+                        class="ml-auto"
+                        label=(i18n "actions.cancel")}}
+            {{/mfooter}}
+        {{/with}}
+    {{/modal}}
+
+    {{!-- confirm delete modal --}}
+    {{> confirm static=true lg=true}}
+</template>
+
+<template name="deObjective">
+    {{#with (children parent)}}
+        <div class=""
+             data-parent="{{../parent}}">
+            {{#each child in this}}
+                <div class="pr-0 py-0 {{#if ../parent}}ml-3{{else}}ml-0{{/if}}"
+                     data-target="{{child._id}}"
+                     data-index="{{@index}}">
+
+
+                    <div class="table-wrap bg-white mt-1">
+                        <table class="table table-borderless m-0">
+                            <tbody>
+                            <tr>
+                                <td class="no-wrap text-right">
+                                    <h6>{{child.index}}</h6>
+                                </td>
+                                <td class="w-100">
+                                    <a href class="expand-toggle-button"
+                                       data-target="{{child._id}}">
+                                        <h6 class="wrap-cell">{{child.title}}</h6>
+                                    </a>
+                                    <span class="text-muted">{{child.description}}</span>
+                                </td>
+                                <td class="no-wrap text-right">
+                                    {{#actionButton
+                                            type="outline-secondary"
+                                            sm=true
+                                            class="border-0 expand-toggle-button"
+                                            data-target=child._id}}
+                                        {{#if isExpanded child._id}}
+                                            {{> icon fw=true name="caret-down"}}
+                                        {{else}}
+                                            {{> icon fw=true name="caret-right"}}
+                                        {{/if}}
+                                        {{childCount child._id}}
+                                    {{/actionButton}}
+                                    {{> actionButton
+                                            type="outline-success"
+                                            sm=true
+                                            class="border-0 add-child-button"
+                                            icon="plus"
+                                            data-target=child._id}}
+                                    <button class="btn btn-outline-primary btn-sm border-0 edit-child-button"
+                                            disabled="{{#if
+                                                    ../../processing}}disabled{{/if}}"
+                                            data-target="{{child._id}}">
+                                        {{> icon fw=true name="edit"}}
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm border-0 delete-child-button"
+                                            disabled="{{#if
+                                                    ../../processing}}disabled{{/if}}"
+                                            data-target="{{child._id}}">
+                                        {{> icon fw=true name="trash"}}
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {{#if isExpanded child._id}}
+                        <div class="w-100">
+                            {{> deObjective parent=child._id}}
+                        </div>
+                    {{/if}}
+                </div>
+            {{/each}}
+        </div>
+    {{/with}}
+</template>

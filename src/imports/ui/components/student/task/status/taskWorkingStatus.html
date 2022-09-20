@@ -1,0 +1,10 @@
+<template name="taskWorkingStatus">
+	{{#with taskWorkingStateDoc}}
+		{{#if this.complete}}
+            <div class="d-flex">
+                <i class="fa fa-fw fa-check p-1"></i>
+                <span class="ml-2">{{i18n "taskResults.complete"}}</span>
+            </div>
+		{{/if}}
+	{{/with}}
+</template>

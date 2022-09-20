@@ -1,0 +1,20 @@
+<template name="wizardComponent">
+	<div class="col {{#if trueFalse disabled wasSelected}}d-none d-md-block{{/if}} {{class}}">
+		<div class="card {{#if wasSelected}}border border-success{{/if}} {{#if
+				bg}}bg-{{bg}}{{/if}}">
+			{{#if title}}
+				<div class="card-header clearfix">
+					<h5>{{title}}</h5>
+				</div>
+			{{/if}}
+			<div class="{{#unless noBody}}card-body{{/unless}}">
+				{{> Template.contentBlock ..}}
+			</div>
+			{{#if skip}}
+				<div class="card-footer">
+					{{> wizardSkip disabled=disabled target=skip component=name}}
+				</div>
+			{{/if}}
+		</div>
+	</div>
+</template>

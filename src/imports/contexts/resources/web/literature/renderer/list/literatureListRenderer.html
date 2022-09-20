@@ -1,0 +1,18 @@
+<template name="literatureListRenderer">
+    <td><i class="fa fa-fw fa-book"></i></td>
+    <td>
+        <h6>{{this.title}}</h6>
+        {{#with this.url}}
+            <small>
+                (<a href="{{this}}" target="_blank">
+                    <i class="fa fa-fw fa-external-link-alt"></i> {{i18n "common.link"}}
+                </a>)
+            </small>
+        {{/with}}
+    </td>
+    <td>{{this.authors}}</td>
+    <td class="text-center">{{this.year}}</td>
+    <td class="text-center">{{this.volume}}</td>
+    <td class="text-center">{{this.issue}}</td>
+    <td>{{this.publisher}}</td>
+</template>

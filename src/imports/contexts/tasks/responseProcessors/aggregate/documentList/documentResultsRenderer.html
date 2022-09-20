@@ -1,0 +1,20 @@
+<template name="documentResultsRenderer">
+    {{#onLoaded complete=loadComplete}}
+        {{#unless hasDocs}}
+            {{> nodocs}}
+        {{else}}
+            <ul class="list-group">
+                {{#each doc in documents}}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="font-weight-bold">{{doc.name}}</span>
+                        <a href="{{link doc "original"}}?download=true" target="_blank" referrerpolicy="no-referrer"
+                           class="btn btn-sm btn-outline-secondary boder-0"
+                           download="{{doc.name}}">
+                            <i class="fa fa-download"></i> {{i18n 'actions.open'}} ({{b2mb doc.size}} MB)
+                        </a>
+                    </li>
+                {{/each}}
+            </ul>
+        {{/unless}}
+    {{/onLoaded}}
+</template>

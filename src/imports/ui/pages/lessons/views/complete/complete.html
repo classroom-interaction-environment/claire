@@ -1,0 +1,19 @@
+<template name="completeLessons">
+    <ul class="lessons-running list-group my-4">
+        {{#each lesson in completedLessons}}
+                {{#lessonListRenderer lesson=lesson showTime=true}}
+                    {{#routeButton
+                            class="no-wrap"
+                            href=(route "lesson" this.lesson._id)
+                            title=(i18n "lessons.toLesson") type="primary"}}
+                        <i class="fa fa-users"></i>
+                        <i class="fa fa-caret-right"></i>
+                    {{/routeButton}}
+                {{/lessonListRenderer}}
+        {{else}}
+            <li class="list-group-item">
+            {{> nodocs}}
+            </li>
+        {{/each}}
+    </ul>
+</template>

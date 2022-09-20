@@ -1,0 +1,33 @@
+<template name="documentFileRenderer">
+    {{#with getLink this}}
+        <div class="w-100 text-center">
+            <div class="py-2">{{../name}}</div>
+            {{#if ../isPDF}}
+                {{#unless fallback}}
+                <a href class="use-fallback d-block p-2 text-center">
+                    {{i18n "files.noPDF"}}
+                </a>
+                {{/unless}}
+                <div class="pdf-target"></div>
+                {{#if fallback}}
+                    {{> pdfViewer path=pdfUrl }}
+                {{/if}}
+            {{/if}}
+
+            <div class="d-block text-center">
+                <a href="{{this}}?download=true" download="{{../name}}"
+                   target="_top"
+                   class="btn btn-outline-secondary btn-sm border-0 file-image-download-button no-wrap">
+                    <small class="font-weight-normal py-2">
+                        {{> icon name="download"}}
+                        <span>Download</span>
+                        <span>({{b2mb ../size}} {{i18n 'fileSize.mb'}})</span>
+                    </small>
+                </a>
+            </div>
+
+        </div>
+    {{else}}
+        {{> loading type="data" title=name}}
+    {{/with}}
+</template>

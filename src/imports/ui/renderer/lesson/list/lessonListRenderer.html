@@ -1,0 +1,62 @@
+<template name="lessonListRenderer">
+    <li {{liAtts "lesson-li list-group-item py-3"}}>
+        <div class="d-flex justify-content-between align-items-center">
+            {{#if showIcon}}
+                {{> lessonStatus lessonDoc=lesson }}
+            {{/if}}
+            {{#if showStatus}}
+                {{#with unit lesson.unit}}
+                    {{> documentState document=this showLabel=false}}
+                {{/with}}
+            {{/if}}
+            {{#if unit lesson.unit}}
+            <span class="w-100 px-3">
+
+                <span class="d-block">
+                    {{#with unit lesson.unit}}
+                        <h5>{{this.title}}</h5>
+                    {{else}}
+                        <i class="fa fa-fw fa-spinner fa-pulse"></i> {{lesson.unit}}
+                    {{/with}}
+                </span>
+
+                <span class="d-block">
+                    {{#if showClass}}
+                        {{#with schoolClass lesson.classId}}
+                            {{this.title}}
+                        {{else}}
+                            <i class="fa fa-fw fa-spinner fa-pulse"></i> {{lesson.classId}}
+                        {{/with}}
+                    {{/if}}
+
+                    {{#if allTrue showClass showPocket}}
+                        <span>/</span>
+                     {{/if}}
+
+                    {{#if showPocket}}
+                        {{#with pocket lesson.unit}}
+                            {{> icon name=this.icon}}
+                            {{this.title}}
+                        {{/with}}
+                    {{/if}}
+                </span>
+            </span>
+            {{else}}
+                <span class="w-100 px-3 text-warning">
+                    {{i18n "errors.docNotFound"}}
+                    {{lesson.unit}}
+                </span>
+            {{/if}}
+
+            {{#with getTime lesson}}
+                <span class="no-wrap px-3">
+                    {{>tooltip title=(i18n this.label) label=(toDate this.value)}}
+                </span>
+            {{/with}}
+
+            <span>
+                {{> Template.contentBlock lesson}}
+            </span>
+        </div>
+    </li>
+</template>

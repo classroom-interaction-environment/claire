@@ -1,0 +1,246 @@
+<template name="codeRegister">
+    {{#unless loadComplete}}
+        {{> loading}}
+    {{else}}
+        {{#unless registerSuccessful}}
+            <div class="invitation-form-container {{#if
+                    registering}}passive{{/if}}">
+                <p class="mt-5 py-2">{{i18n "codeRegister.description"}}</p>
+
+                {{> routeButton type="outline-secondary" label=(i18n "codeRegister.alreadyRegistered") class="btn-block" href=(route "login" fullPath) }}
+
+                <!-- first name and last name -->
+                {{#wizardStep name="basics" visible=(stateVisible 'basics')
+                              num=1 max=4
+                              class="mt-4"
+                              description=(i18n 'codeRegister.basics.description')}}
+                    {{#wizardComponent
+                            name="basics"
+                            disabled=(stepComplete 'basics' 'basics')
+                            wasSelected=(wasSelected 'basics' 'basics')}}
+                        {{>caroForm id="basicUserCredentialsForm" type="normal" class="p-0"
+                                doc=registerUserDoc
+                                schema=registerUserSchema
+                                hideLegend=true}}
+                        {{#unless stepComplete 'basics'}}
+                            {{> actionButton
+                                    type="outline-primary"
+                                    class="btn-block"
+                                    submit=true
+                                    block=submitting
+                                    icon="arrow-down"
+                                    label=(i18n "actions.forward")
+                                    form="basicUserCredentialsForm"}}
+                        {{/unless}}
+                    {{/wizardComponent}}
+                {{/wizardStep}}
+
+                <!-- enter email -->
+                {{#wizardStep name="username" visible=(stateVisible 'username')
+                              num=2
+                              max=4  back=true
+                              description=(i18n 'codeRegister.username.description')}}
+                    {{#wizardComponent
+                            name="username"
+                            disabled=(stepComplete 'username' 'username')
+                            wasSelected=(wasSelected 'username' 'username')}}
+                        {{#caroForm id="usernameForm" type="normal" class="p-0"
+                                    schema=usernameFormSchema
+                                    submitting=submitting
+                                    doc=emailDoc
+                                    hideLegend=true}}
+                            {{#if userAlreadyExists}}
+                                <span class="text-danger">{{i18n
+                                        "codeRegister.userAlreadyExists"}}</span>
+                            {{/if}}
+                        {{/caroForm}}
+                        {{#unless stepComplete 'username'}}
+                            {{> actionButton
+                                    type="outline-primary"
+                                    class="btn-block"
+                                    submit=true
+                                    block=submitting
+                                    icon="arrow-down"
+                                    label=(i18n "actions.forward")
+                                    form="usernameForm"}}
+                        {{/unless}}
+                    {{/wizardComponent}}
+                {{/wizardStep}}
+
+                <!-- enter password and confirm -->
+                {{#wizardStep name="password" visible=(stateVisible 'password')
+                              num=3
+                              max=4 back=true
+                              description=(i18n 'codeRegister.password.description')}}
+                    {{#wizardComponent
+                            name="password"
+                            disabled=(stepComplete 'password' 'password')
+                            wasSelected=(wasSelected 'password' 'password')}}
+                        {{>caroForm id="createPasswordForm" type="normal" schema=createPasswordSchema hideLegend=true submitting=submitting doc=passwordDoc class="p-0"}}
+                        {{#unless stepComplete 'password'}}
+                            {{> actionButton
+                                    type="outline-primary"
+                                    class="btn-block"
+                                    submit=true
+                                    block=submitting
+                                    icon="arrow-down"
+                                    label=(i18n "actions.forward")
+                                    form="createPasswordForm"}}
+                        {{/unless}}
+                    {{/wizardComponent}}
+                {{/wizardStep}}
+
+
+                <!-- accept terms of service -->
+                {{#wizardStep name="terms" visible=(stateVisible 'terms') num=4
+                              max=4
+                              back=true
+                              description=(i18n 'codeRegister.terms.description')}}
+                    {{#wizardComponent
+                            name="terms"
+                            disabled=(stepComplete 'terms' 'terms')
+                            wasSelected=(wasSelected 'terms' 'terms')}}
+                        <div class="p-2">
+                            {{#caroForm id="acceptTermsForm" type="normal"
+                                        class="p-md-4"
+                                        schema=acceptTermsSchema
+                                        custom=true
+                                        hideLegend=true
+                                        collapse=false doc=doc}}
+                                <div class="pl-2 mt-5 text-body">
+                                    <div class="d-flex">
+                                        {{> afQuickField name="terms"}}
+                                        <div>
+                                            <div class="d-block accept-area"
+                                                 data-target="terms">
+                                                {{i18n "user.enrollAccount.acceptTerms.check"}}
+                                            </div>
+
+                                            {{> routeButton
+                                                    href=(route "legal" "terms")
+                                                    label=(i18n "user.enrollAccount.acceptTerms.show")
+                                                    target="_blank"
+                                                    class="mt-3 btn-block"}}
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex mt-5">
+                                        {{> afQuickField name="privacy"}}
+                                        <div>
+                                            <div class="d-block accept-area"
+                                                 data-target="privacy">
+                                                {{i18n "user.enrollAccount.acceptPrivacy.check"}}
+                                            </div>
+
+                                            {{> routeButton
+                                                    href=(route "legal" "privacy")
+                                                    label=(i18n "user.enrollAccount.acceptPrivacy.show")
+                                                    target="_blank"
+                                                    class="mt-3 btn-block"}}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            {{/caroForm}}
+                        </div>
+                        {{#unless stepComplete 'terms'}}
+                            {{> actionButton
+                                    type="primary"
+                                    class="btn-block mt-4"
+                                    submit=true
+                                    block=submitting
+                                    icon="thumbs-up"
+                                    label=(i18n "codeRegister.registerNow")
+                                    form="acceptTermsForm"}}
+                        {{/unless}}
+                    {{/wizardComponent}}
+                {{/wizardStep}}
+            </div>
+        {{/unless}}
+
+
+        <!-- post registration steps -->
+        {{#if registering}}
+            <div class="card my-4">
+                <div class="card-body">
+                    <h2>
+                        <i class="fa fa-fw fa-sync fa-spin"></i> {{i18n
+                            "codeRegister.registering"}}
+                    </h2>
+                </div>
+            </div>
+        {{/if}}
+
+
+        {{#if registerSuccessful}}
+            {{#wizardStep name="profile" visible=(stateVisible 'profile')
+                          description=(i18n 'codeRegister.profile.description')}}
+                {{#wizardComponent
+                        name="profile"
+                        disabled=(stepComplete 'profile' 'profile')
+                        wasSelected=(wasSelected 'profile' 'profile')
+                        title=(i18n "codeRegister.profile.title")
+                        class="bg-primary text-white"}}
+                    <h2 class="text-success">
+                        <i class="fa fa-fw fa-check"></i> {{i18n
+                            "codeRegister.profile.success"}}
+                    </h2>
+
+                    <p class="my-2">{{i18n "user.enrollAccount.success"}}</p>
+
+                    {{#with currentUser}}
+                        {{> routeButton href=(route "profile" this._id "new")
+                                label=(i18n 'actions.continue')
+                                type="primary"}}
+                    {{else}}
+                        {{> loading title=(i18n "user.title")}}
+                    {{/with}}
+
+                {{/wizardComponent}}
+            {{/wizardStep}}
+        {{/if}}
+
+        <!-- error state -->
+        {{#if registerFailed}}
+            {{#wizardStep name="failed" visible=(stateVisible 'failed')
+                          description=(i18n 'codeRegister.failed.description')}}
+                {{#wizardComponent
+                        name="failed"
+                        disabled=(stepComplete 'failed' 'failed')
+                        wasSelected=(wasSelected 'failed' 'failed')
+                        title=(i18n "codeRegister.failed.title")
+                        class="bg-danger text-white"}}
+                    {{#with registerFailed}}
+                        <h2 class="text-danger">
+                            <i class="fa fa-fw fa-times"></i> {{i18n
+                                this.error}}
+                        </h2>
+                        <p>{{i18n this.reason}}</p>
+                        {{> caroForm id="codeForm" type="normal" schema=codeSchema hideLegend=true class="p-0"}}
+                        <button class="btn btn-outline-primary reenter-code-button"
+                                type="submit" form="codeForm">
+                            {{i18n "codeRegister.retryCode"}}
+                        </button>
+                        <p class="text-muted text-center text-md-left py-2">{{i18n
+                                "common.or"}}</p>
+                        <button class="btn btn-outline-primary reload-page-button">
+                            {{i18n "codeRegister.retry"}}
+                        </button>
+                        <p class="text-muted text-center text-md-left py-2">{{i18n
+                                "common.or"}}</p>
+                        <a href="mailto:?subject={{i18n
+                                this.error}}&amp;body={{i18n
+                                this.reason}}"
+                           class="btn btn-outline-secondary mt-1">
+                            <i class="fa fa-fw fa-send-o"></i> {{i18n
+                                "codeRegister.reportError"}}
+                        </a>
+
+                    {{/with}}
+                {{/wizardComponent}}
+            {{/wizardStep}}
+        {{/if}}
+    {{/unless}}
+
+    {{> confirm static=true }}
+</template>

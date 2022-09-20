@@ -1,0 +1,14 @@
+{
+  "nav": {
+    "share": "Seite/Inhalt teilen",
+    "joinClass": "Kurs mit Code beitreten",
+    "userProfile": "Mein Profil",
+    "logout": "Abmelden"
+  },
+   "codeInvitation": {
+     "joinClassByCode": "Einem neuen Kurs beitreten"
+   },
+  "actions": {
+    "join": "Beitreten"
+  }
+}

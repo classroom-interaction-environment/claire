@@ -1,0 +1,59 @@
+<template name="nonPhaseMaterial">
+    {{#with (references material)}}
+        <ul class="list-group {{#if ../flush}}list-group-flush{{/if}} my-2">
+
+            {{!-- headline listitem - always visible --}}
+            <li class="list-group-item bg-primary text-white d-flex justify-content-between align-items-center {{../phaseclass}}">
+                <strong>
+                    {{i18n "phase.nonPhaseMaterial"}}
+                    {{#if ../inlineToggle}}
+                        {{#if inlineActive}}
+                            {{> actionButton type="outline-secondary" class="btn-sm border-0 nonPhaseMaterial-toggle-button" icon="caret-down"}}
+                        {{else}}
+                            {{> actionButton type="outline-secondary" class="btn-sm border-0 nonPhaseMaterial-toggle-button" icon="caret-up"}}
+                        {{/if}}
+                    {{/if}}
+                </strong>
+                {{#if inlineActive}}
+                    <span class="mr-1">
+                        {{#each reference in this}}
+                            {{#if reference.isFilesCollection}}
+                                {{>tooltip title=reference.doc.name icon=reference.icon}}
+                            {{else}}
+                                {{>tooltip title=reference.doc.title icon=reference.icon}}
+                            {{/if}}
+                        {{/each}}
+                    </span>
+                {{/if}}
+            </li>
+
+            {{!-- collapsible entries --}}
+            {{#unless inlineActive}}
+                {{#each reference in this}}
+                    <li class="list-group-item align-items-center text-dark {{../liclass}}">
+                        <span class="mr-2">
+                            {{>tooltip title=(i18n reference.label) icon=reference.icon}}
+                            <span class="text-wrap ml-2 d-none d-md-inline-flex">
+                                {{#if reference.isFilesCollection}}
+                                    {{reference.doc.name}}
+                                {{else}}
+                                    {{reference.doc.title}}
+                                {{/if}}
+                            </span>
+                        </span>
+                        {{> Template.contentBlock refId=reference.doc._id phaseId=phase._id type=reference.name}}
+                    </li>
+                    <li class="d-md-none list-group-item border-0 mt-n1 {{../liclass}}">
+                        {{#if reference.isFilesCollection}}
+                            {{reference.doc.name}}
+                        {{else}}
+                            {{reference.doc.title}}
+                        {{/if}}
+                    </li>
+                {{/each}}
+            {{/unless}}
+        </ul>
+    {{else}}
+        {{> loading type="data"}}
+    {{/with}}
+</template>

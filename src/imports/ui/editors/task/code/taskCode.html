@@ -1,0 +1,12 @@
+<template name="taskEditorCode">
+    <div class="card-body">
+        <div class="d-flex">
+            <span class="ml-auto">{{i18n "fileSize.title"}} {{i18n "curriculum.unit"}}: {{jsonSize this.unitDoc}} {{i18n "fileSize.kb"}}</span>
+            <span class="ml-auto">{{i18n "fileSize.title"}} {{i18n "curriculum.task"}}: {{jsonSize this.taskDoc}} {{i18n "fileSize.kb"}}</span>
+            <span class="ml-auto">{{i18n "fileSize.title"}} {{i18n "curriculum.pocket"}}: {{jsonSize this.pocketDoc}} {{i18n "fileSize.kb"}}</span>
+        </div>
+        <figure>
+            <pre><code>{{stringify this}}</code></pre>
+        </figure>
+    </div>
+</template>

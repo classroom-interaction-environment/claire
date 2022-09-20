@@ -1,0 +1,16 @@
+<template name="short">
+    <div class="short-container">
+        <p class="collapse" id="collapseExample" aria-expanded="false">
+            {{this.text}}
+        </p>
+        <a role="button" class="collapsed" data-toggle="collapse"
+           href="#collapseExample"
+           aria-expanded="false" aria-controls="collapseExample">
+            {{#unless open}}
+                + {{i18n "actions.showMore"}}
+            {{else}}
+                - {{i18n "actions.showLess"}}
+            {{/unless}}
+        </a>
+    </div>
+</template>

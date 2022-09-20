@@ -1,0 +1,23 @@
+<template name="fail">
+    {{#with error}}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fa fa-fw fa-exclamation-circle text-danger"></i> {{i18n (title this)}}
+                </h5>
+                {{#if this.reason}}
+                    <h5>{{i18n 'errors.reason'}}</h5>
+                    <p>{{i18n this.reason}}</p>
+                {{/if}}
+                {{#if this.details}}
+                    <h5>{{i18n 'errors.details'}}</h5>
+                    <p>{{stringify this.details}}</p>
+                {{/if}}
+                {{#if ../stack}}
+                    <h5>{{i18n 'errors.stack'}}</h5>
+                    <pre>{{this.stack}}</pre>
+                {{/if}}
+                {{> Template.contentBlock}}
+            </div>
+        </div>
+    {{/with}}
+</template>

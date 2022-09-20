@@ -1,0 +1,15 @@
+{
+  "nav": {
+    "userProfile": "Profil",
+    "toggle": "Auf/zuklappen",
+    "toggleFluid": "Breite anpassen",
+    "login": "Login",
+    "logout": "Ausloggen",
+    "forgotPassword": "Passwort vergessen",
+    "placeholder": {
+      "title": "Fasse den Fehler in ein paar Worten zusammen...",
+      "description": "Mache bitte möglichst präzise Angaben zum fehler..."
+    },
+    "tools": "Werkzeuge"
+  }
+}

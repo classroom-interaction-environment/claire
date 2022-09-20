@@ -1,0 +1,14 @@
+{
+  "nav": {
+    "share": "Share",
+    "joinClass": "Join a class",
+    "userProfile": "My Profile",
+    "logout": "Sign-out"
+  },
+  "codeInvitation": {
+    "joinClassByCode": "Join a new class"
+  },
+  "actions": {
+    "join": "Join"
+  }
+}

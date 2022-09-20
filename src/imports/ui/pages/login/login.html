@@ -1,0 +1,92 @@
+<template name="login">
+    <div class="jumbotron text-center bg-transparent mb-0 text-uppercase">
+        <h1>{{i18n "login.callToAction" siteName=siteName}}</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-4 mx-auto">
+            {{#onLoaded complete=formReady}}
+                {{# caroForm id="loginForm" type="normal" schema=loginSchema
+                             blocked=loggingIn
+                             hideLegend=true}}
+                    <div class="text-center w-100 my-2">
+                        <small class="ml-auto">
+                            <a href class="forgot-password-link">
+                                {{i18n "login.forgotPassword"}}
+                            </a>
+                        </small>
+                    </div>
+                    {{#actionButton type="primary"
+                                    class="btn-lg btn-block"
+                                    submit=true
+                                    icon="unlock-alt"
+                                    label=(i18n "actions.login")
+                                    blocked=loggingIn}}
+                        <h3><i class="fa fa-fw fa-unlock-alt"></i> {{i18n "actions.login"}}</h3>
+                    {{/actionButton}}
+
+                    {{!-- OR ---}}
+                    <div class="my-0 py-0 my-md-1 my-md-4 text-center w-100">
+                        <small>{{i18n "common.or"}}</small>
+                    </div>
+
+                    {{> actionButton type="success"
+                            class="btn-lg btn-block enter-code-button white-space-normal"
+                            disabled=loggingIn
+                            icon="plus-circle"
+                            label=(i18n "login.registerWithCode")}}
+                {{/caroForm}}
+            {{/onLoaded}}
+        </div>
+    </div>
+    {{#if loggingIn}}
+        {{> loading title=(i18n "login.loggingIn")}}
+    {{/if}}
+
+    {{#onLoaded complete=formReady}}
+        {{#modal id="sendResetPasswordMailModal" static=true}}
+            {{>mheader
+                    bg="primary"
+                    title=(i18n "login.resetPassword.title")
+                    dismiss=true}}
+            {{#with resetPasswordMailSent}}
+                {{#mbody}}
+                    <i class="fa fa-fw fa-check"></i>
+                    <span>{{i18n "login.resetPassword.sent"}}</span>
+                {{/mbody}}
+                {{#mfooter}}
+                    {{>actionButton
+                            block=true
+                            type="primary"
+                            label=(i18n "actions.close")
+                            data-dismiss="modal"}}
+                {{/mfooter}}
+            {{else}}
+                {{#caroForm
+                        id="sendResetPasswordForm"
+                        type="normal"
+                        schema=resetEmailSchema
+                        doc=resetEmailDoc
+                        hideLegend=true}}
+                    <p>{{i18n "login.resetPassword.description"}}</p>
+                    {{> actionButton
+                            class="btn-block"
+                            submit=true
+                            type="primary"
+                            icon="envelope"
+                            form="sendResetPasswordForm"
+                            label=(i18n "login.resetPassword.send")
+                            blocked=resetPasswordMailSending}}
+                {{/caroForm}}
+            {{/with}}
+        {{/modal}}
+        {{#modal id="registerCodeModal" static=true }}
+            {{>mheader bg="success" title=(i18n "codeRegister.title") dismiss=true}}
+
+            {{#caroForm id="codeForm" type="normal" schema=codeSchema
+                        hideLegend=true}}
+                {{> actionButton class="btn-block" submit=true type="success" label=(i18n "actions.submit")}}
+            {{/caroForm}}
+        {{/modal}}
+    {{/onLoaded}}
+</template>

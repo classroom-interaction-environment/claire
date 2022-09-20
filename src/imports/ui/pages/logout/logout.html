@@ -1,0 +1,17 @@
+<template name="logout">
+    {{#onLoaded complete=loadComplete}}
+        {{#unless complete}}
+            {{> loading title=(i18n 'logout.loggingOut')}}
+        {{else}}
+            {{#with hasError}}
+                {{> fail error=this}}
+            {{else}}
+                <div class="jumbotron">
+                    <p>
+                        <i class="fa fa-check text-success"></i> {{i18n 'logout.loggedOut'}}
+                    </p>
+                </div>
+            {{/with}}
+        {{/unless}}
+    {{/onLoaded}}
+</template>

@@ -1,0 +1,53 @@
+<template name="studentGroup">
+    {{#onLoaded complete=groupLoaded}}
+        <h2 class="no-wrap text-center text-md-left">{{groupDoc.title}}</h2>
+
+        <div class="d-block text-center text-md-left my-3">
+            <butt class="btn btn-outline-secondary show-member-btn" data-modal="member-modal">
+                {{> icon name="users"}} {{i18n "group.showMember"}}
+            </butt>
+        </div>
+
+        {{#if currentRole}}
+            <div class="d-block text-center text-md-left">
+                <span class="font-weight-bold">{{i18n "group.role"}}:</span> {{currentRole}}
+            </div>
+        {{/if}}
+
+        <div class="my-4">
+            <ul class="list-group">
+                {{> lessonMaterial
+                        lessonId=params.lessonId
+                        groupId=params.groupId
+                        visible=groupMaterial
+                        loading=loadingMaterials
+                        scope="group"}}
+            </ul>
+        </div>
+
+        {{#modal id="member-modal"}}
+            {{#mbody}}
+                {{#each user in members}}
+                    <li class="list-group-item d-flex">
+                        <span class="flex-fill">
+                            {{#if user.role}}
+                                <span class="font-weight-bold text-primary">{{user.role}}:</span>
+                            {{/if}}
+                            {{user.firstName}} {{user.lastName}}
+                        </span>
+                        {{#if isOnline user.presence}}
+                            <small class="text-success">{{i18n "user.online"}}</small>
+                        {{else}}
+                            <small class="text-muted">{{i18n "user.offline"}}</small>
+                        {{/if}}
+                    </li>
+                {{/each}}
+            {{/mbody}}
+            {{#mfooter}}
+                <button class="btn btn-secondary" data-dismiss="modal">
+                    {{i18n "actions.close"}}
+                </button>
+            {{/mfooter}}
+        {{/modal}}
+    {{/onLoaded}}
+</template>

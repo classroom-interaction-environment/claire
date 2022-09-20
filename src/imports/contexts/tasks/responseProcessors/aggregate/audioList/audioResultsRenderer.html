@@ -1,0 +1,29 @@
+<template name="audioResultsRenderer">
+    {{#unless loadComplete}}
+        {{>loading}}
+    {{else}}
+        <div class="image-result-container">
+            {{#each file in files}}
+                {{#with link file "original"}}
+                    <div class="card-body">
+                        <div class="card-title">{{file.name}}</div>
+                        <audio controls class="w-100" src="{{this}}" preload="none">
+                            <p>
+                                <span>¯\_(ツ)_/¯</span>
+                                <span>{{i18n 'browser.htmlAudioNotSuported'}}</span>
+                                <a href="{{this}}?download=true" target="_blank" class="btn btn-sm btn-outline-secondary boder-0"
+                                   download="{{doc.name}}">
+                                    <i class="fa fa-download"></i> {{i18n 'actions.donwnload'}} ({{doc.size}})
+                                </a>
+                            </p>
+                        </audio>
+                    </div>
+                {{else}}
+                    <div class="col">¯\_(ツ)_/¯</div>
+                {{/with}}
+                {{else}}
+                {{>nodocs}}
+            {{/each}}
+        </div>
+    {{/unless}}
+</template>

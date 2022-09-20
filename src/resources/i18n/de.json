@@ -1,0 +1,1191 @@
+{
+  "Match failed": "Server Fehler. Fehlerhafte Anfrage.",
+  "errors": {
+    "Error": "Fehler!",
+    "errorId": "Fehlercode",
+    "source": "Fehlerquelle",
+    "message": "Fehlernachricht",
+    "reason": "Begründung / Fehlerursache",
+    "details": "Fehlerdetails",
+    "too-many-requests": "Anfragen-Limit überschritten",
+    "slowDown": "Bitte warten Sie einige Sekunden bis die Funktion wieder nutzbar ist.",
+    "unexpectedCodeReach": "Unerwartete Ausführung",
+    "collectionNotFoundByName": "Datenset anhand des Namens nicht gefunden",
+    "noPermission": "Zugriff verweigert",
+    "permissionDenied": "Zugriff verweigert",
+    "forbiddenRole": "Unerlaubte Rolle",
+    "notInRole": "Rolle ungenügend",
+    "docNotFoundById": "{{value}} konnte nicht gefunden werden",
+    "docNotFound": "Dokument wurde nicht gefunden",
+    "expectServer": "Serverumgebung erwartet",
+    "expectClient": "Clientumgebung erwartet",
+    "invalidParameters": "Ungültige Parameter",
+    "error": "Fehler",
+    "400": "Fehlerhafte Anfrage",
+    "401": "Unauthentifizierte Anfrage",
+    "403": "Zugriff verwehrt",
+    "404": "Seite oder Inhalt nicht gefunden (404)",
+    "405": "Methode nicht erlaubt",
+    "410": "Resource nicht mehr verfügbar",
+    "500": "Serverfehler",
+    "fatal": {
+      "title": "Schwerwiegender Fehler",
+      "description": "Es ist ein Fehler aufgetreten, der weiteres Vorgehen innerhalb der Anwendung verhindert. Laden Sie bitte die Seite erneut. Sollte der Fehler weiterhin bestehen, nehmen Sie bitte Kontakt mit dem {{siteName}}-Team auf."
+    }
+  },
+  "accounts": {
+    "enroll": {
+      "subject": "Willkommen bei {{siteName}}",
+      "text": "Hallo {{name}},\n\nSie wurden von unserem Team eingeladen und sind nur noch einen Schritt entfernt mit {{siteName}} loszulegen.\n\nBitte schließen Sie die Registrierung ab, indem Sie auf folgenden Link klicken:\n{{url}}\n\nDer Link wird in {{expires}} Tag(en) ungültig.\n\nBeste Grüße, Ihr {{siteName}} Team"
+    },
+    "resetPassword": {
+      "subject": "Zurücksetzen Ihres {{siteName}} Passworts",
+      "text": "Hallo {{name}},\n\nSie haben in {{siteName}} angefordert Ihr Passwort zurückzusetzen. Bitte folgen Sie dem nachstehenden Link und setzen Sie Ihr Passwort neu: {{url}}\n\nDer Link wird in {{expires}} Tag(en) ungültig.\n\n!!!Wichtig!!! Die Passwort zurücksetzen Funktion sendet nur Emails, wenn Sie diese vorher angefordert haben! Sollten Sie dennoch derartige Emails erhalten, öffnen Sie nicht die Links und wenden Sie sich an {{supportEmail}}."
+    },
+    "verifyEmail": {
+      "subject": "Ihren {{siteName}} Account bestätigen",
+      "text": "Willkommen bei {{siteName}}!\n\nHallo {{name}},\n\num {{siteName}} volst\"andig nutzen zu können bitten wir Sie, Ihre Identität zu bestätigen, indem Sie auf den folgenden Link klicken: {{url}}\n\nAchtung: {{siteName}} fragt nicht nach Ihrem Passwort (außer Sie setzen Ihr Passwort zurück) oder nach sonstigen sensiblen Informationen per Email. Bei Zweifeln wenden Sie sich bitte an {{supportEmail}}\n\nDiese Email wurde automatisch generiert und enthält keinen Absender."
+    },
+    "inform": {
+      "passwordReset": {
+        "subject": "{{siteName}} info: Passwort wurde zurückgesetzt",
+        "text": "Hallo,\n\nfolgender User hat das Password zurückgesetzt bzw. neu gesetzt: {{name}}. Dies ist eine automatische Mail vom {{siteName}} system."
+      }
+    }
+  },
+  "codeRegister": {
+    "title": "Mit Code registrieren"
+  },
+  "common": {
+    "deprecated": "Veraltet / nicht mehr verwendet",
+    "startedAt": "Gestartet am",
+    "completedAt": "Abgeschlossen am",
+    "lastUpdated": "Zuletzt aktualisiert am",
+    "ok": "Verstanden",
+    "from": "Von",
+    "to": "Bis",
+    "linked": "Verknüpft",
+    "or": "oder",
+    "copy": "Kopie",
+    "subCategories": "Unterkategorie(n)",
+    "target": "Zieldokument",
+    "info": "Information",
+    "filter": "Filter",
+    "color": "Farbe",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "complete": "Fertig",
+    "simpleView": "Einfache Ansicht",
+    "extendedView": "Erweiterte Ansicht",
+    "colorCode": "Farbcode",
+    "resources": "Ressourcen",
+    "embedCode": "Eingebettetes Element",
+    "saving": "Wird gespeichert",
+    "saved": "Gespeichert",
+    "untitled": "(kein Name)",
+    "on": "An",
+    "off": "Aus",
+    "page": "Seite",
+    "expectedResult": "Es wurde ein Ergebnis erwartet, jedoch keins erhalten",
+    "successful": "Aktion Erfolgreich",
+    "success": "Erfolgreich",
+    "overview": "Übersicht",
+    "join": "Beitreten",
+    "noEntry": "Noch kein Eintrag vorhanden",
+    "noDescription": "Noch keine Beschreibung vorhanden",
+    "address": "Adresse",
+    "url": "Link / URL",
+    "noCount": "Keine Anzahl an Dokumenten bekommen",
+    "copyToClipboard": "Kopieren (Zwischenablage)",
+    "dependencies": "Abhängikeiten",
+    "register": "Registrieren",
+    "username": "Benutzername",
+    "email": "Email",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "language": "Sprache",
+    "status": "Status",
+    "title": "Titel",
+    "entry": "Eintrag",
+    "entries": "Einträge",
+    "document": "Dokument",
+    "requirements": "Vorraussetzungen",
+    "value": "Wert",
+    "domain": "Domäne",
+    "description": "Beschreibung",
+    "code": "Kurzform",
+    "type": "Typ",
+    "showMore": "Weitere Laden",
+    "newEntry": "Neuer Eintrag",
+    "actions": "Aktionen",
+    "yes": "Ja",
+    "no": "Nein",
+    "notYet": "Noch nicht",
+    "timeunit": "Zeiteinheit",
+    "search": "Suche...",
+    "priority": "Priorität",
+    "low": "Niedrig",
+    "medium": "Mittel",
+    "high": "Hoch",
+    "parent": "Übergeordnetes Element",
+    "index": "Laufnummer",
+    "notes": "Notizen",
+    "async": "Asynchron",
+    "editor": "Editor",
+    "noentries": "Es sind noch keine {{title}} vorhanden.",
+    "updateOrder": "Reihenfolge speichern",
+    "loading": "Wird geladen",
+    "loadData": "Lade Daten",
+    "loadTemplate": "Lade Ansicht",
+    "none": "Kein/e",
+    "start": "Start",
+    "end": "Ende",
+    "version": "Version",
+    "context": "Kontext",
+    "contextDoc": "Dokument-Kontext",
+    "wizard": "Wizard",
+    "model": "Datenmodell",
+    "source": "Datenquelle",
+    "preview": "Vorschau",
+    "upload": "Upload",
+    "nothingSelected": "Es wurde nichts ausgewählt",
+    "reportError": "Einen Fehler melden",
+    "terms": "Ich stimme den Nutzungsbedingungen für Fehlerreports zu.",
+    "sendError": "Fehler melden",
+    "category": "Kategorie",
+    "fileName": "Dateiname",
+    "files": "Dateien",
+    "file": "Datei",
+    "asset": "Datei",
+    "assets": "Dateien",
+    "assetLinks": "Dateiverweise",
+    "sourceUrl": "Ziel-URL",
+    "sourceFile": "Ziel-Datei",
+    "createdAt": "Erstellt am",
+    "createdBy": "Erstellt von",
+    "updatedAt": "Bearbeitet am",
+    "updatedBy": "Bearbeitet von",
+    "collection": "Datensatz",
+    "details": "Details",
+    "link": "Link",
+    "share": "Teilen",
+    "more": "Mehr",
+    "clone": "Duplizieren",
+    "users": "Benutzer",
+    "roles": "Rollen",
+    "role": "Rolle",
+    "notAssociated": "Nicht zugeordnet",
+    "uploads": "Anhänge",
+    "dropZone": "Hier ablegen"
+  },
+  "confirm":{
+    "codeRequired": "Bitte geben Sie den folgenden Code ein, um fortzufahren:",
+    "delete": "Bitte bestätigen Sie, dass Sie \"{{title}}\" wirklich löschen möchten."
+  },
+  "legal": {
+    "title": "Rechtliches",
+    "privacy": "Datenschutz",
+    "imprint": "Impressum",
+    "terms": "Nutzungsbedingungen",
+    "termsStudent": "Nutzungsbedingungen SuS",
+    "contact": "Kontakt"
+  },
+  "share": {
+    "whatsapp": "Via WhatsApp teilen",
+    "email": "Via Email teilen",
+    "link": "Via Link teilen"
+  },
+  "codeInvitation": {
+    "title": "Registrierung (mit Code)",
+    "code": "Code",
+    "createClass": "",
+    "confirmDelete":"Möchten Sie Einladung wirklich löschen?",
+    "addedToClass": "Erfolgreich zum Kurs hinzugefügt",
+    "setCurrentClass": "Möchten Sie den neuen Kurs als Ihren aktuellen Kurs festlegen?",
+    "pending": "Einladungen ausstehend",
+    "expired": "Abgelaufen",
+    "activeCodes": "Ausstehende Einladungen",
+    "expiredCodes": "Abgelaufene / erledigte Einladungen",
+    "complete": "Vollständig",
+    "expiresAt": "Verfällt am",
+    "qrCode": "QR- und Einladungscode",
+    "expiredDetails": "Die Einladung ist ausgelaufen. Bitte erstellen Sie eine neue Einladung.",
+    "expirationDays": "Tage bis zum Ablauf der Einladung",
+    "maxUsers": "Maximale Anzahl an Registrierungen mit diesem Code",
+    "count": "Erledigt / Gesamt",
+    "role": "Role der eingeladenen Benutzer",
+    "institution": "Institution / Unternehmen",
+    "joinClass": "Sie wurden in den Kurs \"{{className}}\" eingeladen. Sie behalten nach dem Beitritt Ihre alten Kurse bei. Möchten Sie dem Kurs beitreten?",
+    "invite": "Benutzer einladen",
+    "create": "Einladung erstellen",
+    "createLink": "Registrierungslink erstellen",
+    "createQr": "QR-Code erstellen",
+    "registerFailed": "Registrierung fehlgeschlagen",
+    "invalidLink": "Ungültiger Registrierungslink",
+    "invalidLinkReason": "Der Link bzw. Code für die Registrierung ist entweder ungültig oder abgelaufen. Bitte geben Sie den Code erneut ein oder wenden Sie sich an die Person, von der Sie den Link erhalten haben.",
+    "emailSubject": "Willkommen bei {{siteName}}",
+    "emailBody": "Willkommen bei {{siteName}}!\n\nHallo{{to}},\nSie wurden eingeladen am Unterricht in {{siteName}} teilzunehmen. Um sich zu registrieren klicken Sie einfach auf diesen Link und folgen Sie der Anleitung:\n{{link}}\n\nFalls Sie Probleme haben, können Sie sich gerne bei mir melden.\n\nMit besten Grüßen\n{{from}}\n\n\nDiese Email wurde automatisch erstellt.",
+    "insufficientRoles": "Es können nur Einladungen für Benutzer mit niedrigeren Rollen erstellt werden",
+    "errors": {
+      "invalidCode": "Code ist ungültig oder abgelaufen"
+    }
+  },
+  "safeConfirm": {
+    "code": "Bitte bestätigen Sie den Vorgang durch Eingabe des folgenden Codes",
+    "failed": "Bestätigen abgebrochen oder fehlgeschlagen"
+  },
+  "beamer": {
+    "title": "Beamer",
+    "controlBeamer": {
+      "title": "Beamer kontrollieren",
+      "end": "Beamer beenden"
+    },
+    "initBeamer": {
+      "title": "Beamer starten",
+      "choiceA": "Dieses Gerät wird zum Beamer und durch ein weiteres Gerät (PC, Tablet) ferngesteuert.",
+      "choiceB": "Sie können den Beamer im neuen Fenster öffnen und dieses auf Ihren erweiterten Bildschirm ziehen.",
+      "local": "Fernsteuern",
+      "external": "Auf zweitem Bildschirm"
+    },
+    "errors": {
+      "expectedWindowClose": "Beamer konnte nicht beendet werden. Bitte schließen Sie das Fenster manuell.",
+      "expectedColor": "Beamer Farbe ist kein gültiger Farbwert.",
+      "expectedGrid": "Beamer Layout ist kein gültiges Layout."
+    }
+  },
+  "gridLayout": {
+    "rows": "1 je Zeile",
+    "cols2": "2 je Zeile",
+    "cols3": "3 je Zeile",
+    "cols4": "4 je Zeile"
+  },
+  "actions": {
+    "preview": "Vorschau",
+    "showMore": "Mehr anzeigen",
+    "showLess": "Weniger anzeigen",
+    "resend": "Email erneut zusenden",
+    "complete": "Abschließen",
+    "deny": "Ablehnen",
+    "confirm": "Aktion Bestätigen",
+    "openInNewTab": "In eigenem Fenster öffnen",
+    "refresh": "Neu laden",
+    "continue": "Fortfahren",
+    "toggleMobile": "Für Lernende ein-/ausblenden",
+    "showResults": "Ergebnisse anzeigen",
+    "presentResults": "Präsentieren",
+    "print": "Drucken",
+    "reportError": "Fehler melden",
+    "login": "Anmelden",
+    "sendViaMail": "Per Email versenden",
+    "copyToClipboard": "Kopieren",
+    "fixNow": "Jetzt beheben",
+    "toDashboard": "Zurück zur Übersicht",
+    "create": "Erstellen",
+    "restart": "Neustart",
+    "startAgain": "Von vorne beginnen",
+    "createNow": "Jetzt erstellen",
+    "update": "Aktualisieren",
+    "select": "Auswählen",
+    "edit": "Bearbeiten",
+    "view": "Ansehen",
+    "delete": "Löschen",
+    "remove": "Entfernen",
+    "open": "Öffnen",
+    "close": "Schließen",
+    "reset": "Zurücksetzen",
+    "back": "Zurück",
+    "apply": "Anwenden",
+    "forward": "Weiter",
+    "add": "Hinzufügen",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "saving": "Speichert",
+    "export": "Exportieren",
+    "download": "Download",
+    "sort": "Sortieren",
+    "upload": "Hochladen",
+    "confirmDelete": "Wirklich löschen?",
+    "confirmCancel": "Wirklich abbrechen?",
+    "confirmClone": "Es wird ein neues Dokument angelegt. Fortfahren?",
+    "copied": "Erfolreich kopiert.",
+    "addCategory": "+ Kategorie",
+    "selectAndUpload": "Eine Datei auswählen und hochladen",
+    "selectFile": "Eine Datei zum hochladen auswählen",
+    "submit": "Abschicken",
+    "skip": "Überspringen",
+    "confirmLeave": "Wenn Sie die Seite verlassen werden ungespeicherte Formulardaten verworfen. Seite verlassen?",
+    "toBeamer": "Auf dem Beamer anzeigen",
+    "removeFromBeamer": "Von Beamer enfernen"
+  },
+  "upload": {
+    "title": "Upload",
+    "successfull": "Upload erfolgreich",
+    "maxSizeExceeded": "Dateien dieses Typs dürfen nicht größer als {{maxSize}} MB sin.",
+    "unsupportedExtension": "Dateien vom typ '{{extension}}' werden nicht unterstützt. Erlaubte Formate sind {{allowedFormats}}"
+  },
+  "time": {
+    "milliseconds": "Milisekunden",
+    "seconds": "Sekunden",
+    "sec": "Sek",
+    "minutes": "Minuten",
+    "min": "Min",
+    "hours": "Stunden",
+    "hrs": "Std",
+    "days": "Tage",
+    "months": "Monate",
+    "years": "Jahre",
+    "justNow": "Gerade eben",
+    "someMinutesAgo": "Vor einigen Minuten",
+    "today": "Heute",
+    "yesterady": "Gestern",
+    "beforeYesterday": "Vorgestern"
+  },
+  "viewMode": {
+    "all": "Alles",
+    "others": "Nur von anderen",
+    "mine": "Nur meine"
+  },
+  "progress": {
+    "title": "Lernfortschritt",
+    "showAll": "Übersicht",
+    "showCurrent": "Aktuell",
+    "setCurrent": "Als aktuellen Fortschritt setzen?",
+    "restart": "Achtung! Beim Neustart werden alle Ergebnisse zurückgesetzt. Diese Unterrichtseinheit neu starten?",
+    "notFoundById": "Lernfortschritt wurde anhand der ID nicht gefunden",
+    "docAlreadyExists": "Lernfortschritt existiert bereits in dieser Einstellung",
+    "schoolClassHasProgress": "Kurs besitzt bereits einen Fortschritt zu diesen Einstellungen"
+  },
+  "users": {
+    "title": "Benutzer/innen",
+    "teachers": "Lehrende",
+    "teacher": "Lehrer/in",
+    "students": "Lernende",
+    "student": "Lernende",
+    "admins": "Administratoren",
+    "admin": "Admin"
+  },
+  "curriculum": {
+    "unknownState": "Unbekannter Status",
+    "mastersEditedByMe": "Zuletzt bearbeitete Mustervorlagen",
+    "title": "Curriculum",
+    "master": "Curriculum Mustervorlage",
+    "customFork": "Arbeitskopie von Muster",
+    "global": "Eigenes Material",
+    "custom": "Eigenes Material",
+    "customUnits": "Meine eigenen Sequenzen",
+    "cloneMaster": "Sie sind dabei die Mustervorlage zu bearbeiten. Hierzu wird eine Kopie der Aufgabe angelegt. Möchten Sie fortfahren?",
+    "externalResources": "Externe Ressourcen",
+    "collections": "Curriculum Daten",
+    "metaCollections": "Metadaten",
+    "timeUnit": "Zeiteinheit",
+    "objective": "Kompetenz",
+    "objectives": "Kompetenzen",
+    "period": "Dauer in Minuten",
+    "dimension": "Bildungdimension",
+    "dimensions": "Bildungsdimensionen",
+    "layer": "Zielebene",
+    "actor": "Akteur",
+    "heuristics": "Heuristik",
+    "method": "Methode",
+    "methods": "Methoden",
+    "tool": "Werkzeug",
+    "tools": "Werkzeuge",
+    "socialState": "Sozialform",
+    "plenum": "Plenum",
+    "single": "Einzelarbeit",
+    "group": "Gruppenarbeit",
+    "project": "Projektarbeit",
+    "unit": "Sequenz",
+    "units": "Sequenzen",
+    "sequence": "Lernsequenz",
+    "sequences": "Lernsequenzen",
+    "pocket": "Lernsituation",
+    "process": "Ablauf",
+    "phase": "Unterrichtsphase",
+    "phases": "Unterrichtsphasen",
+    "literature": "Literatur",
+    "intention": "Handlungsintention",
+    "minStudents": "Min. Lernende",
+    "maxStudents": "Max. Lernende",
+    "minTeachers": "Min. Lehrende",
+    "maxTeachers": "Max. Lehrende",
+    "communicationType": "Kommunikationsform",
+    "workflow": "Workflow",
+    "task": "Aufgabe",
+    "leaveUnitForGlobal": "Sequenz frei lassen um globale Aufgabe anzulegen",
+    "asset": "Dateien/Material",
+    "noHeuristicYet": "Es wurde noch keine vollständige Heuristik angelegt.",
+    "noPocketYet": "Es existiert noch keine Lernsituation."
+  },
+  "fileTypes": {
+    "image": "Bild",
+    "audio": "Audio",
+    "video": "Video",
+    "pdf": "PDF",
+    "document": "Dokument",
+    "binary": "Archiv oder Programm",
+    "json": "JSON",
+    "text": "Text",
+    "binaryWarn": "Achtung! Bei der Datei handelt es sich um ein ausführbares Format oder Archiv."
+  },
+  "fileList": {
+    "title": "Uploads",
+    "preview": "Datei Vorschau",
+    "upload": "Eine Datei hochladen"
+  },
+  "dimension": {
+    "layer": "Zielebene",
+    "actor": "Akteur / Institution"
+  },
+  "task": {
+    "title": "Aufgabe",
+    "previewMode": "Vorschau-Modus",
+    "unsavedItems": "Es existieren noch ungespeicherte Eingaben auf dieser Seite!",
+    "saveHint": "Bitte beachten Sie, dass Eingaben nur durch klicken des 'Speichern' Buttons abgesendet werden.",
+    "loadFailed": "Fehler beim laden der Aufgabe",
+    "notVisible": "Diese Aufgabe ist nicht (mehr) sichtbar bzw. bearbeitbar.",
+    "noUnitLinked": "Diese Aufgabe ist noch nicht mit einer Sequenz verknüpft",
+    "noPageContent": "Diese Seite besitzt noch keine Inhalte!",
+    "createInfo": "Geben Sie der Aufgabe einen selbstbeschreibenden Titel. Schlechte Titel sind z.B. 'Aufgabe 1' oder 'Schreibaufgabe'. Zusätzliche Infos in der Beschreibung machen es leichter die Aufgabe auch in andere Sequenzen einzubinden.",
+    "confirmDeleteElement": "Möchten Sie das Element wirklich von der Aufgabe entfernen und endgültig löschen?",
+    "header": {
+      "title": "Kopfzeile",
+      "align": "Ausrichtung",
+      "content": "Inhalte",
+      "contentEntry": "Inhalt"
+    },
+    "footer": {
+      "title": "Fußzeile",
+      "align": "Ausrichtung",
+      "content": "Inhalte",
+      "contentEntry": "Inhalt"
+    },
+    "pages": {
+      "title": "Seiten",
+      "page": "Seite",
+      "pageTitle": "Seitentitel",
+      "content": "Seiteninhalt"
+    },
+    "staticContent": "Immer sichtbare Inhalte",
+    "previousResults": "Vorherige Antworten",
+    "noResponse": "Keine Antwort abgegeben"
+  },
+  "taskContent": {
+    "title": "Aufgabeninhalte",
+    "items": "Lernendenaktionen",
+    "webResources": "Web-Ressourcen",
+    "text": "Text-Elemente",
+    "files": "Dateien"
+  },
+  "webResources": {
+    "title": "Web-Elemente",
+    "embed": "Objekt",
+    "embeds": "Objekte",
+    "embedCode": "Einbettungscode",
+    "link": "Link",
+    "links": "Links",
+    "literature": "Literatur",
+    "carefulNote": "Weiterleitung zu externer Webseite"
+  },
+  "taskResults": {
+    "workInProgress": "In Bearbeitung",
+    "title": "Arbeitsergebnisse",
+    "skipped": "Nicht bearbeitet bzw. übersprungen",
+    "isActive": "In Bearbeitung",
+    "results": "Ergebnisse",
+    "online": "Anwesend (online)",
+    "complete": "Abgeschlossen",
+    "saved": "Gespeichert",
+    "previewChart": {
+      "chartOptions": "Chart-Optionen",
+      "title": "Vorschau für Diagramme",
+      "select": "Bitte wählen Sie ein Diagramm aus.",
+      "switchAxis": "Axen vertauschen"
+    }
+  },
+  "license": {
+    "title": "Lizenz",
+    "owner": "Urherber",
+    "pd": "Lizenzfrei (PD)",
+    "ccby": "Namensnennung (CC-BY)",
+    "ccbysa": "Namensnennung, Teilen unter gleicher Lizenz (CC-BY-SA)",
+    "ccbync": "Namensnennung, keine Kommerzielle Verwendung (CC-BY-NC)",
+    "ccbyncsa": "Namensnennung, keine Kommerzielle Verwendung, Teilen unter gleicher Lizenz (CC-BY-NC-SA)",
+    "ccbynd": "Namensnennung, Keine Veränderungen erlaubt (CC-BY-ND)",
+    "ccbyncnd": "Namensnennung, keine Kommerzielle Verwendung, Keine Veränderungen erlaubt (CC-BY-NC-ND)",
+    "ccOer": "Creative Commons / OER",
+    "ccNonOer": "Creative Commons / Nicht-OER",
+    "nonFreeOthers": "Nicht frei / Andere",
+    "copyright": "Urheberrichtlich geschützt; nicht frei"
+  },
+  "charts": {
+    "title": "Diagramme",
+    "simple": "Einfache Diagramme",
+    "bar": "Balkendiagramm",
+    "pie": "Tortendiagramm",
+    "scatter": "Punktdiagram",
+    "line": "Liniendiagramm",
+    "histogram": "Histogramm"
+  },
+  "unit": {
+    "material": "Externe Ressourcen und Links",
+    "taskUnwantedComplete": "Hier klicken, wenn die Aufgabe unbeabsichtigt beendet wurde",
+    "furtherReadings": "Weiterführende Literatur",
+    "taskComplete": "Arbeitsblatt erfolgreich abgeschlossen.",
+    "tasks": "Aufgaben",
+    "references": "Material(ien)",
+    "task": "Aufgabe",
+    "phases": "Unterrichtsphasen"
+  },
+  "phase": {
+    "nonPhaseMaterial": "Globale Materialien",
+    "plot": "Handlungsablauf",
+    "intention": "Handlungsintention",
+    "references": "Materialverweise",
+    "notes": "Notizen"
+  },
+  "method": {
+    "presentationTeacher": "Lehrenden-Präsentation",
+    "presentationStudent": "Lernenden-Präsentation",
+    "discussion": "Unterrichtsgespräch",
+    "task": "Aufgabe"
+  },
+  "socialState": {
+    "plenum": "Plenum",
+    "single": "Einzelarbeit",
+    "partner": "Partnerarbeit",
+    "group": "Gruppenarbeit",
+    "project": "Projektarbeit",
+    "stations": "Stationsarbeit"
+  },
+  "communication": {
+    "single": "Monolog",
+    "one2one": "1 zu 1",
+    "one2many": "1 zu N",
+    "many2one": "N zu 1",
+    "many2many": "N zu N"
+  },
+  "orientation": {
+    "title": "Ausrichtung",
+    "h": "Horizontal",
+    "v": "Vertikal",
+    "left": "Links",
+    "center": "Mitte",
+    "right": "Rechts",
+    "justify": "Block"
+  },
+  "form": {
+    "title": "Formular",
+    "history": "Verlauf",
+    "placeholder": "Platzhalter",
+    "entry": "Eintrag",
+    "value": "Wert",
+    "label": "Beschriftung",
+    "range": "Intervall",
+    "valueAlreadyExists": "Es exitsiert bereits ein Eintrag mit dem angegebenen Wert",
+    "choices": "Antwortmöglichkeiten",
+    "minChars": "Minimum Zeichen",
+    "maxChars": "Maximum Zeichen",
+    "minCount": "Mindestanzahl",
+    "maxCount": "Maximale Anzahl",
+    "minValue": "Mindestwert",
+    "maxValue": "Maximaler Wert",
+    "minLabel": "Bezeichnung Mindestwert",
+    "maxLabel": "Bezeichung maximaler Wert",
+    "defaultValue": "Ausgangswert",
+    "startValue": "Ausgangswert",
+    "step": "Stufen",
+    "pipCount": "Anzahl Skalenwerte",
+    "pipTypes": "Skalentyp",
+    "forbiddenChars": "Nicht erlaubte Zeichen",
+    "mandatoryField": "Pflichtfeld",
+    "mandatoryFields": "Pflichtangaben",
+    "rows": "Anzahl Zeilen",
+    "onlyOptions": "Nur Optionen verfügbar",
+    "options": "Optionen",
+    "header": "Dokumenten-Ansicht",
+    "allFields": "Zeige alles",
+    "onlyMandatoryFields": "Zeige nur Pflichtfelder",
+    "noWhitespace": "Keine Leerzeichen",
+    "enterText": "Bitte gib hier deinen Text ein....",
+    "allowedChars": "Erlaubte Zeichen",
+    "insert": "Neuer Eintrag",
+    "update": "Eintrag bearbeiten",
+    "required": "Pflichtfeld",
+    "read": "Eintrag betrachten",
+    "userNameOrEmail": "Sie können entweder Benutzername oder Email eingeben",
+    "charsLeft": "Zeichen übrig",
+    "requiredFields": "Pflichtangaben",
+    "optionalField": "Optionales Feld",
+    "optionalFields": "Optionale Angaben",
+    "selectOne": "(Bitte auswählen)",
+    "insertComplete": "Anlegen des Dokuments erfolgreich.",
+    "updateComplete": "Aktualisieren des Dokuments erfolgreich.",
+    "resetComplete": "Dokument(e) erfolgreich zurückgesetzt",
+    "updatedDocsComplete": "{{count}} Dokumente erfolgreich aktualisiert",
+    "removeComplete": "Entfernen des Dokuments erfolgreich.",
+    "insertFailed": "Anlegen des Dokuments fehlgeschlagen.",
+    "updateFailed": "Aktualisierung fehlgeschlagen.",
+    "removeFailed": "Entfernen des Dokuments fehlgeschlagen.",
+    "targetMissing": "Das zu bearbeitende Dokument ist nicht vorhanden",
+    "incomplete": "Es fehlen Eingaben oder Eingaben sind ungültig. Bitte überprüfe deine Eingaben.",
+    "password": {
+      "notEqualConfirm": "Die Eingabe stimmt nicht mit dem Passwort überein",
+      "hint": "Benötigt mind. 8 Zeichen, 1 Großbuchstaben, 1 Zahl und ein Sonderzeichen",
+      "atLeastOneLowerCase": "Passwort benötigt mindestens {{chars}} Buchstaben (klein)",
+      "atLeastOneUpperCase": "Passwort benötigt mindestens {{chars}} Buchstaben (GROSS)",
+      "atLeastOneDigit": "Passwort benötigt mindestens {{chars}} Zahlen",
+      "atLeastoneSpecialChar": "Passwort benötigt mindestens {{chars}} der folgenden Zeichen: {{{examples}}}"
+    },
+    "validation": {
+      "required": "{{label}} ist ein Pflichtfeld.",
+      "minString": "{{label}} benötigt mindestens {{min}} Zeichen",
+      "maxString": "{{label}} darf {{max}} Zeichen nicht überschreiten.",
+      "minNumber": "{{label}} muss mindestens {{min}} sein.",
+      "maxNumber": "{{label}} darf maximal {{max}} sein.",
+      "minNumberExclusive": "{{label}} muss größer als {{min}} sein.",
+      "maxNumberExclusive": "{{label}} muss weniger als {{max}} sein.",
+      "minDate": "{{label}} muss nach dem {{min}} liegen.",
+      "maxDate": "{{label}} darf nicht nach dem {{max}} liegen.",
+      "badDate": "{{label}} ist kein gültiges Datum.",
+      "minCount": "Es müssen mindestens {{minCount}} Einträge vorhanden sein.",
+      "maxCount": "Es dürfen maximal {{maxCount}} Einträge vorhanden sein.",
+      "noDecimal": "'{{label}}' muss eine ganze Zahl sein.",
+      "notAllowed": "'{{value}}' ist nicht erlaubt.",
+      "expectedType": "{{label}} entspricht nicht dem erwarteten Datentyp {{dataType}}",
+      "keyNotInSchema": "{{name}} wird nicht vom Daten-Schema unterstützt.",
+      "notEqualConfirm": "Beide Passwörter stimmen nicht überein",
+      "regExFail": "Eingabe entspricht nicht den erlaubten Vorgaben",
+      "userNotUnique": "Benutzername ist bereits vergeben",
+      "uploadError": "Fehlerhafte Datei"
+    }
+  },
+  "userProfile": {
+    "title": "Benutzerprofil",
+    "summary": "Zusammenfassung",
+    "rawData": "Rohdaten",
+    "username": "Benutzername",
+    "userName": "Benutzername",
+    "createdAt": "Registriert seit",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "fullName": "Name",
+    "password": "Passwort",
+    "changePassword": "Passwort ändern",
+    "role": "Rolle",
+    "roles": "Rollen",
+    "group": "Gruppe",
+    "groups": "Gruppen",
+    "institution": "Institution",
+    "email": "E-Mail",
+    "image": "Profilbild",
+    "noImage": "Kein Profilbild",
+    "settings": {
+      "title": "Einstellungen",
+      "language": "Sprache",
+      "currentLanguage": "Gewählte Sprache",
+      "ui": "Benutzeroberfläche",
+      "fluid": "Volle Bildschrimbreite ausnutzen",
+      "privacy": "Datenschutz"
+    }
+  },
+  "profile": {
+    "title": "Benutzerprofil"
+  },
+  "logout": {
+    "loggingOut": "Sie werden ausgeloggt",
+    "loggedOut": "Sie sind nun abgemeldet"
+  },
+  "language": {
+    "de": "Deutsch",
+    "en": "English",
+    "switchSuccessfull": "Sprache gewechselt"
+  },
+  "literature": {
+    "title": "Literatur",
+    "authors": "Autor(en)",
+    "year": "Erscheinungsjahr",
+    "issue": "Ausgabe",
+    "volume": "Jahrgang",
+    "city": "Ort/Stadt",
+    "publisher": "Herausgeber",
+    "url": "URL"
+  },
+  "user": {
+    "data": "Angaben",
+    "adminArea": "Admin Bereich",
+    "title": "Benutzer/in",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "birthday": "Geboren am",
+    "adress": "Adresse",
+    "city": "Wohnort",
+    "language": "Sprache",
+    "online": "Online",
+    "offline": "Offline",
+    "verified": "Registriert",
+    "invited": "Eingeladen",
+    "tokenInvalid": "Ihr Link ist ungültig oder abgelaufen.",
+    "profile": {
+      "guide": "Ihr Benutzerprofil",
+      "overview": "Dies ist Ihr Profil. Sie können Ihre Angaben jederzeit anpassen.",
+      "image": "Ein Profilbild ist optional, jedoch auch freundlicher.",
+      "fixed": "Einige Angaben können nicht geändert werden. Sollte es dennoch dringlich sein, können Sie gerne mit dem {{siteName}} Team Kontakt aufnehmen.",
+      "research": "Wir sind fortlaufend bemüht {{siteName}} zu verbessern und die Nutzung mit {{siteName}} zu erforschen. Dies gelingt jedoch nur durch Ihre Zustimmung. Die Teilnahme an der Forschung ist freiwillig und hat keinen Einfluss auf die Funktionalität der Anwendung. Wir würden uns dennoch freuen, wenn Sie uns kurz Ihre Einwilligung geben, und uns bei der Entwicklung von {{siteName}} unterstützen."
+    },
+    "research": {
+      "title": "Forschungsdaten",
+      "optIn": "Teilnahme aktivieren",
+      "optInComplete": "Sie haben Ihre Teilnahme an der Forschung erfolgreich bestätigt. Sie können die Teilnehme jederzeit in Ihren Profileinstellungen wiederrufen.",
+      "optOut": "Teilnahme beenden",
+      "optInMail": "Hallo {{fullName}},\n\nBitte klicken Sie auf den folgenden Link um an der Forschung teilzunehmen: {{url}}\n\nMit besten Grüßen\nIhr {{siteName}} Team",
+      "participate": "Teilnahme an Forschung",
+      "confirmed": "Teilnahme per Email bestätigt"
+    },
+    "enrollAccount": {
+      "title": "Ihre {{siteName}} Registrierung",
+      "complete": "Registrierung abschließen",
+      "password": "Bitte setzen Sie hier ihr neues Passwort für {{siteName}}. Das Passwort muss die unten stehenden Mindeststandards erfüllen und durch erneute Eingabe bestätigt werden.",
+      "success": "Sie haben die Registrierung erfolgreich abgeschlossen. Sie werden nun zu Ihrem profil weitergeleitet.",
+      "description": "Herzlich willkommen bei {{siteName}}! Sie sind nur noch wenige Schritte davon entfernt loszulegen. Bitte füllen Sie noch das untenstehende Formular aus und dann kann es auch schon losgehen.",
+      "acceptTerms": {
+        "show": "Nutzungsbedingungen anzeigen",
+        "check": "Ich habe die {{siteName}} Nutzungsbedingungen gelesen und bin damit einverstanden"
+      },
+      "acceptPrivacy": {
+        "show": "Datenschutzerklärung anzeigen",
+        "check": "Ich habe die {{siteName}} Datenschutzerklärung gelesen und bin damit einverstanden"
+      }
+    },
+    "verifyEmail": {
+      "title": "E-Mail Bestätigen",
+      "description": "Bestätigen Sie Ihre Identität über einen Link in der Email",
+      "inProgress": "Prüfe Bestätigungscode",
+      "expired": "Der Bestätigungslink ist abgelaufen",
+      "resendComplete": "Bestätigungslink erneut versendet",
+      "resend": "Neuen Bestätigungslink anfordern",
+      "success": "Ihr Account wurde erfolgreich bestätigt",
+      "alreadyVerified": "Der Account wurde bereits bestätigt"
+    }
+  },
+  "passwordStrength": {
+    "title": "Passwortstärke",
+    "forbidden": "Nicht erlaubte Zeichen verwendet! Erlaubt sind Buchstaben (außer äöüß), Zahlen, sowie folgende Zeichen: $_!#*%&.-@",
+    "none": "Sehr schwaches Passwort",
+    "weak": "Schwaches Passwort",
+    "average": "Mittelmäßiges Passwort",
+    "strong": "Starkes Passwort",
+    "veryStrong": "Sehr starkes Passwort",
+    "confirmed": "Passwörter stimmen überein",
+    "confirmFailed": "Passwörter stimmen nicht überein"
+  },
+  "userCheck": {
+    "title": "Benutzernamen-Validierung",
+    "forbidden": "Ungültiger Benutzername. Zulässig sind mind. 4 bis max. 12 Buchstaben, Zahlen, sowie - _ $ @",
+    "getUser": "Benutzername wird bereits verwendet.",
+    "userNotExist": "Benutzername ist verfügbar.",
+    "userValid": "Benutzername is gültig",
+    "loading": "Überprüfe Benutzername"
+  },
+  "definitions": {
+    "title": "Grundkonfiguration",
+    "alreadyExists": "Es existiert bereits eine Grundkonfiguration",
+    "missing": "Es müssen grundlegende Konfigurationen vorgenommen werden, damit die Anwendung fehlerfrei funktioniert."
+  },
+  "emailCheck": {
+    "title": "Email-Validierung",
+    "emailExists": "Die Email Adresse wird bereits verwendet.",
+    "valid": "Gültige Email-Adresse",
+    "invalid": "Ungültige Emailadresse"
+  },
+  "sequence": {
+    "learning": "Lernsequenz",
+    "start": "Startsequenz",
+    "end": "Reflexion"
+  },
+  "wizard": {
+    "step": "Schritt",
+    "next": "Weiter",
+    "back": "Zurück",
+    "finish": "Fertig",
+    "finished": "Workflowassistent erfolgreich abgeschlossen.",
+    "couldNotCompleteStep": "Schritt kann nicht abgeschlossen werden",
+    "noWorkflowDataReceived": "Keine Daten für Workflow verfügbar",
+    "newOrExisting": "Bitte wähle eine option aus.",
+    "createWorkflowDoc": "Neuen Workflow anlegen.",
+    "connectWorkflow": "Workflow verknüpfen.",
+    "continueToEdit": "Weiter zum Editor",
+    "pleaseSelect": "Bitte wählen Sie aus einem der folgenden Schritten aus",
+    "summary": "Fertig stellen",
+    "optionA": "Option A - Einen bestehenden Workflow bearbeiten",
+    "optionB": "Option B - Einen neuen Workflow anlegen (weiter Button klicken)",
+    "createNewEntry": "Noch kein Eintrag vorhanden?",
+    "task": {
+      "title": "Aufgabenverwaltung"
+    },
+    "unit": {
+      "title": "Eigenen Unterricht planen"
+    }
+  },
+  "help": {
+    "title": "Titel dieses Eintrags eingeben",
+    "period": "Ganzzahl oder Kommazahl für die Verlaufsdauer angeben. Benötigt eine Zeiteinheit um gültig zu sein",
+    "code": "Abkürzung bzw. interne ID eingeben",
+    "description": "Erweiterte Beschreibung des Eintrags eingeben",
+    "sourceUrl": "Eine externe Datei via vollständiger URL verlinken",
+    "sourceFile": "Eine Datei vom lokalen PC hochladen",
+    "type": "Einen Typ zur Kategorisierung des Eintrags auswählen",
+    "notes": "Notizen und Hinweise hinzufügen",
+    "plot": "Den Handlungsablauf umschreiben",
+    "intention": "Die Handlungsintention umschreiben",
+    "filterText": "Filter Begriff hier eingeben",
+    "comment": "Bitte geben Sie hier Ihr Kommentar ein"
+  },
+  "history": {
+    "title": "Bearbeitungshistorie"
+  },
+  "historyEvents": {
+    "insert": "Erstellt",
+    "update": "Aktualisiert",
+    "remove": "Entfernt"
+  },
+  "invitation": {
+    "expirationExceeded": "Einladungscode ist abgelaufen",
+    "removeNoPermission": "Keine Berechtigung diesen Code zu löschen"
+  },
+  "revision": {
+    "title": "Revision",
+    "unrevised": "In Bearbeitung",
+    "inRevision": "In Revision",
+    "flagged": "Markiert / Achtung",
+    "complete": "Bereit für den Unterricht",
+    "allFlagged": "Alle markierten Dokumente"
+  },
+  "asset": {
+    "images": {
+      "title": "Bild"
+    },
+    "videos": {
+      "title": "Video"
+    },
+    "documents": {
+      "title": "Dokument"
+    },
+    "binaries": {
+      "title": "Binärdatei"
+    }
+  },
+  "roles": {
+    "title": "Rollen",
+    "role": "Rolle",
+    "admin": "Administrator",
+    "adminDescription": "Besitzt volle Kontrolle über die Anwendung und deren Verwaltung.",
+    "editor": "Editor",
+    "editorDescription": "Kann alle Datenbank-Inhalte bearbeiten",
+    "reader": "Beobachter",
+    "readerDescription": "Kann alle Datenbank-Inhalte einsehen.",
+    "schoolAdmin": "Schul-Admin",
+    "curriculum": "Lehrende + Curriculum",
+    "schoolAdminDescription": "Besitzt Verwaltungskontrolle mit wenigen technischen Ausnahmen.",
+    "teacher": "Lehrende",
+    "teacherDescription": "Kann Kurse und Unterricht verwalten.",
+    "student": "Lernende",
+    "studentDescription": "Kann in Kursen am Unterricht teilnehmen"
+  },
+  "editor": {
+    "summary": "Zusammenfassung",
+    "pocket": {
+      "title": "Lernsituation-Editor"
+    },
+    "unit": {
+      "title": "Sequenz-Editor"
+    },
+    "task": {
+      "title": "Aufgaben-Editor"
+    },
+    "heuristics": {
+      "title": "Heuristik-Editor"
+    }
+  },
+  "school": {
+    "title": "Lehreinrichtung",
+    "schoolYear": "Jahrgang",
+    "schoolYears": "Jahrgänge"
+  },
+  "schoolClass": {
+    "title": "Kurs",
+    "teachers": "Lehrende",
+    "students": "Lernende",
+    "members": "Alle Kursmitglieder",
+    "createNew": "Einen neuen Kurs anlegen",
+    "toAftermath": "Nachbearbeitung",
+    "className": "Name des Kurses",
+    "notFoundById": "Kurs nicht anhand der ID gefunden",
+    "invalidSchoolYear": "Ungültiger Jahrgang",
+    "noMember": "Sie sind noch kein Mitglied und können daher nicht am Unterricht teilnehmen.",
+    "progresses": "Jahrgang ist kontinuierlich",
+    "inLesson": "Im Unterricht",
+    "cannotStartTeaching": "Unterricht kann erst gestartet werden, wenn alle Bereiche vollständig sind.",
+    "createLesson": "Unterricht anlegen",
+    "progressIncomplete": "Fortschritt für Kurs unvollständig",
+    "lessonConnected": "Unterricht angelegt",
+    "invite": "Teilnehmer/innen einladen",
+    "addStudents": "Lernende hinzufügen",
+    "addStudentsDescription": "Wählen Sie die Teilnehmer/innen aus der Liste aus, die hinzugefügt werden sollen.",
+    "requestJoin": "Teilnahme anfragen",
+    "waitForTeacher": "Es sind derzeit keine Maerialien freigeschaltet. Bitte warten Sie auf die Anweisungen der Lehrkraft.",
+    "waitForTeacherToStartLesson": "Warte bis Lehrer/in den Unterricht startet",
+    "waitForTeacherToSetProgress": "Warte bis Lehrer/in die nächste Unterrichtseinheit festgelegt hat",
+    "enterLesson": "Es läuft gerade Unterricht. Möchten Sie direkt zum Unterricht weitergeleitet werden?",
+    "currentLessonCompleted": "Der aktuell ausgewählte Unterricht wurde abgeschlossen.",
+    "confirmRemove": "Sie sind dabei alle Unterrichte, Materialien und Ergebnisse mitsamt dieses Kurses zu löschen."
+  },
+  "lesson": {
+    "title": "Unterricht"
+  },
+  "lessons": {
+    "title": "Meine Unterrichte",
+    "ongoing": "Aktuell",
+    "completed": "Abgeschlossen",
+    "running": "Gestartet",
+    "upcoming": "Ausstehend",
+    "studentRunning": "Laufende Unterrichte",
+    "studentCompleted": "Abgeschlossene Unterrichte"
+  },
+  "settings": {
+    "title": "Einstellungen"
+  },
+  "file": {
+    "title": "Datei"
+  },
+  "fileSize": {
+    "bit": "Bit",
+    "byte": "Byte",
+    "kilobyte": "Kilobyte",
+    "megabyte": "Megabyte",
+    "gigabyte": "Gigabyte",
+    "kb": "KB",
+    "mb": "MB",
+    "gb": "GB",
+    "title": "Dateigröße"
+  },
+  "agreements": {
+    "termsOfService": {
+      "title": "{{siteName}} Nutzungsbedingungen",
+      "read": "Ich habe die '{{siteName}} Nutzungsbedingungen' gelesen und bin damit einverstanden"
+    },
+    "privacyPolicy": {
+      "title": "{{siteName}} Datenschutzbestimmungen",
+      "read": "Ich habe die '{{siteName}} Datenschutzbestimmungen' gelesen und bin damit einverstanden"
+    }
+  },
+  "classes": {
+    "title": "Kurse",
+    "myClasses": "Meine Kurse",
+    "createClass": "Kurs anlegen"
+  },
+  "lmsConnection": {
+    "title": "Lernmanagement-System Verknüpfung",
+    "appTitle": "Titel der Anwendung",
+    "authUrl": "Webservice URL zum Authentifizieren der User"
+  },
+  "rolesCheck": {
+    "title": "Rollen-Validierung",
+    "rolesEmpty": "Ungültig: es muss Rolle angegeben werden",
+    "adminRequired": "Ungültig: es muss zuerst ein Benutzer mit der Rolle Admin angelegt werden",
+    "valid": "Gültige Rolle."
+  },
+  "comments": {
+    "added": "Komentar hinzugefügt",
+    "title": "Kommentare",
+    "addComment": "Kommentieren",
+    "comment": "Kommentar",
+    "noCommentsYet": "Es sind noch keine Kommentare vorhanden"
+  },
+  "admin": {
+    "title": "Administrator"
+  },
+  "theme": {
+    "bsDefault": "Standard Theme",
+    "custom": "Eigener theme"
+  },
+  "createUser": {
+    "complete": "BenutzerIn wurde erfolgreich angelegt."
+  },
+  "inviteUsers": {
+    "title": "Benutzer einladen",
+    "description": "Erstellen eines Registrierungscodes um neue Nutzer für das System zu registrieren",
+    "timeLeft": "Verbleibende Zeit",
+    "expirationMinutes": "Gültigkeitszeitraum (ab jetzt)",
+    "code": "Registrierungscode",
+    "addCode": "Neuen Code erstellen",
+    "createCode": "Code erstellen"
+  },
+  "tableView": {
+    "title": "Datentabelle",
+    "all": "Alles",
+    "reduced": "Reduziert",
+    "onlyDefaults": "Nur Standardwerte",
+    "onlyContext": "Nur Objektkontext",
+    "quickFilter": "Schnellsuche",
+    "documentsPerPage": "Einträge/Seite",
+    "loadMore": "Weitere Dokumente laden"
+  },
+  "connection": {
+    "title": "Verbindung",
+    "status": "Status",
+    "reason": "Ursache(n)",
+    "retryCount": "Verbindungsversuche",
+    "retryTime": "Nächster Versuch",
+    "connected": "Verbunden",
+    "connecting": "Verbinde",
+    "failed": "Verbindung fehlgeschlagen",
+    "reconnected": "Verbindung Wiederhergestellt",
+    "waiting": "Warte",
+    "offline": "Offline",
+    "reloadPage": "Anwendung neu laden"
+  },
+  "appinfo": {
+    "title": "App-Info",
+    "version": "Version",
+    "userId": "User-ID"
+  },
+  "prepare": {
+    "title": "Mustervorlagen",
+    "createClass": "Kurs anlegen",
+    "myClasses": "Meine Kurse"
+  },
+  "routes": {
+    "backToEdit": "Zurück zur Bearbeitung",
+    "backToLesson":"Zurück zum Unterricht",
+    "notFound": "Seite nicht gefunden",
+    "notFoundExplained": "Die aufgerufene Seite existiert nicht bzw. konnte nicht gefunden werden.",
+    "home": "Startseite",
+    "dashboard": "Meine Kurse",
+    "profile": "Benutzerprofil",
+    "group": "Meine Gruppe",
+    "login": "Login",
+    "logout": "Logout",
+    "collection": "Datensatz",
+    "workflow": "Workflow",
+    "lessons": "Alle Unterrichte",
+    "redirect": "Seite laden"
+  },
+  "textRenderer": {
+    "item": "Eine Ihrer vorherigen Antworten"
+  },
+  "text": {
+    "text": "Text",
+    "simpleText": "Einfacher Text",
+    "hyphenActive": "Silbentrennung aktiv",
+    "newlineActive": "Zeilenumbruch aktiv",
+    "size": "Schriftgröße",
+    "paragraph": "Absatz",
+    "textArea": "Textfeld",
+    "plain": "Unformatiert",
+    "blockQuote": "Zitat",
+    "source": "Quelle",
+    "richtext": "Formatierbarer Text",
+    "headline": {
+      "title": "Überschrift",
+      "h1": "1 - Extra groß",
+      "h2": "2 - Sehr groß",
+      "h3": "3 - Groß",
+      "h4": "4 - Normal",
+      "h5": "5 - Klein",
+      "h6": "6 - Sehr klein"
+    },
+    "list": "Liste",
+    "listIcon": "Listen-Symbol",
+    "enum": "Aufzählung",
+    "itemReference": {
+      "title": "Lernende Antwort Anzeigen",
+      "hint": "Hinweis zu Aufgabe / Lernendenaktionen",
+      "taskId": "Aufgabe",
+      "refId": "Lernendenaktion"
+    }
+  },
+  "item": {
+    "label": "Fragstellung / Arbeitsauftrag",
+    "title": "Lernendenaktion",
+    "text": "Textzeile",
+    "textArea": "Textfeld",
+    "savedAt": "Zuletzt gespeichert",
+    "tags": "Tags (Schlagworte)",
+    "singleChoice": "Single-Choice",
+    "singleSelect": "Single-Choice (Dropdown)",
+    "multipleChoice": "Multiple-Choice",
+    "multipleSelect": "Multiple-Choice (Liste)",
+    "number": "Numerische Eingabe",
+    "range": "Slider",
+    "fileUpload": "Datei-Upload",
+    "fileType": "Datentyp",
+    "hint": {
+      "title": "Titel für Sie zum zuordnen der Lernendenaktion im Unterricht",
+      "label": "Titel, welcher den Lernenden bei der Bearbeitung angezeigt wird",
+      "required": "Die Eingabe wird validiert",
+      "fileType": "Beschränkt den Upload auf einen bestimmten Datentyp",
+      "select": "",
+      "defaultChoice": "Dieser Wert wird automatisch vorausgewählt"
+    },
+    "groupMode": {
+      "title": "Gruppen-Modus",
+      "off": "Nicht aktiv",
+      "merge": "Antworten werden zusammengeführt",
+      "override": "Eine/r antwortet für die Gruppe",
+      "split": "Jede/r antwortet für sich"
+    },
+    "groupText": "Gemeinsamer Text"
+  },
+  "itemTypes": {
+    "text": "Text-Eingabe",
+    "numerical": "Numerische Eingabe",
+    "choices": "Auswahl",
+    "group": "Gruppen-Items",
+    "media": "Dateiupload",
+    "other": "Sonstige Items",
+    "notCategorized": "Items ohne Kategorie"
+  },
+  "taskEditor": {
+    "edit": "Bearbeiten",
+    "preview": "Vorschau",
+    "codeView": "Quellcode",
+    "pleaseSelectTask": "Wählen Sie eine Aufgabe",
+    "createPage": "Neue Seite",
+    "addContent": "Element hinzufügen",
+    "editAttributes": "Element bearbeiten",
+    "moveToPage": "nach Seite",
+    "noAttributesYet": "Dieses Element besitzt noch keine Eigenschaften."
+  },
+  "files": {
+    "title": "Dateien",
+    "image": "Bild",
+    "audio": "Audio",
+    "document": "Dokument",
+    "documents": "Dokumente",
+    "noPDF": "Hier klicken, wenn das PDF nicht angezeigt wird",
+    "images": "Bilder",
+    "video": "Video",
+    "videos": "Videos",
+    "upload": "Eine Datei hochladen",
+    "uploadingFile": "Datei wird hochgeladen",
+    "uploadSuccess": "Die Datei wurde erfolgreich hochgeladen",
+    "uploadMultiple": "Eine oder mehrere Dateien hochladen",
+    "mimeError": "Formatfehler! Erwartetes format: [{{expected}}], aktuelles format: [{{got}}/{{ending}}]",
+    "converting": "Verarbeite/konvertiere Datei. Dies kann einige Minuten dauern.",
+    "videoNotSupported": "Ihr Browser unterstützt keine eingebetteten Videos."
+  },
+  "responseProcessors": {
+    "raw": "Rohdaten",
+    "cluster": {
+      "title": "Cluster"
+    },
+    "barChart": "Balkendiagram",
+    "pieChart": "Kreisdiagramm",
+    "imageGallery": "Bild-Gallerie",
+    "videoGallery": "Video-Gallerie",
+    "audioList": "Audio-Liste",
+    "documentList": "Daten-Liste",
+    "text": "Text"
+  }
+}

@@ -1,0 +1,11 @@
+<template name="fileRenderer">
+    {{#unless initialized this.meta}}
+        {{> loading type="template"}}
+    {{else}}
+        {{#with this}}
+            {{> Template.dynamic template=(fileTemplate this.meta) data=(fileResource this)}}
+        {{else}}
+            {{> noTemplate}}
+        {{/with}}
+    {{/unless}}
+</template>

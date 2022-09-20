@@ -1,0 +1,15 @@
+<template name="notFound">
+	<div class="jumbotron">
+        {{#onLoaded complete=initComplete}}
+		<h2 id="notFoundHeader" class="mb-4">{{i18n "errors.404"}}</h2>
+
+        {{#if queryParams.redirect}}
+            <p>{{queryParams.redirect}}</p>
+        {{/if}}
+
+        <a id="goHomeLink" href="/" class="btn btn-primary">
+            <i class="fa fa-fw fa-home"></i> {{i18n "actions.toDashboard"}}
+        </a>
+        {{/onLoaded}}
+	</div>
+</template>

@@ -1,0 +1,8 @@
+<template name="lessons">
+    {{#unless loadComplete}}
+        {{> loading title=(i18n "lesson.lessons") type="data"}}
+    {{else}}
+        {{>submenu submenuData}}
+        {{>TemplateLoader currentView}}
+    {{/unless}}
+</template>

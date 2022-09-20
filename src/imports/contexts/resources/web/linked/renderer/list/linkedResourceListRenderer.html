@@ -1,0 +1,18 @@
+<template name="linkedResourceListRenderer">
+    <td>
+        {{#with linkType this.url}}
+            <i class="fa fa-fw fa-{{this.icon}}" title="{{this.label}}"></i>
+        {{else}}
+            <i class="fa fa-fw fa-question-circle"></i>
+        {{/with}}
+    </td>
+    <td class="wrap-text w-100">
+        <h6 class="w-100">{{this.title}}</h6>
+        <div class="wrap-cell w-100">
+            <a href="{{toExternalUrl this.url}}" target="_blank">
+                {{this.url}}
+            </a>
+        </div>
+    </td>
+    <td>{{!-- empty cell --}}</td>
+</template>

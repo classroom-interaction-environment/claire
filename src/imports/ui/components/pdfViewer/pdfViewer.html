@@ -1,0 +1,53 @@
+<template name="pdfViewer">
+    <div class="pdf-viewer-root {{#if fullscreen}}pdf-fullscreen bg-white{{/if}}">
+        {{! this is a fallback template and should only be used when there is no native PDF support }}
+        {{! code is inspired by https://github.com/mozilla/pdf.js/blob/master/examples/mobile-viewer/viewer.html }}
+        {{! the original linked code is lincensed under Apache License, Version 2.0 }}
+        <div class="viewerContainer pdf-js-container mt-5">
+            <div class="viewer pdfViewer"></div>
+        </div>
+
+        <div class="loadingBar">
+            <div class="progress"></div>
+            <div class="glimmer"></div>
+        </div>
+
+        <div class="errorWrapper" hidden="true">
+            <div class="errorMessageLeft">
+                <span class="errorMessage"></span>
+                <button class="errorShowMore">
+                    More Information
+                </button>
+                <button class="errorShowLess">
+                    Less Information
+                </button>
+            </div>
+            <div class="errorMessageRight">
+                <button class="errorClose">
+                    Close
+                </button>
+            </div>
+            <div class="clearBoth"></div>
+            <textarea class="errorMoreInfo" hidden="true" readonly="readonly"></textarea>
+        </div>
+
+        <div class="pdf-footer d-flex">
+            <div class="form-inline">
+                <input type="number" class="pageNumber toolbarField pageNumber form-control" value="1" size="2" min="1">
+            </div>
+            {{> actionButton type="outline-secondary" class="border-0 prev-btn" icon="arrow-up" title=(i18n "action.prev") disabled=prevDisabled}}
+            {{> actionButton type="outline-secondary" class="border-0 next-btn" icon="arrow-down" title=(i18n "action.next") disabled=nextDisabled}}
+            {{> actionButton type="outline-secondary" class="border-0 zoom-out-btn" icon="search-minus" title=(i18n "action.zoomOut")}}
+            {{> actionButton type="outline-secondary" class="border-0 zoom-in-btn" icon="search-plus" title=(i18n "action.zoomIn")}}
+
+
+            <button class="toolbarButton toggleFullScreen btn btn-outline-secondary border-0 fullscreen-btn" title="Toggle fullscreen">
+                {{#if fullscreen}}
+                    {{> icon name="times"}}
+                {{else}}
+                    {{> icon name="expand"}}
+                {{/if}}
+            </button>
+        </div>
+    </div>
+</template>

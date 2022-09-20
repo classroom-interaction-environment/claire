@@ -1,0 +1,23 @@
+{
+  "wizard": {
+    "unit": {
+      "description": "These are your units, sorted by latest updated.",
+      "custom": "These are your custom units",
+      "selectOne": "Select a unit",
+      "selectLastEdited": "Last edited units",
+      "createNew": "Create new unit",
+      "continueToEdit": "Continue to edit",
+      "choose": {
+        "description": "Bitte wählen Sie eine existierende Sequenz zum bearbeiten aus oder legen Sie einen neue an. Die bestehenden Sequenzen sind nach den assoziierten Lernsituationn sortiert."
+      },
+      "create": {
+        "title": "Neue Sequenz erstellen",
+        "description": "Erstellen Sie hier eine neue Sequenz. Es werden zunächst die wichtigsten Angaben benötigt. Weitere Änderungen können dann im Editor vorgenommen werden."
+      },
+      "preview": {
+        "title": "Vorschau der Sequenz",
+        "description": "Dies ist eine Vorschau des ausgewählten Dokuments. Wählen Sie 'Sequenz bearbeiten' um sie im Sequenz-Editor zur bearbeiten oder wählen Sie ein anderes Dokument aus."
+      }
+    }
+  }
+}

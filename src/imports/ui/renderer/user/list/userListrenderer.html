@@ -1,0 +1,32 @@
+<template name="userListRenderer">
+    <ul class="list-group {{class}}">
+        {{#each user in users}}
+            <li class="list-group-item d-flex align-items-center {{liClass}}">
+                {{> profileImage user=user height=48 width=48 round=true border=3}}
+
+                <span class="mx-1 ml-4">
+                    {{#if user.lastName}}
+                        {{user.lastName}}
+                    {{else}}
+                        <i class="fa fa-fw fa-spinner fa-pulse"></i>
+                    {{/if}},
+                </span>
+                <span class="mx-1">
+                    {{#if user.firstName}}
+                        {{user.firstName}}
+                    {{else}}
+                        <i class="fa fa-fw fa-spinner fa-pulse"></i>
+                    {{/if}}
+                </span>
+                {{#unless isCurrentUser user._id}}
+                    {{> actionButton icon="times" type="outline-danger" data-target=user._id blocked=(removing user._id)
+                            class="ml-auto remove-student-button" title=(i18n "lesson.actions.removeStudent")}}
+                {{/unless}}
+            </li>
+        {{else}}
+            <li class="list-group-item">
+                {{i18n "common.noentries"}}
+            </li>
+        {{/each}}
+    </ul>
+</template>

@@ -1,0 +1,10 @@
+<template name="colorSelector">
+	<div class="d-flex">
+		{{#each content}}
+			<button data-target="{{this.value}}" style="flex: 1;height: 2rem;"
+					class="color-selector-target m-1 btn btn-secondary bg-{{this.className}}" title={{i18n this.label}}>
+				<span class="text-{{this.className}}" title="{{this.label}}"></span>
+			</button>
+		{{/each}}
+	</div>
+</template>

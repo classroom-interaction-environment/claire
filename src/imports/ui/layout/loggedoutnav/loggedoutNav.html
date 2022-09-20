@@ -1,0 +1,15 @@
+<template name="loggedoutNav">
+    <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+				<img src="/main-logo.png" height="40" />
+            </a>
+
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item dropdown active">
+					{{> langselect nav=true right=true}}
+				</li>
+			</ul>
+        </div>
+    </nav>
+</template>

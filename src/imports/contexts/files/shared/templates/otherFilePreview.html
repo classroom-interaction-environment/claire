@@ -1,0 +1,21 @@
+<template name="otherFilePreview">
+	{{#with this.link}}
+		<p>
+			<strong>{{../name}}</strong>
+			<small class="text-muted">{{../type}}</small>
+		</p>
+
+		<div class="w-100 d-flex align-content-between">
+			<a href="{{link}}?download=true" target="_top" class="btn btn-secondary">
+				<i class="fa fa-download"></i> {{i18n 'actions.download'}} ({{../size}})
+			</a>
+			{{#unless ../student}}
+				<a data-reset-file href="#" style="display:none">Reset</a>
+				<button data-remove-file class="btn btn-sm btn-danger">
+					<i class="fa fa-fw fa-times"></i> {{i18n 'actions.remove'}}
+				</button>
+			{{/unless}}
+		</div>
+
+	{{/with}}
+</template>

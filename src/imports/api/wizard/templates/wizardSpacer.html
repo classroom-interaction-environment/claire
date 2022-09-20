@@ -1,0 +1,21 @@
+<template name="wizardSpacer">
+    {{#if visible}}
+        <div class="row p-4">
+            {{#if eq pos 'left'}}
+                <div class="col-md-6 col-xs-12 text-center">
+                    <i class="fa fa-2x fa-arrow-down"></i>
+                </div>
+                <div class="col-md-6 col-xs-12"></div>
+            {{else if eq pos 'right'}}
+                <div class="col-md-6 col-xs-12"></div>
+                <div class="col-md-6 col-xs-12 text-center">
+                    <i class="fa fa-2x fa-arrow-down"></i>
+                </div>
+            {{else}}
+                <div class="col text-center">
+                    <i class="fa fa-2x fa-arrow-down"></i>
+                </div>
+            {{/if}}
+        </div>
+    {{/if}}
+</template>

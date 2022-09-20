@@ -1,0 +1,90 @@
+<template name="ueobjectives">
+    {{#unless loadComplete}}
+        {{> loading type="data" }}
+    {{else}}
+
+        <div class="my-4 clearfix">
+            <span class="float-right">
+                {{> info id="objectivesInfo" outline=true sm=true label=(i18n 'editor.unit.objectives.description') }}
+                <button class="btn btn-sm btn-secondary ueobjectives-showmodal-button">
+                    <i class="fa fa-fw fa-list"></i> {{i18n 'actions.add'}}
+                </button>
+            </span>
+            <div>
+                <p>{{i18n 'editor.unit.objectives.added'}}</p>
+            </div>
+        </div>
+
+        {{#with objectives}}
+            <ul class="list-group">
+                {{#each objectiveDoc in this}}
+                    <li class="list-group-item d-flex justify-content-between">
+                        {{> objective objectiveDoc}}
+                        <span class="ml-3">
+                            {{> actionButton
+                                    type="outline-danger"
+                                    class="ueobjectives-remove-button"
+                                    icon="times"
+                                    title=(i18n "actions.remove")
+                                    blocked=(submitting objectiveDoc._id)
+                                    data-target=objectiveDoc._id}}
+                        </span>
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            {{>nodocs}}
+        {{/with}}
+
+        {{!-- add existing objective --}}
+
+        {{#modal id="uniteditor-objective-modal" large=true static=true}}
+            {{#mheader title=(i18n 'editor.unit.objectives.add') dismiss=true
+                       class="bg-secondary text-white"}}{{/mheader}}
+            {{#mbody}}
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+						<span class="input-group-text">
+							<i class="fa fa-fw fa-filter"></i>
+						</span>
+                    </div>
+                    <input type="text"
+                           class="objectives-filter {{postFilterFound}} form-control"
+                           placeholder="{{i18n 'common.filter'}}"
+                           aria-label="{{i18n 'common.filter'}}"
+                           aria-describedby="button-addon2">
+                </div>
+            {{/mbody}}
+            {{#each objectiveDoc in objectivesToAdd}}
+                {{#unless unitHasObjective objectiveDoc._id}}
+                    <li class="list-group-item d-flex justify-content-between">
+                        {{> objective objectiveDoc}}
+                        <span class="ml-3">
+                            {{> actionButton
+                                    type="outline-secondary"
+                                    class="ueobjectives-add-button"
+                                    icon="plus"
+                                    title=(i18n "actions.add")
+                                    blocked=(submitting objectiveDoc._id)
+                                    data-target=objectiveDoc._id}}
+                        </span>
+                    </li>
+                {{else}}
+                    <li class="list-group-item bg-light">
+                        {{> objective objectiveDoc}}
+                    </li>
+                {{/unless}}
+            {{else}}
+                <div class="jumbotron">
+                    <p>{{i18n 'editor.unit.allDocsAdded'}}</p>
+                </div>
+            {{/each}}
+            {{#mfooter}}
+                <button class="btn btn-block btn-secondary"
+                        data-dismiss="modal">
+                    {{i18n "actions.close"}}
+                </button>
+            {{/mfooter}}
+        {{/modal}}
+    {{/unless}}
+</template>

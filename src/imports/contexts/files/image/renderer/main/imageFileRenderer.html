@@ -1,0 +1,30 @@
+<template name="imageFileRenderer">
+    {{#if loadComplete}}
+        {{#with getLink this}}
+            <div class="w-100 text-center image-file-preview-container">
+                <div class="d-block text-center">
+                    {{../name}}
+                </div>
+                {{> image src=this fluid=true alt=../name type=../type}}
+
+                <div class="d-block text-center">
+                    <a href="{{this}}?download=true" download="{{../name}}"
+                       target="_top"
+                       class="btn btn-outline-secondary btn-sm border-0 file-image-download-button no-wrap">
+                        <small class="font-weight-normal py-2">
+                            {{> icon name="download"}}
+                            <span>Download</span>
+                            <span>({{b2mb ../size}} {{i18n 'fileSize.mb'}}
+                                )</span>
+                        </small>
+                    </a>
+                </div>
+
+            </div>
+        {{else}}
+            {{> docnotfound }}
+        {{/with}}
+    {{else}}
+        {{> loading type="view"}}
+    {{/if}}
+</template>

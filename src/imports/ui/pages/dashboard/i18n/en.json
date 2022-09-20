@@ -1,0 +1,10 @@
+{
+  "actions": {
+    "createClass": "Create new class"
+  },
+  "dashboard": {
+    "prepare": "Prepare lessons",
+    "lesson": "Execute lessons",
+    "myLastDocuments": "My last documents"
+  }
+}

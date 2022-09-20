@@ -1,0 +1,20 @@
+<template name="textRendererlist">
+	<table class="table">
+		{{#each this.entries}}
+			<tr>
+				<td class="border-0">
+                    {{#unless loadComplete}}
+                        {{> icon name="spinner" fw=true pulse=true}}
+                    {{else}}
+                        {{#if ../listIcon}}
+                            {{> icon fw=true name=../listIcon}}
+                        {{else}}
+                            {{> icon fw=true name="circle"}}
+                        {{/if}}
+                    {{/unless}}
+				</td>
+				<td class="border-0 w-100">{{this}}</td>
+			</tr>
+		{{/each}}
+	</table>
+</template>

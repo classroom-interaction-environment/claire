@@ -1,0 +1,5 @@
+import '../../layout/beamerDialog/beamerDialog'
+import '../../layout/navBeamer/navBeamer'
+import '../../layout/nav/nav'
+import '../../layout/main/main'
+import './beamerContainer.html'

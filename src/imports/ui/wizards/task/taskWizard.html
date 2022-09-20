@@ -1,0 +1,89 @@
+<template name="taskWizard">
+    {{#unless loadComplete}}
+        {{> loading type="data"}}
+    {{else}}
+        <div class="card-body d-flex justify-content-between">
+            <span>{{i18n "wizard.task.custom"}}</span>
+            {{> createForm id="createTaskForm" title=(i18n "wizard.task.create") doc=createTaskDoc hideLegend=true schema=createTaskSchema method=createTaskMethod }}
+        </div>
+        {{#twRenderer tasks=customTasks}}
+            {{> actionButton
+                    type="outline-secondary"
+                    icon="eye"
+                    title=(i18n "actions.delete")
+                    class="view-task-button"
+                    data-target=this._id}}
+        {{/twRenderer}}
+        {{> confirm static=true lg=true}}
+
+        <div class="card-body d-flex justify-content-between">
+            <span>{{i18n "wizard.task.description"}}</span>
+        </div>
+
+        {{#twRenderer tasks=tasks}}
+            {{> actionButton
+                    type="outline-secondary"
+                    icon="eye"
+                    title=(i18n "actions.delete")
+                    class="view-task-button"
+                    data-target=this._id}}
+        {{/twRenderer}}
+
+
+        {{! preview material modal, loading preview renderer }}
+        {{#if previewMaterial}}
+            {{#modal id="material-preview-modal" large=true scrollable=true}}
+                {{#with previewMaterial}}
+                    {{#mheader dismiss=true title=this.title class="bg-secondary text-white"}}{{/mheader}}
+                    {{#mbody}}
+                        {{#if ../title}}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{../title}}</h5>
+                                </div>
+                        {{/if}}
+                        {{> Template.dynamic template=../template data=../data}}
+                    {{/mbody}}
+                {{/with}}
+                {{#mfooter}}
+                        <button class="btn btn-secondary" data-dismiss="modal">
+                            {{i18n "actions.close"}}
+                        </button>
+                {{/mfooter}}
+            {{/modal}}
+        {{/if}}
+    {{/unless}}
+</template>
+
+<template name="twRenderer">
+    {{#with tasks}}
+    <ul class="list-group">
+        {{#each task in this}}
+            <li class="list-group-item d-flex justify-content-between align-items-baseline">
+                {{> documentState document=task showLabel=false}}
+                <span class="flex-fill mx-2">
+                            <span>{{task.title}}</span>
+                        </span>
+                <span class="font-weight-normal text-muted mx-2">{{toDate task.updatedAt}}</span>
+                <span class="mx-2">
+                    {{> Template.contentBlock task}}
+                    {{#routeButton href=(route "taskEditor" task._id (getUnit task._id))
+                                   type="outline-primary"
+                                   title=(i18n "wizard.task.edit")}}
+                        <i class="fa fa-edit"></i>
+                        <i class="fa fa-caret-right"></i>
+                    {{/routeButton}}
+                    {{> actionButton
+                            type="outline-danger"
+                            icon="trash"
+                            blocked=(deleting task._id)
+                            title=(i18n "actions.delete")
+                            class="delete-task-button"
+                            data-target=task._id}}
+                </span>
+            </li>
+        {{/each}}
+    </ul>
+    {{else}}
+        {{> nodocs}}
+    {{/with}}
+</template>

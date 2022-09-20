@@ -1,0 +1,30 @@
+{
+  "actions": {
+    "createClass": "Neuer Kurs",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "archive": "Archivieren",
+    "editInUnitEditor": "Im Sequenz-Editor bearbeiten",
+    "createNoEdit": "Im Original übernehmen",
+    "saveOnly": "Nur speichern"
+  },
+  "dashboard": {
+    "prepare": "Mustervorlagen",
+    "lesson": "Unterricht durchführen",
+    "myLastDocuments": "Meine letzten Bearbeitungen",
+    "createCustom": "Eigener Unterricht",
+    "useMaster": "Vorlage auswählen",
+    "createOnlyClass": "Nur Kurs anlegen"
+  },
+  "unit": {
+    "custom": "Eigene Sequenz"
+  },
+  "lessons": {
+    "toLesson": "Unterricht durchführen"
+  },
+  "schoolClass": {
+    "timeFrame": "Zeitraum",
+    "from": "Von",
+    "to": "Bis"
+  }
+}

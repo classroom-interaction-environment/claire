@@ -1,0 +1,53 @@
+{
+  "editor": {
+    "didactics": {
+      "title": "Curriculum-Editor",
+      "navTitle": "Curriculum-Editor",
+      "heuristics": {
+        "title": "Heuristik",
+        "createDimension": "Dimension anlegen",
+        "editContent": "Curriculum bearbeiten",
+        "targets": "Zielebenen",
+        "actors": "Akteure",
+        "layers": "Zielebenen",
+        "lastEdited": "zuletzt Bearbeitet",
+        "addActor": "Akteur",
+        "addLayer": "Zielebene",
+        "confirmDelete": "Achtung! Sie sind dabei die Dimension {{title}} zu löschen. Sollten Sequenzen diese Dimension bereits verwenden kann dies zu schwerwiegenden Fehlern führen!",
+        "addDimension": "Neue Bildungsdimension",
+        "updateDimension": "Bildungsdimension bearbeiten",
+        "removeDimension": "Die Kompetenz wird gelöscht. Es wird von allen Sequenzen entfernt, welche es verwenden. Möchten Sie fortfahren?",
+        "removedFromUnit": "Kompetenz von Sequenz entfernt",
+        "selectUnit": "Sequenzen mit dieser Bildungsdimension",
+        "createUnit": "Neue Sequenz anlegen",
+        "addObjective": "Kompetenz",
+        "uncategorized": "Nicht zugeordnet",
+        "linkedUnits": "Sequenzen mit dieser Kompetenz",
+        "nolinkedUnits": "Keine Sequenzen mit dieser Kompetenz",
+        "linkedPocket": "Gehört zu einer Lernsituation",
+        "nolinkedPocket": "Gehört zu keiner Lernsituation",
+        "confirmDeleteObjective": "Im folgenden wird die Kompetenz von allen verknüpften Sequenzen entfernt und gelöscht. Wirklich fortfahren?",
+        "objectiveRemoved": "Kompetenz wurde gelöscht",
+        "objectiveRemovedFromUnit": "Kompetenz erfolgreich entfernt von Sequenz"
+      },
+      "objectives": {
+        "title": "Kompetenzen",
+        "addObjective": "Kompetenz erstellen",
+        "confirmDelete": "Achtung! Sie sind dabei die Kompetenz \"{{title}}\", sowie folgende {{count}} untergeordnete Einträge zu löschen:\n{{children}}\n\nSollten Sequenzen diese Kompetenz bereits verwenden kann dies zu schwerwiegenden Fehlern führen!",
+        "addAsChild": "Hier platzieren, um als Unterkategorie festzulegen",
+        "addChild": "Neue Kompetenz hinzufügen",
+        "expandAll": "Zeige / verstecke alles"
+      },
+      "pockets": {
+        "title": "Lernsituationen",
+        "create": "Lernsituation anlegen",
+        "addPocket": "Neue Lernsituation",
+        "updatePocket": "Lernsituation bearbeiten",
+        "addUnit": "Sequenz hinzufügen",
+        "cantDeletePocket": "Lernsiuationen können erst gelöscht werden, wenn sie keine Sequenzen mehr besitzen",
+        "confirmDeleteUnit": "Achtung! Sie sind dabei die Sequenz \"{{title}}\" zu löschen. Alle zugehörigen Materialien werden dadurch ebenfalls vollständig entfernt.",
+        "confirmDeletePocket": "Achtung! Sie sind dabei die Lernsituation \"{{title}}\" zu löschen. Sollte sie in Verwendung sein, kann dies zu Fehlern führen."
+      }
+    }
+  }
+}

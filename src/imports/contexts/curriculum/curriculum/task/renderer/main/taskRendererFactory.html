@@ -1,0 +1,20 @@
+<template name="TaskRendererFactory">
+    {{#if supported this.attributes}}
+        {{#unless initialized type meta}}
+            {{> loading}}
+        {{else}}
+            {{> Template.dynamic
+                    template=(template type meta)
+                    data=attributes}}
+        {{/unless}}
+        <not-supported type="{{type}}" meta="{{meta}}"></not-supported>
+    {{/if}}
+</template>
+
+<template name="noTemplate">
+    <div class="jumbotron">
+        <h1 class="text-center">
+            <i class="fa fa-fw fa-bolt"></i> {{i18n "task.loadFailed"}}
+        </h1>
+    </div>
+</template>

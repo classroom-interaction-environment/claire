@@ -1,0 +1,13 @@
+.image-placeholder {
+  background-color: #eee;
+  display: flex;
+  height: 180px;
+  margin: 5px;
+  width: 260px;
+}
+
+.image-placeholder > .image-placeholder-content {
+  align-self: center;
+  text-align: center;
+  width: 100%;
+}

@@ -1,0 +1,17 @@
+<template name="webResourceRenderer">
+    {{! media rendere also dynamically loads the sub-template and displays
+        a loading, in case there is no subtemplate }}
+    {{#with subtemplateData this}}
+        {{> Template.dynamic template=this.template data=this.data}}
+    {{else}}
+        {{> loading type="template" title=title}}
+    {{/with}}
+
+    {{#if showLicense this}}
+        <div class="card-body text-center mt-0 py-0 text-muted">
+            <small>{{this.license}} {{this.licenseOwner}}</small>
+        </div>
+    {{/if}}
+</template>
+
+

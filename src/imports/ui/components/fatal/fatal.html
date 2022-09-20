@@ -1,0 +1,42 @@
+<template name="fatal">
+    {{#modal id=id static=true large=true }}
+        {{>mheader title=(i18n message) class="bg-danger text-white" dismiss=false}}
+        {{#mbody class="text-dark"}}
+            {{#with reason}}
+                <h5>{{i18n "errors.reason"}}</h5>
+                <p>{{i18n this}}</p>
+            {{/with}}
+
+            <h5>{{i18n "errors.fatal.title"}}</h5>
+            <p>{{i18n "errors.fatal.description"}}</p>
+        {{/mbody}}
+        {{#mbody id="modal-details" class="collapse"}}
+            {{!-- display error information --}}
+
+            {{#with errorId}}
+                <h5>{{i18n "errors.errorId"}}</h5>
+                <pre><code>{{this}}</code></pre>
+            {{/with}}
+
+            {{#with source}}
+                <h5>{{i18n "errors.source"}}</h5>
+                <pre><code>{{this}}</code></pre>
+            {{/with}}
+
+            {{#with details}}
+                <h5>{{i18n "errors.details"}}</h5>
+                <pre><code>{{stringify this}}</code></pre>
+            {{/with}}
+
+            {{#with stack}}
+                <h5>{{i18n "errors.stack"}}</h5>
+                <pre><code>{{this}}</code></pre>
+            {{/with}}
+
+        {{/mbody}}
+        {{#mfooter class="d-flex justify-content-between"}}
+            {{> actionButton type="outline-secondary" label=(i18n "common.details") data-toggle="collapse" data-target="#modal-details" aria-expanded="false" aria-controls="modal-details" }}
+            {{> actionButton type="outline-secondary" label=(i18n "common.ok") data-dismiss="modal" }}
+        {{/mfooter}}
+    {{/modal}}
+</template>

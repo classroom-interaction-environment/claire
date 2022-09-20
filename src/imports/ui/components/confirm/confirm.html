@@ -1,0 +1,23 @@
+<template name="confirm">
+	{{#modal id="confirm-modal" static=static large=lg sm=sm xl=xl}}
+        {{#if loadComplete}}
+		    {{> mheader title=(i18n title) class=headerClass dismiss=dismiss}}
+        {{/if}}
+		{{#mbody class="text-dark"}}
+            {{#if loadComplete}}
+                <p class="confirm-text">{{i18n (state "text") (state "textOptions")}}</p>
+                {{#if state "codeRequired"}}
+                    <p>{{i18n "confirm.codeRequired"}}</p>
+                    <p class="text-center font-weight-bold">{{state "code"}}</p>
+                    <input class="form-control confirm-input text-center" autofocus>
+                {{/if}}
+            {{/if}}
+		{{/mbody}}
+        {{#if loadComplete}}
+            {{#mfooter class="d-flex justify-content-between"}}
+                {{> actionButton class="confirm-approve-button" disabled=approveDisabled type=approveType label=(i18n "actions.continue")}}
+                {{> actionButton class="confirm-deny-button" type="outline-secondary" label=(i18n "actions.cancel") }}
+            {{/mfooter}}
+        {{/if}}
+	{{/modal}}
+</template>
