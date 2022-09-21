@@ -1,5 +1,4 @@
 node_modules/
 eslint*.html
-settings.json
 .*/
 !.meteor/

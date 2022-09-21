@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
+
 cd ..
-CARO_PATH=$(pwd)
-cd ${CARO_PATH}/src
+CLAIRE_PATH=$(pwd)
+cd ${CLAIRE_PATH}/src
 
 PORT=3030
-PACKAGE_DIRS="${CARO_PATH}/lib/api:${CARO_PATH}/lib/ui:${CARO_PATH}/lib/contexts:${CARO_PATH}/lib/dev:${CARO_PATH}/blaze/packages"
+PACKAGE_DIRS="${CLAIRE_PATH}/lib/api:${CLAIRE_PATH}/lib/ui:${CLAIRE_PATH}/lib/contexts:${CLAIRE_PATH}/lib/dev:${CLAIRE_PATH}/blaze/packages"
 
 set -e
-echo "=> Start CARO-CORE"
-echo "=> CARO path: [${CARO_PATH}]"
+echo "=> Start CLAIRE"
+echo "=> CLAIRE path: [${CLAIRE_PATH}]"
 echo "=> Port: [${PORT}]"
 echo "=> Lib path(s): [${PACKAGE_DIRS}]"
 
-
-METEOR_PACKAGE_DIRS=${PACKAGE_DIRS} meteor npm install
-METEOR_DYNAMIC_PACKAGES=1 AUTOFORM_DYNAMIC_IMPORT=1 METEOR_PACKAGE_DIRS=${PACKAGE_DIRS} meteor --port=$PORT --settings=settings.json --exclude-archs web.browser.legacy,web.cordova
+METEOR_PACKAGE_DIRS=${PACKAGE_DIRS} meteor --port=$PORT --settings=settings.json --exclude-archs web.browser.legacy,web.cordova

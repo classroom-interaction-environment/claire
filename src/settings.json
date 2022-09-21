@@ -1,0 +1,108 @@
+{
+  "public": {
+    "features": {
+      "groups": true
+    },
+    "defaultLocale": "en",
+    "siteName": "CLAIRE",
+    "templateMonitor": {
+      "constructView": false,
+      "onCreated": false,
+      "onRendered": false,
+      "onDestroyed": false,
+      "helpers": false,
+      "events": false,
+      "registerHelper": false
+    },
+    "classroom": {
+      "maxUsers": 100
+    },
+    "password": {
+      "min": {
+        "value": 8,
+        "rule": true
+      },
+      "max": {
+        "value": 128,
+        "rule": false
+      },
+      "allowedChars": {
+        "value": "^[a-z0-9A-Z_@&\\-\\+\/\\!\\?\\.]+$",
+        "message": "Buchstaben, Zahlen und Sonderzeichen @ & _ + - ! ? . /",
+        "rule": true
+      },
+      "icon": "lock",
+      "confirm": true,
+      "blacklist": [
+        "^\\d+$",
+        "^[a-zA-Z]+$",
+        "^.*p(a|@|4)(s|5)+w(o|0)r(d|t).*$",
+        "^.*h(e|3|a|4|@)llo.*$",
+        "^.*f(i|1)ck(e|3)n.*$",
+        "^.*1234.*$",
+        "^.*abcd.*$",
+        "^.*qwer.*$",
+        "^.*asdf.*$",
+        "^.*yxcv.*$"
+      ]
+    }
+  },
+  "defaultLocale": "en",
+  "files": {
+    "bucketName": "fs",
+    "images": {
+      "maxSize": 6144000
+    }
+  },
+  "curriculum": {
+    "sync": {
+      "enabled": false,
+      "username": "syncuser",
+      "password": "01234567890",
+      "url": "localhost:7070"
+    }
+  },
+  "emailTemplates": {
+    "from": "no-reply@claireapp.cloud",
+    "siteName": "CLAIRE",
+    "textEncoding": "quoted-printable",
+    "supportEmail": "support@claireapp.cloud"
+  },
+  "accounts": {
+    "admin": {
+      "firstName": "mister",
+      "lastName": "superadmin",
+      "email": "admin@claireapp.cloud",
+      "institution": "admins"
+    },
+    "config": {
+      "forbidClientAccountCreation": true,
+      "ambiguousErrorMessages": true,
+      "sendVerificationEmail": false,
+      "loginExpirationInDays": 90,
+      "passwordResetTokenExpirationInDays": 1,
+      "passwordEnrollTokenExpirationInDays": 3
+    },
+    "inform": {
+      "passwordReset": "admin@claireapp.cloud"
+    },
+    "fixtures": {
+      "schoolAdmin": [
+        {
+          "firstName": "Simon",
+          "lastName": "Sleepy",
+          "email": "sleepy.simon@claireapp.cloud",
+          "institution": "Best School"
+        }
+      ],
+      "teacher": [
+        {
+          "firstName": "Cindy",
+          "lastName": "Candy",
+          "email": "candy.cindy@claireapp.cloud",
+          "institution": "Best School"
+        }
+      ]
+    }
+  }
+}
