@@ -3,7 +3,7 @@
 [![built with Meteor](https://img.shields.io/badge/Meteor-2.7.3-green?logo=meteor&logoColor=white)](https://meteor.com)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-
+![GitHub](https://img.shields.io/github/license/classroom-interaction-environment/claire)
 
 CLAIRE is a classroom management, enriched with reflexive processes.
 It is designed to emphasize on methods and interactions with a high reflexive outcome in students and teachers.
@@ -17,6 +17,11 @@ no determinism forcing them to execute their lesson in this sequence
 * students are free to skip any interaction
 * teachers and students can create artifacts together, based on student's replies and reflexive discourse
 * the system does not enforce to reveal the identity an answer's respondent to the rest of the class
+
+Watch the technical overview video from Meteor Impact 2021:
+
+[![CLAIRE | Meteor Impact 2021 - Day 1](http://img.youtube.com/vi/upKaZyVfONE/0.jpg)](https://www.youtube.com/watch?v=upKaZyVfONE "CLAIRE Meteor Impact 2021 - Day 1")
+
 
 ## Installation on your own server
 
