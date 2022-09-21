@@ -198,7 +198,7 @@
   "codeInvitation": {
     "title": "Registrierung (mit Code)",
     "code": "Code",
-    "createClass": "",
+    "createClass": "Klasse erstellen",
     "confirmDelete":"Möchten Sie Einladung wirklich löschen?",
     "addedToClass": "Erfolgreich zum Kurs hinzugefügt",
     "setCurrentClass": "Möchten Sie den neuen Kurs als Ihren aktuellen Kurs festlegen?",
@@ -744,6 +744,7 @@
     },
     "enrollAccount": {
       "title": "Ihre {{siteName}} Registrierung",
+      "welcome": "Willkommen zu {{siteName}}, {{firstName}} {{lastName}}!",
       "complete": "Registrierung abschließen",
       "password": "Bitte setzen Sie hier ihr neues Passwort für {{siteName}}. Das Passwort muss die unten stehenden Mindeststandards erfüllen und durch erneute Eingabe bestätigt werden.",
       "success": "Sie haben die Registrierung erfolgreich abgeschlossen. Sie werden nun zu Ihrem profil weitergeleitet.",
@@ -824,7 +825,30 @@
       "title": "Aufgabenverwaltung"
     },
     "unit": {
-      "title": "Eigenen Unterricht planen"
+      "title": "Aufgaben-Editor"
+    },
+    "prepare": {
+      "createClass": {
+        "title": "Klasse erstellen",
+        "selectOne": "Vorhandene Klasse auswählen",
+        "createNew": "Eine neue Klasse erstellen",
+        "description": "Erstellen Sie eine neue Klasse, für die diese Lektion gedacht ist."
+      },
+      "unit": {
+        "title": "Einheit auswählen",
+        "description": "Wählen Sie eine Einheit aus, die Sie als Ihr persönliches Exemplar bearbeiten oder von Grund auf neu erstellen möchten."
+      },
+      "phases": {
+        "title": "Vorschau auf Phasen und Material",
+        "description": "Sie können entscheiden, ob Sie das Gerät so verwenden wollen, wie es ist, oder ob Sie es nach Ihren persönlichen Wünschen bearbeiten wollen.",
+        "missing": "Für diese Einheit wurden keine Phasen gefunden."
+      },
+      "createUnit": {
+        "title": "Erstellen Sie eine benutzerdefinierte Einheit von Grund auf",
+        "description": "Hier können Sie Ihre eigene Sequenz als Unterrichtsvorlage erstellen. Füllen Sie dazu das entsprechende Formular aus."
+      },
+      "completeAndEdit": "Auswählen und im Einheiten-Editor bearbeiten",
+      "completeWithoutEdit": "Unverändert auswählen"
     }
   },
   "help": {
@@ -885,12 +909,13 @@
     "reader": "Beobachter",
     "readerDescription": "Kann alle Datenbank-Inhalte einsehen.",
     "schoolAdmin": "Schul-Admin",
-    "curriculum": "Lehrende + Curriculum",
     "schoolAdminDescription": "Besitzt Verwaltungskontrolle mit wenigen technischen Ausnahmen.",
     "teacher": "Lehrende",
     "teacherDescription": "Kann Kurse und Unterricht verwalten.",
     "student": "Lernende",
-    "studentDescription": "Kann in Kursen am Unterricht teilnehmen"
+    "studentDescription": "Kann in Kursen am Unterricht teilnehmen",
+    "curriculum": "Lehrende + Curriculum",
+    "sync": "Konto synchronisieren"
   },
   "editor": {
     "summary": "Zusammenfassung",
@@ -925,6 +950,7 @@
     "noMember": "Sie sind noch kein Mitglied und können daher nicht am Unterricht teilnehmen.",
     "progresses": "Jahrgang ist kontinuierlich",
     "inLesson": "Im Unterricht",
+    "toLesson": "Zum Unterricht",
     "cannotStartTeaching": "Unterricht kann erst gestartet werden, wenn alle Bereiche vollständig sind.",
     "createLesson": "Unterricht anlegen",
     "progressIncomplete": "Fortschritt für Kurs unvollständig",
@@ -941,7 +967,72 @@
     "confirmRemove": "Sie sind dabei alle Unterrichte, Materialien und Ergebnisse mitsamt dieses Kurses zu löschen."
   },
   "lesson": {
-    "title": "Unterricht"
+    "title": "Unterricht",
+    "forkedFrom": "Kopie von",
+    "startedAt": "Angefangen bei",
+    "studentWait": "Bitte warten Sie auf die nächsten Anweisungen",
+    "overview": "Überblick über diese Einheit",
+    "noMaterial": "Kein Material vorhanden",
+    "noFiles": "Keine weitere Lektüre",
+    "noReadings": "Keine weitere Lektüre",
+    "showStudents": "Studenten anzeigen",
+    "present": "Präsentation am Whiteboard",
+    "evalResults": "Ergebnisse auswerten",
+    "presentResults": "Aktuelle Ergebnisse",
+    "results": "Ergebnisse",
+    "progress": "Fortschritte",
+    "artifacts": "Artefakte",
+    "uploads": "Uploads",
+    "noStudents": "Es gibt keine Schüler in dieser Klasse",
+    "completedAt": "Abgeschlossen am",
+    "showMoreLabels": "Labels anzeigen",
+    "confirmRemove": "Sie sind im Begriff, diese Lektion und alle damit verbundenen Daten zu löschen",
+    "actions": {
+      "restart": "Lektion neu beginnen",
+      "restartConfirm": "Alle erstellten Daten werden gelöscht, wenn Sie diese Lektion neu starten.",
+      "complete": "Vollständige Lektion",
+      "completeConfirm": "Willst du diese Lektion beenden?",
+      "start": "Lektion beginnen",
+      "startConfirm": "Willst du jetzt mit der Lektion beginnen?",
+      "makeMobileInactive": "Vor Schülern verstecken",
+      "makeMobileActive": "Aktivieren für Studenten",
+      "removeStudent": "Student entfernen",
+      "confirmRemoveStudent": "Sie sind im Begriff, \"{{firstName}} {{lastName}}\" aus der Klasse \"{{Titel}}\". Sind Sie sicher?"
+    },
+    "errors": {
+      "unexpectedState": "Unerwarteter Unterrichtszustand",
+      "expectedIdle": "Voraussichtlich 'In Vorbereitung'",
+      "expectedRunning": "Erwartetes 'Laufen'",
+      "expectedRestartable": "Erwartete Wiederaufnahmefähigkeit",
+      "expectedCompleted": "Erwartetes 'Abgeschlossen'",
+      "expectedToggleAble": "Erwartet wird 'Running' oder 'Completed'"
+    },
+    "states": {
+      "idle": "In Vorbereitung",
+      "running": "Läuft",
+      "completed": "Abgeschlossen"
+    },
+    "phases": {
+      "title": "Phasen",
+      "schema": "Lektionsschema"
+    },
+    "material": {
+      "title": "Material",
+      "preview": "Vorschaumaterial",
+      "previewTemplate": "Vorschau",
+      "selectItemRp": "Wählen Sie aus, wie die Antworten verarbeitet werden sollen"
+    },
+    "safeguard": {
+      "title": "Nachwirkungen",
+      "artifacts": "Artefakte"
+    },
+    "info": {
+      "title": "Mitglieder und Einstellungen",
+      "grouping": "Gruppen verwalten"
+    },
+    "student": {
+      "docNotVisible": "Material könnte vom Lehrer versteckt worden sein"
+    }
   },
   "lessons": {
     "title": "Meine Unterrichte",
@@ -949,6 +1040,7 @@
     "completed": "Abgeschlossen",
     "running": "Gestartet",
     "upcoming": "Ausstehend",
+    "toLesson": "Zum Unterricht",
     "studentRunning": "Laufende Unterrichte",
     "studentCompleted": "Abgeschlossene Unterrichte"
   },
@@ -968,6 +1060,12 @@
     "mb": "MB",
     "gb": "GB",
     "title": "Dateigröße"
+  },
+  "response": {
+    "showUser": "Benutzernamen anzeigen",
+    "hide": "Antwort ausschließen",
+    "show": "Antwort einschließen",
+    "showAnswers": "Versteckte Antworten anzeigen"
   },
   "agreements": {
     "termsOfService": {
