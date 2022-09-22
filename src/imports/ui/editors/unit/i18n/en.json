@@ -1,5 +1,11 @@
 {
+  "lessons": {
+    "toLesson": "Go to lesson"
+  },
   "editor": {
+    "task": {
+      "emptyPages": "This task contains empty pages!"
+    },
     "unit": {
       "title": "Unit-Editor",
       "basicInfo": "Basic info",

@@ -1,5 +1,11 @@
 {
+  "lessons": {
+    "toLesson": "Unterricht durchführen"
+  },
   "editor": {
+    "task": {
+      "emptyPages": "Diese Aufgabe enthält noch Seiten ohne Inhalte"
+    },
     "unit": {
       "title": "Sequenz-Editor",
       "errors": {
