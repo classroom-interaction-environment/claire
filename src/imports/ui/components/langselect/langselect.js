@@ -1,13 +1,14 @@
 import { Template } from 'meteor/templating'
 import { Meteor } from 'meteor/meteor'
+import { Users } from '../../../contexts/system/accounts/users/User'
 import { i18n } from '../../../api/language/language'
-import { Language } from '../../../contexts/system/Language'
 import { changeLocale } from '../../../api/language/changeLocale'
+import { callMethod } from '../../controllers/document/callMethod'
 import './langselect.html'
 
 const toSettings = lang => lang.settings
 const API = Template.langselect.setDependencies({
-  contexts: [Language]
+  contexts: [Users]
 })
 
 Template.langselect.onCreated(function () {
@@ -45,27 +46,19 @@ Template.langselect.events({
     const lang = target.data('lang')
     global.$('html').prop('lang', lang)
 
-    // set profile only on logged in users
-    if (!Meteor.userId()) {
+    const userId = Meteor.userId()
+
+    // Update profile only on logged-in users
+    if (!userId) {
       return changeLocale(lang)
     }
 
-    Meteor.call(Language.methods.updateProfile.name, { lang }, (err, res) => {
-      if (err) {
-        API.notify(err)
-      }
-
-      // if for whatever reason we have no update success without error
-      // we raise a warning but still try to change the UI langauge
-      if (res !== lang) {
-        API.notify({
-          type: 'warn',
-          text: 'langselect.notUpdated'
-        })
-      }
-
-      // even with any error we still attempt to change the ui lang
-      return changeLocale(lang)
+    callMethod({
+      name: Users.methods.updateProfile,
+      args: { locale: lang },
+      failure: API.notify,
+      receive: () => changeLocale(lang),
+      success: () => API.notify(true)
     })
   }
 })

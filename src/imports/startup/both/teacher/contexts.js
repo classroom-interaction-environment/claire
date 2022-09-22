@@ -2,7 +2,6 @@ import { ContextRegistry } from '../../../infrastructure/context/ContextRegistry
 import { Admin } from '../../../contexts/system/accounts/admin/Admin'
 import { Version } from '../../../contexts/system/version/Version'
 import { CodeInvitation } from '../../../contexts/classroom/invitations/CodeInvitations'
-import { Language } from '../../../contexts/system/Language'
 import { Errors } from '../../../contexts/system/errors/Errors'
 import { Lesson } from '../../../contexts/classroom/lessons/Lesson'
 import { SchoolClass } from '../../../contexts/classroom/schoolclass/SchoolClass'
@@ -29,4 +28,3 @@ import { Users } from '../../../contexts/system/accounts/users/User'
 
 ContextRegistry.add(Users, { createCollection: false })
 ContextRegistry.add(Version, { createCollection: false, createPublications: false })
-ContextRegistry.add(Language, { createCollection: false, createPublications: false, createMethods: true })

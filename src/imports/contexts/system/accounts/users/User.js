@@ -219,16 +219,20 @@ Users.methods.updateProfile = {
   schema: {
     profileImage: profileImageSchema({ optional: true }),
     firstName: firstNameSchema({ optional: true }),
-    lastName: lastNameSchema({ optional: true })
+    lastName: lastNameSchema({ optional: true }),
+    locale: {
+      type: String,
+      optional: true
+    }
   },
   timeInterval: 1000,
   numRequests: 5,
   run: onServerExec(function () {
     import { updateProfile } from './methods/updateProfile'
 
-    return function ({ firstName, lastName, profileImage }) {
+    return function ({ firstName, lastName, profileImage, locale }) {
       const { userId } = this
-      return updateProfile({ userId, firstName, lastName, profileImage })
+      return updateProfile({ userId, firstName, lastName, profileImage, locale })
     }
   })
 }
