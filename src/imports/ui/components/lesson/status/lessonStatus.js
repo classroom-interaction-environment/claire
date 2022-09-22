@@ -1,27 +1,42 @@
 import { Template } from 'meteor/templating'
 import { LessonStates } from '../../../../contexts/classroom/lessons/LessonStates'
+import lessonStatusLang from './i18n/lessonStatusLang'
 import '../../../generic/tooltip/tooltip'
 import './lessonStatus.html'
 
-Template.lessonStatus.helpers({
-  isIdle (lessonDoc) {
-    return lessonDoc && LessonStates.isIdle(lessonDoc)
-  },
-  isComplete (lessonDoc) {
-    return LessonStates.isCompleted(lessonDoc)
-  },
-  isRunning (lessonDoc) {
-    return LessonStates.isRunning(lessonDoc)
-  },
-  lessonDoc () {
-    return Template.instance().data.lessonDoc
-  },
-  tooltipClass (color) {
-    const { data } = Template.instance()
-    const type = data.bg !== false
-      ? `badge-${color}`
-      : ''
+const failedState = ({ bg }) => ({
+  class: getTooltipClass({ bg, color: 'warning' }),
+  label: 'lesson.unexpectedState',
+  icon: 'exclamation-triangle',
+  iconClass: getIconClass({ bg, color: 'warning' })
+})
 
-    return `badge ${type} text-wrap text-center m-0 p-2`
+const getTooltipClass = ({ bg, color }) => {
+  const type = bg !== false
+    ? `badge-${color}`
+    : ''
+  return `badge ${type} text-wrap text-center m-0 p-2`
+}
+const getIconClass = ({ bg, color }) => bg === false
+  ? `text-${color}`
+  : ''
+
+Template.lessonStatus.setDependencies({
+  language: lessonStatusLang
+})
+
+Template.lessonStatus.helpers({
+  attributes () {
+    const { lessonDoc, bg, colorize } = Template.currentData()
+
+    try {
+      const { label, color, icon } = LessonStates.getState(lessonDoc)
+      const tooltipClass = getTooltipClass({ bg, color })
+      const iconClass = getIconClass({ bg, color })
+      return { label, icon, colorize, tooltipClass, iconClass }
+    } catch (e) {
+      console.error(e)
+      return failedState({ bg })
+    }
   }
 })

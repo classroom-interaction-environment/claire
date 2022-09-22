@@ -20,7 +20,7 @@ Template.webResourceRenderer.onCreated(function () {
     const { template, load } = renderer
 
     load()
-      .catch(error => instance.setState({ error }))
+      .catch(error => instance.state.set({ error }))
       .then(() => instance.state.set({ [meta]: template }))
   })
 })

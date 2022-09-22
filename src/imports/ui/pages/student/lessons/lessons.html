@@ -30,12 +30,10 @@
             {{> nodocs}}
         {{/with}}
 
-        <h6 class="text-center text-muted my-4">{{i18n "lessons.studentCompleted"}}</h6>
-
+        {{! in contrast to running lessons we will not display a "no docs" listing }}
         {{#with completedLessons}}
+            <h6 class="text-center text-muted my-4">{{i18n "lessons.studentCompleted"}}</h6>
             {{> lessonListRendererSimple lessons=this}}
-        {{else}}
-            {{> nodocs}}
         {{/with}}
     {{/unless}}
 
@@ -51,16 +49,16 @@
     <div class="list-group">
         {{#each lesson in lessons}}
             <a href="{{route "lesson" lesson._id}}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-baseline {{liclass}}">
-                <span>
-                {{> lessonStatus lessonDoc=lesson class="p-0 ml-0 mr-2" bg=false}}
+                <span class="d-flex align-items-center">
+                {{> lessonStatus lessonDoc=lesson class="p-0 ml-0 mr-2" bg=false colorize=true}}
                 {{#with unit lesson.unit}}
                     <span>{{this.title}}</span>
                     {{else}}
                     <span>{{lesson.unit}}</span>
                 {{/with}}
                 </span>
-                <span class="text-light font-weight-normal">
-                    {{toDate lesson.startedAt}}
+                <span class="text-dark font-weight-normal">
+                    {{toDate lesson.startedAt "date"}}
                 </span>
             </a>
         {{/each}}

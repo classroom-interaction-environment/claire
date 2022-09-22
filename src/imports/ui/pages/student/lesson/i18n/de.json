@@ -2,6 +2,7 @@
   "lesson": {
     "title": "Unterricht",
     "groups": "Meine Gruppen",
-    "material": "Unterrichtsmaterial"
+    "material": "Unterrichtsmaterial",
+    "about": "Über diesen Unterricht"
   }
 }

@@ -17,6 +17,7 @@
                             <span class="ml-2">{{material.title}}{{material.name}}</span>
                         </h5>
 
+                        {{! todo make open/close}}
                         {{#if isTask category.name}}
                             {{> taskWorkingStatus taskId=material.document._id lessonId=../lessonDoc._id}}
                         {{/if}}

@@ -1,0 +1,10 @@
+{
+  "lesson": {
+    "unexpectedState": "Unerwarteter Unterrichtsstatus",
+    "states": {
+      "idle": "In Vorbereitung",
+      "running": "Unterricht läuft",
+      "completed": "Unterricht abgeschlossen"
+    }
+  }
+}

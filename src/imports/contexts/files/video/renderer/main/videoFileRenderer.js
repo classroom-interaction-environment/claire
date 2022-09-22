@@ -23,7 +23,7 @@ Template.videoFileRenderer.onCreated(function () {
 
     const { imageType } = data
     if (imageType) {
-      instance.setState({ version: imageType })
+      instance.state.set({ version: imageType })
     }
   })
 })

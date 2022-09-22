@@ -48,11 +48,12 @@ Template.taskRenderer.onCreated(function () {
   instance.state.set('current', 0)
   unsaved.clear()
 
-  const { preview, data = {} } = instance.data
+  const { readMode, preview, data = {} } = instance.data
 
   const { onItemSubmit, onItemLoad, onTaskPageNext, onTaskPagePrev, onTaskFinished, onLinkPreview } = data
   const hasHandlers = onItemSubmit && onItemLoad
 
+  const isEditable = !readMode && !preview
   const globalPreview = preview || !hasHandlers
   const fallback = () => API.log('preview mode, handlers take no effect')
 
@@ -68,7 +69,7 @@ Template.taskRenderer.onCreated(function () {
     const data = Template.currentData()
     const { data: task } = data
     const { isComplete } = data
-    API.log({ data })
+
     if (!task) {
       return
     }
@@ -85,16 +86,19 @@ Template.taskRenderer.onCreated(function () {
       instance.state.set('current', data.page)
     }
 
-    instance.state.set('taskComplete', !!isComplete)
-    instance.state.set('preview', typeof task.preview === 'boolean' ? task.preview : globalPreview)
-    instance.state.set('pages', task.pages)
-    instance.state.set('static', task.header)
-    instance.state.set('footer', task.footer)
-    instance.state.set('taskId', taskId)
-    instance.state.set('lessonId', data.lessonId)
-    instance.state.set('groupId', data.groupId)
-    instance.state.set('maxPages', task.pages.length)
-    instance.state.set('loadComplete', true)
+    instance.state.set({
+      taskComplete: !!isComplete,
+      preview: typeof task.preview === 'boolean' ? task.preview : globalPreview,
+      pages: task.pages,
+      static: task.header,
+      footer: task.footer,
+      lessonId: data.lessonId,
+      groupId: data.groupId,
+      maxPages: task.pages.length,
+      loadComplete: true,
+      taskId,
+      isEditable
+    })
   })
 })
 
@@ -155,6 +159,7 @@ Template.taskRenderer.helpers({
   attributes (data) {
     const instance = Template.instance()
     const preview = instance.state.get('preview')
+    const isEditable = instance.state.get('isEditable')
     const { print } = instance.data
     const { isComplete } = instance.data
     const taskId = instance.state.get('taskId')
@@ -163,6 +168,7 @@ Template.taskRenderer.helpers({
     const page = Template.getState('current') || instance.data.page || 0
     const atts = Object.assign({}, data, {
       preview,
+      isEditable,
       complete: isComplete,
       print,
       page,
@@ -188,6 +194,9 @@ Template.taskRenderer.helpers({
     const { preview } = instance.data
     const { print } = instance.data
     return preview && print
+  },
+  isEditable () {
+    return Template.getState('isEditable')
   }
 })
 
@@ -197,13 +206,15 @@ Template.taskRenderer.events({
     event.preventDefault()
 
     ensureAllSaved(function () {
-      if (templateInstance.state.get('preview')) return
+      const isEditable = templateInstance.state.get('isEditable')
+      if (!isEditable) {
+        return
+      }
 
       // COLLECT ITEMS
       const taskId = templateInstance.state.get('taskId')
       const pages = templateInstance.state.get('pages')
       const pageIndex = templateInstance.state.get('current')
-
       const eventObj = {
         page: pageIndex,
         maxPages: pages && pages.length,
@@ -228,17 +239,15 @@ Template.taskRenderer.events({
       const newPage = currentPage + 1
       // update data
 
-      if (!templateInstance.state.get('preview')) {
-        const taskId = templateInstance.state.get('taskId')
-        const pages = templateInstance.state.get('pages')
-        const eventObj = {
-          page: newPage,
-          maxPages: pages && pages.length,
-          complete: true,
-          taskId
-        }
-        handlers.onTaskPageNext(eventObj)
+      const taskId = templateInstance.state.get('taskId')
+      const pages = templateInstance.state.get('pages')
+      const eventObj = {
+        page: newPage,
+        maxPages: pages && pages.length,
+        complete: true,
+        taskId
       }
+      handlers.onTaskPageNext(eventObj)
 
       // reset unsaved state on new pages
       unsaved.clear()
@@ -254,15 +263,17 @@ Template.taskRenderer.events({
     ensureAllSaved(function () {
       const current = templateInstance.state.get('current')
       const newPage = current - 1
+      const isEditable = templateInstance.state.get('isEditable')
       // update data
-      if (!templateInstance.state.get('preview')) {
+      if (isEditable) {
         const taskId = templateInstance.state.get('taskId')
         const pages = templateInstance.state.get('pages')
         const eventObj = {
           page: newPage,
           maxPages: pages && pages.length,
           complete: true,
-          taskId
+          taskId,
+          isEditable
         }
         handlers.onTaskPagePrev(eventObj)
       }
@@ -281,19 +292,17 @@ Template.taskRenderer.events({
     const taskId = templateInstance.state.get('taskId')
     const current = templateInstance.state.get('current')
     const pages = templateInstance.state.get('pages')
+    const isEditable = templateInstance.state.get('isEditable')
 
-    handlers.onTaskPagePrev({
-      page: current,
-      maxPages: pages && pages.length,
-      complete: false,
-      taskId
-    })
+    if (isEditable) {
+      handlers.onTaskPagePrev({
+        page: current,
+        maxPages: pages && pages.length,
+        complete: false,
+        taskId
+      })
+    }
+
     templateInstance.state.set('taskComplete', false)
-  }
-})
-
-Template.taskEditorNavButtons.helpers({
-  perc (current, max) {
-    return Math.round(100 * current / (max + 1))
   }
 })

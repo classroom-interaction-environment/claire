@@ -124,15 +124,17 @@ Template.taskEditor.onCreated(function () {
       return
     }
 
-    callMethod({
-      name: Pocket.methods.get,
-      args: { _id: unitDoc.pocket },
-      failure: API.notify,
-      success: pocketDoc => {
-        instance.state.set('pocketDoc', pocketDoc)
-        instance.state.set('pocketComplete', true)
-      }
-    })
+    if (unitDoc.pocket !== '__custom__') {
+      callMethod({
+        name: Pocket.methods.get,
+        args: { _id: unitDoc.pocket },
+        failure: API.notify,
+        success: pocketDoc => {
+          instance.state.set('pocketDoc', pocketDoc)
+          instance.state.set('pocketComplete', true)
+        }
+      })
+    }
   })
 })
 

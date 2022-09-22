@@ -9,7 +9,7 @@
     {{#Teleport destination="#route-info-destination"}}
         <div class="text-center text-md-right">
             {{#with lessonDoc}}
-                {{> lessonStatus lessonDoc=this unitDoc=unit}}
+                {{> lessonStatus lessonDoc=this unitDoc=unit showLabel=true}}
             {{/with}}
         </div>
     {{/Teleport}}

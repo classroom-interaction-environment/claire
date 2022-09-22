@@ -1,32 +1,18 @@
 <template name="lessonStatus">
 	<span class="{{class}} lesson-status">
-		{{#if isIdle lessonDoc}}
-			<span class="text-center">
-				{{#tooltip class=(tooltipClass "info") title=(i18n "lesson.states.idle")}}
-					<i class="fa fa-fw fa-edit"></i> <span>{{unitDoc.title}}</span>
-				{{/tooltip}}
-			</span>
-            {{#if showLabel}}
-                {{> short text=unitDoc.description}}
-            {{/if}}
-		{{else if isComplete lessonDoc}}
-			<span class="text-center">
-				{{#tooltip class=(tooltipClass "success")
-						   title=(i18n "lesson.states.completed")}}
-					<i class="fa fa-fw fa-flag"></i> <span>{{unitDoc.title}}</span>
-				{{/tooltip}}
-			</span>
-		{{else if isRunning lessonDoc}}
-			<span class="text-center">
-				{{#tooltip class=(tooltipClass "secondary")
-						   title=(i18n "lesson.states.running")}}
-					<i class="fa fa-fw fa-play-circle"></i> <span>{{unitDoc.title}}</span>
-				{{/tooltip}}
-			</span>
-		{{else}}
-			<spam class="alert alert-danger">
-                <i class="fa fa-fw fa-exclamation-triangle"></i> {{i18n "lesson.unexpectedState"}}
-			</spam>
-		{{/if}}
+        <span class="text-center">
+            {{#with attributes}}
+                {{#if ../showLabel}}
+                    <span class="{{this.tooltipClass}}">
+                        {{> icon fw=true name=this.icon class=this.iconClass}}
+                        <span>{{i18n this.label}}</span>
+                    </span>
+                {{else}}
+                    {{#tooltip class=this.tooltipClass title=(i18n this.label)}}
+                        {{> icon fw=true name=this.icon class=this.iconClass}}
+                    {{/tooltip}}
+                {{/if}}
+            {{/with}}
+        </span>
 	</span>
 </template>

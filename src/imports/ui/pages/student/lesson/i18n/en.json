@@ -1,1 +1,8 @@
-[]
+{
+  "lesson": {
+    "title": "Lesson",
+    "groups": "My groups",
+    "material": "Material",
+    "about": "About this lesson"
+  }
+}

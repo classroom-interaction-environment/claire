@@ -21,6 +21,7 @@ import taskLanguage from './i18n/taskLanguage'
 import '../../../../../contexts/curriculum/curriculum/task/renderer/main/taskRenderer'
 import '../../../../components/lesson/status/lessonStatus'
 import './task.html'
+import { LessonStates } from '../../../../../contexts/classroom/lessons/LessonStates'
 
 /* This is the student task template where students will work on the task
  * Material.
@@ -44,6 +45,11 @@ Template.task.onCreated(function () {
   instance.state.set('page', 0)
   instance.state.set('complete', false)
 
+  instance.onLoadError = loadError => {
+    console.error(instance.viewName || instance.view?.name, 'load error', loadError)
+    instance.state.set({ loadError })
+  }
+
   // most important is to load the lesson doc first
   // because from here we determine the publication for
   // taskworking states that are bound to lessonId
@@ -62,9 +68,7 @@ Template.task.onCreated(function () {
           const lessonDoc = LessonCollection.findOne(lessonId)
           instance.state.set('lessonDoc', lessonDoc)
         },
-        onError (loadError) {
-          instance.state.set({ loadError })
-        }
+        onError: instance.onLoadError
       }
     })
 
@@ -119,9 +123,7 @@ Template.task.onCreated(function () {
         args: { 'meta.lessonId': lessonDoc._id },
         key: lessonSubKeyStudent,
         callbacks: {
-          onError (loadError) {
-            instance.state.set({ loadError })
-          },
+          onError: instance.onLoadError,
           onReady: () => {
             instance.state.set(context.publications.my.name, true)
           }
@@ -180,9 +182,7 @@ Template.task.onCreated(function () {
         groupId: groupDoc ? groupDoc._id : undefined,
         prepare: () => instance.state.set('loadingMaterials', true),
         receive: () => instance.state.set('loadingMaterials', false),
-        failure: loadError => {
-          instance.state.set({ loadError })
-        },
+        failure: instance.onLoadError,
         success: () => {
           const taskDoc = TaskCollection.findOne(taskId)
           if (taskDoc) {
@@ -206,11 +206,15 @@ Template.task.onCreated(function () {
     const lessonDoc = instance.state.get('lessonDoc')
     const groupDoc = instance.state.get('groupDoc')
 
-    if (!taskDoc || !lessonDoc || !groupSubReady) return
+    if (!taskDoc || !lessonDoc || !groupSubReady) {
+      return
+    }
 
     const taskId = taskDoc._id
     const lessonId = lessonDoc._id
     const args = { lessonId, taskId }
+
+    // group is always optional
     if (groupDoc) {
       args.groupId = groupDoc._id
     }
@@ -238,24 +242,27 @@ Template.task.onCreated(function () {
             return
           }
 
-          // otherwise we immediately create a new one so the teacher
-          // is aware, that working has begun fot his student
-          const complete = false
-          const page = 0
-          const progress = 0
-          const taskWorkingStateInsertDoc = { lessonId, taskId, complete, page, progress }
-          if (groupDoc) {
-            taskWorkingStateInsertDoc.groupId = groupDoc._id
+          // Otherwise, we immediately create a new one so the teacher
+          // is aware, that working has begun for this student.
+          // This is only invoked when the lesson is running.
+          if (LessonStates.isRunning(lessonDoc)) {
+            const complete = false
+            const page = 0
+            const progress = 0
+            const taskWorkingStateInsertDoc = { lessonId, taskId, complete, page, progress }
+            if (groupDoc) {
+              taskWorkingStateInsertDoc.groupId = groupDoc._id
+            }
+
+            const doc = await callMethod({
+              name: TaskWorkingState.methods.saveState,
+              args: taskWorkingStateInsertDoc,
+              failure: instance.onLoadError
+            })
+
+            instance.state.set('taskWorkingDoc', doc)
+            instance.state.set('taskWorkingReady', true)
           }
-
-          const doc = await callMethod({
-            name: TaskWorkingState.methods.saveState,
-            args: taskWorkingStateInsertDoc,
-            failure: loadError => instance.state.set({ loadError })
-          })
-
-          instance.state.set('taskWorkingDoc', doc)
-          instance.state.set('taskWorkingReady', true)
 
           if (invalidate) {
             instance.state.set('invalidateTaskWorkingState', false)
@@ -276,7 +283,7 @@ Template.task.onCreated(function () {
     }
     Meteor.call(Lesson.methods.units.name, { lessonIds: [lessonDoc._id] }, (loadError, unitDocs) => {
       if (loadError) {
-        instance.state.set({ loadError })
+        return instance.onLoadError(loadError)
       }
       unitDocs.forEach(doc => insertUpdate(UnitCollection, doc))
       const unitDoc = UnitCollection.findOne(lessonDoc.unit)
@@ -335,20 +342,25 @@ Template.task.helpers({
     const taskWorkingStateReady = instance.state.get('taskWorkingReady')
     const taskResultsReady = instance.state.get('taskResultsReady')
     const taskWorkingDoc = instance.state.get('taskWorkingDoc')
+    const lessonIsRunning = LessonStates.isRunning(lessonDoc)
 
     if (!lessonDoc || !taskDoc || !taskWorkingDoc || !taskWorkingStateReady || !taskResultsReady) {
       return
     }
 
-    const complete = taskWorkingDoc.complete || false
-    const page = taskWorkingDoc.page
+    const complete = lessonIsRunning
+      ? taskWorkingDoc.complete ?? false
+      : false
+    const page = lessonIsRunning
+      ? taskWorkingDoc.page ?? 0
+      : 0
     const onError = API.notify
     const itemHandlers = {
       onItemLoad: ItemHandlers.onItemLoad({ instance, TaskResultCollection, onError }),
-      onItemSubmit: ItemHandlers.onItemSubmit({ instance, onError }),
-      onTaskPageNext: ItemHandlers.onTaskPageNext({ instance, onError }),
-      onTaskPagePrev: ItemHandlers.onTaskPagePrev({ instance, onError }),
-      onTaskFinished: ItemHandlers.onTaskFinished({ instance, onError })
+      onItemSubmit: lessonIsRunning && ItemHandlers.onItemSubmit({ instance, onError }),
+      onTaskPageNext: lessonIsRunning && ItemHandlers.onTaskPageNext({ instance, onError }),
+      onTaskPagePrev: lessonIsRunning && ItemHandlers.onTaskPagePrev({ instance, onError }),
+      onTaskFinished: lessonIsRunning && ItemHandlers.onTaskFinished({ instance, onError })
     }
 
     return {
@@ -360,6 +372,7 @@ Template.task.helpers({
       preview: false,
       print: false,
       student: true,
+      readMode: !lessonIsRunning,
       isComplete: complete
     }
   },
@@ -371,7 +384,8 @@ Template.task.helpers({
     const instance = Template.instance()
     return {
       lessonDoc: instance.state.get('lessonDoc'),
-      unitDoc: instance.state.get('unitDoc')
+      unitDoc: instance.state.get('unitDoc'),
+      showLabel: true
     }
   }
 })

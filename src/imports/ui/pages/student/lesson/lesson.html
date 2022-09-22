@@ -1,21 +1,21 @@
 <template name="lesson">
 	{{#with lessonDoc}}
         <div class="d-block text-center">
-            {{> lessonStatus lessonDoc=this unitDoc=this.unit}}
+            {{> lessonStatus lessonDoc=this showLabel=true}}
         </div>
 
 		{{#unless isIdle this}}
             {{#if feature "groups"}}
-            {{#with (groups this)}}
-                <div class="student-groups-container mt-5 text-center">
-                    <h5 class="text-center border-bottom py-1 px-5">{{i18n "lesson.groups"}}</h5>
-                    <div class="mt-4">
-                    {{#each group in this}}
-                        {{> routeButton type="secondary" label=group.title href=(route "group" ../_id group._id) class="btn-block mt-2"}}
-                    {{/each}}
+                {{#with (groups this)}}
+                    <div class="student-groups-container mt-5 text-center">
+                        <h5 class="text-center border-bottom py-1 px-5">{{i18n "lesson.groups"}}</h5>
+                        <div class="mt-4">
+                        {{#each group in this}}
+                            {{> routeButton type="secondary" label=group.title href=(route "group" ../_id group._id) class="btn-block mt-2"}}
+                        {{/each}}
+                        </div>
                     </div>
-                </div>
-            {{/with}}
+                {{/with}}
             {{/if}}
 
             <div class="mt-5 text-center">
@@ -33,6 +33,14 @@
                 </div>
             </div>
         {{/if}}
+
+        <div class="student-groups-container mt-5 text-center">
+            <h5 class="text-center border-bottom py-1 px-5">{{i18n "lesson.about"}}</h5>
+            <div class="mt-4 text-center">
+                <p>{{this.unit.title}}</p>
+                <p>{{this.unit.description}}</p>
+            </div>
+        </div>
 	{{else}}
         {{> loading title=(i18n "lesson.title") type="data"}}
 	{{/with}}

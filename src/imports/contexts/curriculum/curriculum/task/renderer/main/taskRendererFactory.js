@@ -11,6 +11,7 @@ const API = Template.TaskRendererFactory.setDependencies()
 // then this is the latest point, where it should be done
 // in order to correctly display defined elements and items
 const init = TaskDefinitions.initialize()
+const loadedRenderer = new Set()
 
 Template.TaskRendererFactory.onCreated(function () {
   const instance = this
@@ -25,11 +26,26 @@ Template.TaskRendererFactory.onCreated(function () {
       ? getMaterialRenderer(ctx.material, 'task')
       : ctx.renderer
     const { template, load } = renderer
-    API.log('load renderer', template)
 
-    load()
-      .catch(error => instance.setState({ error }))
-      .then(() => instance.setState({ [target]: { template } }))
+    if (!loadedRenderer.has(template)) {
+      API.log('load renderer', template, data)
+      load()
+        .catch(error => instance.state.set({ error }))
+        .then(() => {
+          instance.state.set(target, { template })
+          loadedRenderer.add(template)
+        })
+    }
+
+    // if we have loaded the template once, but
+    // it's currently not defined in this instance' state
+    // we add it to the state
+    else {
+      const hasTarget = Tracker.nonreactive(() => instance.state.get(target))
+      if (!hasTarget) {
+        instance.state.set(target, { template })
+      }
+    }
   })
 })
 

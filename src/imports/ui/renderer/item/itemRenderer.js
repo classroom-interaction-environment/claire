@@ -40,16 +40,12 @@ Template.itemRenderer.onCreated(function () {
   instance.autorun(async function () {
     const data = Template.currentData()
     const itemInit = Item.isInitialized()
-    API.log(data)
 
     if (!itemInit || !data || !data.meta || !Item.has(data.meta)) {
       return
     }
 
-    const { onItemLoad } = data
-    const { hasUnsavedData } = data
-    const { itemId } = data
-    const { page } = data
+    const { onItemLoad, hasUnsavedData, itemId, page } = data
 
     // each item has a specific schema and sometimes even uses
     // a custom form component.
@@ -75,6 +71,7 @@ Template.itemRenderer.onCreated(function () {
       return items.set(itemId, data)
     }
 
+    API.log('onItemLoad', itemId)
     onItemLoad(itemId, (err, itemDoc) => {
       if (err) {
         states.set(itemId, ItemRendererState.loadFailed)
@@ -86,7 +83,7 @@ Template.itemRenderer.onCreated(function () {
         }
         values.set(itemId, itemDoc)
       }
-      API.log(itemDoc, data)
+
       items.set(itemId, data)
     }, page) // TODO rewrite to use object instead of multiple paramss
 
@@ -183,7 +180,9 @@ Template.itemRenderer.helpers({
     const status = states.get(itemId)
     return (status === ItemRendererState.saved)
   },
-  itemDisabled (itemId, groupMode) {
+  itemDisabled (isEditable, itemId, groupMode) {
+    if (!isEditable) { return true }
+
     // in merge mode we don't disable the item since we
     // want to keep it "live" for group work.
     if (groupMode === 'merge') {

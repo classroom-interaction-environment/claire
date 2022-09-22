@@ -74,7 +74,7 @@
                 <div class="d-print-none">
 				<hr>
 				{{#unless isPrintPreview}}
-					{{> taskEditorNavButtons  hasNext=hasNext hasPrev=hasPrev isPreview=isPreview}}
+					{{> taskEditorNavButtons  hasNext=hasNext hasPrev=hasPrev isPreview=isPreview isEditable=isEditable}}
 				{{/unless}}
                 </div>
 			</div>
@@ -142,23 +142,21 @@
 				<button class="btn btn-block btn-lg btn-primary task-renderer-next-button" id="task-next-button">
 					{{i18n "wizard.next"}} <i class="fa fa-arrow-right"></i>
 				</button>
-			{{else}}
-				{{#unless isPreview}}
-					<button class="btn btn-block btn-lg btn-success task-renderer-next-button task-renderer-finish-button"
-							id="task-finish-button">
-						{{i18n "wizard.finish"}}
-					</button>
-				{{/unless}}
+			{{else if isEditable}}
+                <button class="btn btn-block btn-lg btn-success task-renderer-next-button task-renderer-finish-button"
+                        id="task-finish-button">
+                    {{i18n "wizard.finish"}}
+                </button>
 			{{/if}}
 		</div>
 	</div>
 
-	{{#unless isPreview}}
+	{{#if isEditable}}
 		<div class="card-body text-center text-warning">
 			<small>
 				<i class="fa fa-fw fa-exclamation-circle"></i>
 				<span>{{i18n "task.saveHint"}}</span>
 			</small>
 		</div>
-	{{/unless}}
+	{{/if}}
 </template>

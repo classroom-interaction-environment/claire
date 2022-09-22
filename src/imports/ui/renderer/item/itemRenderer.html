@@ -8,7 +8,7 @@
                          schema=(itemSchema this.itemId)
                          doc=(value this.itemId)}}
                 <div>
-                    <fieldset disabled="{{#if itemDisabled ../itemId ../groupMode}}disabled{{/if}}">
+                    <fieldset disabled="{{#if itemDisabled ../isEditable ../itemId ../groupMode}}disabled{{/if}}">
                         {{#each afFieldNames}}
                             <div class="field-wrapper">
                                 <label class="font-weight-bold text-center text-md-left w-100 p-2">
@@ -21,6 +21,7 @@
                                         data-item=../itemId
                                         data-group=../groupId
                                         data-group-mode=../groupMode
+                                        disabled=(itemDisabled ../isEditable ../itemId ../groupMode)
                                         label=false}}
                             </div>
                         {{/each}}
@@ -31,7 +32,7 @@
                         {{/if}}
                     </fieldset>
                 </div>
-                {{#unless isPreview}}
+                {{#if isEditable}}
                     <div class="d-block d-print-none">
                         {{#unless submitting this.itemId}}
                             {{#if eq ../groupMode "merge"}}
@@ -62,12 +63,12 @@
                             </button>
                         {{/unless}}
                     </div>
-                    {{#with value this.itemId}}
-                        <div class="text-muted text-center">
-                            <small>{{i18n 'item.savedAt'}} {{toLocaleDate this.updatedAt}}</small>
-                        </div>
-                    {{/with}}
-                {{/unless}}
+                {{/if}}
+                {{#with value this.itemId}}
+                    <div class="text-muted text-center">
+                        <small>{{i18n 'item.savedAt'}} {{toLocaleDate this.updatedAt}}</small>
+                    </div>
+                {{/with}}
             {{/autoForm}}
         </div>
     {{else}}

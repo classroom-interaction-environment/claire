@@ -35,6 +35,7 @@
       "removeStudent": "Lernende aus Kurs entfernen",
       "confirmRemoveStudent": "Sie sind dabei \"{{firstName}} {{lastName}}\" aus dem Kurs \"{{title}}\" zu entfernen. Möchten Sie fortfahren?"
     },
+    "unexpectedState": "Unerwarteter Unterrichtsstatus",
     "errors": {
       "unexpectedState": "Unerwarteter Unterrichtsstatus",
       "expectedIdle": "Erwartet war 'In Vorbereitung'",

@@ -25,7 +25,7 @@ Template.imageFileRenderer.onCreated(function () {
     API.log('on data', data)
     const { imageType, version } = data
     if (imageType || version) {
-      instance.setState({ version: (imageType || version) })
+      instance.state.set({ version: (imageType || version) })
     }
   })
 })

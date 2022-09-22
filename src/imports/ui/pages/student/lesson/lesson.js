@@ -12,6 +12,7 @@ import { insertUpdate } from '../../../../api/utils/insertUpdate'
 import { callMethod } from '../../../controllers/document/callMethod'
 import { getCollection } from '../../../../api/utils/getCollection'
 import { getMaterialContexts } from '../../../../contexts/material/initMaterial'
+import { cursor } from '../../../../api/utils/cursor'
 
 import lessonStudentLanguage from './i18n/lessonStudentLanguage'
 import '../../../components/lesson/status/lessonStatus'
@@ -144,7 +145,7 @@ Template.lesson.onDestroyed(function () {
 
 Template.lesson.helpers({
   groups (lessonDoc) {
-    return getCollection(Group.name).find({ lessonId: lessonDoc._id })
+    return cursor(() => getCollection(Group.name).find({ lessonId: lessonDoc._id }))
   },
   docNotFound () {
     return Template.getState('docNotFound')

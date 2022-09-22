@@ -1,0 +1,10 @@
+{
+  "lesson": {
+    "unexpectedState": "Unexpected lesson state",
+    "states": {
+      "idle": "Idle",
+      "running": "Running",
+      "completed": "Completed"
+    }
+  }
+}
