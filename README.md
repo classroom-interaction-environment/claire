@@ -22,6 +22,7 @@ Watch the technical overview video from Meteor Impact 2021:
 
 [![CLAIRE | Meteor Impact 2021 - Day 1](http://img.youtube.com/vi/upKaZyVfONE/0.jpg)](https://www.youtube.com/watch?v=upKaZyVfONE "CLAIRE Meteor Impact 2021 - Day 1")
 
+Direct link: https://www.youtube.com/watch?v=upKaZyVfONE
 
 ## Installation on your own server
 
@@ -31,13 +32,14 @@ script that configures the server and deploys the app.
 
 ### Requirements
 
-1. You need a root / sudo-privileged account on a server including ssh access. We recommend ssh access using ssh-keys instead
-of passwords. However, `mup` supports both authentication types, see their [docs](http://meteor-up.com/docs.html#ssh-keys-with-passphrase-or-ssh-agent-support).
+1. You need a root / sudo-privileged account on a server including ssh access. We recommend ssh access using ssh-keys 
+   instead of passwords. However, `mup` supports both authentication types, see their 
+   [docs](http://meteor-up.com/docs.html#ssh-keys-with-passphrase-or-ssh-agent-support).
 
-2. The server should have at least 512MB of RAM, 5 GB of *available* disc space and 1 (virtual) CPU. 
-With these specs you will be able to run several classrooms at the same time. However, if you are a larger institution
-and / or want to share larger files (videos, images etc.) within the classes you may consider at least 2GB RAM, 2 (virtual) CPUs
-and as many as disk space as possible required.
+3. The server should have at least 512MB of RAM, 5 GB of *available* disc space and 1 (virtual) CPU. 
+   With these specs you will be able to run several classrooms at the same time. However, if you are a larger 
+   institution and / or want to share larger files (videos, images etc.) within the classes you may consider at least 
+   2GB RAM, 2 (virtual) CPUs and as many as disk space as possible required.
 
 ### Get the latest stable build
 
@@ -88,10 +90,12 @@ $ git clone git@github.com:classroom-interaction-environment/claire.git
 # git clone https://github.com/classroom-interaction-environment/claire.git
 ```
 
-Finally start the app via
+Then you need to cd into the `src` folder, install npm dependencies and finally start the app via
+the provided run script:
 
 ```bash
 $ cd src
+$ meteor npm install
 $ ./scripts/run.sh
 ```
 
@@ -137,29 +141,44 @@ To develop for the web, you only need a browser in order to run CLAIRE. Any mode
 
 #### Run the app
 
-TBD
+Use the run script to run the app:
+
+```bash
+$ ./scripts/run.js
+```
 
 #### Run the tests
 
 We use the following test stack:
 
-- mocha (testrunner)
-- chai (asserter)
-- sinon (mocks, stubs)
-- istanbul/nyc (coverage)
+- [mocha](https://mochajs.org/) (testrunner)
+- [chai](https://www.chaijs.com/) (asserter)
+- [sinon](https://sinonjs.org/) (mocks, stubs)
+- [istanbul/nyc](https://istanbul.js.org/) (coverage)
 
 We created a sophisticated test script to ease up different test setups:
 
 ```bash
-$ ./scripts/test.sh
+$ ./scripts/test.sh [ options ]
 ```
 
-It allows the following parameters (accept multiple at the same time):
+where `options` allows for the following parameters (accepts multiple at the same time):
 
-- `-v` verbose, print extended output
-- `-c` cli mode, runs client tests headless in terminal using puppeteer
-- `-o` once, runs the test only once (watch mode is default)
-- `-g` grep-pattern, filter tests by regex
+| Parameter | Argument   | Description                                               |
+|-----------|------------|-----------------------------------------------------------|
+| -a        | `<String>` | Filter architecture, allowed values: `server` or `client` |
+| -b        |            | Use a real browser for client tests (default is headless) |
+| -c        |            | Activate code-coverage reports                            |
+ | -g        | `<RegExp>` | Filter tests by a given `RegExp` (uses Mocha-grep)          |
+| -h        |            | Show help                                                 |
+| -o        |            | Runs the tests only once (default is watch-mode)          |
+| -v        |            | Verbose mode with extra prints                            |
+
+Running only server-side tests (-a) once (-o) with coverage (-c) would result in the following command:
+
+```bash
+$ ./scripts/test.sh -o -c -a server
+```
 
 
 ## Credits and Contributors
