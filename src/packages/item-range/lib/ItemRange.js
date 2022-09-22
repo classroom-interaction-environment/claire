@@ -86,7 +86,6 @@ export const ItemRange = {
     }
   },
   item ({ itemId, minValue, maxValue, minLabel, maxLabel, step, pipTypes, pipCount, startValue }) {
-    console.debug('construct no ui slider item', { itemId, minValue, maxValue, minLabel, maxLabel, step, pipTypes, pipCount, startValue })
     return {
       [itemId]: {
         type: Number,
