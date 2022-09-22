@@ -21,15 +21,31 @@ i18n.load = (provider, defaults = {}) => {
 }
 
 i18n.get = (...args) => {
-  const last = args[args.length - 1]
-  if (typeof last === 'object') {
-    args[args.length - 1] = {
+  const lastIndex = args.length - 1
+  const last = args[lastIndex]
+  const type = typeof last
+
+  // if the last arg is a function, which often happens
+  // when being called from a Template helper, we replace
+  // it with the default options
+  if (type === 'function') {
+    args.splice(lastIndex, 1, defaultOptions)
+  }
+
+  // if it's an object then we merge it
+  // with the default options
+  else if (type === 'object') {
+    args[lastIndex] = {
       ...defaultOptions,
-      ...args[args.length - 1]
+      ...args[lastIndex]
     }
-  } else {
+  }
+
+  // otherwise add the default options
+  else {
     args.push(defaultOptions)
   }
+  console.debug('i18n.get', args)
   return _provider.get(...args)
 }
 

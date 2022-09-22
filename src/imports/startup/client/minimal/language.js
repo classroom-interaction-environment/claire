@@ -17,6 +17,9 @@ Template.registerHelper('i18n', function (...args) {
     return '...'
   }
 
+  // remove the default last arg that is set by Blaze
+  // as it messes up our default options
+  args.pop()
   return i18n.get(...args)
 })
 
@@ -24,7 +27,7 @@ Template.registerHelper('i18nInitialized', function () {
   return i18n.initialized()
 })
 
-const { siteName } = Meteor.settings.public
+const { siteName, defaultLocale } = Meteor.settings.public
 
 // we need to reactively change document.title and html-lang
 // based on the current route's label and the locale
@@ -34,10 +37,10 @@ Tracker.autorun(() => {
 
   if (!label || !initialized) { return }
 
-  const locale = i18n.getLocale()
+  const locale = i18n.getLocale() || defaultLocale
   const isUntranslated = label.includes('.')
   const translated = isUntranslated
-    ? i18n.get(locale, label)
+    ? i18n.get(locale, label, { siteName })
     : label
 
   if (translated === label && isUntranslated) {

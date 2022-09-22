@@ -4,7 +4,7 @@ import { i18n } from './language'
 import { Schema } from '../schema/Schema'
 import { createLog } from '../log/createLog'
 
-const { defaultLocale } = Meteor.settings.public
+const { defaultLocale, siteName } = Meteor.settings.public
 const debug = createLog({ name: 'initLanguage', type: 'debug' })
 
 /**
@@ -23,7 +23,7 @@ const debug = createLog({ name: 'initLanguage', type: 'debug' })
  * @param defaultOptions {object=} optional, object containing default options (such as siteName etc.)
  * @return {Promise<{}>} resolves to the `i18n` module
  */
-export const initLanguage = async (locale, defaultOptions) => {
+export const initLanguage = async (locale, defaultOptions = {}) => {
   if (i18n.initialized()) {
     return i18n
   }
@@ -53,12 +53,15 @@ export const initLanguage = async (locale, defaultOptions) => {
     [finalLocale]: localeData
   }
 
-  i18n.load(new I18NConstructor({
+  const i18nOptions = Object.assign(defaultOptions,  { siteName })
+  const i18nProvider = new I18NConstructor({
     i18n: config,
     returnKey: true,
     helperName: '__i18n__',
     helperSettingsName: '__i18nSettings__'
-  }), defaultOptions)
+  })
+
+  i18n.load(i18nProvider, i18nOptions)
   i18n.setLocale(finalLocale)
 
   // init schema messages with reactive translation
