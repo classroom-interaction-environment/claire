@@ -5,7 +5,7 @@ CLAIRE_PATH=$(pwd)
 cd ${CLAIRE_PATH}/src
 
 PORT=3030
-PACKAGE_DIRS="${CLAIRE_PATH}/lib/api:${CLAIRE_PATH}/lib/ui:${CLAIRE_PATH}/lib/contexts:${CLAIRE_PATH}/lib/dev:${CLAIRE_PATH}/blaze/packages"
+PACKAGE_DIRS="${CLAIRE_PATH}/lib/:${CLAIRE_PATH}/blaze/packages"
 
 set -e
 echo "=> Start CLAIRE"
