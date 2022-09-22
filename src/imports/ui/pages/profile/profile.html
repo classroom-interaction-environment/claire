@@ -63,15 +63,16 @@
                 <li class="list-group-item" id="user-profile-image">
                     {{#unless edit "profileImage"}}
                         <div class="w-100 d-flex justify-content-between">
-                            <strong class="text-primary">{{i18n
-                                    "userProfile.image"}}</strong>
+                            <strong class="text-primary">{{i18n "userProfile.image"}}</strong>
                             {{#unless this.profileImage}}
                             {{> actionButton icon="plus" type="outline-success" class="edit-profile-button"
                                     data-target="profileImage" sm=true }}
                             {{/unless}}
                         </div>
                         <div class="w-100 mt-1 d-flex justify-content-between">
-                            {{#if this.profileImage}}
+                            {{#if loadingProfileImage}}
+                                {{> loading type="data"}}
+                            {{else if this.profileImage}}
                                 {{>image src=(profileImage this.profileImage) shadow=false class="img-fluid"}}
                             {{else}}
                                 {{>imagePlaceholder shadow=true text=(i18n "userProfile.noImage")}}

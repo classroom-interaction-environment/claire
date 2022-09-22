@@ -5,6 +5,7 @@ import { i18n } from '../../../api/language/language'
 import { initContext } from '../contexts/initContext'
 import { loadIntoCollection } from '../../../infrastructure/loading/loadIntoCollection'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
+import { loadProfileImage } from '../../../api/accounts/user/client/loadProfileImage'
 
 initContext(ProfileImages)
 
@@ -13,15 +14,7 @@ Tracker.autorun(computation => {
   if (!user) { return }
 
   if (user.profileImage) {
-    loadIntoCollection({
-      name: ProfileImages.methods.my,
-      collection: getLocalCollection(ProfileImages.name),
-      failure: error => console.error(ProfileImages.methods.my.name, error),
-      debug: true,
-      success: () => {
-        user.profileImageReady = true
-      }
-    })
+    loadProfileImage({ user })
   }
 
   computation.stop()

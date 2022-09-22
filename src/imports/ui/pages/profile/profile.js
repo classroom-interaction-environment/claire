@@ -18,6 +18,8 @@ import { loadTemplate } from '../../../infrastructure/templates/loadTemplate'
 import { callMethod } from '../../controllers/document/callMethod'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
 import { getFilesLink } from '../../../contexts/files/getFilesLink'
+import { hasProfileImageLoaded } from '../../../api/accounts/user/client/hasProfileImageLoaded'
+import { loadProfileImage } from '../../../api/accounts/user/client/loadProfileImage'
 
 import '../../generic/docnotfound/docnotfound'
 import '../../components/langselect/langselect'
@@ -38,7 +40,7 @@ let guide
 const UserProfileFormSchema = {
   profileImage: {
     type: String,
-    label: ProfileImages.label,
+    label: 'userProfile.image',
     autoform: {
       label: false,
       afFieldInput: {
@@ -48,7 +50,7 @@ const UserProfileFormSchema = {
         previewTemplate: ProfileImages.renderer.template,
         maxSize: ProfileImages.files.maxSize,
         icon: ProfileImages.icon,
-        label: ProfileImages.label,
+        label: 'userProfile.image',
         capture: ProfileImages.files.capture,
       }
     }
@@ -87,18 +89,52 @@ Template.userProfile.onCreated(function () {
     success: doc => instance.state.set('settingsDoc', doc)
   })
 
+  /**
+   * This method ensures that there is a profile image available for the given user.
+   * If the page loads new and the user has a profile image it will be loaded by
+   * the respective startup routine.
+   * However, this page allows to set a new image and since we don't use pub/sub here
+   * we need to ensure the new uploaded image is downloaded again to be available for
+   * display.
+   * @param user {object} the user document
+   */
+  const ensureProfileImage = user => {
+    if (user.profileImage && !hasProfileImageLoaded(user.profileImage)) {
+      instance.state.set('loadingProfileImage', true)
+      const onComplete = () => setTimeout(() => instance.state.set('loadingProfileImage', false), 300)
+      loadProfileImage({
+        user,
+        onError: err => {
+          API.notify(err)
+          onComplete()
+        },
+        onSuccess: () => onComplete()
+      })
+    }
+  }
+
   instance.autorun(() => {
     const userId = Router.param('userId')
     instance.state.set('userId', userId)
+
+    // if this is our user, we load their profile with
+    // Meteor's current user helpers
     if (userId === Meteor.userId()) {
-      instance.state.set('user', Meteor.user())
+      const user = Meteor.user()
+      instance.state.set('user', user)
       instance.state.set('loadComplete', true)
-    } else {
+      ensureProfileImage(user)
+    }
+
+    // otherwise we load the respective user's document
+    else {
       Meteor.call(Users.methods.getUser.name, { _id: userId }, (err, userDoc) => {
         if (err) {
           API.fatal(err)
         } else {
-          instance.state.set('user', decorateUserDoc(userDoc))
+          const user = decorateUserDoc(userDoc)
+          instance.state.set('user', user)
+          ensureProfileImage(user)
         }
         instance.state.set('loadComplete', true)
       })
@@ -168,10 +204,10 @@ Template.userProfile.helpers({
   getUserRoles (roles, group) {
     return roles && roles[group]
   },
+  loadingProfileImage () {
+    return Template.getState('loadingProfileImage')
+  },
   profileImage (imageId) {
-    if (!imageId) {
-      // return
-    }
     const image = getLocalCollection(ProfileImages.name).findOne(imageId)
 
     if (!image) {
