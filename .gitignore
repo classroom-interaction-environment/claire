@@ -110,3 +110,6 @@ dist
 
 #macOS
 .DS_Store
+
+# external packages lib
+lib/
