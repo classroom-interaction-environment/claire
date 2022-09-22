@@ -4,14 +4,17 @@ import { Router } from '../Router'
 import { toQueryParams } from '../queryParams'
 import { createToRoute } from '../createToRoute'
 import { createLoginTrigger } from '../triggers/createLoginTrigger'
-import { CurriculumSession } from '../../../ui/curriculum/CurriculumSession'
+import { leaveCurriculum } from '../triggers/leaveCurriculum'
 
+/**
+ * These routes do only apply for users with teacher role and above.
+ */
 export const TeacherRoutes = {}
 
 const studentTrigger = function () {}
 
 const loginTrigger = createLoginTrigger(Routes.login)
-const leaveCurriculum = () => CurriculumSession.disable()
+
 
 const toDashboard = () => {
   if (!Meteor.userId()) return
@@ -82,23 +85,6 @@ TeacherRoutes.inviteUsers = {
     return import('../../../ui/pages/inviteUsers/inviteUsers')
   },
   data: {}
-}
-
-TeacherRoutes.profile = {
-  path: (userId = ':userId', status) => {
-    const base = `/profile/${userId}`
-    if (typeof status !== 'string') return base
-    return `${base}?status=${status}`
-  },
-  triggersEnter: () => [leaveCurriculum, loginTrigger, studentTrigger],
-  async load () {
-    return import('../../../ui/pages/profile/profile')
-  },
-  target: null,
-  label: 'routes.profile',
-  template: 'userProfile',
-  roles: null,
-  data: null
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////

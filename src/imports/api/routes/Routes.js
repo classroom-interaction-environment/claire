@@ -5,6 +5,10 @@ import { createLoggedinTrigger } from './triggers/createLoggedinTrigger'
 import { createToRoute } from './createToRoute'
 import { resolveRedirect } from './getResolveRedirect'
 
+/**
+ * This defines the minimal set of routes, that are available either for
+ * non-logged in users and/or for logged-in users, independent of their role.
+ */
 export const Routes = {}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -203,6 +207,29 @@ Routes.resetPassword = {
       Router.go(Routes.root)
     }
   }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// AUTHENTICATED ROUTES
+//
+// ////////////////////////////////////////////////////////////////////////////////////////////////
+
+Routes.profile = {
+  path: (userId = ':userId', status) => {
+    const base = `/profile/${userId}`
+    if (typeof status !== 'string') return base
+    return `${base}?status=${status}`
+  },
+  triggersEnter: () => [loginTrigger],
+  async load () {
+    return import('../../ui/pages/profile/profile')
+  },
+  target: null,
+  label: 'routes.profile',
+  template: 'userProfile',
+  roles: null,
+  data: null
 }
 
 Routes.confirmResearch = {
