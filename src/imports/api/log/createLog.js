@@ -11,7 +11,7 @@ export const LogTypes = {
  * @deprecated
  */
 export const createDebugLog = (name, type = LogTypes.debug, { devOnly } = {}) => {
-  console.error(name, 'Deprecated: createDebugLog is deprecated, use createLog instead')
+  console.warn(name, 'Deprecated: createDebugLog is deprecated, use createLog instead')
   return noOp
 }
 
@@ -21,7 +21,7 @@ const noOp = () => {}
  * @deprecated
  */
 export const createInfoLog = (name, { devOnly } = {}) => {
-  console.error(name, 'Deprecated: createInfoLog is deprecated, use createLog instead')
+  console.warn(name, 'Deprecated: createInfoLog is deprecated, use createLog instead')
   return noOp
 }
 
