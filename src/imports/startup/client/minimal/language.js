@@ -17,9 +17,16 @@ Template.registerHelper('i18n', function (...args) {
     return '...'
   }
 
-  // remove the default last arg that is set by Blaze
-  // as it messes up our default options
-  args.pop()
+  const lastIndex = args.length -1
+  const last = args[lastIndex]
+
+  // helpers collect their arguments in a "hash" object
+  // which we can use to extract these options
+  // and pass them on to the i18n provider as regular options
+  if (typeof last === 'object' && 'hash' in last) {
+    args.splice(lastIndex, 1, last.hash)
+  }
+
   return i18n.get(...args)
 })
 

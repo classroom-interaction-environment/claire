@@ -5,6 +5,7 @@ import { SubscriptionRegistry } from '../subscriptions/SubscriptionRegistry'
 import { SubsManager } from '../subscriptions/SubsManager'
 import { DocNotFoundError } from '../../api/errors/types/DocNotFoundError'
 import { Schema } from '../../api/schema/Schema'
+import { detectUserLanguage } from '../../api/language/detectUserLanguage'
 
 /**
  * Initializes a template to implement minimal requirements.
@@ -126,16 +127,7 @@ export const initTemplateDependencies = function initTemplate ({ contexts = [], 
   allComplete.push(initOnce(initLanguage, {
     onError: errorHandler,
     name: 'language',
-    options: (function getUserLanguage () {
-      const user = Meteor.user()
-      const userLocale = (user && user.locale && user.locale.lang)
-
-      if (userLocale) {
-        return userLocale
-      }
-
-      // return window.navigator.language.split('-')[0]
-    })()
+    options: detectUserLanguage(Meteor.user())
   }))
 
   // custom loaders can be added as async functions

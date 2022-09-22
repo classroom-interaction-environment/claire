@@ -25,16 +25,7 @@ i18n.get = (...args) => {
   const last = args[lastIndex]
   const type = typeof last
 
-  // if the last arg is a function, which often happens
-  // when being called from a Template helper, we replace
-  // it with the default options
-  if (type === 'function') {
-    args.splice(lastIndex, 1, defaultOptions)
-  }
-
-  // if it's an object then we merge it
-  // with the default options
-  else if (type === 'object') {
+  if (type === 'object') {
     args[lastIndex] = {
       ...defaultOptions,
       ...args[lastIndex]
@@ -45,7 +36,7 @@ i18n.get = (...args) => {
   else {
     args.push(defaultOptions)
   }
-  console.debug('i18n.get', args)
+
   return _provider.get(...args)
 }
 
