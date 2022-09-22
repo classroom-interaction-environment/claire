@@ -36,7 +36,7 @@ i18n.get = (...args) => {
   else {
     args.push(defaultOptions)
   }
-
+console.debug('i18n.get', ...args)
   return _provider.get(...args)
 }
 

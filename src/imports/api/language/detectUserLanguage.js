@@ -6,8 +6,8 @@ import { isDefinedString } from '../utils/check/isDefinedString'
  * @param user {object} required, the user document to check
  * @return {string|undefined}
  */
-export const detectUserLanguage = (user = {}) => {
-  const { locale } = user
+export const detectUserLanguage = (user) => {
+  const locale  = user && user.locale
 
   if (isDefinedString(locale)) {
     return locale

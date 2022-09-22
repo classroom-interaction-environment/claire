@@ -98,21 +98,19 @@ const ViewStates = {
   failed: 'failed'
 }
 
-const mergedLang = {
-  de: async () => {
-    const loginLang = await loginLanguage.de()
-    const registerLang = await codeRegisterLanguage.de()
-    return { ...loginLang, ...registerLang }
-  },
-  en: async () => {
-    const loginLang = await loginLanguage.en()
-    const registerLang = await codeRegisterLanguage.en()
-    return { ...loginLang, ...registerLang }
-  }
-}
-
 const API = Template.codeRegister.setDependencies({
-  language: mergedLang,
+  language: {
+    de: async () => {
+      const loginLang = await loginLanguage.de()
+      const registerLang = await codeRegisterLanguage.de()
+      return { ...loginLang.default, ...registerLang.default }
+    },
+    en: async () => {
+      const loginLang = await loginLanguage.en()
+      const registerLang = await codeRegisterLanguage.en()
+      return { ...loginLang.default, ...registerLang.default }
+    }
+  },
   debug: true
 })
 
@@ -147,7 +145,11 @@ Template.codeRegister.onCreated(function () {
       })
 
       const createPasswordSchemaDefinition = {
-        email: emailSchema({ classNames: 'd-none', label: false, autocomplete: 'email' }),
+        email: emailSchema({
+          classNames: 'd-none',
+          label: false,
+          autocomplete: 'email'
+        }),
         password: password2Schema({
           min: passwordConfig.min(),
           max: passwordConfig.max(),

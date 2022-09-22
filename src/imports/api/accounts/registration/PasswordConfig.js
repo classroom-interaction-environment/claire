@@ -31,7 +31,7 @@ function build (settings) {
     const min = target.min.value
     rules.push({
       test: value => value && value.length >= min,
-      message: () => i18n.get('login.password.minimumChars', { min })
+      message: i18n.reactive('login.password.minimumChars', { min: min.toString() })
     })
   }
 
@@ -39,7 +39,7 @@ function build (settings) {
     const max = target.max.value
     rules.push({
       test: value => value && value.length <= max,
-      message: () => i18n.get('login.password.maximumChars', { max })
+      message: i18n.reactive('login.password.maximumChars', { max: max.toString() })
     })
   }
 
@@ -48,7 +48,7 @@ function build (settings) {
     const allowed = target.allowedChars.message
     rules.push({
       test: value => allowedChars.test(value),
-      message: () => i18n.get('login.password.allowedChars', { allowed })
+      message: i18n.reactive('login.password.allowedChars', { allowed })
     })
   }
 
