@@ -1,4 +1,9 @@
 <template name="lesson">
+    {{#onLoaded complete=loadComplete}}
+    {{#with error}}
+        {{> fail error=this}}
+    {{/with}}
+
 	{{#with lessonDoc}}
         <div class="d-block text-center">
             {{> lessonStatus lessonDoc=this showLabel=true}}
@@ -42,10 +47,13 @@
             </div>
         </div>
 	{{else}}
-        {{> loading title=(i18n "lesson.title") type="data"}}
+        {{#unless error}}
+            {{> loading title=(i18n "lesson.title") type="data"}}
+        {{/unless}}
 	{{/with}}
 
     {{#if docNotFound}}
         <div class="alert alert-warning">{{i18n "student.lesson.docNotFound"}}</div>
     {{/if}}
+    {{/onLoaded}}
 </template>

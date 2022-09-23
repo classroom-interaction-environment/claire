@@ -12,11 +12,12 @@ const minimalRole = getMinimalRole()
 
 
 export const checkPermissions = function (options) {
-  const exception = options.isPublic
-  if (exception) return options
+  if (options.isPublic) { return options }
 
-  const  { curriculum } = options
-  const  { admin } = options
+  // configurations for this mixins:
+  // curriculum: this call requires user to be a curriculum user
+  // admin: this call requires user to be an admin
+  const  { curriculum, admin } = options
 
   // special permissions can be set by roles and group scopes
   // and they are hierarchical ordered, so a teacher has all roles of a student

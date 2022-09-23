@@ -3,6 +3,7 @@
     "title": "Unterricht",
     "groups": "Meine Gruppen",
     "material": "Unterrichtsmaterial",
-    "about": "Über diesen Unterricht"
+    "about": "Über diesen Unterricht",
+    "notAMember": "Sie sind nicht (oder nicht mehr) Mitglied dieses Kurses."
   }
 }

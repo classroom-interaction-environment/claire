@@ -13,6 +13,7 @@ import { callMethod } from '../../../controllers/document/callMethod'
 import { getCollection } from '../../../../api/utils/getCollection'
 import { getMaterialContexts } from '../../../../contexts/material/initMaterial'
 import { cursor } from '../../../../api/utils/cursor'
+import { formatError } from '../../../../api/errors/both/formatError'
 
 import lessonStudentLanguage from './i18n/lessonStudentLanguage'
 import '../../../components/lesson/status/lessonStatus'
@@ -26,6 +27,7 @@ import './lesson.html'
  * - it loads the corresponding unit docs
  * - It loads necessary material (method),  based on the _ids,
  *    defined in lessonDoc.visibleStudent.
+ * - It handles errors during loading in a user-friendly way
  */
 
 const API = Template.lesson.setDependencies({
@@ -47,6 +49,11 @@ const toMaterial = reference => {
 Template.lesson.onCreated(function () {
   const instance = this
 
+  instance.displayError = err => {
+    const error = formatError(err)
+    console.debug(error)
+    instance.state.set({ error })
+  }
   // subscribe to the lesson doc, as this changes often
 
   instance.autorun(() => {
@@ -59,15 +66,14 @@ Template.lesson.onCreated(function () {
       args: { _id: lessonId },
       key: lessonSubKeyStudent,
       callbacks: {
-        onError: err => {
-          if (err.error === 'errors.docNotFound') {
-            instance.state.set('docNotFound', true)
-          }
-        },
+        onError: instance.displayError,
         onReady () {
           const lessonDoc = LessonCollection.findOne(lessonId)
-          instance.state.set('visibleStudent', lessonDoc.visibleStudent)
-          instance.state.set('lessonDoc', lessonDoc)
+
+          if (lessonDoc) {
+            instance.state.set('visibleStudent', lessonDoc.visibleStudent)
+            instance.state.set('lessonDoc', lessonDoc)
+          }
         }
       }
     })
@@ -77,9 +83,7 @@ Template.lesson.onCreated(function () {
       args: { lessonId },
       key: lessonSubKeyStudent,
       callbacks: {
-        onError: err => {
-          console.error(err)
-        },
+        onError: instance.displayError,
         onReady () {
           console.debug('groups loaded')
         }
@@ -104,7 +108,7 @@ Template.lesson.onCreated(function () {
       visibleStudent,
       prepare: () => instance.state.set('loadingMaterials', true),
       receive: () => instance.state.set('loadingMaterials', false),
-      failure: err => API.fatal(err),
+      failure: instance.displayError,
       success: (material, hash) => {
         instance.state.set('materialUpdated', hash)
       }
@@ -129,7 +133,7 @@ Template.lesson.onCreated(function () {
     callMethod({
       name: Lesson.methods.units,
       args: { lessonIds: [lessonDoc._id] },
-      failure: err => API.notify(err),
+      failure: instance.displayError,
       success: unitDocs => {
         unitDocs.forEach(doc => insertUpdate(UnitCollection, doc))
         const unitDoc = UnitCollection.findOne(lessonDoc.unit)
@@ -144,6 +148,12 @@ Template.lesson.onDestroyed(function () {
 })
 
 Template.lesson.helpers({
+  loadComplete() {
+    return API.initComplete()
+  },
+  error () {
+    return Template.getState('error')
+  },
   groups (lessonDoc) {
     return cursor(() => getCollection(Group.name).find({ lessonId: lessonDoc._id }))
   },

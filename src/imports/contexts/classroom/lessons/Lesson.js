@@ -377,6 +377,7 @@ Lesson.publications.single = {
   },
   run: onServerExec(function () {
     import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
+    import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
 
     return function ({ _id }) {
       const { userId } = this
@@ -385,7 +386,7 @@ Lesson.publications.single = {
         lessonId: _id
       })
       if (!isMember && !userIsAdmin(userId)) {
-        throw new Error('errors.permissionDenied')
+        throw new PermissionDeniedError('lesson.notAMember')
       }
 
       return getCollection(Lesson.name).find({ _id }, { limit: 1 })

@@ -2,19 +2,33 @@
     {{#with error}}
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title"><i class="fa fa-fw fa-exclamation-circle text-danger"></i> {{i18n (title this)}}
+                <h5 class="card-title d-flex align-items-center">
+                    {{> icon name="exclamation-circle" fw=true class="text-danger"}}
+                    <span class="ml-2">{{i18n (title this)}}</span>
                 </h5>
                 {{#if this.reason}}
                     <h5>{{i18n 'errors.reason'}}</h5>
                     <p>{{i18n this.reason}}</p>
                 {{/if}}
                 {{#if this.details}}
-                    <h5>{{i18n 'errors.details'}}</h5>
-                    <p>{{stringify this.details}}</p>
-                {{/if}}
-                {{#if ../stack}}
-                    <h5>{{i18n 'errors.stack'}}</h5>
-                    <pre>{{this.stack}}</pre>
+                    <button class="btn btn-outline-secondary"
+                            type="button"
+                            data-toggle="collapse"
+                            data-target="#error-details-collapse"
+                            aria-expanded="false"
+                            aria-controls="error-details-collapse">
+                        {{i18n 'errors.details'}}
+                    </button>
+
+                    <div class="collapse" id="error-details-collapse">
+                        <div class="w-100">
+                            <p>{{stringify this.details}}</p>
+
+                            {{#if this.stack}}
+                                <pre>{{this.stack}}</pre>
+                            {{/if}}
+                        </div>
+                    </div>
                 {{/if}}
                 {{> Template.contentBlock}}
             </div>
