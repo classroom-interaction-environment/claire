@@ -23,12 +23,12 @@
                             data-target=user._id
                             blocked=(removing user._id)
                             class="ml-auto remove-student-button"
-                            title=(i18n "lesson.actions.removeStudent")}}
+                            title=(i18n "actions.remove")}}
                 {{/unless}}
             </li>
         {{else}}
             <li class="list-group-item">
-                {{i18n "common.noentries"}}
+                {{i18n "common.noentries" title=(i18n "schoolClass.students")}}
             </li>
         {{/each}}
     </ul>

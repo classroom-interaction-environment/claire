@@ -10,6 +10,8 @@ import { dataTarget } from '../../utils/dataTarget'
 import { createDashboardFormActions } from './forms/dashboardForms'
 import { asyncTimeout } from '../../../api/utils/asyncTimeout'
 import { loadLessonsForClass } from './common/loadLessonsForClass'
+import { callMethod } from '../../controllers/document/callMethod'
+import { getCollection } from '../../../api/utils/getCollection'
 import { FormModal } from '../../components/forms/modal/formModal'
 import { Unit } from '../../../contexts/curriculum/curriculum/unit/Unit'
 import { Pocket } from '../../../contexts/curriculum/curriculum/pocket/Pocket'
@@ -17,9 +19,9 @@ import { Dimension } from '../../../contexts/curriculum/curriculum/dimension/Dim
 import { LessonStates } from '../../../contexts/classroom/lessons/LessonStates'
 import { ProfileImages } from '../../../contexts/files/image/ProfileImages'
 import dashboardLanguage from './i18n/dashboardLang'
+import '../../components/confirm/confirm'
 import '../../renderer/lesson/list/lessonListRenderer'
 import './dashboard.html'
-import { callMethod } from '../../controllers/document/callMethod'
 
 const API = Template.dashboard.setDependencies({
   contexts: [SchoolClass, Lesson, Users, Pocket, ProfileImages, Dimension],
@@ -28,6 +30,8 @@ const API = Template.dashboard.setDependencies({
 
 const formActions = createDashboardFormActions({ onError: API.notify, translate: API.translate })
 const toDocId = doc => doc._id
+const byTitle = (a, b) => a.title.localeCompare(b.title)
+
 Template.dashboard.onCreated(function () {
   const instance = this
   instance.state.set({
@@ -38,49 +42,103 @@ Template.dashboard.onCreated(function () {
     lessonCounts: {}
   })
 
-  const SchoolClassCollection = getLocalCollection(SchoolClass.name)
-
-  // step 1: load my classes
-  instance.autorun(async () => {
-    const ids = instance.state.get('schoolClassUpdated')
-    const args = {}
-    if (ids) args.ids = ids
-
-    await loadIntoCollection({
-      name: SchoolClass.methods.my,
-      args: args,
-      failure: API.notify,
-      collection: SchoolClassCollection
-    })
-
-    instance.state.set('schoolClassesComplete', true)
-
-    const classIds = ids || SchoolClassCollection.find().map(toDocId)
-    const lessonCounts = await callMethod({
-      name: Lesson.methods.counts,
-      args: { classIds },
-      failure: API.notify
-    })
-
-    instance.state.set({ lessonCounts })
-  })
-
-  // step 2: load all dimensions
+  // load all dimensions, this does not require
+  // live updates, so we load them statically
   loadIntoCollection({
     name: Dimension.methods.all,
     failure: API.notify,
     collection: getLocalCollection(Dimension.name)
   })
+
+  // we need live updates on classes, for example
+  // when managing users or adding/removing them
+  API.subscribe({
+    name: SchoolClass.publications.my,
+    key: 'dashboardSubKey',
+    callbacks: {
+      onError: API.fatal
+    }
+  })
+
+  // when a classDoc is active then we have subscribed to it
+  // which is why we need to
+  instance.autorun(async () => {
+    const classId = instance.state.get('classId')
+    const classDoc = classId && getCollection(SchoolClass.name).findOne(classId)
+
+    if (!classId || typeof classDoc !== 'object') {
+      // unset / cleanup
+      return
+    }
+
+    const UsersCollection = getLocalCollection(Users.name)
+    const students = classDoc?.students || []
+    const args = { classId: classDoc }
+
+    const skip = students.filter(studentId => UsersCollection.find(studentId).count())
+    if (skip.length > 0) {
+      args.skip = skip
+    }
+
+    if (students.length > 0 && skip.length !== students.length) {
+      await loadIntoCollection({
+        name: Users.methods.byClass,
+        args: { classId, skip },
+        collection: UsersCollection,
+        failure: API.notify
+      })
+    }
+
+    // we create a light version of the class doc to pass
+    // it to the user renderer in the modal
+    const { teachers, title } = classDoc
+    const showStudents = { _id: classId, title }
+    const sort = { 'presence.status': -1, lastName: 1 }
+
+    showStudents.students = students && UsersCollection.find(
+      { _id: { $in: students } },
+      { sort }).fetch()
+    showStudents.teachers = teachers && UsersCollection.find(
+      { _id: { $in: teachers } },
+      { sort }).fetch()
+
+    // show modal already here
+    instance.state.set({ showStudents })
+
+    // optional: load profile images
+    const ProfileImagesCollection = getLocalCollection(ProfileImages.name)
+    const skipProfileImages = []
+    const userProfileImages = []
+    showStudents.students.concat(showStudents.teachers).forEach(userDoc => {
+      if (userDoc.profileImage) {
+        userProfileImages.push(userDoc.profileImage)
+      }
+      if (ProfileImagesCollection.find(userDoc.profileImage).count()) {
+        skipProfileImages.push(userDoc.profileImage)
+      }
+    })
+
+    if (userProfileImages.length > 0 && skipProfileImages.length !== userProfileImages.length) {
+      const profileImageArgs = { classId }
+      if (skipProfileImages.length > 0) {
+        profileImageArgs.skip = skipProfileImages
+      }
+
+      await loadIntoCollection({
+        name: ProfileImages.methods.byClass,
+        args: profileImageArgs,
+        collection: getLocalCollection(ProfileImages.name),
+        failure: API.notify
+      })
+    }
+  })
 })
-const byTitle = (a, b) => a.title.localeCompare(b.title)
-
-
 
 Template.dashboard.helpers({
   classes () {
     const selector = { createdBy: Meteor.userId() }
     const options = { sort: byTitle }
-    return getLocalCollection(SchoolClass.name).find(selector, options)
+    return getCollection(SchoolClass.name).find(selector, options)
   },
   lessonsLoaded (classId) {
     return Template.getState('lessonsLoaded')[classId]
@@ -151,9 +209,9 @@ Template.dashboard.helpers({
 })
 
 Template.dashboard.onDestroyed(function () {
-  getLocalCollection(SchoolClass.name).remove({})
   getLocalCollection(Lesson.name).remove({})
   getLocalCollection(Unit.name).remove({})
+  API.dispose('dashboardSubKey')
 })
 
 Template.dashboard.events({
@@ -166,72 +224,13 @@ Template.dashboard.events({
   'click .toggle-students-button': async (event, templateInstance) => {
     event.preventDefault()
     API.showModal('showStudentsModal')
-
-    const classId = dataTarget(event, templateInstance)
-    const classDoc = getLocalCollection(SchoolClass.name).findOne(classId)
-
-    const UsersCollection = getLocalCollection(Users.name)
-    const students = classDoc?.students || []
-    const args = { classId }
-
-    const skip = students.filter(studentId => UsersCollection.find(studentId).count())
-    if (skip.length > 0) {
-      args.skip = skip
-    }
-
     await import('../../renderer/user/list/userListRenderer')
-
-    if (students.length > 0 && skip.length !== students.length) {
-      await loadIntoCollection({
-        name: Users.methods.byClass,
-        args: { classId, skip },
-        collection: UsersCollection,
-        failure: API.notify
-      })
-    }
-
-    // we create a light version of the class doc to pass
-    // it to the user renderer in the modal
-    const { teachers, title } = classDoc
-    const showStudents = { title }
-    const sort = { 'presence.status': -1, lastName: 1 }
-
-    showStudents.students = students && UsersCollection.find(
-      { _id: { $in: students } },
-      { sort }).fetch()
-    showStudents.teachers = teachers && UsersCollection.find(
-      { _id: { $in: teachers } },
-      { sort }).fetch()
-
-    // show modal already here
-    templateInstance.state.set({ showStudents })
-
-    // optional: load profile images
-    const ProfileImagesCollection = getLocalCollection(ProfileImages.name)
-    const skipProfileImages = []
-    const userProfileImages = []
-    showStudents.students.concat(showStudents.teachers).forEach(userDoc => {
-      if (userDoc.profileImage) {
-        userProfileImages.push(userDoc.profileImage)
-      }
-      if (ProfileImagesCollection.find(userDoc.profileImage).count()) {
-        skipProfileImages.push(userDoc.profileImage)
-      }
-    })
-
-    if (userProfileImages.length > 0 && skipProfileImages.length !== userProfileImages.length) {
-      const profileImageArgs = { classId }
-      if (skipProfileImages.length > 0) {
-        profileImageArgs.skip = skipProfileImages
-      }
-
-      await loadIntoCollection({
-        name: ProfileImages.methods.byClass,
-        args: profileImageArgs,
-        collection: getLocalCollection(ProfileImages.name),
-        failure: API.notify
-      })
-    }
+    const classId = dataTarget(event, templateInstance)
+    templateInstance.state.set({ classId })
+  },
+  'hidden.bs.modal #showStudentsModal' (event, templateInstance) {
+    API.unsubscribe(SchoolClass.publications.single)
+    templateInstance.state.set('classId', null)
   },
   // ------------------------------------------------------------------------------------------------------
   // INVITATION

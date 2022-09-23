@@ -7,4 +7,9 @@ import { i18n } from './language'
  *  code: String
  * }}
  */
-export const currentLanguage = () => i18n.getSetting('current')
+export const currentLanguage = () => {
+  if (!i18n.initialized()) {
+    return null
+  }
+  return i18n.getSetting('current')
+}

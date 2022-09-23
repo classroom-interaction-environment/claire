@@ -9,6 +9,7 @@ import { callMethod } from '../../../controllers/document/callMethod'
 import { loadIntoCollection } from '../../../../infrastructure/loading/loadIntoCollection'
 import { loadLessonsForClass } from '../common/loadLessonsForClass'
 import { loadSelectableUnits } from '../../../../contexts/curriculum/loadSelectableUnits'
+import { getCollection } from '../../../../api/utils/getCollection'
 
 export const createDashboardFormActions = ({ onError, translate }) => {
   const formActions = {}
@@ -27,7 +28,7 @@ export const createDashboardFormActions = ({ onError, translate }) => {
         if (!this.isSet) {
           return ErrorTypes.REQUIRED
         }
-        else if (getLocalCollection(SchoolClass.name).findOne({ title: this.value })) {
+        else if (getCollection(SchoolClass.name).findOne({ title: this.value })) {
           return ErrorTypes.VALUE_EXISTS
         }
       }
@@ -103,6 +104,9 @@ export const createDashboardFormActions = ({ onError, translate }) => {
   formActions[SchoolClass.name].update = {
     action: 'update',
     schema: createClassSchema,
+    doc({ _id }) {
+      return getCollection(SchoolClass.name).findOne(_id)
+    },
     onSubmit: async prams => {
       const { _id, doc } = prams
       const name = SchoolClass.methods.update
@@ -110,11 +114,6 @@ export const createDashboardFormActions = ({ onError, translate }) => {
       const options = { name, args }
       const updated = await callMethod(options)
       return updated ? [_id] : []
-    },
-    onClosed: ({ successful, result, templateInstance }) => {
-      if (successful) {
-        templateInstance.state.set({ schoolClassUpdated: result })
-      }
     }
   }
 
@@ -133,7 +132,6 @@ export const createDashboardFormActions = ({ onError, translate }) => {
           renderer: {
             template: 'lessonListRenderer',
             data: doc => {
-              console.debug('get renderer data', doc)
               return {
                 lesson: doc,
                 showIcon: true,
@@ -152,7 +150,7 @@ export const createDashboardFormActions = ({ onError, translate }) => {
       await loadLessonsForClass({ classId, onError })
     },
     doc: ({ classId }) => {
-      const classDoc = getLocalCollection(SchoolClass.name).findOne(classId)
+      const classDoc = getCollection(SchoolClass.name).findOne(classId)
       const lessons = getLocalCollection(Lesson.name)
         .find({ classId }, { sort: { startedAt: -1, updatedAt: -1 } })
         .fetch()
@@ -170,11 +168,6 @@ export const createDashboardFormActions = ({ onError, translate }) => {
       const removed = await callMethod(options)
       if (removed) {
         return _id
-      }
-    },
-    onClosed: ({ successful, result, templateInstance }) => {
-      if (successful) {
-        getLocalCollection(SchoolClass.name).remove(result)
       }
     }
   }
@@ -202,7 +195,7 @@ export const createDashboardFormActions = ({ onError, translate }) => {
     doc: ({ lessonId, classId }) => {
       const lessonDoc = getLocalCollection(Lesson.name).findOne(lessonId)
       const unitDoc = getLocalCollection(Unit.name).findOne(lessonDoc.unit)
-      const classDoc = getLocalCollection(SchoolClass.name).findOne(classId)
+      const classDoc = getCollection(SchoolClass.name).findOne(classId)
       const pocketDoc = getLocalCollection(Pocket.name).findOne(unitDoc.pocket)
       return {
         class: classDoc.title,
