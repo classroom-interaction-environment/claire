@@ -608,8 +608,16 @@ Lesson.methods.complete = {
       if (!LessonStates.canComplete(lessonDoc)) {
         throw new Meteor.Error('lesson.errors.unexpectedState', 'lesson.errors.expectedRunning')
       }
+
+      // this is our indicator for the lesson being completed
       const completedAt = new Date()
-      return !!updateLesson.call(this, _id, { $set: { completedAt } })
+
+      // we also unset all visible materials, to prevent any runtime issues
+      // with current opened materials on the student views, that could arise
+      // during the state changing from running to completed
+      const visibleStudent = []
+
+      return !!updateLesson.call(this, _id, { $set: { completedAt, visibleStudent } })
     }
 
     return completeLesson

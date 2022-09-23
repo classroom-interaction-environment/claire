@@ -67,12 +67,12 @@ Template.taskRenderer.onCreated(function () {
 
   instance.autorun(function () {
     const data = Template.currentData()
+    API.log('autorun')
     const { data: task } = data
     const { isComplete } = data
 
-    if (!task) {
-      return
-    }
+
+    if (!task) { return }
 
     check(data.isComplete, Match.Maybe(Boolean))
     check(data.page, Match.Maybe(Number))
@@ -99,6 +99,18 @@ Template.taskRenderer.onCreated(function () {
       taskId,
       isEditable
     })
+  })
+
+  // XXX: this is a workaround to prevent premature rendering
+  // due to page changes, which causes the "old" elements being rendered on the "new" page
+  // which then causes a cascade of errors, due to false lookups.
+  // It works by simply setting a 'pageChanged' flag to true on every page change,
+  // which in turn causes the elements to be removed from screen.
+  // After a short delay we unset this flag to place the elements on the screen
+  // with the new values.
+  instance.autorun(() => {
+    instance.state.get('current')
+    setTimeout(() => instance.state.set('pageChanged', false), 300)
   })
 })
 
@@ -156,7 +168,10 @@ Template.taskRenderer.helpers({
   hasPrev () {
     return Template.getState('current') > 0
   },
-  attributes (data) {
+  pageChanged () {
+    return Template.getState('pageChanged')
+  },
+  attributes (element) {
     const instance = Template.instance()
     const preview = instance.state.get('preview')
     const isEditable = instance.state.get('isEditable')
@@ -165,8 +180,9 @@ Template.taskRenderer.helpers({
     const taskId = instance.state.get('taskId')
     const groupId = instance.state.get('groupId')
     const lessonId = instance.state.get('lessonId')
-    const page = Template.getState('current') || instance.data.page || 0
-    const atts = Object.assign({}, data, {
+    const page = instance.state.get('current') || instance.data.page || 0
+
+    return Object.assign({}, element, {
       preview,
       isEditable,
       complete: isComplete,
@@ -181,7 +197,6 @@ Template.taskRenderer.helpers({
       onLinkPreview: handlers.onLinkPreview,
       hasUnsavedData: handlers.hasUnsavedData
     })
-    return atts
   },
   taskComplete () {
     return Template.getState('taskComplete')
@@ -253,7 +268,10 @@ Template.taskRenderer.events({
       unsaved.clear()
 
       // update view
-      templateInstance.state.set('current', newPage)
+      templateInstance.state.set({
+        current: newPage,
+        pageChanged: true
+      })
     })
   },
 
@@ -282,7 +300,10 @@ Template.taskRenderer.events({
       unsaved.clear()
 
       // Update view
-      templateInstance.state.set('current', newPage)
+      templateInstance.state.set({
+        current: newPage,
+        pageChanged: true
+      })
     })
   },
 

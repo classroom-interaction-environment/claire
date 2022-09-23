@@ -3,9 +3,7 @@
         {{#unless initialized type meta}}
             {{> loading}}
         {{else}}
-            {{> Template.dynamic
-                    template=(template type meta)
-                    data=attributes}}
+            {{> Template.dynamic template=(template type meta) data=attributes}}
         {{/unless}}
         <not-supported type="{{type}}" meta="{{meta}}"></not-supported>
     {{/if}}

@@ -8,7 +8,6 @@ const forminitialized = Form.initialized()
 
 Template.caroForm.onRendered(function () {
   const instance = this
-  console.debug(instance.data)
   const schema = instance.data.schema._schema
 
   const autofocus = Object.keys(schema).find(key => {

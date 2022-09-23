@@ -21,7 +21,6 @@ Template.TaskRendererFactory.onCreated(function () {
     const { type, meta } = data
     const target = getTarget(type, meta)
     const ctx = TaskDefinitions.helpers.getCategory(target)
-
     const renderer = isMaterial(ctx)
       ? getMaterialRenderer(ctx.material, 'task')
       : ctx.renderer

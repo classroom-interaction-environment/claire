@@ -29,10 +29,10 @@
 			{{! on print preview we want to print all the pages so we}}
 			{{! can print / save the full document at one without further actions}}
 				{{#each all}}
-					<div id="task_container_{{this._id}}" class="task-page-container">
-						{{#each this.content}}
+					<div id="task_container_content_{{currentPage}}" class="task-page-container">
+						{{#each element in this.content}}
 							<div class="task-content border border-secondary my-4" style="break-inside: avoid;">
-								{{> TaskRendererFactory type=this.type attributes=(attributes this)}}
+								{{> TaskRendererFactory type=element.type attributes=(attributes element)}}
 							</div>
 						{{else}}
 							<div class="alert alert-warning my-4">
@@ -44,11 +44,12 @@
 			{{else}}
 			{{! Otherwise we just print single pages that are toggled }}
 			{{! Using the prev and next buttons on the bottom of the task }}
-				{{#with current}}
-					<div id="task_container_{{this._id}}" class="task-page-container">
-						{{#each this.content}}
+                {{#unless pageChanged}}
+				{{#let page=current}}
+					<div id="task_container_content_{{currentPage}}" class="task-page-container">
+						{{#each element in page.content}}
 							<div class="task-content my-0">
-								{{> TaskRendererFactory type=this.type attributes=(attributes this)}}
+								{{> TaskRendererFactory type=element.type attributes=(attributes element page.index)}}
 							</div>
 						{{else}}
 							<div class="alert alert-warning my-4">
@@ -56,7 +57,8 @@
 							</div>
 						{{/each}}
 					</div>
-				{{/with}}
+				{{/let}}
+                {{/unless}}
 			{{/if}}
 
 			<div class="my-4">
