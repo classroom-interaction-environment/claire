@@ -192,13 +192,13 @@ Template.lessonMaterial.helpers({
   },
   previewData () {
     const templateInstance = Template.instance()
-    const previewData = templateInstance.getState('previewData')
-    const materialDoc = templateInstance.getState('previewTarget')
+    const previewData = templateInstance.state.get('previewData')
+    const materialDoc = templateInstance.state.get('previewTarget')
 
     if (!materialDoc || !previewData) return
 
     const options = {}
-    options.print = !!templateInstance.getState('print')
+    options.print = !!templateInstance.state.get('print')
 
     // we need to assign the data in the helper, because
     // passing this to a ReactiveDict will destroy any
