@@ -309,6 +309,7 @@ Template.task.onCreated(function () {
       key: taskSubKey,
       callbacks: {
         onReady () {
+          instance.state.set('taskSubscribed', true)
           instance.state.set('taskResultsReady', true)
         },
         onError (loadingError) {
@@ -391,5 +392,8 @@ Template.task.helpers({
 })
 
 Template.task.onDestroyed(function () {
-  API.dispose(taskSubKey)
+  const instance = this
+  if (instance.state.get('taskSubscribed')) {
+    API.dispose(taskSubKey)
+  }
 })
