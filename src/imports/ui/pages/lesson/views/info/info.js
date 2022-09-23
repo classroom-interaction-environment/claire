@@ -35,6 +35,10 @@ Template.lessonInfo.onCreated(function () {
     }
   })
 
+  instance.onStudentRemove = (options) => {
+    API.log('on student removed', options)
+  }
+
   const materialOptions = (instance.data.unassociatedMaterial || [])
     .concat(phaseMaterial)
     .map(({ collection, document }) => {
@@ -65,19 +69,28 @@ Template.lessonInfo.onCreated(function () {
     API.hideModal('manageGroupModal')
     API.notify(true)
   }
+
+  instance.autorun(() => {
+    const { classDoc } = Template.currentData()
+    if (!classDoc) { return }
+    const students = Meteor.users.find({ _id: { $in: classDoc.students ?? [] }}).fetch()
+    instance.state.set({ students })
+  })
 })
 
 Template.lessonInfo.helpers({
   loadComplete () {
     return API.initComplete()
   },
+  onRemove () {
+    return Template.instance().onStudentRemove
+  },
   canRestart () {
     const { lessonDoc } = Template.instance().data
     return LessonStates.canRestart(lessonDoc)
   },
   studentsForLesson () {
-    const { classDoc } = Template.instance().data
-    return classDoc.students && classDoc.students.map(userId => Meteor.users.findOne(userId))
+    return Template.getState('students')
   },
   classDoc () {
     return Template.instance().data.classDoc

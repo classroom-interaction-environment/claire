@@ -15,7 +15,7 @@ import { getMaterialContexts } from '../../../../contexts/material/initMaterial'
 import { cursor } from '../../../../api/utils/cursor'
 import { formatError } from '../../../../api/errors/both/formatError'
 
-import lessonStudentLanguage from './i18n/lessonStudentLanguage'
+import lessonStudentLanguage from '../i18n/lessonStudentLanguage'
 import '../../../components/lesson/status/lessonStatus'
 import './views/material/lessonMaterial'
 import './lesson.html'

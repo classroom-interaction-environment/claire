@@ -38,7 +38,7 @@ const API = Template.lesson.setDependencies({
 })
 
 const LessonCollection = getCollection(Lesson.name)
-const SchoolClassCollection = getLocalCollection(SchoolClass.name)
+const SchoolClassCollection = getCollection(SchoolClass.name)
 const UsersCollection = getLocalCollection(Users.name)
 
 Template.lesson.onCreated(function () {
@@ -52,12 +52,10 @@ Template.lesson.onCreated(function () {
   // We will subscribe to documents, that often change:
   //
   // - lessonDoc
+  // - classDoc
   // - users
   // - profile images
   // - task working states (progress for edited tasks)
-  //
-  // Optional:
-  // - classDoc, only if a pending invitations exist
   //
   // ============================================================================
 
@@ -110,6 +108,29 @@ Template.lesson.onCreated(function () {
     })
   })
 
+
+  // classDoc
+
+  instance.autorun(() => {
+    const lessonDoc = instance.state.get('lessonDoc')
+    if (!lessonDoc) return
+
+    const { classId } = lessonDoc
+
+    API.subscribe({
+      name: SchoolClass.publications.single,
+      args: { _id: classId },
+      key: lessonSubKey,
+      callbacks: {
+        onError,
+        onReady () {
+          const classDoc = SchoolClassCollection.findOne(classId)
+          instance.state.set({ classDoc })
+        }
+      }
+    })
+  })
+
   // ============================================================================
   // METHOD CALLS
   //
@@ -120,31 +141,8 @@ Template.lesson.onCreated(function () {
   // - phases
   // - material
   //
-  // Optional:
-  // - classDoc, only if NO pending invitations exist
-  //
   // ============================================================================
 
-  // classDoc
-
-  instance.autorun(() => {
-    const lessonDoc = instance.state.get('lessonDoc')
-    if (!lessonDoc) return
-
-    const { classId } = lessonDoc
-
-    loadIntoCollection({
-      name: SchoolClass.methods.get,
-      collection: SchoolClassCollection,
-      args: { _id: classId },
-      failure: API.notify,
-      success: () => {
-        const classDoc = SchoolClassCollection.findOne(classId)
-        API.log({ classDoc })
-        instance.state.set({ classDoc })
-      }
-    })
-  })
 
   // users
 

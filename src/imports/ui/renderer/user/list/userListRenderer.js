@@ -25,7 +25,7 @@ Template.userListRenderer.events({
     event.preventDefault()
     const classDoc = templateInstance.data.classDoc
     const classId = classDoc._id
-    const users = templateInstance.data.users
+    const users = templateInstance.data.users ?? []
     const studentId = dataTarget(event, templateInstance)
     const user = users.find(entry => entry._id === studentId)
     const text = 'lesson.actions.confirmRemoveStudent'
@@ -35,7 +35,8 @@ Template.userListRenderer.events({
       title: classDoc.title
     }
 
-    confirmDialog({ text, textOptions })
+    const dialogOptions = { text, textOptions, codeRequired: true, type: 'danger' }
+    confirmDialog(dialogOptions)
       .then(result => {
         if (!result) return
 

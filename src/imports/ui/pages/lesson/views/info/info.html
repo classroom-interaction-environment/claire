@@ -114,7 +114,7 @@
         {{! =============================================================== }}
         {{#with studentsForLesson}}
             <h3 class="mt-4">{{i18n "users.title"}}</h3>
-            {{> userListRenderer users=this classDoc=classDoc class="my-4" liClass="border-0"}}
+            {{> userListRenderer users=this classDoc=classDoc class="my-4" liClass="border-0" onRemove=onRemove}}
         {{else}}
             <div class="jumbotron my-4">
                 <p>{{i18n "lesson.noStudents"}}</p>

@@ -12,14 +12,15 @@ import { insertUpdate } from '../../../../api/utils/insertUpdate'
 import { getLocalCollection } from '../../../../infrastructure/collection/getLocalCollection'
 import { createDebugLog } from '../../../../api/log/createLog'
 import { $nin } from '../../../../api/utils/query/notInSelector'
-
+import { getCollection } from '../../../../api/utils/getCollection'
+import lessonStudentLanguage from '../i18n/lessonStudentLanguage'
 import '../../../components/lesson/status/lessonStatus'
 import './lessons.html'
-import { getCollection } from '../../../../api/utils/getCollection'
 
 const warn = createDebugLog('Lessons', 'warn')
 const API = Template.lessons.setDependencies({
-  contexts: [SchoolClass, Lesson, Unit]
+  contexts: [SchoolClass, Lesson, Unit],
+  language: lessonStudentLanguage
 })
 
 const SchoolClassCollection = getCollection(SchoolClass.name)
@@ -40,7 +41,7 @@ Template.lessons.onCreated(function () {
       name: SchoolClass.publications.my,
       key: 'lessons',
       callbacks: {
-        onError: er => API.fatal(er),
+        onError: API.fatal,
         onReady () {
           // get the current class, unless there is no
           // current class set, then set it as current class
@@ -56,14 +57,14 @@ Template.lessons.onCreated(function () {
               CurrentClass.set(classDoc._id)
               updateClassId({ user, classId })
             }
-
             else {
-              API.notify(new Error('lesson.student.noClassesFound'))
             }
           }
 
+          const classCount = SchoolClassCollection.find().count()
           instance.state.set('classDoc', classDoc)
-          instance.state.set('hasMoreClasses', SchoolClassCollection.find().count() > 1)
+          instance.state.set('hasMoreClasses', classCount > 1)
+          instance.state.set('hasNoClasses', !classDoc && classCount === 0)
           instance.state.set('schoolClassesReady', true)
         }
       }
@@ -88,7 +89,7 @@ Template.lessons.onCreated(function () {
       key: 'lessons',
       callbacks: {
         onReady: () => instance.state.set('lessonReady', true),
-        onError: er => API.fatal(er)
+        onError: API.fatal
       }
     })
   })
@@ -151,6 +152,9 @@ Template.lessons.helpers({
   },
   hasMoreClasses () {
     return Template.getState('hasMoreClasses')
+  },
+  hasNoClasses () {
+    return Template.getState('hasNoClasses')
   },
   nonCurrentClasses () {
     const classDoc = Template.getState('classDoc')

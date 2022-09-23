@@ -4,6 +4,7 @@
     "groups": "Meine Gruppen",
     "material": "Unterrichtsmaterial",
     "about": "Über diesen Unterricht",
-    "notAMember": "Sie sind nicht (oder nicht mehr) Mitglied dieses Kurses."
+    "notAMember": "Sie sind nicht (oder nicht mehr) Mitglied dieses Kurses.",
+    "studentNoClasses": "Sie sind zur Zeit keinem Kurs zugeordnet."
   }
 }

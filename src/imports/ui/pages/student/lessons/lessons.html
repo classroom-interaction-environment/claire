@@ -2,8 +2,11 @@
     {{#unless loadComplete}}
         {{> loading title=(i18n "lessons.title")}}
     {{else}}
-
-        {{#if hasMoreClasses}}
+        {{#if hasNoClasses}}
+            <div class="alert alert-warning">
+                {{i18n "lesson.studentNoClasses"}}
+            </div>
+        {{else if hasMoreClasses}}
             <select class="form-control current-class-select">
                 {{#with currentClass}}
                     <option value="{{this._id}}">{{this.title}}</option>
@@ -15,26 +18,27 @@
         {{else}}
             {{#with currentClass}}
                 <div class="d-block text-center">{{this.title}}</div>
-            {{else}}
-                <div class="alert alert-warning">
-                    {{i18n "schoolClass.studentNoClasses"}}
-                </div>
             {{/with}}
         {{/if}}
 
-        <h6 class="text-center text-muted my-4">{{i18n "lessons.studentRunning"}}</h6>
 
-        {{#with runningLessons}}
-            {{> lessonListRendererSimple lessons=this liclass="bg-primary text-white"}}
-        {{else}}
-            {{> nodocs}}
-        {{/with}}
+    {{! if there is at least a single class that this student is member of
+        then we display it's running lessons as well as completed ones }}
+        {{#unless hasNoClasses}}
+            <h6 class="text-center text-muted my-4">{{i18n "lessons.studentRunning"}}</h6>
 
-        {{! in contrast to running lessons we will not display a "no docs" listing }}
-        {{#with completedLessons}}
-            <h6 class="text-center text-muted my-4">{{i18n "lessons.studentCompleted"}}</h6>
-            {{> lessonListRendererSimple lessons=this}}
-        {{/with}}
+            {{#with runningLessons}}
+                {{> lessonListRendererSimple lessons=this liclass="bg-primary text-white"}}
+            {{else}}
+                {{> nodocs}}
+            {{/with}}
+
+            {{! in contrast to running lessons we will not display a "no docs" listing }}
+            {{#with completedLessons}}
+                <h6 class="text-center text-muted my-4">{{i18n "lessons.studentCompleted"}}</h6>
+                {{> lessonListRendererSimple lessons=this}}
+            {{/with}}
+        {{/unless}}
     {{/unless}}
 
     {{#with loadErrors}}

@@ -8,19 +8,22 @@
                     {{#if user.lastName}}
                         {{user.lastName}}
                     {{else}}
-                        <i class="fa fa-fw fa-spinner fa-pulse"></i>
+                        {{> icon fw=true name="spinner" pulse=true }}
                     {{/if}},
                 </span>
                 <span class="mx-1">
                     {{#if user.firstName}}
                         {{user.firstName}}
                     {{else}}
-                        <i class="fa fa-fw fa-spinner fa-pulse"></i>
+                        {{> icon fw=true name="spinner" pulse=true }}
                     {{/if}}
                 </span>
                 {{#unless isCurrentUser user._id}}
-                    {{> actionButton icon="times" type="outline-danger" data-target=user._id blocked=(removing user._id)
-                            class="ml-auto remove-student-button" title=(i18n "lesson.actions.removeStudent")}}
+                    {{> actionButton icon="times" type="outline-danger"
+                            data-target=user._id
+                            blocked=(removing user._id)
+                            class="ml-auto remove-student-button"
+                            title=(i18n "lesson.actions.removeStudent")}}
                 {{/unless}}
             </li>
         {{else}}
