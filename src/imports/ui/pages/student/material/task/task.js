@@ -18,10 +18,10 @@ import { getCollection } from '../../../../../api/utils/getCollection'
 import { callMethod } from '../../../../controllers/document/callMethod'
 import { loadIntoCollection } from '../../../../../infrastructure/loading/loadIntoCollection'
 import taskLanguage from './i18n/taskLanguage'
+import { LessonStates } from '../../../../../contexts/classroom/lessons/LessonStates'
 import '../../../../../contexts/curriculum/curriculum/task/renderer/main/taskRenderer'
 import '../../../../components/lesson/status/lessonStatus'
 import './task.html'
-import { LessonStates } from '../../../../../contexts/classroom/lessons/LessonStates'
 
 /* This is the student task template where students will work on the task
  * Material.

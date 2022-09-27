@@ -12,7 +12,7 @@ import { loadIntoCollection } from '../../../../../infrastructure/loading/loadIn
 import './media.html'
 
 const API = Template.media.setDependencies({
-  contexts: [Lesson].concat(getMaterialContexts())
+  contexts: [Lesson, Group].concat(getMaterialContexts())
 })
 
 const init = WebResources.initialize()
@@ -83,17 +83,31 @@ Template.media.onCreated(function () {
     const data = Template.currentData()
     const { type } = data.params
     const { params } = data
-    const { lessonId, mediaId } = params
+    const { lessonId, mediaId, groupId } = params
     const lessonDoc = instance.state.get('lessonDoc')
+    const groupSubReady = instance.state.get('groupSubReady')
 
-    if (!lessonId || !mediaId || !lessonDoc) {
+    if (!lessonId || !mediaId || !lessonDoc || !groupSubReady) {
       return
     }
 
     // fail with docNotVisible in case this material has been removed
     // from the visibleStudents list
     const byMediaId = ref => ref._id === mediaId
-    if (!lessonDoc.visibleStudent?.length || !lessonDoc.visibleStudent.find(byMediaId)) {
+
+    // check if mediaId is still within visible fields
+    const isVisible = mediaId &&
+      lessonDoc &&
+      lessonDoc.visibleStudent &&
+      lessonDoc.visibleStudent.find(byMediaId)
+
+    const groupDoc = getCollection(Group.name).findOne(groupId)
+    const isGroupVisible = groupDoc &&
+      groupDoc.visible &&
+      groupDoc.visible.find(byMediaId)
+
+    if (!isVisible && !isGroupVisible) {
+
       return instance.state.set({
         mediaDoc: null,
         materialLoaded: true,
@@ -122,14 +136,20 @@ Template.media.onCreated(function () {
     }
 
     else {
+      // we need to merge visibilities to ensure it's
+      // all loaded down to group-level
+      const allVisible = (lessonDoc.visibleStudent || []).concat(groupDoc?.visible || [])
+
       loadStudentMaterial({
         _id: lessonDoc._id,
-        visibleStudent: lessonDoc.visibleStudent,
+        visibleStudent: allVisible,
+        groupId: groupDoc ? groupDoc._id : undefined,
         prepare: () => instance.state.set('loadingMaterials', true),
         receive: () => instance.state.set('loadingMaterials', false),
         failure: err => API.fatal(err),
         success: () => {
           mediaDoc = WebResourceCollection.findOne(mediaId)
+          API.log({ mediaId, mediaDoc, all: WebResourceCollection.find().fetch() })
           instance.state.set({
             mediaDoc: mediaDoc,
             mediaType: type,
