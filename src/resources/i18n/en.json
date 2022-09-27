@@ -675,6 +675,7 @@
   },
   "literature": {
     "title": "Literature",
+    "subTitle": "Subtitle",
     "authors": "Author(s)",
     "year": "Year",
     "issue": "Issue",
@@ -1192,6 +1193,7 @@
     "title": "Files",
     "image": "Image",
     "audio": "Audio",
+    "multiple": "Upload multiple files",
     "document": "Document",
     "documents": "Documents",
     "noPDF": "EMbedded PDF is not supported by your browser",

@@ -3,6 +3,7 @@ import { Tracker } from 'meteor/tracker'
 import { check, Match } from 'meteor/check'
 import { confirmDialog } from '../../../../../../ui/components/confirm/confirm'
 import { getTaskContexts } from '../../../../../tasks/getTaskContexts'
+import taskrendererLang from './i18n/taskRendererLang'
 import './taskRendererFactory'
 import './taskRenderer.scss'
 import './taskRenderer.html'
@@ -40,7 +41,8 @@ function ensureAllSaved (continueCallback) {
 }
 
 const API = Template.taskRenderer.setDependencies({
-  contexts: getTaskContexts()
+  contexts: getTaskContexts(),
+  language: taskrendererLang
 })
 
 Template.taskRenderer.onCreated(function () {

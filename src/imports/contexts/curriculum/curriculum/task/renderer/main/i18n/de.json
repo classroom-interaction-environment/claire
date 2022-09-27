@@ -1,0 +1,9 @@
+{
+  "groupMode": {
+    "title": "Gruppen-Modus",
+    "off": "Nicht aktiv",
+    "merge": "Antworten werden zusammengeführt",
+    "override": "Eine/r antwortet für die Gruppe",
+    "split": "Jede/r antwortet für sich"
+  }
+}

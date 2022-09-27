@@ -1,0 +1,9 @@
+{
+  "groupMode": {
+    "title": "Groupmode",
+    "off": "Off",
+    "merge": "Merge responses",
+    "override": "One answer overrides all",
+    "split": "Each answers their own"
+  }
+}

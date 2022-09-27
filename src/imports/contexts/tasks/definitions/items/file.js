@@ -35,7 +35,7 @@ export const ItemFileSchema = {
       },
       multiple: {
         type: Boolean,
-        label: translate('common.multiple'),
+        label: translate('files.multiple'),
         optional: true
       }
     }
