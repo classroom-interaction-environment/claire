@@ -426,9 +426,16 @@ Template.taskPageContent.events({
     event.preventDefault()
     const rawIndex = dataTarget(event, templateInstance, 'index')
     const context = dataTarget(event, templateInstance)
-    const index = typeof rawIndex !== 'undefined'
+    let index = typeof rawIndex !== 'undefined'
       ? parseInt(rawIndex, 10)
       : -1
+
+    // if the index is lower than zero,
+    // then we convert it to be "the last element index"
+    if (index === -1) {
+      const currentContent = templateInstance.state.get('currentContent') || []
+      index = currentContent.length
+    }
 
     templateInstance.state.set('addContentIndex', index)
     templateInstance.state.set('addContentCategory', context)
