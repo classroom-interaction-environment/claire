@@ -110,7 +110,6 @@ Template.inviteUsers.helpers({
     const to = (invitationDoc && invitationDoc.firstName && invitationDoc.lastName)
       ? ` ${invitationDoc.firstName} ${invitationDoc.lastName}` // first char needs to be a space! See translation file
       : ''
-    debugger
     const from = `${user.firstName} ${user.lastName}`
     const subject = i18n.get('codeInvitation.emailSubject')
     const body = i18n.get('codeInvitation.emailBody', { to, from, link })

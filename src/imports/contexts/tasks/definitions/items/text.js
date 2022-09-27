@@ -68,6 +68,9 @@ export const ItemTags = {
   dataType: ResponseDataTypes.textList.name,
   edit ({ translate }) {
     return {
+      // uncommented in order to check with other, whether this
+      // is still required
+      /*
       onlyOptions: {
         label: translate('form.onlyOptions'),
         type: Boolean,
@@ -83,6 +86,7 @@ export const ItemTags = {
         label: translate('form.entry'),
         type: String
       },
+      */
       minCount: {
         type: Number,
         label: translate('form.minCount'),

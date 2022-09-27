@@ -116,17 +116,12 @@ Template.lesson.onCreated(function () {
     if (!lessonDoc) return
 
     const { classId } = lessonDoc
-
     API.subscribe({
       name: SchoolClass.publications.single,
       args: { _id: classId },
       key: lessonSubKey,
       callbacks: {
-        onError,
-        onReady () {
-          const classDoc = SchoolClassCollection.findOne(classId)
-          instance.state.set({ classDoc })
-        }
+        onError
       }
     })
   })
@@ -147,10 +142,11 @@ Template.lesson.onCreated(function () {
   // users
 
   instance.autorun(() => {
-    const classDoc = instance.state.get('classDoc')
-    if (!classDoc) return
+    const lessonDoc = instance.state.get('lessonDoc')
+    const classId = lessonDoc?.classId
+    const classDoc = classId && SchoolClassCollection.findOne(classId)
 
-    const classId = classDoc._id
+    if (!classDoc) return
 
     loadIntoCollection({
       name: Users.methods.byClass,
@@ -229,7 +225,6 @@ Template.lesson.helpers({
 
     const instance = Template.instance()
     return instance.state.get('lessonDoc') &&
-      instance.state.get('classDoc') &&
       instance.state.get('usersReady') &&
       instance.state.get('taskWorkingStatesSubReady') &&
       instance.state.get('unitDoc')
@@ -238,7 +233,8 @@ Template.lesson.helpers({
     return Template.getState('unitDoc')
   },
   classDoc () {
-    return Template.getState('classDoc')
+    const lessonDoc = Template.getState('lessonDoc')
+    return lessonDoc && SchoolClassCollection.findOne(lessonDoc.classId)
   },
   lessonDoc () {
     return Template.getState('lessonDoc')
@@ -263,7 +259,7 @@ Template.lesson.helpers({
   currentData () {
     const instance = Template.instance()
     const lessonDoc = instance.state.get('lessonDoc')
-    const classDoc = instance.state.get('classDoc')
+    const classDoc = lessonDoc && SchoolClassCollection.findOne(lessonDoc.classId)
     const unitDoc = instance.state.get('unitDoc')
     const unassociatedMaterial = instance.state.get('unassociatedMaterial')
     return { lessonDoc, classDoc, unitDoc, unassociatedMaterial }
@@ -272,7 +268,7 @@ Template.lesson.helpers({
     const lessonDoc = Template.getState('lessonDoc')
     const toggleInvite = Template.getState('invitationModalVisible')
 
-    if (!toggleInvite || !lessonDoc || !lessonDoc.classId) {
+    if (!toggleInvite || !lessonDoc) {
       return
     }
     const { classId } = lessonDoc

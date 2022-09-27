@@ -23,7 +23,6 @@ Template.userListRenderer.helpers({
 Template.userListRenderer.events({
   'click .remove-student-button' (event, templateInstance) {
     event.preventDefault()
-    debugger
     const classDoc = templateInstance.data.classDoc
     const classId = classDoc._id
     const users = templateInstance.data.users ?? []
