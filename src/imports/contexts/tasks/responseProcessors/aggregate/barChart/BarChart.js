@@ -8,8 +8,8 @@ export const BarChart = {
   isResponseProcessor: true,
   type: ResponseProcessorTypes.aggregate.name,
   dataTypes: [
-    ResponseDataTypes.dichotome.name,
     ResponseDataTypes.numerical.name,
+    ResponseDataTypes.dichotome.name,
     ResponseDataTypes.singleChoice.name,
     ResponseDataTypes.multipleChoice.name
   ],

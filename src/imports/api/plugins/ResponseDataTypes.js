@@ -44,7 +44,7 @@ export const ResponseDataTypes = {
     }
   },
   multiNumerical: {
-    name: ',multiNumerical',
+    name: 'multiNumerical',
     type: Number,
     isArray: true,
     from: function (response) {

@@ -70,16 +70,30 @@ ResponseProcessorRegistry.register = function (context) {
     fileTypeMap.set(fileType, defaultFileType)
   }
 
-  dataTypes.forEach(dataType => {
+  dataTypes.forEach((dataTypeName, index) => {
     // the first entry for a dataType is the default so there will always be a
     // default in case it has not been declared explicitly
-    const defaultType = dataTypeMap.get(dataType) || {
+    const dataType = dataTypeMap.get(dataTypeName) || {
       default: name,
+      defaultIndex: index,
       values: []
     }
 
-    defaultType.values.push(name)
-    dataTypeMap.set(dataType, defaultType)
+    // we allow RPs to define the priority of what they support
+    // the higher the type in the list (the lower the index), the higher the priority
+    // and if it beats the current default then we
+    // - replace the default with the new one
+    // - place the new one in the list as the first one
+    // otherwise we simply add it to the pool at the end
+    if (index < dataType.defaultIndex) {
+      dataType.default = name
+      dataType.defaultIndex = index
+      dataType.values.unshift(name)
+    } else {
+      dataType.values.push(name)
+    }
+
+    dataTypeMap.set(dataTypeName, dataType)
   })
 
   contextsMap.set(name, context)
@@ -123,6 +137,7 @@ ResponseProcessorRegistry.allForDataType = dataType => {
     : dataType
 
   const typeMap = dataTypeMap.get(dataTypeName) || { values: [] }
+  console.debug({dataTypeMap, typeMap})
   const contexts = new Set(typeMap.values.map(toContext))
   contexts.add(RawResponse)
 

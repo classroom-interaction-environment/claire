@@ -3,9 +3,9 @@ import { ResponseProcessorRegistry } from '../../contexts/tasks/responseProcesso
 /**
  * Returns a list of response handlers for a given {InteractionDataType}.
  *
- * @param fileType
- * @param dataType
- * @param handlerType
+ * @param fileType {string} name of the file type
+ * @param dataType {string} one the {ResponseDataTypes} name
+ * @param handlerType {string=} optional filter for certain {type} properties on a given ctx
  * @return {any}
  */
 export const getResponseProcessors = ({ fileType, dataType }, { handlerType } = {}) => {
