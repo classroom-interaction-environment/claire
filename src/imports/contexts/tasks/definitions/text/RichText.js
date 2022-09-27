@@ -10,57 +10,14 @@ export const RichText = {
         autoform: {
           type: 'trix',
           afFieldInput: {
-            autofocus: ''
+            autofocus: '',
+            attachments: false,
+            events: {
+              attachmentAdd: false,
+              attachmentRemove: false,
+              fileAccept: false
+            }
           }
-          /*
-           events: {
-           attachmentAdd ($event) {
-           const { originalEvent } = $event
-           if (originalEvent.attachment && originalEvent.attachment.file) {
-           const { file } = originalEvent.attachment
-           const ImageFilesCollection = getCollection(ImageFiles).filesCollection
-           const opts = Object.assign({}, defaultInsertOpts, { file })
-           const upload = ImageFilesCollection.insert(opts, false)
-
-           upload.on('start', function () {
-           })
-
-           upload.on('error', function (error) {
-           // ctx.addValidationErrors([{name: template.inputName, type: 'uploadError', value: error.reason}]);
-           // template.$(e.currentTarget).val('');
-           console.error(error)
-           })
-
-           upload.on('end', function (error, fileObj) {
-           if (error) {
-           console.error(error)
-           }
-           else {
-           const link = ImageFilesCollection.link(fileObj, 'original')
-           originalEvent.attachment.setUploadProgress(100)
-           originalEvent.attachment.setAttributes({
-           url: link,
-           href: null,
-           _id: fileObj._id
-           })
-           }
-           })
-
-           upload.start()
-           }
-           },
-           attachmentRemove ($event) {
-           const { originalEvent } = $event
-           try {
-           const fileId = originalEvent.attachment.attachment.attributes.values._id
-           const ImageFilesCollection = getCollection(ImageFiles).filesCollection
-           ImageFilesCollection.remove({ _id: fileId })
-           } catch (e) {
-           console.error(e)
-           }
-           }
-           }
-           */
         }
       }
     }
