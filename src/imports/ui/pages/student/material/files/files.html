@@ -6,10 +6,10 @@
             {{> Template.dynamic template=(fileTemplate this.meta) data=(fileResource this)}}
         {{else}}
             <div class="alert alert-warning">
-            <div class="alert-heading text-center">{{i18n "errors.404"}}</div>
-
             {{#if docNotVisible}}
                 <div class="text-center">{{i18n "lesson.student.docNotVisible"}}</div>
+            {{else}}
+                <div class="alert-heading text-center">{{i18n "errors.404"}}</div>
             {{/if}}
             </div>
         {{/with}}

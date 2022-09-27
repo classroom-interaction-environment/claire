@@ -9,10 +9,12 @@ import { getLocalCollection } from '../../../../../infrastructure/collection/get
 import { getCollection } from '../../../../../api/utils/getCollection'
 import { getMaterialContexts } from '../../../../../contexts/material/initMaterial'
 import { loadIntoCollection } from '../../../../../infrastructure/loading/loadIntoCollection'
+import lessonStudentLang from '../../i18n/lessonStudentLanguage'
 import './media.html'
 
 const API = Template.media.setDependencies({
-  contexts: [Lesson, Group].concat(getMaterialContexts())
+  contexts: [Lesson, Group].concat(getMaterialContexts()),
+  language: lessonStudentLang
 })
 
 const init = WebResources.initialize()

@@ -5,6 +5,9 @@
     "material": "Unterrichtsmaterial",
     "about": "Über diesen Unterricht",
     "notAMember": "Sie sind nicht (oder nicht mehr) Mitglied dieses Kurses.",
-    "studentNoClasses": "Sie sind zur Zeit keinem Kurs zugeordnet."
+    "studentNoClasses": "Sie sind zur Zeit keinem Kurs zugeordnet.",
+    "student": {
+      "docNotVisible": "Der Inhalt ist für Sie nicht (mehr) Sichtbar."
+    }
   }
 }

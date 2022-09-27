@@ -9,10 +9,12 @@ import { getFilesLink } from '../../../../../contexts/files/getFilesLink'
 import { getMaterialContexts } from '../../../../../contexts/material/initMaterial'
 import { loadIntoCollection } from '../../../../../infrastructure/loading/loadIntoCollection'
 import { Group } from '../../../../../contexts/classroom/group/Group'
+import lessonStudentLang from '../../i18n/lessonStudentLanguage'
 import './files.html'
 
 const API = Template.files.setDependencies({
-  contexts: [Lesson, Group].concat(getMaterialContexts())
+  contexts: [Lesson, Group].concat(getMaterialContexts()),
+  language: lessonStudentLang
 })
 
 const LessonCollection = getCollection(Lesson.name)
