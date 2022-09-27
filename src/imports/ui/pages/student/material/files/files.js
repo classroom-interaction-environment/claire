@@ -7,10 +7,12 @@ import { getLocalCollection } from '../../../../../infrastructure/collection/get
 import { getCollection } from '../../../../../api/utils/getCollection'
 import { getFilesLink } from '../../../../../contexts/files/getFilesLink'
 import { getMaterialContexts } from '../../../../../contexts/material/initMaterial'
+import { loadIntoCollection } from '../../../../../infrastructure/loading/loadIntoCollection'
+import { Group } from '../../../../../contexts/classroom/group/Group'
 import './files.html'
 
 const API = Template.files.setDependencies({
-  contexts: [Lesson].concat(getMaterialContexts())
+  contexts: [Lesson, Group].concat(getMaterialContexts())
 })
 
 const LessonCollection = getCollection(Lesson.name)
@@ -25,7 +27,7 @@ Template.files.onCreated(function () {
     if (!Meteor.userId()) return
     const data = Template.currentData()
     const { params } = data
-    const { lessonId } = params
+    const { lessonId, groupId } = params
 
     API.subscribe({
       name: Lesson.publications.single,
@@ -39,6 +41,41 @@ Template.files.onCreated(function () {
         }
       }
     })
+
+    // if we have a group we need to sub it
+    if (groupId && groupId !== 'none') {
+      API.subscribe({
+        name: Group.publications.single,
+        args: { groupId },
+        key: 'studentGroupSub',
+        callbacks: {
+          onError: API.fatal,
+          onReady () {
+            setTimeout(() => {
+              const groupDoc = getCollection(Group.name).findOne(groupId)
+              const userId = Meteor.userId()
+              const me = groupDoc.users.find(user => user.userId === userId)
+
+              loadIntoCollection({
+                name: Group.methods.users,
+                args: { groupId },
+                failure: API.notify,
+                collection: getLocalCollection(Meteor.users)
+              })
+
+              if (me.role) {
+                instance.state.set('currentRole', me.role)
+              }
+
+              instance.state.set({ groupDoc, groupSubReady: true })
+            }, 150)
+          }
+        }
+      })
+    }
+    else {
+      instance.state.set('groupSubReady', true)
+    }
   })
 
   // once we have the files initialized we can load
@@ -65,18 +102,31 @@ Template.files.onCreated(function () {
     const { type } = data.params
     const { params } = data
     const { lessonId } = params
-    const { fileId } = params
+    const { fileId, groupId } = params
     const lessonDoc = instance.state.get('lessonDoc')
+    const groupSubReady = instance.state.get('groupSubReady')
 
     // skip if necessray params are not ready
-    if (!lessonId || !fileId || !lessonDoc) {
+    if (!lessonId || !fileId || !lessonDoc || !groupSubReady) {
       return
     }
 
     // fail with docNotVisible in case this material has been removed
     // from the visibleStudents list
     const byFileId = ref => ref._id === fileId
-    if (!lessonDoc.visibleStudent?.length || !lessonDoc.visibleStudent.find(byFileId)) {
+
+    // check if taskId is still within visible fields
+    const isVisible = fileId &&
+      lessonDoc &&
+      lessonDoc.visibleStudent &&
+      lessonDoc.visibleStudent.find(byFileId)
+
+    const groupDoc = getCollection(Group.name).findOne(groupId)
+    const isGroupVisible = groupDoc &&
+      groupDoc.visible &&
+      groupDoc.visible.find(byFileId)
+
+    if (!isVisible && !isGroupVisible) {
       return instance.state.set({
         fileDoc: null,
         materialLoaded: true,
@@ -106,9 +156,11 @@ Template.files.onCreated(function () {
     }
 
     else {
+      const allVisible = (lessonDoc.visibleStudent || []).concat(groupDoc?.visible || [])
       loadStudentMaterial({
         _id: lessonDoc._id,
-        visibleStudent: lessonDoc.visibleStudent,
+        visibleStudent: allVisible,
+        groupId: groupDoc ? groupDoc._id : undefined,
         prepare: () => instance.state.set('loadingMaterials', true),
         receive: () => instance.state.set('loadingMaterials', false),
         failure: err => API.fatal(err),
