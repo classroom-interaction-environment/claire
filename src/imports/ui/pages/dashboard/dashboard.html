@@ -93,8 +93,7 @@
                 {{! =========================================
                         LESSONS FOR EACH CLASS
                         ========================================= --}}
-                <div class="collapse pl-5" id="class-collapse-{{@index}}">
-                    {{#onLoaded complete=(lessonsLoaded schoolClass._id)}}
+                <div class="collapse pl-5" id="class-collapse-{{@index}}" data-class="{{schoolClass._id}}">
                         {{#with (lessons schoolClass._id)}}
                             <ul class="list-group">
                                 {{#each lesson in this}}
@@ -157,7 +156,6 @@
                                     data-class=schoolClass._id
                                     data-action="master"}}
                         </div>
-                    {{/onLoaded}}
                 </div>
             {{else}}
                 <li class="list-group-item">

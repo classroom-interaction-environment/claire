@@ -1,9 +1,9 @@
 import { createMethodFactory } from 'meteor/leaonline:method-factory'
 import { Schema } from '../../api/schema/Schema'
 import { checkPermissions } from '../../api/mixins/checkPermissions'
-import { logMethodRuntimeErrors } from '../../api/mixins/logMethodRuntimeErrors'
+import { logRuntimeEndpoints } from '../../api/mixins/logRuntimeEndpoints'
 
 export const createMethod = createMethodFactory({
   schemaFactory: Schema.create,
-  mixins: [checkPermissions, logMethodRuntimeErrors]
+  mixins: [checkPermissions, logRuntimeEndpoints]
 })

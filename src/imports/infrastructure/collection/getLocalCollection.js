@@ -1,5 +1,6 @@
 import { Mongo } from 'meteor/mongo'
 import { createLog } from '../../api/log/createLog'
+import {assignToWindow} from '../../utils/assignToWindow'
 
 const cache = new Map()
 
@@ -33,5 +34,7 @@ export const getLocalCollection = function (name, { debug } = {}) {
 
   return cache.get(name)
 }
+
+assignToWindow({ getLocalCollection })
 
 const logDebug = createLog({ name: getLocalCollection.name, type: 'debug' })

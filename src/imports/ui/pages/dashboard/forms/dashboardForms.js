@@ -151,7 +151,7 @@ export const createDashboardFormActions = ({ onError, translate }) => {
     },
     doc: ({ classId }) => {
       const classDoc = getCollection(SchoolClass.name).findOne(classId)
-      const lessons = getLocalCollection(Lesson.name)
+      const lessons = getCollection(Lesson.name)
         .find({ classId }, { sort: { startedAt: -1, updatedAt: -1 } })
         .fetch()
 
@@ -193,7 +193,7 @@ export const createDashboardFormActions = ({ onError, translate }) => {
       }
     }),
     doc: ({ lessonId, classId }) => {
-      const lessonDoc = getLocalCollection(Lesson.name).findOne(lessonId)
+      const lessonDoc = getCollection(Lesson.name).findOne(lessonId)
       const unitDoc = getLocalCollection(Unit.name).findOne(lessonDoc.unit)
       const classDoc = getCollection(SchoolClass.name).findOne(classId)
       const pocketDoc = getLocalCollection(Pocket.name).findOne(unitDoc.pocket)
@@ -216,7 +216,7 @@ export const createDashboardFormActions = ({ onError, translate }) => {
     },
     onClosed: ({ successful, result }) => {
       if (successful) {
-        getLocalCollection(Lesson.name).remove(result)
+        getCollection(Lesson.name).remove(result)
       }
     }
   }
@@ -273,7 +273,7 @@ export const createDashboardFormActions = ({ onError, translate }) => {
           loadIntoCollection({
             name: Lesson.methods.my,
             args: { classId, ids: [result.lessonId] },
-            collection: getLocalCollection(Lesson.name),
+            collection: getCollection(Lesson.name),
             failure: onError
           })
 

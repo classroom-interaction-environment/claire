@@ -19,6 +19,7 @@ import { Dimension } from '../../../contexts/curriculum/curriculum/dimension/Dim
 import { LessonStates } from '../../../contexts/classroom/lessons/LessonStates'
 import { ProfileImages } from '../../../contexts/files/image/ProfileImages'
 import dashboardLanguage from './i18n/dashboardLang'
+import { Collapse } from 'bootstrap'
 import '../../components/confirm/confirm'
 import '../../renderer/lesson/list/lessonListRenderer'
 import './dashboard.html'
@@ -42,28 +43,86 @@ Template.dashboard.onCreated(function () {
     lessonCounts: {}
   })
 
-  // load all dimensions, this does not require
-  // live updates, so we load them statically
-  loadIntoCollection({
-    name: Dimension.methods.all,
-    failure: API.notify,
-    collection: getLocalCollection(Dimension.name)
-  })
-
+  // STEP 1
   // we need live updates on classes, for example
   // when managing users or adding/removing them
   API.subscribe({
     name: SchoolClass.publications.my,
     key: 'dashboardSubKey',
     callbacks: {
-      onError: API.fatal
-    }
+      onError: API.fatal,
+      onReady: () => {
+        // After subscription is complete, we load all dimensions
+        // this does not require live updates, so we load them statically.
+        // We do that here in order to prioritize display of classes
+        const DimensionCollection = getLocalCollection(Dimension.name)
+        loadIntoCollection({
+          name: Dimension.methods.all,
+          failure: API.notify,
+          args: { skip: DimensionCollection.find().map(toDocId) },
+          collection: DimensionCollection
+        })
+      }
+    },
   })
 
-  // when a classDoc is active then we have subscribed to it
-  // which is why we need to
-  instance.autorun(async () => {
+  // STEP 2
+  // get initial counts for the lessons from method
+  // so we can display these without subscriptions required
+  instance.autorun(() => {
+    const classIds = getCollection(SchoolClass.name).find().map(toDocId)
+    if (classIds.length === 0) { return }
+
+    // once we got all classes we can call for the lesosn counts
+    callMethod({
+      name: Lesson.methods.counts,
+      args: { classIds },
+      failure: API.notify,
+      success: lessonCounts => instance.state.set({ lessonCounts })
+    })
+  })
+
+  // STEP 3
+  // if a class is opened / extended, we need live updates on the lessons
+  instance.autorun(() => {
     const classId = instance.state.get('classId')
+    const classDoc = classId && getCollection(SchoolClass.name).findOne(classId)
+
+    if (!classId || typeof classDoc !== 'object') {
+      // unset / cleanup
+      instance.state.set('lessonsLoaded', null)
+      API.unsubscribe(Lesson.publications.byClass)
+      return
+    }
+
+    API.subscribe({
+      name: Lesson.publications.byClass,
+      args: { classId },
+      key: 'dashboardSubKey',
+      callbacks: {
+        onError: API.notify,
+        onReady: () => {
+          // at this point we load the units in order to get the titles
+          // and several static definitions of the lessons, such as dimensions, objectives etc.
+          const UnitCollection = getLocalCollection(Unit.name)
+          const ids = getCollection(Lesson.name).find({ classId }).map(lessonDoc => lessonDoc.unit)
+          const skip = UnitCollection.find({ _id: { $in: ids }}).map(toDocId)
+
+          loadIntoCollection({
+            name: Unit.methods.all,
+            args: { ids, skip },
+            failure: API.notify,
+            collection: UnitCollection
+          })
+        }
+      }
+    })
+  })
+
+  // when a students invitation modal is active then we have
+  // to get the users (but no need to subscribe here)
+  instance.autorun(async () => {
+    const classId = instance.state.get('studentsClassId')
     const classDoc = classId && getCollection(SchoolClass.name).findOne(classId)
 
     if (!classId || typeof classDoc !== 'object') {
@@ -141,27 +200,21 @@ Template.dashboard.helpers({
     return getCollection(SchoolClass.name).find(selector, options)
   },
   lessonsLoaded (classId) {
-    return Template.getState('lessonsLoaded')[classId]
+    return Template.getState('lessonsLoaded') === classId
   },
   lessons (classId) {
-    const selector = { createdBy: Meteor.userId(), classId }
+    const selector = { classId }
     const options = { sort: { startedAt: -1, updatedAt: -1 } }
-    const query = () => getLocalCollection(Lesson.name).find(selector, options)
+    const query = () => getCollection(Lesson.name).find(selector, options)
     return cursor(query)
   },
   lessonCount (classId) {
-    const selector = { createdBy: Meteor.userId(), classId }
-    const count = getLocalCollection(Lesson.name).find(selector).count()
-    if (count) {
-      return count
+    const isCurrent = Template.getState('classId') === classId
+    if (isCurrent) {
+      return getCollection(Lesson.name).find({ classId }).count()
     }
-
     const fixedCount = Template.getState('lessonCounts')[classId]
-    if (fixedCount) {
-      return fixedCount
-    }
-
-    return 0
+    return fixedCount ?? 0
   },
   classUsers (classDoc) {
     if (!classDoc || !classDoc.students) {
@@ -226,11 +279,10 @@ Template.dashboard.events({
     API.showModal('showStudentsModal')
     await import('../../renderer/user/list/userListRenderer')
     const classId = dataTarget(event, templateInstance)
-    templateInstance.state.set({ classId })
+    templateInstance.state.set({ studentsClassId: classId })
   },
   'hidden.bs.modal #showStudentsModal' (event, templateInstance) {
-    API.unsubscribe(SchoolClass.publications.single)
-    templateInstance.state.set('classId', null)
+    templateInstance.state.set('studentsClassId', null)
   },
   // ------------------------------------------------------------------------------------------------------
   // INVITATION
@@ -256,20 +308,19 @@ Template.dashboard.events({
   // ------------------------------------------------------------------------------------------------------
   'click .load-lessons': async (event, templateInstance) => {
     const classId = dataTarget(event, templateInstance, 'class')
+    const currentClassId = templateInstance.state.get('classId')
+    const isCurrent = classId && currentClassId === classId
 
-    // only load lessons for a class once
-    if (templateInstance.state.get('lessonsLoaded')[classId]) {
-      return
+    if (currentClassId && !isCurrent) {
+      const target = templateInstance.$(`.collapse[data-class="${currentClassId}"]`)
+      const openCollapse = new Collapse(target.get(0),  { toggle: false })
+      openCollapse.hide()
     }
 
-    await loadLessonsForClass({ classId, onError: API.notify })
-
-    const lessonsLoaded = templateInstance.state.get('lessonsLoaded')
-    lessonsLoaded[classId] = true
-
-    await asyncTimeout(300)
-    templateInstance.state.set({ lessonsLoaded })
-    return true
+    const selectedClass = isCurrent
+      ? { classId: null }
+      : { classId }
+    templateInstance.state.set(selectedClass)
   },
   // ------------------------------------------------------------------------------------------------------
   // FORM
@@ -282,12 +333,13 @@ Template.dashboard.events({
     const lessonId = dataTarget(event, templateInstance, 'lesson')
     const key = dataTarget(event, templateInstance, 'action')
     const definitions = formActions[target][key]
-
     const load = definitions.load
     const _id = dataTarget(event, templateInstance, 'id')
     const doc = definitions.doc
       ? definitions.doc
-      : _id && getLocalCollection(target).findOne(_id)
+      : _id && (
+        getCollection(target).findOne(_id) ||
+        getLocalCollection(target).findOne(_id))
     const { action, schema } = definitions
 
     FormModal.show({

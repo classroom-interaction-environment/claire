@@ -4,22 +4,11 @@ import { checkPermissions } from '../../api/mixins/checkPermissions'
 import { logError } from '../../api/errors/server/logerror'
 import { addErrorDetails } from '../../api/errors/server/addErrorDetails'
 import { createLog } from '../../api/log/createLog'
-
-const logResult = options => {
-  const run = options.run
-  const name = options.name
-  options.run = function (...args) {
-    const cursor = run.apply(this, args)
-    console.debug(name, cursor.count())
-    return cursor
-  }
-
-  return options
-}
+import {logRuntimeEndpoints} from '../../api/mixins/logRuntimeEndpoints'
 
 export const createPublication = createPublicationFactory({
   schemaFactory: Schema.create,
-  mixins: [checkPermissions, logResult],
+  mixins: [checkPermissions, logRuntimeEndpoints],
   onError (publicationRuntimeError) {
     const env = this
     error('runtime error catch in publication [', env._name, ']')

@@ -397,6 +397,30 @@ Lesson.publications.single = {
 }
 
 /**
+ * Publishes all lessons related to a class, where teacher is a member
+ * @roles teacher
+ */
+
+Lesson.publications.byClass = {
+  name: 'lesson.publications.byClass',
+  timeInterval: 1000,
+  numRequests: 20,
+  roles: UserUtils.roles.teacher,
+  schema: {
+    classId: String
+  },
+  run: onServer(function ({ classId }) {
+    const userId = this.userId
+    const classDoc = getCollection(SchoolClass.name).findOne({ _id: classId })
+    const isTeacher = SchoolClass.helpers.isTeacher({ userId, classDoc })
+    this.log({ isTeacher })
+    return isTeacher
+      ? getCollection(Lesson.name).find({ classId })
+      : null
+  })
+}
+
+/**
  * Publishes all lessons related to a class, where student is am member
  * @roles student
  */

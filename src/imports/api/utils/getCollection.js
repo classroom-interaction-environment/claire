@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { Mongo } from 'meteor/mongo'
+import {assignToWindow} from '../../utils/assignToWindow'
 
 const _cache = new Map()
 
@@ -21,3 +22,5 @@ export const getCollection = function (contextOrName) {
 
   return collection
 }
+
+assignToWindow({ getCollection })

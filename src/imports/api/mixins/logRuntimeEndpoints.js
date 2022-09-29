@@ -4,13 +4,22 @@ import { Random } from 'meteor/random'
 
 const createMethodId = () => Random.id(6)
 
-export const logMethodRuntimeErrors = function (options) {
+export const logRuntimeEndpoints = function (options) {
   const { name } = options
+  const isMethod = name.includes('.methods.')
+  const isPublication = name.includes('.publications.')
+  let endpointType = 'unknown'
+  if (isMethod) {
+    endpointType = 'method'
+  }
+  if (isPublication) {
+    endpointType = 'publication'
+  }
 
   const wrap = (originalFct, type) => function (...args) {
     const environment = this
     const methodId = createMethodId()
-    const logName = `${name} (${methodId})`
+    const logName = `${endpointType}:${name} (${methodId})`
     const log = createLog({ name: logName })
     const error = createLog({ name: logName, type: 'error' })
 
@@ -23,7 +32,7 @@ export const logMethodRuntimeErrors = function (options) {
 
     try {
       return originalFct.apply(environment, args)
-    } catch (methodRuntimeError) {
+    } catch (runtimeError) {
       // logError({
       //   error: methodRuntimeError,
       //   createdBy: environment.userId,
@@ -34,17 +43,21 @@ export const logMethodRuntimeErrors = function (options) {
       //   isPublication: false
       // })
 
-      if (['Meteor.Error', 'ClientError'].includes(methodRuntimeError.errorType || methodRuntimeError.name)) {
-        methodRuntimeError.isClientSafe = true
-        error(methodRuntimeError) // client safe errors are not logged on the server
+      if (['Meteor.Error', 'ClientError'].includes(runtimeError.errorType || runtimeError.name)) {
+        runtimeError.isClientSafe = true
+        endpointType.isMethod = isMethod
+        endpointType.isPublication = isPublication
+        error(runtimeError) // client safe errors are not logged on the server
       }
 
-      throw methodRuntimeError
+      throw runtimeError
     }
   }
 
   options.run = wrap(options.run, 'run')
-  options.validate = wrap(options.validate, 'validate')
+  if (options.validate) {
+    options.validate = wrap(options.validate, 'validate')
+  }
 
   return options
 }
