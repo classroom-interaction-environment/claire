@@ -345,6 +345,24 @@ auto(function () {
 
 Lesson.publications = {}
 
+Lesson.publications.my = {
+  name: 'lesson.publication.my',
+  schema: {},
+  roles: UserUtils.roles.teacher,
+  run: onServer(function () {
+    const { userId } = this
+    const query = {
+      $or: [
+        { createdBy: userId},
+        { teachers: userId }
+      ]
+    }
+    return getCollection(Lesson.name).find(query)
+  })
+}
+
+
+
 /**
  * Publishes all Lessons, associated with a unit and which I have created
  * @roles teacher

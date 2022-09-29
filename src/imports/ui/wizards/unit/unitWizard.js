@@ -3,11 +3,6 @@ import { Template } from 'meteor/templating'
 import { Lesson } from '../../../contexts/classroom/lessons/Lesson'
 import { Unit } from '../../../contexts/curriculum/curriculum/unit/Unit'
 import { cursor } from '../../../api/utils/cursor'
-import {
-  composeQuery,
-  createInQuery,
-  $existsQuery
-} from '../../../api/utils/queryFactory'
 import { loadIntoCollection } from '../../../infrastructure/loading/loadIntoCollection'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
 import { unitCreateSchema } from '../../../contexts/curriculum/curriculum/unit/unitCreateSchema'
@@ -21,6 +16,7 @@ import '../../components/lesson/status/lessonStatus'
 import { callMethod } from '../../controllers/document/callMethod'
 import { LessonStates } from '../../../contexts/classroom/lessons/LessonStates'
 import './unitWizard.html'
+import {getCollection} from '../../../api/utils/getCollection'
 
 const API = Template.unitWizard.setDependencies({
   contexts: [Lesson, Unit, SchoolClass],
@@ -28,13 +24,6 @@ const API = Template.unitWizard.setDependencies({
 })
 
 const sort = { sort: { updatedAt: -1 } }
-const idInQuery = createInQuery('_id')
-const idleQuery = composeQuery({
-  startedAt: $existsQuery(false),
-  completedAt: $existsQuery(false)
-})
-
-const toDocId = doc => doc._id
 const LessonCollection = getLocalCollection(Lesson.name)
 const UnitCollection = getLocalCollection(Unit.name)
 const SchoolClassCollection = getLocalCollection(SchoolClass.name)
@@ -44,11 +33,13 @@ const createUnitSchema = Schema.create(createUnitSchemaDefinitions)
 
 Template.unitWizard.onCreated(async function () {
   const instance = this
-  await loadIntoCollection({
-    name: Lesson.methods.my,
-    args: {},
-    failure: API.fatal,
-    collection: LessonCollection
+
+  API.subscribe({
+    name: Lesson.publications.my,
+    key: 'unitWizardKey',
+    callbacks: {
+      onError: API.notify
+    }
   })
 
   const unitIds = new Set()
@@ -58,79 +49,84 @@ Template.unitWizard.onCreated(async function () {
     completed: new Set(),
     running: new Set()
   }
-  LessonCollection.find({}, { sort: { updatedAt: -1 } }).forEach(lessonDoc => {
-    if (LessonStates.isCompleted(lessonDoc)) {
-      lessons.completed.add(lessonDoc.unit)
-    }
-    else if (LessonStates.isRunning(lessonDoc)) {
-      lessons.running.add(lessonDoc.unit)
-    }
-    else {
-      lessons.idle.add(lessonDoc.unit)
-    }
 
-    if (UnitCollection.find(lessonDoc.unit).count() === 0) {
-      unitIds.add(lessonDoc.unit)
-    }
-    if (SchoolClassCollection.find(lessonDoc.classId).count() === 0) {
-      classIds.add(lessonDoc.classId)
-    }
-  })
+  instance.autorun(async () => {
+    getCollection(Lesson.name).find({}, { sort: { updatedAt: -1 } }).forEach(lessonDoc => {
+      if (LessonStates.isCompleted(lessonDoc)) {
+        lessons.completed.add(lessonDoc.unit)
+      } else if (LessonStates.isRunning(lessonDoc)) {
+        lessons.running.add(lessonDoc.unit)
+      } else {
+        lessons.idle.add(lessonDoc.unit)
+      }
 
-  if (unitIds.size > 0) {
-    await loadIntoCollection({
-      name: Unit.methods.my,
-      args: {
-        ids: [...unitIds.values()]
-      },
-      failure: API.fatal,
-      collection: UnitCollection
+      if (UnitCollection.find(lessonDoc.unit).count() === 0) {
+        unitIds.add(lessonDoc.unit)
+      }
+      if (SchoolClassCollection.find(lessonDoc.classId).count() === 0) {
+        classIds.add(lessonDoc.classId)
+      }
     })
-  }
 
-  if (classIds.size > 0) {
-    await loadIntoCollection({
-      name: SchoolClass.methods.my,
-      args: {
-        ids: [...classIds.values()]
-      },
-      failure: API.fatal,
-      collection: SchoolClassCollection
+    if (unitIds.size > 0) {
+      await loadIntoCollection({
+        name: Unit.methods.my,
+        args: {
+          ids: [...unitIds.values()]
+        },
+        failure: API.fatal,
+        collection: UnitCollection
+      })
+    }
+
+    if (classIds.size > 0) {
+      await loadIntoCollection({
+        name: SchoolClass.methods.my,
+        args: {
+          ids: [...classIds.values()]
+        },
+        failure: API.fatal,
+        collection: SchoolClassCollection
+      })
+    }
+
+    const sort = { updatedAt: -1 }
+    const idleUnits = UnitCollection.find({
+      updatedBy: Meteor.userId(),
+      _custom: true,
+      _id: { $in: [...lessons.idle] }
+    }, { sort }).fetch().map(unitDoc => {
+      unitDoc.lesson = {}
+      return unitDoc
     })
-  }
+    const runningUnits = UnitCollection.find({
+      updatedBy: Meteor.userId(),
+      _custom: true,
+      _id: { $in: [...lessons.running] }
+    }, { sort }).fetch().map(unitDoc => {
+      unitDoc.lesson = { startedAt: true }
+      return unitDoc
+    })
+    const completedUnits = UnitCollection.find({
+      updatedBy: Meteor.userId(),
+      _custom: true,
+      _id: { $in: [...lessons.completed] }
+    }, { sort }).fetch().map(unitDoc => {
+      unitDoc.lesson = { startedAt: true, completedAt: true }
+      return unitDoc
+    })
 
-  const sort = { updatedAt: -1 }
-  const idleUnits = UnitCollection.find({
-    updatedBy: Meteor.userId(),
-    _custom: true,
-    _id: { $in: [...lessons.idle] }
-  }, { sort }).fetch().map(unitDoc => {
-    unitDoc.lesson = {}
-    return unitDoc
+    instance.state.set({
+      idleUnits,
+      runningUnits,
+      completedUnits,
+      unitsLoaded: true
+    })
   })
-  const runningUnits = UnitCollection.find({
-    updatedBy: Meteor.userId(),
-    _custom: true,
-    _id: { $in: [...lessons.running] }
-  }, { sort }).fetch().map(unitDoc => {
-    unitDoc.lesson = { startedAt: true }
-    return unitDoc
-  })
-  const completedUnits = UnitCollection.find({
-    updatedBy: Meteor.userId(),
-    _custom: true,
-    _id: { $in: [...lessons.completed] }
-  }, { sort }).fetch().map(unitDoc => {
-    unitDoc.lesson = { startedAt: true, completedAt: true }
-    return unitDoc
-  })
+})
 
-  instance.state.set({
-    idleUnits,
-    runningUnits,
-    completedUnits,
-    unitsLoaded: true
-  })
+Template.unitWizard.onDestroyed(function () {
+  API.dispose('unitWizardKey')
 })
 
 Template.unitWizard.helpers({

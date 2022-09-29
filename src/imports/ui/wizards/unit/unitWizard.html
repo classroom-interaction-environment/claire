@@ -7,7 +7,7 @@
             {{> actionButton class="no-wrap" type="success"
                     icon="plus" label=(i18n "actions.create") class="create-unit-btn"}}
         </div>
-        {{> uwUnitRenderer units=idleUnits}}
+        {{> uwUnitRenderer units=idleUnits showNoDocs=true}}
         {{> uwUnitRenderer units=runningUnits}}
         {{> uwUnitRenderer units=completedUnits}}
         {{> formModal }}
@@ -54,6 +54,8 @@
             {{/each}}
         </ul>
     {{else}}
-        {{> nodocs}}
+        {{#if showNoDocs}}
+            {{> nodocs}}
+        {{/if}}
     {{/with}}
 </template>
