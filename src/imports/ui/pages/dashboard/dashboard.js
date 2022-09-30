@@ -196,6 +196,9 @@ Template.dashboard.onCreated(function () {
 })
 
 Template.dashboard.helpers({
+  loadComplete () {
+    return API.initComplete()
+  },
   classes () {
     const selector = { createdBy: Meteor.userId() }
     const options = { sort: byTitle }

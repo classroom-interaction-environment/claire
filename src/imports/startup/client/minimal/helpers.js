@@ -208,12 +208,12 @@ Template.registerHelper('toDate', function (date, type='datetime') {
 
   if (type === 'date')  {
     return todayOrYesterday
-      ? i18n.get(`common.${todayOrYesterday}`)
+      ? i18n.get(`time.${todayOrYesterday}`)
       : date.toLocaleDateString(current?.isoCode, current?.localeDateOptions)
   }
 
   return todayOrYesterday
-    ? `${i18n.get(`common.${todayOrYesterday}`)}, ${date.toLocaleTimeString(current?.isoCode, current?.localeDateOptions)}`
+    ? `${i18n.get(`time.${todayOrYesterday}`)}, ${date.toLocaleTimeString(current?.isoCode, current?.localeDateOptions)}`
     : date.toLocaleString(current?.isoCode, current?.localeDateOptions)
 })
 

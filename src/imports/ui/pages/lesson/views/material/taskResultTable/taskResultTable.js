@@ -10,6 +10,8 @@ import { getCollection } from '../../../../../../api/utils/getCollection'
 import { getAllItemsInTask } from '../../../../../../contexts/tasks/getAllItemsInTask'
 import { dataTarget } from '../../../../../utils/dataTarget'
 import './taskResulTable.html'
+import { Group } from '../../../../../../contexts/classroom/group/Group'
+import { GroupMode } from '../../../../../../contexts/classroom/group/GroupMode'
 
 const API = Template.taskResultTable.setDependencies({})
 Item.initialize().catch(API.notify)
@@ -43,6 +45,13 @@ Template.taskResultTable.helpers({
   },
   showItems (userId) {
     return Template.getState('showItems')[userId]
+  },
+  groupModeLabel (mode) {
+    const groupMode = GroupMode[mode]
+    if (!groupMode || groupMode === GroupMode.off) {
+      return ''
+    }
+    return API.translate(groupMode.label)
   },
   users () {
     const userIds = Template.getState('userIds') || []

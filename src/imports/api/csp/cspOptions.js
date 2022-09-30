@@ -81,6 +81,7 @@ export function cspOptions (externalHostUrls = []) {
         sandbox: [
           // allow-downloads-without-user-activation // experimental
           'allow-same-origin',
+          'allow-downloads',
           'allow-orientation-lock',
           'allow-pointer-lock',
           'allow-popups',
@@ -88,7 +89,7 @@ export function cspOptions (externalHostUrls = []) {
           'allow-scripts',
           'allow-forms',
           'allow-modals',
-          //'allow-presentation',
+          'allow-presentation',
           //'allow-top-navigation',
           // 'allow-storage-access-by-user-activation ', // experimental
           // 'allow-top-navigation',

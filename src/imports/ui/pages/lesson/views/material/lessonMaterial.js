@@ -587,12 +587,14 @@ Template.lessonMaterial.events({
     const name = dataTarget(event, templateInstance, 'rp')
     const beamerDoc = Beamer.doc.get()
 
-    // if we have thos item currently displayed and it has a defined RP
+    // if we have this item currently displayed and it has a defined RP
     // then we only want to update the response processor on the reference
     if (beamerDoc && beamerDoc.references) {
       const index = beamerDoc.references.findIndex(r => r.itemId === itemId)
       const beamerReference = beamerDoc.references[index]
-      if (beamerReference?.responseProcessor !== name) {
+
+      // only update the beamer doc, if the referenced item is active
+      if (beamerReference && beamerReference.responseProcessor !== name) {
         const updateDoc = { _id: beamerDoc._id, references: beamerDoc.references }
         updateDoc.references[index].responseProcessor = name
         Beamer.doc.update(updateDoc, (err) => {
@@ -601,6 +603,8 @@ Template.lessonMaterial.events({
       }
     }
 
+    // in any case let the template know that this is the current rp
+    // so it is used immediately when the rp is activated
     templateInstance.state.set(itemId, name)
   }
 })
