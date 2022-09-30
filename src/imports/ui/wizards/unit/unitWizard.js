@@ -11,12 +11,13 @@ import unitWizardLanguage from './i18n/unitWizardLanguage'
 import { Schema } from '../../../api/schema/Schema'
 import { SchoolClass } from '../../../contexts/classroom/schoolclass/SchoolClass'
 import { FormModal } from '../../components/forms/modal/formModal'
-import '../../components/documentState/documentState'
-import '../../components/lesson/status/lessonStatus'
-import { callMethod } from '../../controllers/document/callMethod'
 import { LessonStates } from '../../../contexts/classroom/lessons/LessonStates'
-import './unitWizard.html'
+import { callMethod } from '../../controllers/document/callMethod'
 import {getCollection} from '../../../api/utils/getCollection'
+import { firstOption } from '../../../contexts/tasks/definitions/common/helpers'
+import '../../components/lesson/status/lessonStatus'
+import '../../components/documentState/documentState'
+import './unitWizard.html'
 
 const API = Template.unitWizard.setDependencies({
   contexts: [Lesson, Unit, SchoolClass],
@@ -28,7 +29,12 @@ const LessonCollection = getLocalCollection(Lesson.name)
 const UnitCollection = getLocalCollection(Unit.name)
 const SchoolClassCollection = getLocalCollection(SchoolClass.name)
 const createUnitSchemaDefinitions = unitCreateSchema({ custom: true }, { withDefault: true })
-createUnitSchemaDefinitions.classId = Object.assign({}, SchoolClass.schema.title, { autoform: { options: toOptions({ collection: SchoolClassCollection }) } })
+createUnitSchemaDefinitions.classId = Object.assign({}, SchoolClass.schema.title, {
+  autoform: {
+    firstOption,
+    options: toOptions({ collection: SchoolClassCollection })
+  }
+})
 const createUnitSchema = Schema.create(createUnitSchemaDefinitions)
 
 Template.unitWizard.onCreated(async function () {

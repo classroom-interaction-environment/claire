@@ -66,10 +66,7 @@ Template.dashboard.onCreated(function () {
     },
   })
 
-  // STEP 2
-  // get initial counts for the lessons from method
-  // so we can display these without subscriptions required
-  instance.autorun(() => {
+  instance.updateLessonCounts = () => {
     const classIds = getCollection(SchoolClass.name).find().map(toDocId)
     if (classIds.length === 0) { return }
 
@@ -80,7 +77,12 @@ Template.dashboard.onCreated(function () {
       failure: API.notify,
       success: lessonCounts => instance.state.set({ lessonCounts })
     })
-  })
+  }
+
+  // STEP 2
+  // get initial counts for the lessons from method
+  // so we can display these without subscriptions required
+  instance.autorun(() => instance.updateLessonCounts())
 
   // STEP 3
   // if a class is opened / extended, we need live updates on the lessons
@@ -352,7 +354,10 @@ Template.dashboard.events({
       onError: API.failure,
       custom: definitions.handlers,
       onSubmit: definitions.onSubmit,
-      onClosed: definitions.onClosed
+      onClosed: (options, ...args) => {
+        templateInstance.updateLessonCounts()
+        return definitions.onClosed(options, ...args)
+      }
     })
   }
 })

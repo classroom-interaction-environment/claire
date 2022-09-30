@@ -67,7 +67,10 @@ export const createDashboardFormActions = ({ onError, translate }) => {
         onClosed: ({ successful, result, templateInstance }) => {
           if (successful) {
             templateInstance.state.set({ schoolClassUpdated: result })
-            return formActions[Unit.name].custom
+            return {
+              next: formActions[Unit.name].custom,
+              bind: { classId: result[0] }
+            }
           }
         }
       },
@@ -76,6 +79,7 @@ export const createDashboardFormActions = ({ onError, translate }) => {
         type: 'secondary',
         onSubmit: onCreateClassSubmit,
         onClosed: ({ successful, result, templateInstance }) => {
+          debugger
           if (successful) {
             templateInstance.state.set({ schoolClassUpdated: result })
             return {
@@ -213,11 +217,6 @@ export const createDashboardFormActions = ({ onError, translate }) => {
       if (removed) {
         return lessonId
       }
-    },
-    onClosed: ({ successful, result }) => {
-      if (successful) {
-        getCollection(Lesson.name).remove(result)
-      }
     }
   }
 
@@ -269,13 +268,6 @@ export const createDashboardFormActions = ({ onError, translate }) => {
       onClosed: ({ successful, result, classId }) => {
         if (successful) {
           const lessonIds = [result.lessonId]
-
-          loadIntoCollection({
-            name: Lesson.methods.my,
-            args: { classId, ids: [result.lessonId] },
-            collection: getCollection(Lesson.name),
-            failure: onError
-          })
 
           loadIntoCollection({
             name: Lesson.methods.units,

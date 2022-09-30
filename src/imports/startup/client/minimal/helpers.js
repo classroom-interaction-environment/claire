@@ -12,6 +12,7 @@ import { resolveRoute } from '../../../api/routes/resolveRoute'
 import { contrastColor } from '../../../ui/utils/color/contrastColor'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
 import { Features } from '../../../api/config/Features'
+import { isTodayOrYesterday } from '../../../utils/isTodayOrYesterday'
 
 Template.registerHelper('feature', function (name) {
   return Features.get(name)
@@ -199,15 +200,21 @@ Template.registerHelper('toDate', function (date, type='datetime') {
   if (!date) { return }
   const current = currentLanguage()
 
-  if (type === 'date')  {
-    return date.toLocaleDateString(current?.isoCode, current?.localeDateOptions)
-  }
-
   if (type === 'time') {
     return date.toLocaleTimeString(current?.isoCode, current?.localeDateOptions)
   }
 
-  return date.toLocaleString(current?.isoCode, current?.localeDateOptions)
+  const todayOrYesterday = isTodayOrYesterday(date)
+
+  if (type === 'date')  {
+    return todayOrYesterday
+      ? i18n.get(`common.${todayOrYesterday}`)
+      : date.toLocaleDateString(current?.isoCode, current?.localeDateOptions)
+  }
+
+  return todayOrYesterday
+    ? `${i18n.get(`common.${todayOrYesterday}`)}, ${date.toLocaleTimeString(current?.isoCode, current?.localeDateOptions)}`
+    : date.toLocaleString(current?.isoCode, current?.localeDateOptions)
 })
 
 Template.registerHelper('context', function (name) {

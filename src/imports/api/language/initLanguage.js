@@ -57,8 +57,8 @@ export const initLanguage = async (locale, defaultOptions = {}) => {
   const i18nProvider = new I18NConstructor({
     i18n: config,
     returnKey: true,
-    helperName: '__i18n__',
-    helperSettingsName: '__i18nSettings__'
+    helperName: null,
+    helperSettingsName: null
   })
 
   i18n.load(i18nProvider, i18nOptions)
