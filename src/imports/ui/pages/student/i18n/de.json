@@ -7,6 +7,7 @@
     "notAMember": "Sie sind nicht (oder nicht mehr) Mitglied dieses Kurses.",
     "studentNoClasses": "Sie sind zur Zeit keinem Kurs zugeordnet.",
     "student": {
+      "notReady": "Dieser Unterricht ist noch in Vorbereitung!",
       "docNotVisible": "Der Inhalt ist für Sie nicht (mehr) Sichtbar."
     }
   }

@@ -337,7 +337,7 @@
     "justNow": "Gerade eben",
     "someMinutesAgo": "Vor einigen Minuten",
     "today": "Heute",
-    "yesterady": "Gestern",
+    "yesterday": "Gestern",
     "beforeYesterday": "Vorgestern"
   },
   "viewMode": {
@@ -934,7 +934,7 @@
     "addStudents": "Lernende hinzufügen",
     "addStudentsDescription": "Wählen Sie die Teilnehmer/innen aus der Liste aus, die hinzugefügt werden sollen.",
     "requestJoin": "Teilnahme anfragen",
-    "waitForTeacher": "Es sind derzeit keine Maerialien freigeschaltet. Bitte warten Sie auf die Anweisungen der Lehrkraft.",
+    "waitForTeacher": "Es sind derzeit keine Materialien freigeschaltet. Bitte warten Sie auf die Anweisungen der Lehrkraft.",
     "waitForTeacherToStartLesson": "Warte bis Lehrer/in den Unterricht startet",
     "waitForTeacherToSetProgress": "Warte bis Lehrer/in die nächste Unterrichtseinheit festgelegt hat",
     "enterLesson": "Es läuft gerade Unterricht. Möchten Sie direkt zum Unterricht weitergeleitet werden?",

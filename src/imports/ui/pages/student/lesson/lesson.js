@@ -51,7 +51,6 @@ Template.lesson.onCreated(function () {
 
   instance.displayError = err => {
     const error = formatError(err)
-    console.debug(error)
     instance.state.set({ error })
   }
   // subscribe to the lesson doc, as this changes often
@@ -153,6 +152,9 @@ Template.lesson.helpers({
   },
   error () {
     return Template.getState('error')
+  },
+  notReady () {
+    return Template.getState('notReady')
   },
   groups (lessonDoc) {
     return cursor(() => getCollection(Group.name).find({ lessonId: lessonDoc._id }))
