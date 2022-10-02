@@ -198,7 +198,7 @@
   "codeInvitation": {
     "title": "Registrierung (mit Code)",
     "code": "Code",
-    "createClass": "",
+    "createClass": "Klasse erstellen",
     "confirmDelete":"Möchten Sie Einladung wirklich löschen?",
     "addedToClass": "Erfolgreich zum Kurs hinzugefügt",
     "setCurrentClass": "Möchten Sie den neuen Kurs als Ihren aktuellen Kurs festlegen?",
@@ -1008,7 +1008,7 @@
   },
   "theme": {
     "bsDefault": "Standard Theme",
-    "custom": "Eigener theme"
+    "custom": "Eigener Theme"
   },
   "createUser": {
     "complete": "BenutzerIn wurde erfolgreich angelegt."

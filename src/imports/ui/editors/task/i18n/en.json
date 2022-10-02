@@ -4,7 +4,7 @@
       "title": "Task-Editor",
       "backToUnit": "Back to unit editor",
       "addToUnit": "Link to unit",
-      "confirmUnlink": "DO you want to remove this task from unit '{{title}}'?",
+      "confirmUnlink": "Do you want to remove this task from unit '{{title}}'?",
       "baseInfo": "Basic info",
       "addPage": "Add page",
       "editPages": "Page content",

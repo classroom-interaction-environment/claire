@@ -7,8 +7,8 @@
     "logout": "Sign-out",
     "forgotPassword": "Forgot password?",
     "placeholder": {
-      "title": "Fasse den Fehler in ein paar Worten zusammen...",
-      "description": "Mache bitte möglichst präzise Angaben zum fehler..."
+      "title": "Summarize the error in a few words...",
+      "description": "Please provide as precise information as possible on the error..."
     },
     "tools": "Tools"
   }

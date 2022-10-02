@@ -1,6 +1,11 @@
 {
+  "unit": {
+    "title": "Lesson Template"
+  },
   "unitSelect": {
-    "search": "Enter words to search",
-    "filter": "Filter selection"
+    "search": "Enter search term here",
+    "filter": "Filter selection",
+    "withLessons": "Show created / running",
+    "hasLesson": "Already created or ongoing"
   }
 }

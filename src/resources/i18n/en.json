@@ -2,7 +2,7 @@
   "Match failed": "Server error. Invalid request.",
   "errors": {
     "Error": "Error!",
-    "errorId": "Errorcode",
+    "errorId": "Error code",
     "source": "Source",
     "message": "Message",
     "reason": "Reason",
@@ -30,7 +30,7 @@
     "500": "Server error",
     "fatal": {
       "title": "Fatal error",
-      "description": "A fatal error has occurred. Please relead the page. Please contact us if the error persists."
+      "description": "A fatal error has occurred. Please reload the page. Please contact us if the error persists."
     }
   },
   "accounts": {
@@ -40,7 +40,7 @@
     },
     "resetPassword": {
       "subject": "Reset your Password",
-      "text": "Hallo {{name}},\n\nSie haben in {{siteName}} angefordert Ihr Passwort zurückzusetzen. Bitte folgen Sie dem nachstehenden Link und setzen Sie Ihr Passwort neu: {{url}}\n\nDer Link wird in {{expires}} Tag(en) ungültig.\n\n!!!Wichtig!!! Die Passwort zurücksetzen Funktion sendet nur Emails, wenn Sie diese vorher angefordert haben! Sollten Sie dennoch derartige Emails erhalten, öffnen Sie nicht die Links und wenden Sie sich an {{supportEmail}}"
+      "text": "Hello {{name}},\n\nYou have requested in {{siteName}} to reset your password. Please follow the link below to reset your password: {{url}}\nThe link will expire in {{expires}} Tag(s) invalid.\n\n!!!Important!!! The password reset function will only send emails if you have requested them beforehand! If you still receive such emails, do not open the links and contact {{supportEmail}}"
     },
     "verifyEmail": {
       "subject": "Verify your {{siteName}} account",
@@ -53,9 +53,17 @@
       }
     }
   },
+  "codeRegister": {
+    "title": "Register with code"
+  },
   "common": {
     "deprecated": "Deprecated",
+    "startedAt": "Started at",
+    "completedAt": "Completed at",
+    "lastUpdated": "Last updated",
     "ok": "Ok",
+    "from": "From",
+    "to": "to",
     "linked": "Linked",
     "or": "or",
     "copy": "Copy",
@@ -69,7 +77,7 @@
     "complete": "Complete",
     "simpleView": "Simple View",
     "extendedView": "Extended View",
-    "colorCode": "Color colde",
+    "colorCode": "Color code",
     "resources": "Resources",
     "embedCode": "Embed code",
     "saving": "Saving",
@@ -122,7 +130,7 @@
     "parent": "Parent element",
     "index": "Index",
     "notes": "Notes",
-    "async": "Asynchronuous",
+    "async": "Asynchronous",
     "editor": "Editor",
     "noentries": "No {{title}} found.",
     "updateOrder": "Save order",
@@ -164,8 +172,8 @@
     "more": "More",
     "clone": "Duplicate",
     "users": "Users",
-    "roles": "Rolles",
-    "role": "Rolle",
+    "roles": "Roles",
+    "role": "Role",
     "notAssociated": "Not associated",
     "uploads": "Uploads",
     "dropZone": "Drop here"
@@ -183,7 +191,7 @@
     "contact": "Contact"
   },
   "share": {
-    "whatsapp": "Share via WhattsApp",
+    "whatsapp": "Share via WhatsApp",
     "email": "Share via Email",
     "link": "Share link"
   },
@@ -209,12 +217,14 @@
     "institution": "Institution / Company",
     "joinClass": "You have been added to the class \"{{className}}\". Your other classes remain untouched. Do you want to join?",
     "invite": "Invite users",
-    "create": "Create invitaiton",
+    "create": "Create invitation",
     "createLink": "Create registration link",
     "createQr": "Create QR-Code",
     "registerFailed": "Registration failed",
     "invalidLink": "Invalid registration link",
     "invalidLinkReason": "The invitation link has expired. Please consult your teacher or colleague about this issue.",
+    "emailSubject": "Welcome to {{siteName}}",
+    "emailBody": "Welcome to {{siteName}}!\n\nHello{{to}},\nYou have been invited to attend the class in {{siteName}}. To register, simply click on this link and follow the instructions:\n{{link}}\n\nIf you have any problems, please feel free to contact me.\n\nBest regards\n{{from}}\n\n\nThis email was created automatically.",
     "insufficientRoles": "You can only invite persons with a lower role than yours",
     "errors": {
       "invalidCode": "Invalid or expired"
@@ -238,7 +248,7 @@
       "external": "Second screen"
     },
     "errors": {
-      "expectedWindowClose": "Could not close whiteboard. Please close it manurally",
+      "expectedWindowClose": "Could not close whiteboard. Please close it manually",
       "expectedColor": "Invalid color",
       "expectedGrid": "Invalid layout"
     }
@@ -269,7 +279,7 @@
     "sendViaMail": "Send via email",
     "copyToClipboard": "Copy to clipboard",
     "fixNow": "Fix now",
-    "toDashboard": "To bashboard",
+    "toDashboard": "To dashboard",
     "create": "Create",
     "restart": "Restart",
     "startAgain": "Start again",
@@ -314,7 +324,7 @@
     "unsupportedExtension": "Files of this type '{{extension}}' are not supported. Support are: {{allowedFormats}}"
   },
   "time": {
-    "milliseconds": "Miliseconds",
+    "milliseconds": "Milliseconds",
     "seconds": "Seconds",
     "sec": "Seć",
     "minutes": "Minutes",
@@ -339,11 +349,11 @@
     "title": "Progress",
     "showAll": "Show all",
     "showCurrent": "Show current",
-    "setCurrent": "Als aktuellen Fortschritt setzen?",
-    "restart": "Achtung! Beim Neustart werden alle Ergebnisse zurückgesetzt. Diese Unterrichtseinheit neu starten?",
-    "notFoundById": "Lernfortschritt wurde anhand der ID nicht gefunden",
-    "docAlreadyExists": "Lernfortschritt existiert bereits in dieser Einstellung",
-    "schoolClassHasProgress": "Kurs besitzt bereits einen Fortschritt zu diesen Einstellungen"
+    "setCurrent": "Set as current progress?",
+    "restart": "Attention! When restarting, all results will be reset. Restart this lesson?",
+    "notFoundById": "Learning progress was not found based on the ID",
+    "docAlreadyExists": "Learning progress already exists in this setting",
+    "schoolClassHasProgress": "Course already has a progress to these settings"
   },
   "users": {
     "title": "Users",
@@ -371,8 +381,8 @@
     "objective": "Competency",
     "objectives": "Competencies",
     "period": "Period in minutes",
-    "dimension": "Dimenions",
-    "dimensions": "Dimenions",
+    "dimension": "Dimension",
+    "dimensions": "Dimensions",
     "layer": "Layer",
     "actor": "Actor",
     "heuristics": "Heuristics",
@@ -387,17 +397,21 @@
     "project": "Project",
     "unit": "Unit",
     "units": "Units",
+    "sequence": "Learning sequence",
+    "sequences": "Learning sequences",
     "pocket": "Module",
     "process": "Process",
     "phase": "Phase",
     "phases": "Phases",
     "literature": "Literature",
+    "intention": "Intention to act",
     "minStudents": "Min. students",
     "maxStudents": "Max. students",
     "minTeachers": "Min. teachers",
     "maxTeachers": "Max. teachers",
+    "communicationType": "Form of communication",
     "workflow": "Workflow",
-    "task": "Aufgabe",
+    "task": "Task",
     "leaveUnitForGlobal": "Leave unit empty to create a global task",
     "asset": "Assets",
     "noHeuristicYet": "There are no heuristics yet.",
@@ -409,7 +423,7 @@
     "video": "Video",
     "pdf": "PDF",
     "document": "Document",
-    "binary": "Archive or orogram",
+    "binary": "Archive or program",
     "json": "JSON",
     "text": "Text",
     "binaryWarn": "Warning, the file is executable."
@@ -425,6 +439,7 @@
   },
   "task": {
     "title": "Task",
+    "previewMode": "Preview-Mode",
     "unsavedItems": "There are unsaved items on this page!",
     "saveHint": "Note, that items are only saved if your click the save-button!",
     "loadFailed": "Error while loading the task",
@@ -485,7 +500,7 @@
       "chartOptions": "Chart-options",
       "title": "Preview for chart",
       "select": "Choose a chart",
-      "switchAxis": "Axen vertauschen"
+      "switchAxis": "Swap axes"
     }
   },
   "license": {
@@ -510,12 +525,12 @@
     "pie": "Pie chart",
     "scatter": "Scatter plot",
     "line": "Line chart",
-    "histogram": "Histrogram"
+    "histogram": "Histogram"
   },
   "unit": {
     "material": "Material",
     "taskUnwantedComplete": "Click here to restore, in case you unintentionally completed",
-    "furtherReadings": "Further readonds",
+    "furtherReadings": "Further readings",
     "taskComplete": "Task completed",
     "tasks": "Tasks",
     "references": "References",
@@ -528,6 +543,19 @@
     "intention": "Intention",
     "references": "References",
     "notes": "Notes"
+  },
+  "method": {
+    "presentationTeacher": "Teacher presentation",
+    "presentationStudent": "Learner presentation",
+    "discussion": "Class discussion",
+    "task": "Task"
+  },
+  "communication": {
+    "single": "Monologue",
+    "one2one": "1 to 1",
+    "one2many": "1 to N",
+    "many2one": "N to 1",
+    "many2many": "N to N"
   },
   "socialState": {
     "plenum": "Plenum",
@@ -580,7 +608,7 @@
     "onlyMandatoryFields": "Show only mandatory fields",
     "noWhitespace": "No whitespace allowed",
     "enterText": "Please enter text here....",
-    "allowedChars": "Allowed charatcers",
+    "allowedChars": "Allowed characters",
     "insert": "Insert",
     "update": "Update",
     "required": "Required",
@@ -603,16 +631,16 @@
     "incomplete": "There are incomplete fields. Please check your input.",
     "password": {
       "notEqualConfirm": "Password does not equal confirmed password",
-      "hint": "Password requires at least 8 characters with 1 uppercase, 1 numbver and one special character",
-      "atLeastOneLowerCase": "Passwort requires at least {{chars}} lowercase characters",
-      "atLeastOneUpperCase": "Passwort requires at least {{chars}} uppercase characters",
-      "atLeastOneDigit": "Passwort requires at least {{chars}} digits",
-      "atLeastoneSpecialChar": "Passwort requires at least {{chars}} special characters of the following: {{{examples}}}"
+      "hint": "Password requires at least 8 characters with 1 uppercase, 1 number and one special character",
+      "atLeastOneLowerCase": "Password requires at least {{chars}} lowercase characters",
+      "atLeastOneUpperCase": "Password requires at least {{chars}} uppercase characters",
+      "atLeastOneDigit": "Password requires at least {{chars}} digits",
+      "atLeastoneSpecialChar": "Password requires at least {{chars}} special characters of the following: {{{examples}}}"
     },
     "validation": {
       "required": "{{label}} is required.",
-      "minString": "{{label}} requires {{min}} charcaters",
-      "maxString": "{{label}} must not exceed {{max}} charcaters.",
+      "minString": "{{label}} requires {{min}} characters",
+      "maxString": "{{label}} must not exceed {{max}} characters.",
       "minNumber": "{{label}} must be at least {{min}}.",
       "maxNumber": "{{label}} must be at max. {{max}}.",
       "minNumberExclusive": "{{label}} must be greater than {{min}}.",
@@ -658,7 +686,7 @@
       "currentLanguage": "Current language",
       "ui": "User interface",
       "fluid": "Toggle width",
-      "privacy": "Privaxcy"
+      "privacy": "Privacy"
     }
   },
   "profile": {
@@ -671,7 +699,7 @@
   "language": {
     "de": "Deutsch",
     "en": "English",
-    "switchSuccessfull": "Languaged changed"
+    "switchSuccessfull": "Language changed"
   },
   "literature": {
     "title": "Literature",
@@ -717,123 +745,110 @@
     },
     "enrollAccount": {
       "title": "Your {{siteName}} registration",
-      "welcome": "Willkommen bei {{siteName}}, {{firstName}} {{lastName}}!",
       "complete": "Complete registration",
-      "password": "Bitte setzen Sie hier ihr neues Passwort für {{siteName}}. Das Passwort muss die unten stehenden Mindeststandards erfüllen und durch erneute Eingabe bestätigt werden.",
-      "success": "Sie haben die Registrierung erfolgreich abgeschlossen. Sie werden nun zu Ihrem profil weitergeleitet.",
-      "description": "Herzlich willkommen bei {{siteName}}! Sie sind nur noch wenige Schritte davon entfernt loszulegen. Bitte füllen Sie noch das untenstehende Formular aus und dann kann es auch schon losgehen.",
+      "password": "Please set your new password for {{siteName}} here. The password must meet the minimum standards below and be confirmed by entering it again.",
+      "success": "You have successfully completed the registration. You will now be redirected to your profile.",
+      "description": "Welcome to {{siteName}}! You are just a few steps away from getting started. Please fill in the form below and then you're ready to go",
       "acceptTerms": {
-        "show": "Nutzungsbedingungen anzeigen",
-        "check": "Ich habe die {{siteName}} Nutzungsbedingungen gelesen und bin damit einverstanden"
+        "show": "Show terms of use",
+        "check": "I have read the {{siteName}} Terms of Use and agree to them"
       },
       "acceptPrivacy": {
-        "show": "Datenschutzerklärung anzeigen",
-        "check": "Ich habe die {{siteName}} Datenschutzerklärung gelesen und bin damit einverstanden"
+        "show": "Show privacy policy",
+        "check": "I have read and agree to the {{siteName}} privacy policy"
       }
     },
     "verifyEmail": {
-      "title": "E-Mail Bestätigen",
-      "description": "Bestätigen Sie Ihre Identität über einen Link in der Email",
-      "inProgress": "Prüfe Bestätigungscode",
-      "expired": "Der Bestätigungslink ist abgelaufen",
-      "resendComplete": "Bestätigungslink erneut versendet",
-      "resend": "Neuen Bestätigungslink anfordern",
-      "success": "Ihr Account wurde erfolgreich bestätigt",
-      "alreadyVerified": "Der Account wurde bereits bestätigt"
+      "title": "Confirm email",
+      "description": "Confirm your identity via a link in the email",
+      "inProgress": "Check confirmation code",
+      "expired": "The confirmation link has expired",
+      "resendComplete": "Confirmation link sent again",
+      "resend": "Request new confirmation link",
+      "success": "Your account has been successfully confirmed",
+      "alreadyVerified": "Your account has already been confirmed"
     }
   },
   "passwordStrength": {
-    "title": "Passwortstärke",
-    "forbidden": "Nicht erlaubte Zeichen verwendet! Erlaubt sind Buchstaben (außer äöüß), Zahlen, sowie folgende Zeichen: $_!#*%&.-@",
-    "none": "Sehr schwaches Passwort",
-    "weak": "Schwaches Passwort",
-    "average": "Mittelmäßiges Passwort",
-    "strong": "Starkes Passwort",
-    "veryStrong": "Sehr starkes Passwort",
-    "confirmed": "Passwörter stimmen überein",
-    "confirmFailed": "Passwörter stimmen nicht überein"
+    "title": "Password strength",
+    "forbidden": "Not allowed characters used! Allowed are letters (except äöüß), numbers, as well as the following characters: $_!#*%&.-@",
+    "none": "Very weak password",
+    "weak": "Weak password",
+    "average": "Mediocre password",
+    "strong": "Strong password",
+    "veryStrong": "Very strong password",
+    "confirmed": "Passwords match",
+    "confirmFailed": "Passwords do not match"
   },
   "userCheck": {
-    "title": "Benutzernamen-Validierung",
-    "forbidden": "Ungültiger Benutzername. Zulässig sind mind. 4 bis max. 12 Buchstaben, Zahlen, sowie - _ $ @",
-    "getUser": "Benutzername wird bereits verwendet.",
-    "userNotExist": "Benutzername ist verfügbar.",
-    "userValid": "Benutzername is gültig",
-    "loading": "Überprüfe Benutzername"
+    "title": "Username Validation",
+    "forbidden": "Invalid username. Allowed are min. 4 to max. 12 letters, numbers, and - _ $ @",
+    "getUser": "Username is already in use.",
+    "userNotExist": "Username is available.",
+    "userValid": "Username is valid",
+    "loading": "Check username"
   },
   "definitions": {
-    "title": "Grundkonfiguration",
-    "alreadyExists": "Es existiert bereits eine Grundkonfiguration",
-    "missing": "Es müssen grundlegende Konfigurationen vorgenommen werden, damit die Anwendung fehlerfrei funktioniert."
+    "title": "Basic Configuration",
+    "alreadyExists": "A basic configuration already exists",
+    "missing": "Basic configurations must be made for the application to function without errors."
   },
   "emailCheck": {
-    "title": "Email-Validierung",
-    "emailExists": "Die Email Adresse wird bereits verwendet.",
-    "valid": "Gültige Email-Adresse",
-    "invalid": "Ungültige Emailadresse"
+    "title": "Email Validation",
+    "emailExists": "The email address is already in use.",
+    "valid": "Valid Email Address",
+    "invalid": "Invalid Email Address"
+  },
+  "sequence": {
+    "learning": "Learning sequence",
+    "start": "Start sequence",
+    "end": "Reflection"
   },
   "wizard": {
     "step": "Step",
     "next": "Next",
     "back": "Back",
     "finish": "Finish",
+    "finished": "Workflow wizard successfully completed.",
     "couldNotCompleteStep": "Could not complete step",
+    "noWorkflowDataReceived": "No data available for workflow",
     "newOrExisting": "Please select.",
+    "createWorkflowDoc": "Create new workflow.",
+    "connectWorkflow": "Link Workflow.",
     "continueToEdit": "Continue to editor",
     "pleaseSelect": "Please select between the following steps",
     "summary": "Summary",
+    "optionA": "Option A - Edit an existing workflow",
+    "optionB": "Option B - Create a new workflow (click next button)",
     "createNewEntry": "No entry yet?",
     "task": {
       "title": "Task-Editor"
     },
     "unit": {
       "title": "Unit-Editor"
-    },
-    "prepare": {
-      "createClass": {
-        "title": "Create class",
-        "selectOne": "Select existing class",
-        "createNew": "Create a new class",
-        "description": "Create a new class for which this lesson will be."
-      },
-      "unit": {
-        "title": "Select unit",
-        "description": "Select a unit to edit as your personal copy or create a custom one from scratch"
-      },
-      "phases": {
-        "title": "Preview of phases and material",
-        "description": "You can decide, whether you want to use this unit as it is, or if you want to edit it to your personal preferences.",
-        "missing": "No phases found for this unit."
-      },
-      "createUnit": {
-        "title": "Create a custom unit from scratch",
-        "description": "Hier können Sie eine eigene Sequenz als Unterrichtsvorlage anlegen. Füllen Sie dazu das ebtsprechende Formular aus."
-      },
-      "completeAndEdit": "Select and edit in unit editor",
-      "completeWithoutEdit": "Select as is"
     }
   },
   "help": {
     "title": "Title of this entry",
-    "period": "Usually an interger to define period in inutes",
-    "code": "Abkürzung bzw. interne ID eingeben",
-    "description": "Erweiterte Beschreibung des Eintrags eingeben",
-    "sourceUrl": "Eine externe Datei via vollständiger URL verlinken",
-    "sourceFile": "Eine Datei vom lokalen PC hochladen",
-    "type": "Einen Typ zur Kategorisierung des Eintrags auswählen",
-    "notes": "Notizen und Hinweise hinzufügen",
-    "plot": "Den Handlungsablauf umschreiben",
-    "intention": "Die Handlungsintention umschreiben",
-    "filterText": "Filter Begriff hier eingeben",
-    "comment": "Bitte geben Sie hier Ihr Kommentar ein"
+    "period": "Usually an integer to define period in minutes",
+    "code": "Enter abbreviation or internal ID",
+    "description": "Enter an extended description of the entry",
+    "sourceUrl": "Link an external file via complete URL",
+    "sourceFile": "Upload a file from the local PC",
+    "type": "Select a type to categorise the entry",
+    "notes": "Add notes and references",
+    "plot": "Paraphrase the plot",
+    "intention": "Paraphrase the plot intention",
+    "filterText": "Enter filter term here",
+    "comment": "Please enter your comment here"
   },
   "history": {
     "title": "History"
   },
   "historyEvents": {
-    "insert": "Erstellt",
-    "update": "Aktualisiert",
-    "remove": "Entfernt"
+    "insert": "Created",
+    "update": "Updated",
+    "remove": "Removes"
   },
   "invitation": {
     "expirationExceeded": "Code has expired",
@@ -841,15 +856,15 @@
   },
   "revision": {
     "title": "Revision",
-    "unrevised": "In Bearbeitung",
-    "inRevision": "In Revision",
-    "flagged": "Markiert / Achtung",
-    "complete": "Bereit für den Unterricht",
-    "allFlagged": "Alle markierten Dokumente"
+    "unrevised": "In process",
+    "inRevision": "In revision",
+    "flagged": "Marked / Attention",
+    "complete": "Ready for teaching",
+    "allFlagged": "All flagged documents"
   },
   "asset": {
     "images": {
-      "title": "IMage"
+      "title": "Image"
     },
     "videos": {
       "title": "Video"
@@ -866,19 +881,25 @@
     "role": "Role",
     "admin": "Administrator",
     "adminDescription": "Full administrative control.",
+    "editor": "Editor",
+    "editorDescription": "Can edit all database contents",
+    "reader": "Observer",
+    "readerDescription": "Can view all database contents",
     "schoolAdmin": "School-Admin",
-    "schoolAdminDescription": "Administraitve rights with exceptions for critical .",
+    "curriculum": "Curriculum Editor",
+    "schoolAdminDescription": "Administrative rights with exceptions for critical .",
     "teacher": "Teacher",
     "teacherDescription": "Manage units and lessons.",
     "student": "Student",
-    "studentDescription": "Participate in lessons",
-    "curriculum": "Curriculum Editor",
-    "sync": "Sync account"
+    "studentDescription": "Participate in lessons"
   },
   "editor": {
     "summary": "Summary",
     "pocket": {
       "title": "Module-Editor"
+    },
+    "unit": {
+      "title": "Sequence-Editor"
     },
     "task": {
       "title": "Task-Editor"
@@ -886,6 +907,11 @@
     "heuristics": {
       "title": "Heuristics-Editor"
     }
+  },
+  "school": {
+    "title": "Teaching institution",
+    "schoolYear": "School year",
+    "schoolYears": "School years"
   },
   "schoolClass": {
     "title": "Class",
@@ -898,86 +924,25 @@
     "notFoundById": "No class found by id",
     "invalidSchoolYear": "Invalid year",
     "noMember": "You are not a member of this class",
+    "progresses": "School year is continuous",
     "inLesson": "In lesson",
-    "toLesson": "To lesson",
+    "cannotStartTeaching": "Teaching cannot start until all areas are complete",
     "createLesson": "Create lesson",
+    "progressIncomplete": "Progress for course incomplete",
     "lessonConnected": "Lesson created",
     "invite": "Invite members",
     "addStudents": "Add students",
+    "addStudentsDescription": "Select the students from the list to be added",
     "requestJoin": "Request membership",
     "waitForTeacher": "There is no material visible right now. Please follow the teacher's instructions.",
     "waitForTeacherToStartLesson": "Please wait until the teacher starts the lesson",
+    "waitForTeacherToSetProgress": "Wait until teacher has set the next lesson",
     "enterLesson": "The lesson is already running, do you wish to join?",
     "currentLessonCompleted": "The selected lesson has been completed.",
     "confirmRemove": "You are about to delete all units, lessons and material associated with this class."
   },
   "lesson": {
-    "title": "Lesson",
-    "forkedFrom": "Copy from",
-    "startedAt": "Started at",
-    "studentWait": "Please wait for the next instructions",
-    "overview": "Overview of this unit",
-    "noMaterial": "No material present",
-    "noFiles": "No uploaded files",
-    "noReadings": "No further readings",
-    "showStudents": "Show students",
-    "present": "Present on whiteboard",
-    "evalResults": "Evaluate results",
-    "presentResults": "Present results",
-    "results": "Results",
-    "progress": "Progress",
-    "artifacts": "Artifacts",
-    "uploads": "Uploads",
-    "noStudents": "There are no students in this class",
-    "completedAt": "Completed at",
-    "showMoreLabels": "Show labels",
-    "confirmRemove": "You are about to delete this lesson and all it's associated data.",
-    "actions": {
-      "restart": "Restart lesson",
-      "restartConfirm": "All created data will be deleted, if you restart this lesson.",
-      "complete": "Complete lesson",
-      "completeConfirm": "Do you want to complete this lesson?",
-      "start": "Start lesson",
-      "startConfirm": "Do you want to start this lesson now?",
-      "makeMobileInactive": "Hide from students",
-      "makeMobileActive": "Activate for students",
-      "removeStudent": "Remove student",
-      "confirmRemoveStudent": "You are about to remove  \"{{firstName}} {{lastName}}\" from class \"{{title}}\". Are you sure?"
-    },
-    "errors": {
-      "unexpectedState": "Unexpected lesson state",
-      "expectedIdle": "Expected 'In preparation'",
-      "expectedRunning": "Expected 'Running'",
-      "expectedRestartable": "Expected restartable",
-      "expectedCompleted": "Expected 'Completed'",
-      "expectedToggleAble": "Expected 'Running' or 'Completed'"
-    },
-    "states": {
-      "idle": "In preparation",
-      "running": "Running",
-      "completed": "Completed"
-    },
-    "phases": {
-      "title": "Phases",
-      "schema": "Lesson schema"
-    },
-    "material": {
-      "title": "Material",
-      "preview": "Preview material",
-      "previewTemplate": "Preview",
-      "selectItemRp": "Select how to process the responses"
-    },
-    "safeguard": {
-      "title": "Aftermath",
-      "artifacts": "Artifacts"
-    },
-    "info": {
-      "title": "Members and settings",
-      "grouping": "Manage groups"
-    },
-    "student": {
-      "docNotVisible": "Material might have been hidden by the teacher"
-    }
+    "title": "Lesson"
   },
   "lessons": {
     "title": "My lessons",
@@ -985,7 +950,6 @@
     "completed": "Completed",
     "running": "Running",
     "upcoming": "Upcoming",
-    "toLesson": "To lesson",
     "studentRunning": "Ongoing lessons",
     "studentCompleted": "Completed lessons"
   },
@@ -1006,12 +970,6 @@
     "gb": "GB",
     "title": "Filesize"
   },
-  "response": {
-    "showUser": "Show username",
-    "hide": "Exclude repsonse",
-    "show": "Include repsonse",
-    "showAnswers": "Show hidden responses"
-  },
   "agreements": {
     "termsOfService": {
       "title": "Terms of service",
@@ -1028,28 +986,28 @@
     "createClass": "Create class / lesson"
   },
   "lmsConnection": {
-    "title": "Lernmanagement-System Verknüpfung",
-    "appTitle": "Titel der Anwendung",
-    "authUrl": "Webservice URL zum Authentifizieren der User"
+    "title": "Learning Management System Link",
+    "appTitle": "Title of the application",
+    "authUrl": "Webservice URL to authenticate the user"
   },
   "rolesCheck": {
-    "title": "Rollen-Validierung",
-    "rolesEmpty": "Ungültig: es muss Rolle angegeben werden",
-    "adminRequired": "Ungültig: es muss zuerst ein Benutzer mit der Rolle Admin angelegt werden",
-    "valid": "Gültige Rolle."
+    "title": "Role Validation",
+    "rolesEmpty": "Invalid: role must be specified",
+    "adminRequired": "Invalid: a user with the role Admin must be created first",
+    "valid": "Valid role."
   },
   "comments": {
-    "added": "Komentar hinzugefügt",
-    "title": "Kommentare",
-    "addComment": "Kommentieren",
-    "comment": "Kommentar",
-    "noCommentsYet": "Es sind noch keine Kommentare vorhanden"
+    "added": "Comment added",
+    "title": "Comments",
+    "addComment": "Comment",
+    "comment": "Comment",
+    "noCommentsYet": "There are no comments yet"
   },
   "admin": {
     "title": "Administrator"
   },
   "theme": {
-    "bsDefault": "Defualt theme",
+    "bsDefault": "Default theme",
     "custom": "Custom theme"
   },
   "createUser": {
@@ -1070,7 +1028,7 @@
     "reduced": "Reduced",
     "onlyDefaults": "Only defaults",
     "onlyContext": "Only object context",
-    "quickFilter": "Quickfilter",
+    "quickFilter": "Quick filter",
     "documentsPerPage": "Documents per page",
     "loadMore": "Load more"
   },
@@ -1100,17 +1058,19 @@
   },
   "routes": {
     "backToEdit": "Back to edit",
-    "backToLesson":"Backl to lesson",
+    "backToLesson":"Back to lesson",
     "notFound": "Page not found",
     "notFoundExplained": "The page you entered or navigated has not been found",
     "home": "Home",
     "dashboard": "Dashboard",
     "profile": "Profile",
+    "group": "My Group",
     "login": "Sign-in",
     "logout": "Logout",
     "collection": "Collection",
     "workflow": "Workflow",
-    "lessons": "All lessons"
+    "lessons": "All lessons",
+    "redirect": "Load page"
   },
   "textRenderer": {
     "item": "One of your previous responses"
@@ -1137,7 +1097,7 @@
       "h6": "6 - Smaller"
     },
     "list": "List",
-    "listIcon": "Liste-Symbol",
+    "listIcon": "List-Symbol",
     "enum": "Enumeration",
     "itemReference": {
       "title": "Show previous response",
@@ -1147,8 +1107,8 @@
     }
   },
   "item": {
-    "title": "Item",
     "label": "Question / assignment",
+    "title": "Item",
     "text": "Text",
     "textArea": "Textarea",
     "savedAt": "Last saved at",
@@ -1168,12 +1128,21 @@
       "fileType": "Limit to a certain file type",
       "select": "",
       "defaultChoice": "The default option that will be displayed; optional"
-    }
+    },
+    "groupMode": {
+      "title": "Group-Mode",
+      "off": "Not active",
+      "merge": "Answers are merged",
+      "override": "One answers for the group",
+      "split": "Each person answers for him/herself"
+    },
+    "groupText": "Common text"
   },
   "itemTypes": {
     "text": "Text",
     "numerical": "Numerical",
     "choices": "Choice",
+    "group": "Group-Items",
     "media": "File upload",
     "other": "Other items",
     "notCategorized": "Uncategorized"
@@ -1196,12 +1165,13 @@
     "multiple": "Upload multiple files",
     "document": "Document",
     "documents": "Documents",
-    "noPDF": "EMbedded PDF is not supported by your browser",
+    "noPDF": "EEmbedded PDF is not supported by your browser",
     "images": "Images",
     "video": "Video",
     "videos": "Videos",
     "upload": "Upload a file",
     "uploadingFile": "Uploading file",
+    "uploadSuccess": "The file was uploaded successfully",
     "uploadMultiple": "Upload multiple files",
     "mimeError": "Expected format: [{{expected}}], actual format: [{{got}}/{{ending}}]",
     "converting": "Converting your file. THis can take a while.",

@@ -1,10 +1,30 @@
 {
   "actions": {
-    "createClass": "Create new class"
+    "createClass": "Create new class",
+    "edit": "Edit",
+    "delete": "delete",
+    "archive": "Archive",
+    "editInUnitEditor": "edit in sequence editor",
+    "createNoEdit": "Apply in original",
+    "saveOnly": "Save Only"
   },
   "dashboard": {
     "prepare": "Prepare lessons",
     "lesson": "Execute lessons",
-    "myLastDocuments": "My last documents"
+    "myLastDocuments": "My last documents",
+    "createCustom": "Custom Lesson",
+    "useMaster": "select template",
+    "createOnlyClass": "Create Course Only"
+  },
+  "unit": {
+    "custom": "Own sequence"
+  },
+  "lessons": {
+    "toLesson": "Conducting Lessons"
+  },
+  "schoolClass": {
+    "timeFrame": "Time period",
+    "from": "From",
+    "to": "to"
   }
 }

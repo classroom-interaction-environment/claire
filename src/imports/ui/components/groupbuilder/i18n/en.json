@@ -1,0 +1,15 @@
+{
+  "group": {
+    "title": "Group",
+    "maxUsers": "Max. persons"
+  },
+  "groupBuilder": {
+    "defaultTitle": "Teaching group",
+    "materialForAllGroups": "Equal material for all groups",
+    "materialAutoShuffle": "Distribute material automatically",
+    "shuffle": "Automatically Assign",
+    "manual": "Assign Manually",
+    "settings": "Group Settings",
+    "addGroup": "Create another group"
+  }
+}
