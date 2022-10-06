@@ -36,7 +36,6 @@ export const createContextRegistry = (options) => {
   } = options
 
   const info = createInfoLog(name)
-  const aliases = new Map()
   const internalHooks = {
     afterAdd: hooks.afterAdd || (() => {})
   }
@@ -54,21 +53,11 @@ export const createContextRegistry = (options) => {
       }
 
       map.set(context.name, context)
-
-      // XXX BACK-COMPAT with old context names
-      if (context.alias) {
-        console.warn('replace old alias', context.alias, 'with', context.name)
-        aliases.set(context.alias, context)
-      }
-
       internalHooks.afterAdd(context)
       return this
     },
     get (name) {
       return map.get(name)
-    },
-    alias (name) {
-      return aliases.get(name)
     },
     has (name) {
       return map.has(name)

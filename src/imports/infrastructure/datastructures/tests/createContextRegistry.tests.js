@@ -60,7 +60,6 @@ describe(createContextRegistry.name, function () {
     expect(reg.get(ctxName)).to.equal(ctx)
     expect(reg.has(ctxName)).to.equal(true)
     expect(reg.hasIdentity(ctx)).to.equal(true)
-    expect(reg.alias('foo')).to.equal(ctx)
 
     // iteration / multiples
     reg.forEach((entry, n) => {
