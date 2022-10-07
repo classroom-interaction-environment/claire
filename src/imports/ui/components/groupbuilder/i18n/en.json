@@ -4,7 +4,7 @@
     "maxUsers": "Max. persons"
   },
   "groupBuilder": {
-    "defaultTitle": "Teaching group",
+    "defaultTitle": "Students Group",
     "materialForAllGroups": "Equal material for all groups",
     "materialAutoShuffle": "Distribute material automatically",
     "shuffle": "Automatically Assign",
