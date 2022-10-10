@@ -1,22 +1,24 @@
 {
   "wizard": {
     "unit": {
-      "description": "These are your units, sorted by latest updated.",
+      "title": "Planning your own lessons",
+      "description": "These are your units.",
       "custom": "These are your custom units",
       "selectOne": "Select a unit",
       "selectLastEdited": "Last edited units",
       "createNew": "Create new unit",
       "continueToEdit": "Continue to edit",
+      "edit": "Edit in sequence editor",
       "choose": {
-        "description": "Bitte wählen Sie eine existierende Sequenz zum bearbeiten aus oder legen Sie einen neue an. Die bestehenden Sequenzen sind nach den assoziierten Lernsituationn sortiert."
+        "description": "Please select an existing sequence to edit or create a new one. The existing sequences are sorted by the associated learning situations."
       },
       "create": {
-        "title": "Neue Sequenz erstellen",
-        "description": "Erstellen Sie hier eine neue Sequenz. Es werden zunächst die wichtigsten Angaben benötigt. Weitere Änderungen können dann im Editor vorgenommen werden."
+        "title": "Create new sequence",
+        "description": "Create a new sequence here. The most important details are required first. Further changes can then be made in the editor."
       },
       "preview": {
-        "title": "Vorschau der Sequenz",
-        "description": "Dies ist eine Vorschau des ausgewählten Dokuments. Wählen Sie 'Sequenz bearbeiten' um sie im Sequenz-Editor zur bearbeiten oder wählen Sie ein anderes Dokument aus."
+        "title": "Sequence preview",
+        "description": "This is a preview of the selected document. Select 'Edit Sequence' to edit it in the Sequence Editor or select another document."
       }
     }
   }
