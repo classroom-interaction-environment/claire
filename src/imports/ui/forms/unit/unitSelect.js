@@ -9,8 +9,8 @@ import { cursor } from '../../../api/utils/cursor'
 import { dataTarget } from '../../utils/dataTarget'
 import unitSelectLanguage from './i18n/unitSelectLanguage'
 import '../../renderer/dimension/dimension'
-import './unitSelect.html'
 import { LessonStates } from '../../../contexts/classroom/lessons/LessonStates'
+import './unitSelect.html'
 
 AutoForm.addInputType('unitSelect', {
   template: 'afUnitSelect',
@@ -19,7 +19,7 @@ AutoForm.addInputType('unitSelect', {
   }
 })
 
-Template.afUnitSelect.setDependencies({
+const API = Template.afUnitSelect.setDependencies({
   language: unitSelectLanguage
 })
 
@@ -38,27 +38,51 @@ Template.afUnitSelect.onCreated(function () {
 
     const availablePockets = []
 
-    getLocalCollection(Pocket.name).find({ _master: true, _custom: { $exists: false } }).forEach(pocketDoc => {
-      const selector = { _master: true, pocket: pocketDoc._id, _custom: { $exists: false }, dimensions: { $nin: disabledDimensionsList } }
-      const units = getLocalCollection(Unit.name).find(selector).fetch().filter(unitDoc => {
-        const lessonDoc = getLocalCollection(Lesson.name).findOne({ classId, unitOriginal: unitDoc._id })
+    API.debug(getLocalCollection(Pocket.name).find().fetch())
+    API.debug(getLocalCollection(Unit.name).find().fetch())
 
-        if (!hideWithLessons) {
-          unitDoc.lesson = lessonDoc
-          return true
+    getLocalCollection(Pocket.name)
+      .find({ _master: true, _custom: null }, { sort: { title: 1 } })
+      .forEach(pocketDoc => {
+        const selector = {
+          _master: true,
+          pocket: pocketDoc._id,
+          _custom: null,
+          dimensions: { $nin: disabledDimensionsList }
         }
-        return (!lessonDoc || LessonStates.isCompleted(lessonDoc))
-      })
-      // then count the remaining units and only add the pocket if there are units left
-      const count = units.length
-      if (count) {
-        availablePockets.push({
-          pocket: pocketDoc,
-          units,
-          count
+        const units = getLocalCollection(Unit.name).find(selector)
+          .fetch()
+          .filter(unitDoc => {
+            const lessonDoc = getLocalCollection(Lesson.name).findOne({ classId, unitOriginal: unitDoc._id })
+
+            if (!hideWithLessons) {
+              unitDoc.lesson = lessonDoc
+              API.debug(pocketDoc.title, 'filter (has lesson)', unitDoc.title)
+              return true
+            }
+
+            if (!lessonDoc) {
+              API.debug(pocketDoc.title, 'filter (no lesson)', unitDoc.title)
+              return true
+            }
+
+            const isCompleted = LessonStates.isCompleted(lessonDoc)
+            if (isCompleted) {
+              API.debug(pocketDoc.title, 'filter (is completed)', unitDoc.title)
+            }
+            return isCompleted
         })
-      }
-    })
+        // then count the remaining units and only add the pocket if there are units left
+        const count = units.length
+        API.debug(pocketDoc.title, 'count:', units.length)
+        if (count) {
+          availablePockets.push({
+            pocket: pocketDoc,
+            units,
+            count
+          })
+        }
+      })
 
     instance.state.set({ availablePockets })
   })

@@ -110,6 +110,9 @@ Template.dashboard.onCreated(function () {
           const ids = getCollection(Lesson.name).find({ classId }).map(lessonDoc => lessonDoc.unit)
           const skip = UnitCollection.find({ _id: { $in: ids }}).map(toDocId)
 
+          if (ids.length === 0) {
+            return
+          }
           loadIntoCollection({
             name: Unit.methods.all,
             args: { ids, skip },
@@ -359,7 +362,9 @@ Template.dashboard.events({
       onSubmit: definitions.onSubmit,
       onClosed: (options, ...args) => {
         templateInstance.updateLessonCounts()
-        return definitions.onClosed(options, ...args)
+        if (typeof definitions.onClosed === 'function') {
+          return definitions.onClosed(options, ...args)
+        }
       }
     })
   }

@@ -69,7 +69,7 @@
                             {{> icon name="file" }} {{entry.count}}
                         </span>
                     </div>
-                    <ul class="list-group collapse show" id="unit-collapse-{{@index}}">
+                    <ul class="list-group collapse" id="unit-collapse-{{@index}}">
                         {{#each unit in entry.units}}
                             <li class="list-group-item p-3 d-flex justify-content-between {{#unless unit.lesson}}select-unit clickable{{/unless}} {{#if isSelected unit._id}}bg-primary text-white{{/if}}"
                                 data-target="{{unit._id}}">
