@@ -1,0 +1,14 @@
+{
+  "nav": {
+    "share": "Sayfa/içerik paylaş",
+    "joinClass": "Kod ile kursa katılın",
+    "userProfile": "Benim profilim",
+    "logout": "Oturumu kapat"
+  },
+  "codeInvitation": {
+    "joinClassByCode": "Yeni bir kursa katılın"
+  },
+  "actions": {
+    "join": "Katılın"
+  }
+}

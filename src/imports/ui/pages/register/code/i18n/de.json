@@ -16,7 +16,7 @@
     },
     "username": {
       "title": "Account",
-      "description": "Damit Sie sich anmelden können benötigen wir Ihre Email-Adresse. Bitte achten Sie auf korrekte schreibweise."
+      "description": "Damit Sie sich anmelden können, benötigen wir Ihre E-Mail-Adresse. Bitte achten Sie auf korrekte Schreibweise."
     },
     "password": {
       "title": "Passwort setzen",

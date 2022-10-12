@@ -1,0 +1,41 @@
+{
+  "codeRegister": {
+    "title": "Kod ile kayıt",
+    "alreadyRegistered": "Ben zaten kayıt oldum",
+    "description": "Buradan CARO'ya kayıt olabilirsiniz. Kayıtla ilgili herhangi bir sorun yaşarsanız, lütfen davet bağlantısını aldığınız kişiyle iletişime geçin.",
+    "code": "Kayıt kodu",
+    "userAlreadyExists": "Bu bilgileri içeren bir profil zaten mevcuttur.",
+    "registerNow": "Kaydı tamamlayın",
+    "registering": "Profiliniz oluşturulmak üzere",
+    "retry": "Kaydı yeniden başlat",
+    "reportError": "Hata bildir",
+    "retryCode": "Bu kodla tekrar deneyin",
+    "basics": {
+      "title": "İsim belirtme",
+      "description": "Lütfen adınızı ve soyadınızı girin."
+    },
+    "username": {
+      "title": "Hesap",
+      "description": "Kayıt olabilmeniz için e-posta adresinize ihtiyacımız var. Lütfen doğru yazdığınızdan emin olun."
+    },
+    "password": {
+      "title": "Şifre belirleme",
+      "description": "Girişler için hala bir şifreye ihtiyacınız var. Kolayca tahmin edilebilecek kelimelerden veya tarihlerden kaçının."
+    },
+    "terms": {
+      "title": "Kullanım koşulları ve veri koruma",
+      "description": "Lütfen Kullanım Koşullarını ve Gizlilik Politikasını okumak için zaman ayırın. CARO'yu kullanmak için aşağıdaki her ikisini de kabul etmelisiniz."
+    },
+    "profile": {
+      "title": "Profil resmi ekle (isteğe bağlı)",
+      "description": "Profilinize, kursunuz çerçevesinde başkaları tarafından görülebilecek (ancak üçüncü şahıslar tarafından görülemeyecek) bir resim ekleyebilirsiniz. Bu adımı atlayıp daha sonra 'Profil' menü öğesi altında da yapabilirsiniz.",
+      "success": "Profiliniz başarıyla oluşturuldu.",
+      "continueWithoutImage": "Profil resmi olmadan devam et",
+      "uploadAndContinue": "Profil resmini yükleyin ve devam edin"
+    },
+    "failed": {
+      "title": "Kayıt başarısız oldu",
+      "description": "Kayıt sırasında bir hata oluştu."
+    }
+  }
+}

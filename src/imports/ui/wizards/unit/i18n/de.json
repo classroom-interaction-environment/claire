@@ -8,9 +8,9 @@
       "selectLastEdited": "Zuletzt bearbeitete Sequenzen",
       "createNew": "Neue Sequenz anlegen",
       "continueToEdit": "Sequenz bearbeiten",
-      "edit": "Edit in sequence editor",
+      "edit": "Im Sequenz-Editor bearbeiten",
       "choose": {
-        "description": "Bitte wählen Sie eine existierende Sequenz zum bearbeiten aus oder legen Sie einen neue an. Die bestehenden Sequenzen sind nach den assoziierten Lernsituationn sortiert."
+        "description": "Bitte wählen Sie eine existierende Sequenz zum bearbeiten aus oder legen Sie einen neue an. Die bestehenden Sequenzen sind nach den assoziierten Lernsituation sortiert."
       },
       "create": {
         "title": "Neue Sequenz erstellen",

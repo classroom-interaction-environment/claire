@@ -1,0 +1,73 @@
+{
+  "lessons": {
+    "toLesson": "Dersleri yürütmek"
+  },
+  "editor": {
+    "task": {
+      "emptyPages": "Bu görev hala içeriksiz sayfalar içeriyor"
+    },
+    "unit": {
+      "title": "Sekans düzenleyici",
+      "errors": {
+        "invalidLessonState": "Ders devam ediyor veya sona erdi. Bu nedenle düzenlenemez!"
+      },
+      "basicInfo": "Temel veriler",
+      "preview": "Ön izleme",
+      "summary": "Özet",
+      "editInUnitEditor": "Sekans düzenleyicide düzenleme",
+      "continueToEdit": "Hemen devam etmek ve yeni materyal üzerinde çalışmak ister misiniz?",
+      "documentCreated": "{{title}} başarıyla oluşturuldu",
+      "unitUpdated": "Sekans güncellendi",
+      "incomplete": "tamamlanmamış veya henüz işlenmemiş.",
+      "confirmDeleteUnit": "Sekans silmek üzeresiniz. Bağlantılı tüm materyaller kaldırılacak ve tüm öğretim aşamaları silinecektir. Devam etmek istediğine emin misin?",
+      "objectives": {
+        "title": "Yetkinlikler",
+        "add": "Yetkinlik ekle",
+        "create": "Yetkinlik oluşturma ve ekleme",
+        "added": "Bu sekansın yeterlilikleri",
+        "description": "Burada yetkinlikleri öğrenme sekansına atayabilirsiniz. Özellikle yeterlilikleri aramak için filtre işlevini kullanabilirsiniz."
+      },
+      "material": {
+        "title": "Malzemeler",
+        "create": "{{title}} yeniden oluştur",
+        "select": "{{title}} seçin ve ekleyin",
+        "preview": "Önizlemede görüntüle",
+        "linkToPhase": "Öğretim aşaması ile bağlantı",
+        "taskCreated": "Görev başarıyla oluşturuldu",
+        "linkWithPhase": "Öğretim aşaması ile bağlantı",
+        "unlinkFromPhase": "Öğretim aşamasından ayrı",
+        "unlinkedFromPhase": "\"{{title}}\" öğretim aşamasından kaldırıldı.",
+        "removeTask": "Görevi gerçekten sıralamadan kaldırmak istiyor musunuz? Görev silinmeyecektir.",
+        "taskRemoved": "Görev başarıyla kaldırıldı",
+        "deleteTask": "Görevi gerçekten sekanstan kaldırmak ve silmek istiyor musunuz?",
+        "taskDeleted": "Görev başarıyla kaldırıldı ve silindi",
+        "unexpected": "Beklenmedik hata",
+        "editTaskInEditor": "Görev düzenleyicide düzenleme",
+        "confirmRemove": "\"{{title}}\" materyalini sekans içerisinden kaldırmak üzeresiniz. Materyal tamamen silinmez ve herhangi bir zamanda tekrar eklenebilir.",
+        "confirmDelete": "Dikkat! Bu materyali kalıcı olarak silmek üzeresiniz. Bundan sonra artık mevcut olmayacaktır."
+      },
+      "phases": {
+        "title": "Öğretim aşamaları",
+        "overallTime": "Toplam süre",
+        "timeLimitExceeded": "Limit aşıldı",
+        "expectedTime": "Planlanmış",
+        "editPhase": "Öğretim aşamasını düzenleyin",
+        "isGlobal": "Bu sekansın dışında kullanılan öğretim aşaması",
+        "editGlobalPhase": "Genel (tekrar tekrar kullanılan) bir öğretim aşamasını düzenleme sürecindesiniz. Değişiklikler diğer dizileri etkileyebilir. Yine de düzenleme?",
+        "editGlobalAnyway": "Yine de düzenle",
+        "createPhase": "Öğretim aşaması oluşturun",
+        "phaseCreated": "Öğretim aşaması başarıyla oluşturuldu",
+        "selectPhase": "Genel öğretim aşamasını seçin",
+        "selectPhaseDescription": "Genel öğretim aşamalarından birini seçin. Bir öğretim aşamasını birden fazla kez ekleyebilirsiniz.",
+        "description": "Şablonlardan genel aşamaları (örn. selamlaşma, vedalaşma) seçebilir veya bireysel öğretim aşamaları oluşturabilirsiniz.",
+        "newPhase": "Yeni bir öğretim aşaması oluşturun",
+        "removePhase": "Öğretim aşamasını kaldırın",
+        "phaseRemoved": "Öğretim aşaması kaldırıldı",
+        "deletePhase": "Öğretim aşamasını sil",
+        "confirmRemove": "Bu öğretim aşamasını gerçekten kaldırmak ve silmek istiyor musunuz?"
+      },
+      "allDocsAdded": "Mevcut tüm belgeler zaten eklenmiştir",
+      "codeView": "Kaynak kodu"
+    }
+  }
+}

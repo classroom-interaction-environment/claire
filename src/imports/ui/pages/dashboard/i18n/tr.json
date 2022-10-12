@@ -1,0 +1,30 @@
+{
+  "actions": {
+    "createClass": "Yeni kurs",
+    "edit": "Düzenle",
+    "delete": "Silme",
+    "archive": "Arşiv",
+    "editInUnitEditor": "Sekans düzenleyicide düzenleme",
+    "createNoEdit": "Orijinalinde devralın",
+    "saveOnly": "Sadece kaydet"
+  },
+  "dashboard": {
+    "prepare": "Örnek şablonlar",
+    "lesson": "Dersleri yürütmek",
+    "myLastDocuments": "Son düzenlemelerim",
+    "createCustom": "Kendi dersleriniz",
+    "useMaster": "Şablon seçin",
+    "createOnlyClass": "Yalnızca kurs oluşturun"
+  },
+  "unit": {
+    "custom": "Kendi sekansı"
+  },
+  "lessons": {
+    "toLesson": "Dersleri yürütmek"
+  },
+  "schoolClass": {
+    "timeFrame": "Dönem",
+    "from": "Başlangıç",
+    "to": "Son"
+  }
+}

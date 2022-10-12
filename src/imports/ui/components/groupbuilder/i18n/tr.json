@@ -1,0 +1,15 @@
+{
+  "group": {
+    "title": "Grup",
+    "maxUsers": "Max. Kişiler"
+  },
+  "groupBuilder": {
+    "defaultTitle": "Öğretim grubu",
+    "materialForAllGroups": "Tüm gruplar için aynı malzeme",
+    "materialAutoShuffle": "Malzemeyi otomatik olarak dağıtın",
+    "shuffle": "Otomatik olarak tahsis et",
+    "manual": "Manuel olarak atama",
+    "settings": "Grup ayarları",
+    "addGroup": "Başka bir grup oluşturun"
+  }
+}
