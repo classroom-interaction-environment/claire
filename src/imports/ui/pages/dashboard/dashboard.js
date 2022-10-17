@@ -8,8 +8,6 @@ import { getLocalCollection } from '../../../infrastructure/collection/getLocalC
 import { cursor } from '../../../api/utils/cursor'
 import { dataTarget } from '../../utils/dataTarget'
 import { createDashboardFormActions } from './forms/dashboardForms'
-import { asyncTimeout } from '../../../api/utils/asyncTimeout'
-import { loadLessonsForClass } from './common/loadLessonsForClass'
 import { callMethod } from '../../controllers/document/callMethod'
 import { getCollection } from '../../../api/utils/getCollection'
 import { FormModal } from '../../components/forms/modal/formModal'

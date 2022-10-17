@@ -71,7 +71,9 @@ Template.afUnitSelect.onCreated(function () {
               API.debug(pocketDoc.title, 'filter (is completed)', unitDoc.title)
             }
             return isCompleted
-        })
+          })
+          .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+
         // then count the remaining units and only add the pocket if there are units left
         const count = units.length
         API.debug(pocketDoc.title, 'count:', units.length)
