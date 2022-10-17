@@ -8,6 +8,9 @@
     },
     "unit": {
       "title": "Unit-Editor",
+      "errors": {
+        "invalidLessonState": "The lesson is running or has ended. It can therefore not be edited!"
+      },
       "basicInfo": "Basic info",
       "preview": "Preview",
       "summary": "Summary",
