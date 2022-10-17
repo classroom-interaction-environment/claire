@@ -47,6 +47,9 @@
       ]
     }
   },
+  "patch": {
+    "removeDeadReferences": true
+  },
   "defaultLocale": "en",
   "files": {
     "bucketName": "fs",

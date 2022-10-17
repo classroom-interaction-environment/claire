@@ -54,6 +54,10 @@ const accountsFixtureSchema = schema({
   institution: String
 })
 
+const patchSchema = schema({
+  removeDeadReferences: Boolean
+})
+
 module.exports = schema({
   defaultLocale: String,
   files: filesSchema,
@@ -88,6 +92,7 @@ module.exports = schema({
     'fixtures.schoolAdmin': optionalArray,
     'fixtures.schoolAdmin.$': accountsFixtureSchema,
   }),
+  patch: patchSchema,
   public: schema({
     features: schema({
       groups:Boolean
