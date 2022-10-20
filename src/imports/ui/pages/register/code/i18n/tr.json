@@ -2,7 +2,7 @@
   "codeRegister": {
     "title": "Kod ile kayıt",
     "alreadyRegistered": "Ben zaten kayıt oldum",
-    "description": "Buradan CARO'ya kayıt olabilirsiniz. Kayıtla ilgili herhangi bir sorun yaşarsanız, lütfen davet bağlantısını aldığınız kişiyle iletişime geçin.",
+    "description": "Buradan {{siteName}}'ya kayıt olabilirsiniz. Kayıtla ilgili herhangi bir sorun yaşarsanız, lütfen davet bağlantısını aldığınız kişiyle iletişime geçin.",
     "code": "Kayıt kodu",
     "userAlreadyExists": "Bu bilgileri içeren bir profil zaten mevcuttur.",
     "registerNow": "Kaydı tamamlayın",
@@ -24,7 +24,7 @@
     },
     "terms": {
       "title": "Kullanım koşulları ve veri koruma",
-      "description": "Lütfen Kullanım Koşullarını ve Gizlilik Politikasını okumak için zaman ayırın. CARO'yu kullanmak için aşağıdaki her ikisini de kabul etmelisiniz."
+      "description": "Lütfen Kullanım Koşullarını ve Gizlilik Politikasını okumak için zaman ayırın.{{siteName}}'nı kullanmak için aşağıdakilerin her ikisini de kabul etmeniz gerekir."
     },
     "profile": {
       "title": "Profil resmi ekle (isteğe bağlı)",

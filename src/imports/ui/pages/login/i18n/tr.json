@@ -14,7 +14,7 @@
     "confirm": "Şifreyi tekrar girin",
     "resetPassword": {
       "title": "Şifreyi sıfırla",
-      "description": "Lütfen CARO'ya kaydolurken kullandığınız e-posta adresini girin. Şifrenizi kurtarmanız için size bir bağlantı göndereceğiz.",
+      "description": "Lütfen {{siteName}}'ya kaydolurken kullandığınız e-posta adresini girin. Şifrenizi kurtarmanız için size bir bağlantı göndereceğiz.",
       "send": "Link gönder",
       "sent": "Link başarıyla gönderildi. Gerekirse e-posta gelen kutunuzu ve spam klasörünüzü kontrol edin. Hala bir e-posta almadıysanız, doğru e-posta adresini girip girmediğinizi kontrol edin.",
       "resetDescription": "YENİ şifreyi buraya girin ve girişi onaylayın.",

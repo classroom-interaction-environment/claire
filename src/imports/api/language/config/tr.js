@@ -5,5 +5,5 @@ module.exports = {
     icon: '🇹🇷',
     name: 'Türkçe'
   },
-  load: () => import('../../../../resources/i18n/en')
+  load: () => import('../../../../resources/i18n/tr')
 }

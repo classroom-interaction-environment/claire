@@ -2,7 +2,7 @@
   "codeRegister": {
     "title": "Registrierung mit Code",
     "alreadyRegistered": "Ich habe mich bereits registriert",
-    "description": "Hier können Sie sich bei CARO registrieren. Wenn es Probleme bei der Registrierung gibt, wenden Sie sich bitte an die Person, von der Sie den Einladungslink erhalten haben.",
+    "description": "Hier können Sie sich bei {{siteName}} registrieren. Wenn es Probleme bei der Registrierung gibt, wenden Sie sich bitte an die Person, von der Sie den Einladungslink erhalten haben.",
     "code": "Registrierungscode",
     "userAlreadyExists": "Es existiert bereits ein Profil mit diesen Angaben.",
     "registerNow": "Registrierung abschließen",
@@ -24,7 +24,7 @@
     },
     "terms": {
       "title": "Nutzungsbedingungen und Datenschutz",
-      "description": "Bitte nehmen Sie sich Zeit, um die Nutzungsbedingungen und Datenschutzbestimmungen durchzulesen. Um CARO nutzen zu können, müssen Sie beiden weiter unten zustimmen."
+      "description": "Bitte nehmen Sie sich Zeit, um die Nutzungsbedingungen und Datenschutzbestimmungen durchzulesen. Um {{siteName}} nutzen zu können, müssen Sie beiden weiter unten zustimmen."
     },
     "profile": {
       "title": "Profilbild hinzufüfen (optional)",

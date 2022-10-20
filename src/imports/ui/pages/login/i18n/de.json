@@ -14,7 +14,7 @@
     "confirm": "Passwort erneut eingeben",
     "resetPassword": {
       "title": "Passwort zurücksetzen",
-      "description": "Bitte geben Sie Ihre Email Adresse ein, mit der Sie sich bei CARO angemeldet haben. Wir senden Ihnen einen Link zur Wiederherstellung des Passworts zu.",
+      "description": "Bitte geben Sie Ihre Email Adresse ein, mit der Sie sich bei {{siteName}} angemeldet haben. Wir senden Ihnen einen Link zur Wiederherstellung des Passworts zu.",
       "send": "Link zusenden",
       "sent": "Link wurde erfolgreich verschickt. Prüfen Sie Ihr Email Postfach und ggf. den Spam Ordner. Falls Sie dennoch keine Email erhalten haben, prüfen Sie, ob Sie die korrekte Email Adresse eingegeben haben.",
       "resetDescription": "Geben Sie hier das NEUE Passwort ein und bestätigen Sie die Eingabe.",
