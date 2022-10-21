@@ -36,7 +36,7 @@
   "accounts": {
     "enroll": {
       "subject": "Welcome to {{siteName}}",
-      "text": "Hallo {{name}},\n\nYou have been invited and are just a step away from starting with {{siteName}}.\n\nComplete the registration by clicking the following link:\n{{url}}\n\nThe link expires in {{expires}} day(s).\n\nWith best regards, your {{siteName}} Team"
+      "text": "Hello {{name}},\n\nYou have been invited and are just a step away from starting with {{siteName}}.\n\nComplete the registration by clicking the following link:\n{{url}}\n\nThe link expires in {{expires}} day(s).\n\nWith best regards, your {{siteName}} Team"
     },
     "resetPassword": {
       "subject": "Reset your Password",
