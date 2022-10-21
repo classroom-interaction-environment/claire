@@ -1,0 +1,53 @@
+{
+  "editor": {
+    "didactics": {
+      "title": "Müfredat editörü",
+      "navTitle": "Müfredat editörü",
+      "heuristics": {
+        "title": "Sezgisel Yöntemler",
+        "createDimension": "Boyut oluştur",
+        "editContent": "Müfredatı düzenle",
+        "targets": "Hedef seviyeler",
+        "actors": "Aktörler",
+        "layers": "Hedef seviyeler",
+        "lastEdited": "Son düzenleme",
+        "addActor": "Aktörler",
+        "addLayer": "Hedef seviyeler",
+        "confirmDelete": "Dikkat. {{title}} boyutunu silmek üzeresiniz. Sekanslar zaten bu boyutu kullanıyorsa, bu ciddi hatalara yol açabilir!",
+        "addDimension": "Yeni eğitim boyutu",
+        "updateDimension": "Eğitim boyutunu düzenle",
+        "removeDimension": "Yetkinlik silinir. Onu kullanan tüm sekanslardan kaldırılır. Devam etmek ister misiniz?",
+        "removedFromUnit": "Yetkinlik sekanstan çıkarıldı",
+        "selectUnit": "Bu eğitim boyutuna sahip sekanslar",
+        "createUnit": "Yeni sekans oluşturun",
+        "addObjective": "Yetkinlik",
+        "uncategorized": "Görevlendirilmedi",
+        "linkedUnits": "Bu yetkinliğe sahip sekanslar",
+        "nolinkedUnits": "Bu yetkinliğe sahip sekans yok",
+        "linkedPocket": "Bir öğrenme durumuna aittir",
+        "nolinkedPocket": "Herhangi bir öğrenme durumuna ait değil",
+        "confirmDeleteObjective": "Aşağıda, yetkinlik tüm bağlantılı sekanslardan kaldırılır ve silinir. Gerçekten devam edecek misin?",
+        "objectiveRemoved": "Yetkinlik silindi",
+        "objectiveRemovedFromUnit": "Yetkinlik sekanstan başarıyla çıkarıldı"
+      },
+      "objectives": {
+        "title": "Yetkinlikler",
+        "addObjective": "Yetkinlik oluşturun",
+        "confirmDelete": "Dikkat. \"{{title}}\" yetkinliğini ve aşağıdaki {{count}} alt girdilerini silmek üzeresiniz:\n{{children}}\n\nEğer diziler zaten bu yetkinliği kullanıyorsa, bu ciddi hatalara yol açabilir!",
+        "addAsChild": "Alt kategori olarak ayarlamak için buraya yerleştirin",
+        "addChild": "Yeni yetkinlik ekleyin",
+        "expandAll": "Her şeyi göster / gizle"
+      },
+      "pockets": {
+        "title": "Öğrenme durumları",
+        "create": "Öğrenme durumu oluşturun",
+        "addPocket": "Yeni öğrenme durumu",
+        "updatePocket": "Öğrenme durumunu düzenle",
+        "addUnit": "Sekans ekle",
+        "cantDeletePocket": "Öğrenme süreçleri yalnızca artık dizileri olmadığında silinebilir",
+        "confirmDeleteUnit": "Dikkat! \"{{title}}\" sekansını silmek üzeresiniz. İlgili tüm malzemeler de tamamen kaldırılacaktır.",
+        "confirmDeletePocket": "Dikkat! \"{{title}}\" öğrenme durumunu silmek üzeresiniz. Kullanımdaysa, bu durum hatalara yol açabilir."
+      }
+    }
+  }
+}

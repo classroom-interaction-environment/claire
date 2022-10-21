@@ -1,0 +1,25 @@
+{
+  "wizard": {
+    "unit": {
+      "title": "Kendi derslerinizi planlayın",
+      "description": "Bunlar sizin uyarlanmış sekanslarınız.",
+      "custom": "Bunlar sizin kendi bağımsız sekanslarınızdır",
+      "selectOne": "Mevcut sekansı seçin",
+      "selectLastEdited": "Son düzenlenmiş sekanslar",
+      "createNew": "Yeni sekans oluşturun",
+      "continueToEdit": "Düzenleme sekansı",
+      "edit": "Sekans düzenleyicide düzenlemer",
+      "choose": {
+        "description": "Lütfen düzenlemek için mevcut bir sekans seçin veya yeni bir sekans oluşturun. Mevcut sekanslar ilgili öğrenme durumuna göre sıralanır."
+      },
+      "create": {
+        "title": "Yeni sekans oluşturun",
+        "description": "Burada yeni bir sekans oluşturun. Önce en önemli ayrıntılara ihtiyaç vardır. Daha sonra düzenleyicide daha fazla değişiklik yapılabilir."
+      },
+      "preview": {
+        "title": "Sekansın önizlemesi",
+        "description": "Bu, seçilen belgenin bir önizlemesidir. Sekans düzenleyicide düzenlemek için 'Sekansı düzenle'yi seçin veya başka bir belge seçin."
+      }
+    }
+  }
+}

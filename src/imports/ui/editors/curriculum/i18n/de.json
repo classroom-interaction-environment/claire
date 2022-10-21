@@ -10,7 +10,7 @@
         "targets": "Zielebenen",
         "actors": "Akteure",
         "layers": "Zielebenen",
-        "lastEdited": "zuletzt Bearbeitet",
+        "lastEdited": "Zuletzt Bearbeitet",
         "addActor": "Akteur",
         "addLayer": "Zielebene",
         "confirmDelete": "Achtung! Sie sind dabei die Dimension {{title}} zu löschen. Sollten Sequenzen diese Dimension bereits verwenden kann dies zu schwerwiegenden Fehlern führen!",

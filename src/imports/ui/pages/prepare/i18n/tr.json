@@ -1,0 +1,17 @@
+{
+  "wizard": {
+    "pleaseSelect": "Lütfen seçiniz",
+    "prepare": {
+      "selectClass": "Lütfen önce ders oluşturmak istediğiniz bir kurs seçin.",
+      "selectUnit": "Sizin için bir kopya olarak oluşturulacak ve istediğiniz gibi uyarlayabileceğiniz öğrenme dizilerinden birini seçin.",
+      "filterByDimension": "Boyutlara göre filtre seçimi",
+      "phases": {
+        "title": "Öğrenme dizisinin öğretim aşamaları",
+        "description": "Bu noktada, seçilen öğrenme dizisi üzerinde çalışmaya devam etmek veya dersleriniz için orijinalini kullanmak isteyip istemediğinize karar verebilirsiniz.",
+        "missing": "Bu sekans için henüz hiçbir öğretim aşaması oluşturulmamıştır."
+      },
+      "completeAndEdit": "Düzenleyicide sonlandırın ve düzenlemeye devam edin",
+      "completeWithoutEdit": "Sonlandırın ve orijinalinde devralın"
+    }
+  }
+}

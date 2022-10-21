@@ -44,7 +44,7 @@
     },
     "verifyEmail": {
       "subject": "Ihren {{siteName}} Account bestätigen",
-      "text": "Willkommen bei {{siteName}}!\n\nHallo {{name}},\n\num {{siteName}} volst\"andig nutzen zu können bitten wir Sie, Ihre Identität zu bestätigen, indem Sie auf den folgenden Link klicken: {{url}}\n\nAchtung: {{siteName}} fragt nicht nach Ihrem Passwort (außer Sie setzen Ihr Passwort zurück) oder nach sonstigen sensiblen Informationen per Email. Bei Zweifeln wenden Sie sich bitte an {{supportEmail}}\n\nDiese Email wurde automatisch generiert und enthält keinen Absender."
+      "text": "Willkommen bei {{siteName}}!\n\nHallo {{name}},\n\num {{siteName}} vollst\"andig nutzen zu können bitten wir Sie, Ihre Identität zu bestätigen, indem Sie auf den folgenden Link klicken: {{url}}\n\nAchtung: {{siteName}} fragt nicht nach Ihrem Passwort (außer Sie setzen Ihr Passwort zurück) oder nach sonstigen sensiblen Informationen per Email. Bei Zweifeln wenden Sie sich bitte an {{supportEmail}}\n\nDiese Email wurde automatisch generiert und enthält keinen Absender."
     },
     "inform": {
       "passwordReset": {
@@ -115,7 +115,7 @@
     "description": "Beschreibung",
     "code": "Kurzform",
     "type": "Typ",
-    "showMore": "Weitere Laden",
+    "showMore": "Weitere laden",
     "newEntry": "Neuer Eintrag",
     "actions": "Aktionen",
     "yes": "Ja",
@@ -213,7 +213,7 @@
     "expirationDays": "Tage bis zum Ablauf der Einladung",
     "maxUsers": "Maximale Anzahl an Registrierungen mit diesem Code",
     "count": "Erledigt / Gesamt",
-    "role": "Role der eingeladenen Benutzer",
+    "role": "Rolle der eingeladenen Benutzer",
     "institution": "Institution / Unternehmen",
     "joinClass": "Sie wurden in den Kurs \"{{className}}\" eingeladen. Sie behalten nach dem Beitritt Ihre alten Kurse bei. Möchten Sie dem Kurs beitreten?",
     "invite": "Benutzer einladen",
@@ -224,7 +224,7 @@
     "invalidLink": "Ungültiger Registrierungslink",
     "invalidLinkReason": "Der Link bzw. Code für die Registrierung ist entweder ungültig oder abgelaufen. Bitte geben Sie den Code erneut ein oder wenden Sie sich an die Person, von der Sie den Link erhalten haben.",
     "emailSubject": "Willkommen bei {{siteName}}",
-    "emailBody": "Willkommen bei {{siteName}}!\n\nHallo{{to}},\nSie wurden eingeladen am Unterricht in {{siteName}} teilzunehmen. Um sich zu registrieren klicken Sie einfach auf diesen Link und folgen Sie der Anleitung:\n{{link}}\n\nFalls Sie Probleme haben, können Sie sich gerne bei mir melden.\n\nMit besten Grüßen\n{{from}}\n\n\nDiese Email wurde automatisch erstellt.",
+    "emailBody": "Willkommen bei {{siteName}}!\n\nHallo {{to}},\nSie wurden eingeladen am Unterricht in {{siteName}} teilzunehmen. Um sich zu registrieren klicken Sie einfach auf diesen Link und folgen Sie der Anleitung:\n{{link}}\n\nFalls Sie Probleme haben, können Sie sich gerne bei mir melden.\n\nMit besten Grüßen\n{{from}}\n\n\nDiese Email wurde automatisch erstellt.",
     "insufficientRoles": "Es können nur Einladungen für Benutzer mit niedrigeren Rollen erstellt werden",
     "errors": {
       "invalidCode": "Code ist ungültig oder abgelaufen"
@@ -232,7 +232,7 @@
   },
   "safeConfirm": {
     "code": "Bitte bestätigen Sie den Vorgang durch Eingabe des folgenden Codes",
-    "failed": "Bestätigen abgebrochen oder fehlgeschlagen"
+    "failed": "Bestätigung abgebrochen oder fehlgeschlagen"
   },
   "beamer": {
     "title": "Beamer",
@@ -266,7 +266,7 @@
     "resend": "Email erneut zusenden",
     "complete": "Abschließen",
     "deny": "Ablehnen",
-    "confirm": "Aktion Bestätigen",
+    "confirm": "Aktion bestätigen",
     "openInNewTab": "In eigenem Fenster öffnen",
     "refresh": "Neu laden",
     "continue": "Fortfahren",
@@ -320,11 +320,11 @@
   "upload": {
     "title": "Upload",
     "successfull": "Upload erfolgreich",
-    "maxSizeExceeded": "Dateien dieses Typs dürfen nicht größer als {{maxSize}} MB sin.",
+    "maxSizeExceeded": "Dateien dieses Typs dürfen nicht größer als {{maxSize}} MB sein.",
     "unsupportedExtension": "Dateien vom typ '{{extension}}' werden nicht unterstützt. Erlaubte Formate sind {{allowedFormats}}"
   },
   "time": {
-    "milliseconds": "Milisekunden",
+    "milliseconds": "Millisekunden",
     "seconds": "Sekunden",
     "sec": "Sek",
     "minutes": "Minuten",
@@ -446,7 +446,7 @@
     "notVisible": "Diese Aufgabe ist nicht (mehr) sichtbar bzw. bearbeitbar.",
     "noUnitLinked": "Diese Aufgabe ist noch nicht mit einer Sequenz verknüpft",
     "noPageContent": "Diese Seite besitzt noch keine Inhalte!",
-    "createInfo": "Geben Sie der Aufgabe einen selbstbeschreibenden Titel. Schlechte Titel sind z.B. 'Aufgabe 1' oder 'Schreibaufgabe'. Zusätzliche Infos in der Beschreibung machen es leichter die Aufgabe auch in andere Sequenzen einzubinden.",
+    "createInfo": "Geben Sie der Aufgabe einen selbst beschreibenden Titel. Schlechte Titel sind z.B. 'Aufgabe 1' oder 'Schreibaufgabe'. Zusätzliche Infos in der Beschreibung machen es leichter die Aufgabe auch in andere Sequenzen einzubinden.",
     "confirmDeleteElement": "Möchten Sie das Element wirklich von der Aufgabe entfernen und endgültig löschen?",
     "header": {
       "title": "Kopfzeile",
@@ -699,6 +699,7 @@
   "language": {
     "de": "Deutsch",
     "en": "English",
+    "tr": "Türkisch",
     "switchSuccessfull": "Sprache gewechselt"
   },
   "literature": {
@@ -737,7 +738,7 @@
     "research": {
       "title": "Forschungsdaten",
       "optIn": "Teilnahme aktivieren",
-      "optInComplete": "Sie haben Ihre Teilnahme an der Forschung erfolgreich bestätigt. Sie können die Teilnehme jederzeit in Ihren Profileinstellungen wiederrufen.",
+      "optInComplete": "Sie haben Ihre Teilnahme an der Forschung erfolgreich bestätigt. Sie können die Teilnehme jederzeit in Ihren Profileinstellungen widerrufen.",
       "optOut": "Teilnahme beenden",
       "optInMail": "Hallo {{fullName}},\n\nBitte klicken Sie auf den folgenden Link um an der Forschung teilzunehmen: {{url}}\n\nMit besten Grüßen\nIhr {{siteName}} Team",
       "participate": "Teilnahme an Forschung",
@@ -785,7 +786,7 @@
     "forbidden": "Ungültiger Benutzername. Zulässig sind mind. 4 bis max. 12 Buchstaben, Zahlen, sowie - _ $ @",
     "getUser": "Benutzername wird bereits verwendet.",
     "userNotExist": "Benutzername ist verfügbar.",
-    "userValid": "Benutzername is gültig",
+    "userValid": "Benutzername ist gültig",
     "loading": "Überprüfe Benutzername"
   },
   "definitions": {
@@ -812,7 +813,7 @@
     "finished": "Workflowassistent erfolgreich abgeschlossen.",
     "couldNotCompleteStep": "Schritt kann nicht abgeschlossen werden",
     "noWorkflowDataReceived": "Keine Daten für Workflow verfügbar",
-    "newOrExisting": "Bitte wähle eine option aus.",
+    "newOrExisting": "Bitte wähle eine Option aus.",
     "createWorkflowDoc": "Neuen Workflow anlegen.",
     "connectWorkflow": "Workflow verknüpfen.",
     "continueToEdit": "Weiter zum Editor",
@@ -1041,7 +1042,7 @@
     "connected": "Verbunden",
     "connecting": "Verbinde",
     "failed": "Verbindung fehlgeschlagen",
-    "reconnected": "Verbindung Wiederhergestellt",
+    "reconnected": "Verbindung wiederhergestellt",
     "waiting": "Warte",
     "offline": "Offline",
     "reloadPage": "Anwendung neu laden"
@@ -1100,7 +1101,7 @@
     "listIcon": "Listen-Symbol",
     "enum": "Aufzählung",
     "itemReference": {
-      "title": "Lernende Antwort Anzeigen",
+      "title": "Lernende Antwort anzeigen",
       "hint": "Hinweis zu Aufgabe / Lernendenaktionen",
       "taskId": "Aufgabe",
       "refId": "Lernendenaktion"
