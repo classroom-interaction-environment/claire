@@ -233,4 +233,40 @@ Admin.methods.users = {
   })
 }
 
+Admin.methods.getInstitutions = {
+  name: 'admin.methods.getInstitutions',
+  roles: [UserUtils.roles.schoolAdmin],
+  schema: {},
+  run: onServerExec(function () {
+    import { getAllInstitutions } from './getAllInstitutions'
+    return function () {
+      const { userId } = this
+
+      return getAllInstitutions({ userId })
+    }
+  })
+}
+
 Admin.publications = {}
+
+Admin.publications.usersByInstitution = {
+  name: 'admin.publications.usersByInstitution',
+  schema: {
+    institution: String
+  },
+  roles: [UserUtils.roles.schoolAdmin],
+  run: onServer(function ({ institution }) {
+    return Meteor.users.find({ institution }, {
+      fields: {
+        username: 1,
+        emails: 1,
+        firstName: 1,
+        lastName: 1,
+        roles: 1,
+        role: 1,
+        presence: 1,
+        institution: 1
+      }
+    })
+  })
+}
