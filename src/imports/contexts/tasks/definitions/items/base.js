@@ -32,7 +32,7 @@ export const ItemBase = {
       required: {
         type: Boolean,
         label: translate('form.required'),
-        defaultValue: true,
+        defaultValue: false,
         optional: true,
         autoform: {
           hint: translate('item.hint.required')
@@ -64,7 +64,7 @@ export const ItemBase = {
       [itemId]: {
         type: String,
         label: label,
-        optional: !required
+        optional: true // !required // TODO run patch after all required were true by default
       }
     }
   }

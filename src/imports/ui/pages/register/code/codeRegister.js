@@ -24,6 +24,7 @@ import loginLanguage from '../../login/i18n/loginLanguage'
 import codeRegisterLanguage from './i18n/codeRegisterLang'
 import '../enroll/enrollAccount.scss'
 import './codeRegister.html'
+import { currentLanguage } from '../../../../api/language/currentLanguage'
 
 /**
  * This page is used to register users by a given code (transaction number)
@@ -353,8 +354,8 @@ Template.codeRegister.events({
     const basicCredentials = templateInstance.state.get('basicCredentials')
     const usernameDoc = templateInstance.state.get('usernameDoc')
     const passwordCredentials = templateInstance.state.get('passwordCredentials')
-    const registerWithCodeDoc = Object.assign({}, basicCredentials, passwordCredentials, usernameDoc)
-
+    const locale = currentLanguage()?.code ?? undefined
+    const registerWithCodeDoc = Object.assign({}, basicCredentials, passwordCredentials, usernameDoc, { locale })
 
     Meteor.call(Users.methods.registerWithCode.name, registerWithCodeDoc, (registerError, userId) => {
       templateInstance.state.set('registering', false)

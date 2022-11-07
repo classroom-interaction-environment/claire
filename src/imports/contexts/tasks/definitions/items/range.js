@@ -30,7 +30,7 @@ export const ItemNumber = {
       }
     }
   },
-  item ({ itemId, minValue, maxValue }) {
+  item ({ itemId, zminValue, maxValue }) {
     return {
       [itemId]: {
         type: Number,
