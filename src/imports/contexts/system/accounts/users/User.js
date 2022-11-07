@@ -50,27 +50,6 @@ Users.groups = {
 
 /****************************
  *
- * ERRORS
- *
- ***************************/
-
-/** @deprecated TODO move errors into own object */
-Users.errors = Users.errors || {}
-Users.errors.notFound = 'user.notFound'
-Users.errors.invalidUser = 'user.invalidUser'
-
-Users.errors.UserFactory = {
-  failed: 'createUser.failed'
-}
-
-Users.errors.codeRegister = {
-  codeInvalid: 'codeRegister.codeInvalid',
-  emailExists: 'codeRegister.emailExists',
-  failed: 'codeRegister.failed'
-}
-
-/****************************
- *
  * HELPERS
  *
  ***************************/
@@ -320,13 +299,18 @@ Users.methods.registerWithCode = {
       firstName: firstNameSchema(),
       lastName: lastNameSchema(),
       email: emailSchema(),
-      password: password2Schema(passwordSchemaDef)
+      password: password2Schema(passwordSchemaDef),
+      locale: {
+        type: String,
+        optional: true
+      }
     }
   }),
   isPublic: true,
   run: onServerExec(function () {
+    import { registerWithCode } from './methods/registerWithCode'
+
     return function run (params) {
-      import { registerWithCode } from './methods/registerWithCode' // TODO move into scope of surrounding function
       return registerWithCode(params)
     }
   })

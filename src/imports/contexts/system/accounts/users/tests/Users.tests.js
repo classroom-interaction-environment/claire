@@ -61,16 +61,16 @@ describe('Users', function () {
         it('throws on an invalid code', function () {
           const registerDoc = registerUser()
           expect(() => registerWithCode(registerDoc))
-            .to.throw(Users.errors.codeRegister.failed)
-            .with.property('reason', Users.errors.codeRegister.codeInvalid)
+            .to.throw('codeRegister.failed')
+            .with.property('reason', 'codeRegister.codeInvalid')
         })
         it('throws if a user exists already by given email', function () {
           const registerDoc = registerUser()
           Accounts.createUser(registerDoc)
           stub(CodeInvitation.helpers, CodeInvitation.helpers.validate.name, () => true)
           expect(() => registerWithCode(registerDoc))
-            .to.throw(Users.errors.codeRegister.failed)
-            .with.property('reason', Users.errors.codeRegister.emailExists)
+            .to.throw('codeRegister.failed')
+            .with.property('reason', 'codeRegister.emailExists')
         })
         it('throws if the account creation failed', function () {
           const registerDoc = registerUser()
@@ -80,7 +80,7 @@ describe('Users', function () {
           stub(Accounts, 'createUser', () => null)
 
           expect(() => registerWithCode(registerDoc))
-            .to.throw(Users.errors.codeRegister.failed)
+            .to.throw('codeRegister.failed')
             .with.property('reason', 'account')
         })
         it('throws if adding user to the class fails', function () {
@@ -93,7 +93,7 @@ describe('Users', function () {
           stub(UserFactory, UserFactory.create.name, () => Random.id())
           stub(SchoolClass.helpers, SchoolClass.helpers.addStudent.name, () => undefined)
 
-          expect(() => registerWithCode(registerDoc)).to.throw(Users.errors.codeRegister.failed).with.property('reason', 'class')
+          expect(() => registerWithCode(registerDoc)).to.throw('codeRegister.failed').with.property('reason', 'class')
         })
         it('registers a user', function () {
           const codeDoc = createCodeDoc()
@@ -292,7 +292,7 @@ describe('Users', function () {
         })
 
         it('throws if the given user does not exists', function () {
-          const thrown = expect(() => getUser({})).to.throw(Users.errors.invalidUser)
+          const thrown = expect(() => getUser({})).to.throw('user.invalidUser')
           thrown.with.property('reason', 'user.notFound')
           thrown.with.property('details', undefined)
         })

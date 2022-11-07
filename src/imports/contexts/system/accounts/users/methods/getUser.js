@@ -1,10 +1,9 @@
 import { Meteor } from 'meteor/meteor'
-import { Users } from '../User'
 
 export const getUser = function getUser ({ _id, userId }) {
   const userDoc = Meteor.users.findOne(_id)
   if (!userDoc) {
-    throw new Meteor.Error(Users.errors.invalidUser, 'user.notFound', _id)
+    throw new Meteor.Error('user.invalidUser', 'user.notFound', _id)
   }
 
   // for others remove presence and emails

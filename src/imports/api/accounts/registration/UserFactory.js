@@ -12,7 +12,7 @@ export const UserFactory = {}
 
 UserFactory.name = 'UserFactory'
 
-UserFactory.create = function create ({ email, password, role, firstName, lastName, institution }) {
+UserFactory.create = function create ({ email, password, role, firstName, lastName, institution, locale }) {
   if (!createSchema) {
     createSchema = Schema.create(createUserSchema)
   }
@@ -40,14 +40,24 @@ UserFactory.create = function create ({ email, password, role, firstName, lastNa
 
   // updates the user profile with the minimal defaults
   // strips any unnecessary whitespace from firstName, lastName and institution
-  const profileUpdated = Meteor.users.update(userId, {
+  const profileDoc = {
     $set: {
       role,
       firstName,
       lastName,
       institution
     }
-  })
+  }
+
+  // optionally we can assign a default locale
+  // already at this point, for example when the user
+  // has set a different locale than the default during
+  // registration
+  if (locale) {
+    profileDoc.$set.locale = locale
+  }
+
+  const profileUpdated = Meteor.users.update(userId, profileDoc)
 
   if (!profileUpdated) {
     rollbackAccount(userId)

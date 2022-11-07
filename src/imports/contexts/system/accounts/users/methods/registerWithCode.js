@@ -1,5 +1,4 @@
 import { Meteor } from 'meteor/meteor'
-import { Users } from '../User'
 import { CodeInvitation } from '../../../../classroom/invitations/CodeInvitations'
 import { UserFactory } from '../../../../../api/accounts/registration/UserFactory'
 import { SchoolClass } from '../../../../classroom/schoolclass/SchoolClass'
@@ -7,17 +6,37 @@ import { rollbackAccount } from '../../../../../api/accounts/registration/rollba
 import { correctName } from '../../../../../api/utils/correctName'
 import { userExists } from '../../../../../api/accounts/user/userExists'
 
-export const registerWithCode = function ({ code, email, firstName, lastName, password, institution }) {
+const errors = {
+  codeInvalid: 'codeRegister.codeInvalid',
+  emailExists: 'codeRegister.emailExists',
+  failed: 'codeRegister.failed',
+  invitationNotUpdated: 'codeRegister.invitationNotUpdated',
+  studentNotAdded: 'codeRegister.studentNotAdded'
+}
+
+/**
+ * Registers a new user with a given invitation code.
+ * The code can only be obtained, from a teacher.
+ * @param code
+ * @param email
+ * @param firstName
+ * @param lastName
+ * @param password
+ * @param institution
+ * @param locale
+ * @return {*}
+ */
+export const registerWithCode = function ({ code, email, firstName, lastName, password, institution, locale }) {
   const codeDoc = CodeInvitation.helpers.getCodeDoc(code)
 
   // first we validate if the related code doc exists and is still valid
   if (!CodeInvitation.helpers.validate(codeDoc)) {
-    throw new Meteor.Error(Users.errors.codeRegister.failed, Users.errors.codeRegister.codeInvalid)
+    throw new Meteor.Error(errors.failed, errors.codeInvalid)
   }
 
   // second we check if the user already exists by given Email address
   if (userExists({ email })) {
-    throw new Meteor.Error(Users.errors.codeRegister.failed, Users.errors.codeRegister.emailExists)
+    throw new Meteor.Error(errors.failed, errors.emailExists)
   }
 
   // third we create a new user
@@ -30,13 +49,14 @@ export const registerWithCode = function ({ code, email, firstName, lastName, pa
       firstName: correctName(firstName || codeDoc.firstName, options),
       lastName: correctName(lastName || codeDoc.lastName, options),
       institution: correctName(codeDoc.institution || institution, options),
-      role: codeDoc.role
+      role: codeDoc.role,
+      locale: locale
     })
   }
 
   // we rethrow the error in a client-understandable format
   catch (accountCreationError) {
-    throw new Meteor.Error(Users.errors.codeRegister.failed, 'account', accountCreationError.reason)
+    throw new Meteor.Error(errors.failed, accountCreationError.reason)
   }
 
   const { classId } = codeDoc
@@ -52,7 +72,7 @@ export const registerWithCode = function ({ code, email, firstName, lastName, pa
 
     if (!studentAdded) {
       rollbackAccount(userId)
-      throw new Meteor.Error(Users.errors.codeRegister.failed, 'class', JSON.stringify({
+      throw new Meteor.Error(errors.failed, errors.studentNotAdded, JSON.stringify({
         classId,
         studentAdded
       }))
@@ -73,7 +93,7 @@ export const registerWithCode = function ({ code, email, firstName, lastName, pa
   // invalidate invitation
   const invitationUpdated = CodeInvitation.helpers.addUserToInvitation(codeDoc, userId)
   if (!invitationUpdated) {
-    throw new Meteor.Error(Users.errors.codeRegister.failed, 'codeRegister.invitationNotUpdated')
+    throw new Meteor.Error(errors.failed, errors.invitationNotUpdated)
   }
 
   // finally return userId
