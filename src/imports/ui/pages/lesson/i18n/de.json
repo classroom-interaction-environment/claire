@@ -9,7 +9,7 @@
     "noMaterial": "Kein Material vorhanden",
     "noFiles": "Keine Dateien hochgeladen",
     "noReadings": "Keine weiterführende Literatur vorhanden",
-    "showStudents": "Lernende Anzeigen",
+    "showStudents": "Lernende anzeigen",
     "present": "Präsentieren",
     "evalResults": "Auswerten",
     "presentResults": "Ergebnisse Präsentieren",
@@ -26,7 +26,7 @@
     "actions": {
       "restart": "Unterricht neu starten",
       "restartConfirm": "Achtung! Wenn Sie den Unterricht neu starten werden alle Inhalte zurückgesetzt",
-      "complete": "Unterricht Abschließen",
+      "complete": "Unterricht abschließen",
       "completeConfirm": "Unterricht jetzt abschließen?",
       "start": "Unterricht starten",
       "startConfirm": "Unterricht jetzt starten?",

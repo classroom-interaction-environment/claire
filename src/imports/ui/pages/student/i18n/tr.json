@@ -1,0 +1,13 @@
+{
+  "lesson": {
+    "title": "Dersler",
+    "groups": "Benim gruplarım",
+    "material": "Öğretim materyali",
+    "about": "Bu dersler hakkında",
+    "notAMember": "Bu kursun üyesi değilsiniz (veya artık değilsiniz).",
+    "studentNoClasses": "Şu anda bir kursa atanmadınız.",
+    "student": {
+      "docNotVisible": "İçerik (artık) sizin tarafınızdan görülemez."
+    }
+  }
+}

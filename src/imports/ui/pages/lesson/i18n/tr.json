@@ -1,0 +1,81 @@
+{
+  "lesson": {
+    "title": "Dersler",
+    "groups": "Öğretim grupları",
+    "forkedFrom": "Uyarlanmış kopyası",
+    "startedAt": "Dersler şu saatte başladı",
+    "studentWait": "Lütfen sonraki görev(ler) için bekleyin",
+    "overview": "Sekansın özeti",
+    "noMaterial": "Mevcut malzeme yok",
+    "noFiles": "Yüklenen dosya yok",
+    "noReadings": "Başka literatür mevcut değil",
+    "showStudents": "Öğrencileri göster",
+    "present": "Sunmak",
+    "evalResults": "Değerlendirme",
+    "presentResults": "Sonuçları sunun",
+    "results": "Sonuçlar",
+    "progress": "Derslerin Kursu",
+    "artifacts": "Sonuçlar",
+    "uploads": "Yüklemeler",
+    "noStudents": "Henüz bu kursa katılan öğrenci yok",
+    "completedAt": "Tamamlanan dersler:",
+    "showMoreLabels": "Alt yazıları göstern",
+    "wrongLesson": "Başka bir sekansta devam eden dersler var",
+    "wrongLessonDescription": "Kursunuza dönün ve geçerli sekansı girin.",
+    "confirmRemove": "Bu dersle birlikte tüm materyalleri ve sonuçları silme sürecindedirler.",
+    "actions": {
+      "restart": "Dersleri yeniden başlatın",
+      "restartConfirm": "Dikkat! Dersi yeniden başlattığınızda tüm içerikler sıfırlanır.",
+      "complete": "Dersleri sonlandırın",
+      "completeConfirm": "Derslerinizi şimdi mi tamamlıyorsunuz?",
+      "start": "Derslere başlayın",
+      "startConfirm": "Derslere şimdi mi başlıyorsun?",
+      "makeMobileInactive": "Öğrenciler için devre dışı bırak",
+      "makeMobileActive": "Öğrenciler için etkinleştirin",
+      "removeStudent": "Öğrenciyi kurstan çıkarma",
+      "confirmRemoveStudent": "\"{{firstName}} {{lastName}}\" \"{{title}}\" dersinden çıkarmak üzeresiniz. Devam etmek ister misiniz??"
+    },
+    "unexpectedState": "Beklenmedik öğretmenlik statüsü",
+    "errors": {
+      "unexpectedState": "Beklenmedik öğretmenlik statüsü",
+      "expectedIdle": "Beklenen 'Hazırlık aşamasında' idi",
+      "expectedRunning": "Beklenen 'Hazırlık aşamasında' idi",
+      "expectedRestartable": "Yeniden başlatılabilir bir durum bekleniyordu",
+      "expectedCompleted": "Beklenen 'Tamamlandı' idi",
+      "expectedToggleAble": "Beklenen 'Çalışıyor' veya 'Tamamlandı' idi."
+    },
+    "states": {
+      "idle": "Hazırlık aşamasında",
+      "running": "Dersler sürüyor",
+      "completed": "Dersler tamamlandı"
+    },
+    "phases": {
+      "title": "Öğretim aşamaları",
+      "schema": "Artikülasyon şeması"
+    },
+    "material": {
+      "title": "Öğretim materyali",
+      "preview": "Öğretim materyalinin önizlemesi",
+      "previewTemplate": "Önizleme",
+      "selectItemRp": "Cevapların görselleştirilmesini seçin"
+    },
+    "safeguard": {
+      "title": "Sonuçların güvenliğini sağlamak",
+      "artifacts": "Eserler"
+    },
+    "info": {
+      "title": "Katılımcılar",
+      "createGroups": "v"
+    },
+    "student": {
+      "docNotVisible": "Materyal muhtemelen öğretmen tarafından devre dışı bırakılmıştır."
+    }
+  },
+  "group": {
+    "title": "Grup",
+    "groups": "Gruplar",
+    "users": "Üyeler",
+    "phases": "Aşamalarla sınırlı",
+    "material": "Gruplar için öğretim materyali"
+  }
+}

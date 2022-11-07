@@ -1,7 +1,7 @@
 {
   "login": {
-    "title": "Sign-in",
     "callToAction": "Welcome to {{siteName}}!",
+    "title": "Sign-in",
     "login": "Sign-in",
     "loggingIn": "Signing you in",
     "forgotPassword": "Forgot password?",
@@ -14,7 +14,7 @@
     "confirm": "Confirm password",
     "resetPassword": {
       "title": "Reset password",
-      "description": "Please enter your email address. We will send you a password-reset link",
+      "description": "Please enter the email address by which you registered your user account at {{siteName}}. We will send you a link to recover your password.",
       "send": "Send link",
       "sent": "Link sent. Please check your email inbox.",
       "resetDescription": "Please enter the NEW PASSWORD and confirm the input",

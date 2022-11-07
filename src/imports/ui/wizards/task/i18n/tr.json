@@ -1,0 +1,38 @@
+{
+  "wizard": {
+    "task": {
+      "selectLastEdited": "En son üzerinde çalışılan görevler",
+      "description": "Bunlar, sekanslardan uyarlanmış görevlerinizdir.",
+      "custom": "Bunlar kendi yarattığınız görevlerdir",
+      "createNew": "Yeni görev oluştur",
+      "created": "Görev başarıyla oluşturuldu",
+      "continueToEdit": "Devam et ve görevi düzenle",
+      "selectOne": "Mevcut bir görevi seçme ve düzenleme",
+      "choose": {
+        "description": "Lütfen aşağıdaki seçeneklerden birini seçin"
+      },
+      "connect": {
+        "title": "Sekans seçin (isteğe bağlı)",
+        "description": "Burada (isteğe bağlı olarak) görevin oluşturulması gereken bir sekans seçebilirsiniz. Bir sekans seçmezseniz, görev tüm öğrenme durumları için kullanılabilir."
+      },
+      "preview": {
+        "title": "Önizleme",
+        "description": "Bu, seçilen belgenin bir önizlemesidir. Görev düzenleyicide düzenlemek için 'Devam et ve görevi düzenle'yi seçin veya başka bir belge seçin."
+      },
+      "create": {
+        "title": "Görev oluştur",
+        "description": "Burada önce bir görev belgesi oluşturursunuz."
+      },
+      "complete": {
+        "title": "Lütfen aşağıdaki seçeneklerden birini seçin"
+      },
+      "continue": {
+        "title": "Lütfen aşağıdaki seçeneklerden birini seçin",
+        "description": "Tamamdır! Şimdi nasıl devam etmek istersiniz?"
+      },
+      "confirmDeleteLinked": "Sonunda \"{{title}}\" görevini silmek üzeresiniz. Görevi silerseniz, aşağıdaki bağlantılı sekanslardan kaldırılacaktır: {{units}}",
+      "confirmDelete": "Sonunda \"{{title}}\" görevini silmek üzeresiniz..",
+      "edit": "Görev düzenleyicide düzenleme"
+    }
+  }
+}

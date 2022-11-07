@@ -2,7 +2,7 @@
   "codeRegister": {
   "title": "Register with code",
   "alreadyRegistered": "I am already a registered user",
-  "description": "Please complete this quick registration in order to join the classroom. If you have trouble please consult your teacher for conflict resolution.",
+  "description": "Here you can register with {{siteName}}. If there are any problems with the registration, please contact the person from whom you received the invitation link.",
   "code": "Registration code",
   "userAlreadyExists": "This user already exists",
   "registerNow": "Complete registration",
@@ -24,7 +24,7 @@
   },
   "terms": {
     "title": "Terms and privacy",
-    "description": "Please take your time to read the terms and privacy statement"
+    "description": "Please take time to read the Terms of Use and Privacy Policy. To use {{siteName}}, you must agree to both below."
   },
   "profile": {
     "title": "Adding a profile image (optional)",

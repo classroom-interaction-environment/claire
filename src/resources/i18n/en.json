@@ -36,7 +36,7 @@
   "accounts": {
     "enroll": {
       "subject": "Welcome to {{siteName}}",
-      "text": "Hallo {{name}},\n\nYou have been invited and are just a step away from starting with {{siteName}}.\n\nComplete the registration by clicking the following link:\n{{url}}\n\nThe link expires in {{expires}} day(s).\n\nWith best regards, your {{siteName}} Team"
+      "text": "Hello {{name}},\n\nYou have been invited and are just a step away from starting with {{siteName}}.\n\nComplete the registration by clicking the following link:\n{{url}}\n\nThe link expires in {{expires}} day(s).\n\nWith best regards, your {{siteName}} Team"
     },
     "resetPassword": {
       "subject": "Reset your Password",
@@ -224,7 +224,7 @@
     "invalidLink": "Invalid registration link",
     "invalidLinkReason": "The invitation link has expired. Please consult your teacher or colleague about this issue.",
     "emailSubject": "Welcome to {{siteName}}",
-    "emailBody": "Welcome to {{siteName}}!\n\nHello{{to}},\nYou have been invited to attend the class in {{siteName}}. To register, simply click on this link and follow the instructions:\n{{link}}\n\nIf you have any problems, please feel free to contact me.\n\nBest regards\n{{from}}\n\n\nThis email was created automatically.",
+    "emailBody": "Welcome to {{siteName}}!\n\nHello {{to}},\nYou have been invited to attend the class in {{siteName}}. To register, simply click on this link and follow the instructions:\n{{link}}\n\nIf you have any problems, please feel free to contact me.\n\nBest regards\n{{from}}\n\n\nThis email was created automatically.",
     "insufficientRoles": "You can only invite persons with a lower role than yours",
     "errors": {
       "invalidCode": "Invalid or expired"
@@ -560,7 +560,7 @@
   "socialState": {
     "plenum": "Plenum",
     "single": "Single",
-    "partner": "Parnter",
+    "partner": "Partner",
     "group": "Group",
     "project": "Project",
     "stations": "Stations"
@@ -699,6 +699,7 @@
   "language": {
     "de": "Deutsch",
     "en": "English",
+    "tr": "Turkish",
     "switchSuccessfull": "Language changed"
   },
   "literature": {
