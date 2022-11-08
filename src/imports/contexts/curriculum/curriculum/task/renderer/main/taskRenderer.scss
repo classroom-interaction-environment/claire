@@ -3,6 +3,12 @@
 	overflow-y : auto;
 }
 
+.break-auto  {
+	break-before: auto;
+	break-inside: auto;
+	break-after: auto;
+}
+
 .at-nouislider {
 	min-height: 100px;
 }

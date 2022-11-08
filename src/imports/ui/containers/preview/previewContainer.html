@@ -1,0 +1,9 @@
+<template name="previewContainer">
+    {{#unless loadComplete}}
+        {{> loading}}
+    {{/unless}}
+
+    {{#if templateName}}
+        {{> Template.dynamic template=templateName data=templateData}}
+    {{/if}}
+</template>

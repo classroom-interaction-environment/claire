@@ -13,6 +13,7 @@ export const Task = {
   isClassroom: true,
   fieldName: 'tasks',
   material: {
+    isPreviewable: true,
     resolveDependencies (taskDoc, deps = {}) {
       if (!taskDoc?.pages || !taskDoc?.header || !taskDoc.footer) {
         // TODO ????
@@ -225,17 +226,21 @@ onClientExec(function () {
             preview: true
           }
         },
-        data: ({ materialDoc, document, templateInstance, options = {} }) => {
-          const { print = false, preview = true, student = false } = options
+        /**
+         *
+         * @param materialDoc {object}
+         * @param document {object}
+         * @param options {object}
+         * @param options.print {boolean=false}
+         * @param options.preview {boolean=true}
+         * @param options.student {boolean=false}
+         * @return {{preview: boolean, print: boolean, data: *, student: boolean, title}}
+         */
+        data: ({ materialDoc, document, options }) => {
+          const {  print = false, preview = true, student = false } = options
           const data = Object.assign({}, materialDoc, document)
-
-          return {
-            title: document.title,
-            data: data,
-            preview: preview,
-            print: print,
-            student: student
-          }
+          const { title } = document
+          return { title, data, preview, print, student }
         }
       }
     }

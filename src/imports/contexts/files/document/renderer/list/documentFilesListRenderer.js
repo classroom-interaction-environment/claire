@@ -1,7 +1,12 @@
 import { Template } from 'meteor/templating'
+import { DocumentFiles } from '../../DocumentFiles'
+import '../../../../../ui/components/download/downloadButton'
 import './documentFilesListRenderer.html'
 
 Template.documentFilesListRenderer.helpers({
+  collectionName () {
+    return DocumentFiles.name
+  },
   icon (extension) {
     switch (extension) {
       case 'pdf':
@@ -20,7 +25,7 @@ Template.documentFilesListRenderer.helpers({
       case 'ods':
         return 'file-excel'
       default:
-        throw new Error('unexpected extension')
+        return 'file-alt'
     }
   }
 })

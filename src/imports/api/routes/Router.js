@@ -98,7 +98,12 @@ function createRoute (routeDef, onError) {
       // we render by default a "loading" template if the Template has not been loaded yet
       // which can be explicitly prevented by switching showLoading to false
       if (!Template[routeDef.template] && routeDef.showLoading !== false) {
-        this.render(routeDef.target || _defaultTarget, 'loading', { title, requireTranslate: true })
+        // we need to check, whether the target exists, since there are
+        // routes that dynamically load the render target before using it
+        const loadingRenderTarget = routeDef.target && Template[routeDef.target]
+          ? routeDef.target
+          : _defaultTarget
+        this.render(loadingRenderTarget, 'loading', { title, requireTranslate: true })
       }
     },
     waitOn () {

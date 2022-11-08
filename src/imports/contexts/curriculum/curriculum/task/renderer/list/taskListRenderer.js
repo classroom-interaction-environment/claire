@@ -1,7 +1,13 @@
 import { Template } from 'meteor/templating'
 import { userIsCurriculum } from '../../../../../../api/accounts/userIsCurriculum'
 import { isCurriculumDoc } from '../../../../../../api/decorators/methods/isCurriculumDoc'
+import { dataTarget } from '../../../../../../ui/utils/dataTarget'
 import './taskListRenderer.html'
+import { Task } from '../../Task'
+import { renderPreview } from '../../../../../../ui/renderer/renderPreview'
+import { printHTMLElement } from '../../../../../../ui/utils/printHtmlElement'
+
+const API = Template.taskListRenderer.setDependencies()
 
 Template.taskListRenderer.helpers({
   pages (arr) {
@@ -32,5 +38,21 @@ Template.taskListRenderer.helpers({
 
     const { unitDoc } = taskDoc
     return !isCurriculumDoc(unitDoc) || !userIsCurriculum(userId)
+  }
+})
+
+Template.taskListRenderer.events({
+  'click .preview-btn' (event, templateInstance) {
+    event.preventDefault()
+    const docId = dataTarget(event, templateInstance)
+    const context = Task.name
+    templateInstance.data.parent.state.set({ previewTarget: docId, isPrintPreview: true })
+
+    setTimeout(() => {
+      const target = document.querySelector('#uematerial-preview-modal-body')
+      const onClose = () => templateInstance.data.parent.state.set({ previewTarget: null, isPrintPreview: false })
+      const onError = () => renderPreview({ docId, context })
+      printHTMLElement(target, onClose, onError)
+    }, 1000)
   }
 })

@@ -245,6 +245,21 @@ Routes.confirmResearch = {
   data: null
 }
 
+Routes.preview = {
+  path: (type = ':type', docId = ':docId', token = ':token') => {
+    return `/preview/${type}/${docId}/${token}`
+  },
+  async load () {
+    await import('../../ui/containers/preview/previewContainer')
+    return import('../../ui/pages/preview/preview')
+  },
+  target: 'previewContainer',
+  label: 'pages.preview.title',
+  template: 'preview',
+  roles: null,
+  data: null
+}
+
 // assign object keys as part
 // of the routes for translation
 Object.keys(Routes).forEach(routeKey => {

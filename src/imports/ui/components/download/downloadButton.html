@@ -1,0 +1,9 @@
+<template name="downloadButton">
+    <a href="{{fileLink file.link}}?download=true" download="{{this.name}}" target="_blank"
+       title="{{i18n "actions.download"}}"
+       class="btn btn-outline-secondary btn-sm claire-download-button no-wrap">
+        <small class="font-weight-normal py-2">
+            {{> icon name="download"}}
+        </small>
+    </a>
+</template>

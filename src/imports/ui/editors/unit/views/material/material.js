@@ -245,7 +245,7 @@ Template.uematerial.helpers({
     const unitDoc = instance.state.get('unitDoc')
     const viewState = instance.getViewState()
     const context = viewState.context
-    return Object.assign({}, entry, { unitDoc, context })
+    return Object.assign({}, entry, { unitDoc, context, parent: instance })
   },
   selectEntries () {
     const instance = Template.instance()
@@ -305,8 +305,10 @@ Template.uematerial.helpers({
   previewTarget () {
     const instance = Template.instance()
     const targetId = instance.state.get('previewTarget')
-    const viewState = Template.instance().getViewState()
-    return viewState && viewState.previewRenderer.previewData.call(viewState, targetId, instance)
+    const viewState = instance.getViewState()
+    const previewCtx = viewState && viewState.previewRenderer.previewData.call(viewState, targetId, instance)
+    previewCtx.print = !!instance.state.get('isPrintPreview')
+    return previewCtx
   },
   phases () {
     return Template.getState('phases')

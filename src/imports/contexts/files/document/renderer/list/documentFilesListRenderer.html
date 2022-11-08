@@ -1,6 +1,9 @@
 <template name="documentFilesListRenderer">
     <td><i class="fa fa-fw fa-{{icon this.extension}}"></i></td>
     <td class="w-25"><h6>{{this.name}}</h6></td>
-    <td class="no-wrap">{{b2mb this.size}} {{i18n 'fileSize.mb'}}</td>
     <td class="w-100"></td>
+    <td class="no-wrap">{{b2mb this.size}} {{i18n 'fileSize.mb'}}</td>
+    <td>
+        {{> downloadButton file=this collection=collectionName}}
+    </td>
 </template>
