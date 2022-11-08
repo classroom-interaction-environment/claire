@@ -32,7 +32,7 @@
             {{#with resolvedReferences}}
                 <div class="{{rowClass}} mt-5">
                     {{#each reference in this}}
-                        <div class="{{colClass}}">
+                        <div class="{{colClass}} mb-4">
                             <div class="card bg-transparent h-100">
 
                                 {{! material Icon and title }}
@@ -50,12 +50,11 @@
                                         <span>{{reference.document.title}}</span>
                                         {{#with getItem reference.itemId}}
                                             <span>-</span>
-                                            <span>{{this.data.label}}</span>
                                             <span>({{this.data.title}})</span>
                                         {{/with}}
                                     </div>
 
-                                    <span>
+                                    <span class="no-wrap">
                                     {{!-- renderers can define custom actions that are rendered here --}}
                                         {{#each action in
                                                 (customActions reference)}}
@@ -74,6 +73,7 @@
                                             {{/if}}
                                         {{/each}}
 
+                                        {{#if canHaveResponseProcessors reference}}
                                         <div class="dropdown d-inline">
                                             <button class="btn btn-outline-secondary dropdown-toggle border-0"
                                                     type="button"
@@ -99,6 +99,7 @@
                                                 {{/each}}
                                             </div>
                                         </div>
+                                        {{/if}}
 
 
                                         {{> actionButton
@@ -118,6 +119,10 @@
                                 {{! material content }}
 
                                 <div class="card-body bg-transparent text-center h-100 p-0">
+                                    {{#with getItem reference.itemId}}
+                                        <p class="text-left">{{this.data.label}}</p>
+                                    {{/with}}
+
                                     {{#if reference.itemId}}
                                         {{#unless responseProcessorLoaded
                                                   reference.itemId}}

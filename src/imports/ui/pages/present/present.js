@@ -421,6 +421,9 @@ Template.present.helpers({
     const itemDoc = Template.getState(itemId)
     return itemDoc && Item.get(itemDoc.meta)
   },
+  canHaveResponseProcessors (doc) {
+    return doc.context === Task.name
+  },
   responseProcessorLoaded (itemId) {
     return itemId && Template.getState(itemId)
   },

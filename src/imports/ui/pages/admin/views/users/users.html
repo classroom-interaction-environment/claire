@@ -58,12 +58,16 @@
                                     {{#if isOnline user.presence}}
                                         {{> icon fw=true class="text-success" title=(i18n "user.online") name="circle"}}
                                     {{else}}
-                                        {{> icon fw=true class="text-muted" type="far" title=(i18n "user.offline") name="circle"}}
+                                        {{> icon fw=true class="text-light" type="far" title=(i18n "user.offline") name="circle"}}
                                     {{/if}}
                                 </td>
-                                <td class="text-center">
+                                <td class="text-left">
+                                    {{#if user.presence}}
                                     {{#if isVerified user}}
-                                        {{> icon name="check" fw=true title=(i18n "user.verified") class="text-success"}}
+                                        {{> icon name="user-check" fw=true title=(i18n "user.verified") class="text-success"}}
+                                    {{else}}
+                                        {{> icon name="user" fw=true title=(i18n "user.registered") class="text-secondary"}}
+                                    {{/if}}
                                     {{else}}
                                         {{> icon name="envelope" fw=true title=(i18n "user.invited") class="text-warning"}}
                                     {{/if}}
