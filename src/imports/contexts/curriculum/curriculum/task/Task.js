@@ -1,7 +1,7 @@
 import { Lang } from '../../utils/Translate'
 import { DisplayTypes } from '../../../../api/schema/Resolvers'
 import { onClientExec } from '../../../../api/utils/archUtils'
-import { applyRoute , applyRoute } from '../../../../api/routes/applyRoute'
+import { applyRoute } from '../../../../api/routes/applyRoute'
 
 export const Task = {
   name: 'task',

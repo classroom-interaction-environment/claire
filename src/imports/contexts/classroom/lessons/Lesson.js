@@ -1,10 +1,9 @@
 import { Meteor } from 'meteor/meteor'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
 import { i18n } from '../../../api/language/language'
-import { PermissionDeniedError , PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
+import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
 import { auto, onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
-import { SchoolClass } from '../schoolclass/SchoolClass'
 
 /**
  * The Lesson is a fundamental part of this application.
@@ -426,14 +425,18 @@ Lesson.publications.byClass = {
   schema: {
     classId: String
   },
-  run: onServer(function ({ classId }) {
-    const userId = this.userId
-    const classDoc = getCollection(SchoolClass.name).findOne({ _id: classId })
-    const isTeacher = SchoolClass.helpers.isTeacher({ userId, classDoc })
-    this.log({ isTeacher })
-    return isTeacher
-      ? getCollection(Lesson.name).find({ classId })
-      : null
+  run: onServerExec(function () {
+    import { SchoolClass } from '../schoolclass/SchoolClass'
+
+    return function ({ classId }) {
+      const userId = this.userId
+      const classDoc = getCollection(SchoolClass.name).findOne({ _id: classId })
+      const isTeacher = SchoolClass.helpers.isTeacher({ userId, classDoc })
+      this.log({ isTeacher })
+      return isTeacher
+        ? getCollection(Lesson.name).find({ classId })
+        : null
+    }
   })
 }
 
@@ -588,7 +591,7 @@ Lesson.methods.start = {
   },
   role: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { LessonStates , LessonStates , LessonStates , LessonStates , LessonStates , LessonStates , LessonStates } from './LessonStates'
+    import { LessonStates } from './LessonStates'
     import { LessonErrors } from './LessonErrors'
     import { createUpdateDoc } from '../../../api/utils/documentUtils'
 
@@ -910,7 +913,7 @@ Lesson.methods.material = {
   run: onServerExec(function () {
     import { Group } from '../group/Group'
     import { SchoolClass } from '../schoolclass/SchoolClass'
-        import { LessonErrors } from './LessonErrors'
+    import { LessonErrors } from './LessonErrors'
     import { createGetDoc } from '../../../api/utils/documentUtils'
     import { loadMaterial } from '../../material/loadMaterial'
     import { createDocGetter } from '../../../api/utils/document/createDocGetter'

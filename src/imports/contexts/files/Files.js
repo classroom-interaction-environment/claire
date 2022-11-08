@@ -2,7 +2,7 @@ import { FileTypes } from './shared/FileTypes'
 import { FileSize } from './shared/SizeUnits'
 import { createContextRegistry } from '../../infrastructure/datastructures/createContextRegistry'
 import { auto, onClientExec, onServerExec } from '../../api/utils/archUtils'
-import { ReactiveVar , ReactiveVar } from 'meteor/reactive-var'
+import { ReactiveVar } from 'meteor/reactive-var'
 import { isMaterial } from '../material/isMaterial'
 import { FilesTemplates } from './FilesTemplates'
 

@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { ReactiveVar } from 'meteor/reactive-var'
-import { Notify , Notify } from '../components/notifications/Notify'
+import { Notify } from '../components/notifications/Notify'
 import { SubscriptionRegistry } from '../subscriptions/SubscriptionRegistry'
 import { SubsManager } from '../subscriptions/SubsManager'
 import { DocNotFoundError } from '../../api/errors/types/DocNotFoundError'

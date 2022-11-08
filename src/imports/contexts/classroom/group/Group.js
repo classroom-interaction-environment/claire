@@ -1,6 +1,5 @@
 import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
-import { checkEditPermission } from '../../../api/document/checkEditPermissions'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
 
 export const Group = {}
@@ -192,6 +191,8 @@ Group.methods.save = {
     }
   }, Group.schema),
   run: onServerExec(function () {
+    import { checkEditPermission } from '../../../api/document/checkEditPermissions'
+
     return function (groupDoc) {
       const { userId } = this
       const { _id, ...doc } = groupDoc

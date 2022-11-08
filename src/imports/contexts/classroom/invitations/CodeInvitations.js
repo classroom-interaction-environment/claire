@@ -4,8 +4,7 @@ import { check, Match } from 'meteor/check'
 import { Random } from 'meteor/random'
 import { i18n } from '../../../api/language/language'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
-import { Users } from '../../system/accounts/users/User'
-import { SchoolClass , SchoolClass , SchoolClass } from '../schoolclass/SchoolClass'
+import { SchoolClass } from '../schoolclass/SchoolClass'
 import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
 import { DocNotFoundError } from '../../../api/errors/types/DocNotFoundError'
 import { getCollection } from '../../../api/utils/getCollection'
@@ -34,7 +33,6 @@ const getSchoolClass = (function () {
     return () => getLocalCollection(SchoolClass.name)
   }
 })()
-
 
 export const CodeInvitation = {
   name: 'codeInvitation',
@@ -164,7 +162,7 @@ CodeInvitation.schema = {
   },
   classId: {
     type: String,
-    optional() {
+    optional () {
       // if role is not student, then it's always true
       const role = getSchemaField.call(this, 'role')
 
@@ -191,7 +189,9 @@ CodeInvitation.schema = {
       firstOption: () => i18n.get('form.selectOne'),
       options () {
         const userId = Meteor.userId()
-        if (!userId) { return [] }
+        if (!userId) {
+          return []
+        }
 
         const allCourses = getSchoolClass().find({ createdBy: userId }, { sort: { title: 1 } }).map(doc => ({
           value: doc._id,
@@ -435,9 +435,11 @@ CodeInvitation.helpers.isComplete = function isComplete ({ _id, registeredUsers,
 
   if (!registeredUsers || !registeredUsers.length) {
     return false
-  } else if (registeredUsers.length > maxUsers) {
+  }
+  else if (registeredUsers.length > maxUsers) {
     throw new Meteor.Error(CodeInvitation.errors.maxUsersExceeded, _id)
-  } else {
+  }
+  else {
     return registeredUsers.length === maxUsers
   }
 }
@@ -460,7 +462,14 @@ CodeInvitation.helpers.isPending = function isPending (doc) {
  * @param _id
  * @return {*}
  */
-CodeInvitation.helpers.getStatus = function getStatus ({ invalid, createdAt, expires, registeredUsers, maxUsers, _id }) {
+CodeInvitation.helpers.getStatus = function getStatus ({
+                                                         invalid,
+                                                         createdAt,
+                                                         expires,
+                                                         registeredUsers,
+                                                         maxUsers,
+                                                         _id
+                                                       }) {
   const isExpired = CodeInvitation.helpers.isExpired({
     invalid,
     createdAt,
@@ -596,7 +605,7 @@ CodeInvitation.methods.verify = {
   },
   isPublic: true,
   run: onServerExec(function () {
-    
+
     return function ({ code }) {
       const codeDoc = getCollection(CodeInvitation.name).findOne({ code })
 
@@ -663,7 +672,8 @@ CodeInvitation.methods.addToClass = {
   roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher, UserUtils.roles.student],
   schema: { code: String },
   run: onServerExec(function () {
-        import { createDocGetter } from '../../../api/utils/document/createDocGetter'
+    import { Users } from '../../system/accounts/users/User'
+    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
 
     const getClassDoc = createDocGetter(SchoolClass)
 
@@ -709,7 +719,7 @@ CodeInvitation.methods.addToClass = {
       if (role === UserUtils.roles.teacher) {
         SchoolClass.helpers.addTeacher.call(thisContext, { classId, userId })
       }
- else if (role === UserUtils.roles.student) {
+      else if (role === UserUtils.roles.student) {
         const added = SchoolClass.helpers.addStudent.call(thisContext, {
           classId,
           userId
@@ -717,7 +727,7 @@ CodeInvitation.methods.addToClass = {
         if (!added) throw new Meteor.Error(500)
         Meteor.users.update(userId, { $set: { 'ui.classId': classId } })
       }
- else {
+      else {
         throw new PermissionDeniedError(SchoolClass.errors.invalidRole, role)
       }
 

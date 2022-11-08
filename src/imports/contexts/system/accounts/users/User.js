@@ -11,7 +11,6 @@ import { UserUtils } from './UserUtils'
 import { getCollection } from '../../../../api/utils/getCollection'
 import { profileImageSchema } from '../../../../api/accounts/schema/profileImageSchema'
 import { onServerExecLazy } from '../../../../infrastructure/loading/onServerExecLazy'
-import { usersByClass , usersByClass , usersByClass } from './usersByClass'
 
 export const Users = {
   name: 'users',
@@ -328,7 +327,7 @@ Users.methods.byClass = {
     'skip.$': String
   },
   run: onServerExec(function () {
-    
+    import { usersByClass } from './usersByClass'
     const run = usersByClass()
 
     return function ({ classId, skip }) {
@@ -371,7 +370,8 @@ Users.publications.byClass = {
     classId: String
   },
   run: onServerExecLazy(function () {
-        return usersByClass
+    import { usersByClass } from './usersByClass'
+    return usersByClass
   })
 }
 

@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { auto, onClient, onServer, onServerExec } from '../../../../api/utils/archUtils'
 import { AdminErrors } from './AdminErrors'
-import { UserUtils , UserUtils , UserUtils } from '../users/UserUtils'
+import {  UserUtils } from '../users/UserUtils'
 
 export const Admin = {
   name: 'admin',

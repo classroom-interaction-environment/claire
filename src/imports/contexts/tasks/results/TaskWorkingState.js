@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
 import { onServerExec } from '../../../api/utils/archUtils'
-import { getCollection , getCollection } from '../../../api/utils/getCollection'
 
 export const TaskWorkingState = {
   name: 'taskWorkingState',
@@ -56,8 +55,9 @@ TaskWorkingState.methods.saveState = {
     import { Group } from '../../classroom/group/Group'
     import { Features } from '../../../api/config/Features'
     import {LessonErrors } from '../../classroom/lessons/LessonErrors'
-        import { createDocGetter } from '../../../api/utils/document/createDocGetter'
+    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
     import { ensureDocumentExists } from '../../../api/utils/document/ensureDocumentExists'
+    import { getCollection } from '../../../api/utils/getCollection'
 
     const checkTaskDoc = createDocGetter({ name: Task.name, optional: false })
     const getGroupDoc = createDocGetter({ name: Group.name, optional: false })
@@ -158,6 +158,7 @@ TaskWorkingState.publications.byLesson = {
   },
   run: onServerExec(function () {
     import { Lesson } from '../../classroom/lessons/Lesson'
+    import { getCollection } from '../../../api/utils/getCollection'
 
     return function run ({ lessonId }) {
       const { userId } = this
@@ -185,6 +186,7 @@ TaskWorkingState.publications.myTask = {
   },
   run: onServerExec(function () {
     import { Features } from '../../../api/config/Features'
+    import { getCollection } from '../../../api/utils/getCollection'
 
     return function transform ({ lessonId, taskId, groupId }) {
       const createdBy = this.userId
