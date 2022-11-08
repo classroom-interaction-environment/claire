@@ -10,6 +10,7 @@ export const profileImagesByClass = function () {
   // initialization phase
   import { SchoolClass } from '../../classroom/schoolclass/SchoolClass'
   import { ProfileImages } from './ProfileImages'
+  import { UserUtils } from '../../system/accounts/users/UserUtils'
 
   // run phase
   return function ({ classId, skip }) {

@@ -11,6 +11,8 @@ import './navBeamer.html'
 const colorValues = Object.values(Beamer.ui.backgroundColors)
 const gridLayouts = Object.values(Beamer.ui.gridLayouts)
 
+const API = Template.navBeamer.setDependencies()
+
 Template.navBeamer.onCreated(function onCreated () {
   const instance = this
 

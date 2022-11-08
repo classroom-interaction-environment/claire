@@ -120,7 +120,7 @@ VideoFiles.material = {
         const { preview = true, print = false, student = true } = options
         return Object.assign({}, {
           title: document.name,
-          meta: name,
+          meta: materialDoc.name,
           preview: preview,
           print: print,
           student: student

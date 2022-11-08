@@ -631,7 +631,8 @@ Lesson.methods.complete = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-        import { createUpdateDoc } from '../../../api/utils/documentUtils'
+    import { createUpdateDoc } from '../../../api/utils/documentUtils'
+    import { LessonStates } from './LessonStates'
 
     const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
 
@@ -675,7 +676,8 @@ Lesson.methods.stop = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-        import { LessonErrors } from './LessonErrors'
+    import { LessonErrors } from './LessonErrors'
+    import { LessonStates } from './LessonStates'
     import { createUpdateDoc } from '../../../api/utils/documentUtils'
 
     const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
@@ -708,7 +710,8 @@ Lesson.methods.resume = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-        import { LessonErrors } from './LessonErrors'
+    import { LessonStates } from './LessonStates'
+    import { LessonErrors } from './LessonErrors'
     import { createUpdateDoc } from '../../../api/utils/documentUtils'
 
     const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
@@ -742,7 +745,8 @@ Lesson.methods.restart = {
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
     import { LessonRuntime } from './runtime/LessonRuntime'
-        import { createUpdateDoc } from '../../../api/utils/documentUtils'
+    import { LessonStates } from './LessonStates'
+    import { createUpdateDoc } from '../../../api/utils/documentUtils'
 
     const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
 
@@ -800,7 +804,8 @@ Lesson.methods.toggle = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-        import { LessonErrors } from './LessonErrors'
+    import { LessonStates } from './LessonStates'
+    import { LessonErrors } from './LessonErrors'
     import { createGetDoc, createUpdateDoc } from '../../../api/utils/documentUtils'
 
     const updateLesson = createUpdateDoc(Lesson)
@@ -913,6 +918,7 @@ Lesson.methods.material = {
   run: onServerExec(function () {
     import { Group } from '../group/Group'
     import { SchoolClass } from '../schoolclass/SchoolClass'
+    import { LessonStates } from './LessonStates'
     import { LessonErrors } from './LessonErrors'
     import { createGetDoc } from '../../../api/utils/documentUtils'
     import { loadMaterial } from '../../material/loadMaterial'
