@@ -1,11 +1,9 @@
-import { Meteor } from "meteor/meteor"
+import { Meteor } from 'meteor/meteor'
 import { onServer } from '../../utils/archUtils'
 import { getCollection } from '../../utils/getCollection'
 import { createLog } from '../../log/createLog'
 
-
-
-export const createByItemPublication = ({name}) => {
+export const createByItemPublication = ({ name }) => {
   import { isMemberOfLesson } from '../../../contexts/classroom/lessons/runtime/isMemberOfLesson'
 
   log('[createByItemPublication]:', name)

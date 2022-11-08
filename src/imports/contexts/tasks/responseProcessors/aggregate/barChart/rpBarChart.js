@@ -78,7 +78,6 @@ Template.rpBarChart.onRendered(function () {
         sampleSize++
       })
 
-
       plotData.x = choices
       plotData.y = values
       plotData.text = values
@@ -98,7 +97,6 @@ Template.rpBarChart.onRendered(function () {
         values[index]++
         sampleSize++
       })
-
 
       plotData.x = choices
       plotData.y = values

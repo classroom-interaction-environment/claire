@@ -30,13 +30,13 @@ import { onClientExec, onServerExec } from '../../../api/utils/archUtils'
 ].forEach(function (context) {
   try {
     ResponseProcessorRegistry.register(context)
-  } catch (registerError) {
+  }
+  catch (registerError) {
     console.error(`failed to register [${context.name}],see the following error:`)
     console.error(registerError)
     throw new Error()
   }
 })
-
 
 /**
  * This runs for all internal (default) and external registered response processors.

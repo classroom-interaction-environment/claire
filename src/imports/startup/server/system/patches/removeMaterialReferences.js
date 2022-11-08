@@ -1,9 +1,6 @@
 /* Removes all references in units / tasks that have no corresponding file.
  */
 
-
-
-
 if (Meteor.settings.patch?.removeDeadReferences) {
   console.debug('[removeDeadReferences]: run')
   Meteor.startup(() => {
@@ -11,17 +8,16 @@ if (Meteor.settings.patch?.removeDeadReferences) {
     import { Pocket } from '../../../../contexts/curriculum/curriculum/pocket/Pocket'
     import { getCollection } from '../../../../api/utils/getCollection'
     import { unitMaterialIds } from '../../../../contexts/curriculum/curriculum/unit/unitMaterialIds'
-    import {Material } from '../../../../contexts/material/Material'
+    import { Material } from '../../../../contexts/material/Material'
     const remove = {}
     const addToRemove = (pocket, unit, ctxName, _id) => {
-
       const ctx = Material.get(ctxName)
       if (!ctx) {
         throw new Error(`Expected ctx for ${ctxName}`)
       }
 
       const name = ctx.fieldName
-      console.warn(pocket.title, '->' , unit._id, unit.title, name, _id)
+      console.warn(pocket.title, '->', unit._id, unit.title, name, _id)
 
       if (!remove[unit._id]) {
         remove[unit._id] = {}
@@ -65,4 +61,3 @@ if (Meteor.settings.patch?.removeDeadReferences) {
     })
   })
 }
-

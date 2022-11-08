@@ -19,8 +19,6 @@ ContextBuilder
   .addRegistry(Curriculum, { pipelines: [curriculumPipeline] })
   .addRegistry(Classroom, { pipelines: [classroomPipeline] })
 
-
-
 export const initContext = (context, buildFct) => {
   if (!ContextRegistry.has(context.name)) {
     ContextBuilder.build(context, function () {

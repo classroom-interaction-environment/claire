@@ -51,7 +51,7 @@ const UserProfileFormSchema = {
         maxSize: ProfileImages.files.maxSize,
         icon: ProfileImages.icon,
         label: 'userProfile.image',
-        capture: ProfileImages.files.capture,
+        capture: ProfileImages.files.capture
       }
     }
   },
@@ -131,7 +131,8 @@ Template.userProfile.onCreated(function () {
       Meteor.call(Users.methods.getUser.name, { _id: userId }, (err, userDoc) => {
         if (err) {
           API.fatal(err)
-        } else {
+        }
+        else {
           const user = decorateUserDoc(userDoc)
           instance.state.set('user', user)
           ensureProfileImage(user)
@@ -330,7 +331,8 @@ Template.userProfile.events({
     Meteor.call(Users.methods.updateProfile.name, insertDoc, (err, res) => {
       if (err) {
         API.notify(err)
-      } else {
+      }
+      else {
         API.notify('form.updateComplete')
         templateInstance.state.set('edit', false)
         formReset('editProfileForm')

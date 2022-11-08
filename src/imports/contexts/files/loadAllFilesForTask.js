@@ -4,7 +4,6 @@ import { isMaterial } from '../material/isMaterial'
 import { callMethod } from '../../ui/controllers/document/callMethod'
 import { createLog } from '../../api/log/createLog'
 
-
 export const loadAllFilesForTask = ({ taskId }) => {
   const allCtx = Files.all().filter(ctx => ctx && isMaterial(ctx))
   debug('load for', taskId)

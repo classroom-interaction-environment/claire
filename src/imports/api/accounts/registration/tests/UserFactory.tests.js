@@ -56,7 +56,8 @@ describe(UserFactory.name, function () {
 
       try {
         UserFactory.create({})
-      } catch (validationError) {
+      }
+      catch (validationError) {
         expect(validationError.details).to.deep.equal([{
           name: 'email',
           type: 'required',

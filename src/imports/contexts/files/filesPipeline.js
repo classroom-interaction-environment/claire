@@ -48,7 +48,7 @@ export const filesPipeline = createPipeline(Files.name, function (filesContext, 
       'meta.itemId': {
         type: String,
         optional: true
-      },
+      }
     })
   })
 

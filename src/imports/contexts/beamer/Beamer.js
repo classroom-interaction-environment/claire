@@ -275,7 +275,8 @@ onClientExec(function () {
   Beamer.doc.ready = (value) => {
     if (typeof value === 'undefined') {
       return _beamerReady.get()
-    } else {
+    }
+    else {
       return _beamerReady.set(Boolean(value))
     }
   }
@@ -378,7 +379,8 @@ onClientExec(function () {
     if (typeof invitationCode === 'undefined') {
       const doc = Beamer.doc.get()
       return doc && doc.invitationCode
-    } else {
+    }
+    else {
       Beamer.doc.update({ invitationCode }, callback)
     }
   }
@@ -396,7 +398,8 @@ onClientExec(function () {
 
     if (findIndex > -1) {
       references.splice(findIndex, 1)
-    } else {
+    }
+    else {
       references.push({ lessonId, referenceId, context, itemId, responseProcessor })
     }
     beamerDoc.references = references
@@ -410,7 +413,8 @@ onClientExec(function () {
 
     if (findIndex > -1) {
       return references[findIndex]
-    } else {
+    }
+    else {
       return null
     }
   }
@@ -482,7 +486,8 @@ onClientExec(function () {
       _windowId.set(null)
       if (windowId && windowId !== global.window.name) {
         Beamer.doc.update({ window: { id: null, url: null } }, callback)
-      } else {
+      }
+      else {
         callback(null, true)
       }
     },

@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
-import { Tracker } from "meteor/tracker"
+import { Tracker } from 'meteor/tracker'
 import { i18n } from '../../../api/language/language'
 import { Router } from '../../../api/routes/Router'
 
@@ -17,7 +17,7 @@ Template.registerHelper('i18n', function (...args) {
     return '...'
   }
 
-  const lastIndex = args.length -1
+  const lastIndex = args.length - 1
   const last = args[lastIndex]
 
   // helpers collect their arguments in a "hash" object
@@ -58,7 +58,6 @@ Tracker.autorun(() => {
     document.title = `${translated} - ${siteName}`
   }
 })
-
 
 Meteor.startup(() => {
   document.documentElement.setAttribute('lang', window.navigator.language)

@@ -104,7 +104,6 @@ function exists (path) {
 }
 
 function remove (path) {
-  import fs from 'fs'
   return new Promise((resolve, reject) => {
     fs.rm(path, (err) => {
       if (err) {

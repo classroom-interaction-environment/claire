@@ -1,5 +1,5 @@
 import { Template } from 'meteor/templating'
-import { Tracker } from "meteor/tracker"
+import { Tracker } from 'meteor/tracker'
 import { Curriculum } from '../../../../contexts/curriculum/Curriculum'
 import { Schema } from '../../../../api/schema/Schema'
 import { Task } from '../../../../contexts/curriculum/curriculum/task/Task'

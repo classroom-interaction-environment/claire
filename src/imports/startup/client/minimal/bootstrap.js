@@ -72,7 +72,8 @@ Meteor.defer(async () => {
     })
 
     enable(themes.default)
-  } else {
+  }
+  else {
     const style = document.createElement('style')
     style.textContent = currentTheme
     document.head.appendChild(style)

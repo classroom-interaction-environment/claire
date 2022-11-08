@@ -1,7 +1,7 @@
-import { check } from "meteor/check"
+import { check } from 'meteor/check'
 
 export const createRegisterHandler = ({ target, debug }) => {
-  return  function (name, /* async */ importFct) {
+  return function (name, /* async */ importFct) {
     debug('register', name)
     check(name, String)
     check(importFct, Function)

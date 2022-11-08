@@ -8,7 +8,6 @@ import { callMethod } from '../../../controllers/document/callMethod'
 import { getCollection } from '../../../../api/utils/getCollection'
 import './taskUnits.html'
 
-
 const API = Template.teunits.setDependencies({
   contexts: [Unit, Pocket]
 })

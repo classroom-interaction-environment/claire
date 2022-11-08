@@ -20,7 +20,8 @@ export const formIsValid = function formIsValid (schema, formId, isUpdate, debug
     if (debug) debug('form validation errors', errors)
     errors.forEach(err => AutoForm.addStickyValidationError(formId, err.key, err.type, err.value))
     return null
-  } else {
+  }
+  else {
     return formDoc
   }
 }

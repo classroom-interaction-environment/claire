@@ -123,7 +123,7 @@ VideoFiles.material = {
           meta: name,
           preview: preview,
           print: print,
-          student: student,
+          student: student
         }, document)
       }
     },

@@ -40,7 +40,6 @@ const API = Template.uephases.setDependencies({
   contexts: [...(new Set([Phase, Unit].concat(getMaterialContexts()))).values()]
 })
 
-
 const phaseBaseSchema = Object.assign({}, defaultSchema, Phase.schema)
 phaseBaseSchema['references.$.collection'].autoform = {
   firstOption: firstOption,
@@ -277,7 +276,8 @@ Template.uephases.helpers({
 
     if (cursor.count() > 0) {
       return cursor
-    } else {
+    }
+    else {
       return null
     }
   },

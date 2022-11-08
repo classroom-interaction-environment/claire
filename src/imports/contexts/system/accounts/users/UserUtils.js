@@ -2,7 +2,7 @@ import { check, Match } from 'meteor/check'
 import { Meteor } from 'meteor/meteor'
 import { Roles } from 'meteor/alanning:roles'
 import { mapFromObject } from '../../../../api/utils/mapFromObject'
-import { isomporph, onClient, onServer, } from '../../../../api/utils/archUtils'
+import { isomporph, onClient, onServer } from '../../../../api/utils/archUtils'
 
 const roleIndices = mapFromObject({
   admin: 0,
@@ -22,7 +22,7 @@ export const UserUtils = {
     schoolAdmin: 'schoolAdmin',
     curriculum: 'curriculum',
     teacher: 'teacher',
-    student: 'student',
+    student: 'student'
   },
   getHighestRole (userId = Meteor.userId(), scope) {
     check(userId, String)
@@ -32,7 +32,8 @@ export const UserUtils = {
     if (!scope) {
       const user = Meteor.users.findOne(userId)
       finalScope = user.institution
-    } else {
+    }
+    else {
       finalScope = scope
     }
 
@@ -55,7 +56,8 @@ export const UserUtils = {
     if (!scope) {
       const user = Meteor.users.findOne(userId)
       finalScope = user.institution
-    } else {
+    }
+    else {
       finalScope = scope
     }
 
@@ -121,7 +123,8 @@ UserUtils.isCurriculum = function (userId = Meteor.userId(), scope) {
   if (!scope) {
     const user = Meteor.users.findOne(userId)
     finalScope = user.institution
-  } else {
+  }
+  else {
     finalScope = scope
   }
 

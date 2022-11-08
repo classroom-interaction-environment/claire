@@ -77,7 +77,8 @@ Template.itemResultText.events({
     const userIndex = visibleUsers.indexOf(userId)
     if (userIndex === -1) {
       visibleUsers.push(userId)
-    } else {
+    }
+    else {
       visibleUsers.splice(userIndex, 1)
     }
     templateInstance.data.api.save({
@@ -97,7 +98,8 @@ Template.itemResultText.events({
     const userIndex = hiddenAnswers.indexOf(userId)
     if (userIndex === -1) {
       hiddenAnswers.push(userId)
-    } else {
+    }
+    else {
       hiddenAnswers.splice(userIndex, 1)
     }
     templateInstance.data.api.save({

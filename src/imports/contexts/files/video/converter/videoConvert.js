@@ -1,6 +1,6 @@
 import { createLog } from '../../../../api/log/createLog'
 import checkMime from 'file-type'
-const log = createLog({ name: 'videoConvert'})
+const log = createLog({ name: 'videoConvert' })
 const mp4Extension = 'mp4'
 
 /**
@@ -9,7 +9,7 @@ const mp4Extension = 'mp4'
  * @return {Promise<file>}
  */
 export const videoConvert = function convertVideo (uploadedFile) {
-  const filesCollection  = this
+  const filesCollection = this
   log('run on', uploadedFile.name, uploadedFile._id)
 
   return new Promise(Meteor.bindEnvironment(function (resolve) {
@@ -34,17 +34,15 @@ export const videoConvert = function convertVideo (uploadedFile) {
       }
     }
 
-
-    const modifier = { $set: {}}
+    const modifier = { $set: {} }
     modifier.$set['versions.poster'] = uploadedFile.versions.poster
-
 
     // for now we assume mp4 files to be support, even if the
     // internal codec may not be h264
-    //if (extension === mp4Extension) {
+    // if (extension === mp4Extension) {
     //  Promise.await(filesCollection.collection.update(uploadedFile._id, modifier))
     //  return resolve(Promise.await(filesCollection.collection.findOne(uploadedFile._id)))
-    //}
+    // }
 
     // we simply run ffmpeg on all we can find in hope the output is smaller
     // than the original
@@ -60,7 +58,6 @@ export const videoConvert = function convertVideo (uploadedFile) {
 
     const mp4Stats = Promise.await(exists(compressedPath))
     const mp4Mime = Promise.await(checkMime.fromFile(compressedPath))
-
 
     log('compressed size is', mp4Stats.size)
     log('originals size was', size)
@@ -128,7 +125,6 @@ function exists (path) {
 }
 
 function remove (path) {
-  import fs from 'fs'
   return new Promise((resolve, reject) => {
     fs.rm(path, (err) => {
       if (err) {

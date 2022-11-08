@@ -30,7 +30,8 @@ export const updateHook = function (query, modifier, options, callback) {
 
   if (exists(modifier.$set)) {
     modifier.$set = Object.assign(modifier.$set, tmpMod)
-  } else {
+  }
+  else {
     modifier.$set = tmpMod
   }
 

@@ -1,7 +1,7 @@
 import { loggedOut } from '../../accounts/user/loggedOut'
-import { Meteor } from "meteor/meteor"
+import { Meteor } from 'meteor/meteor'
 import { Router } from '../Router'
-import { check } from "meteor/check"
+import { check } from 'meteor/check'
 import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
 import { createDebugLog } from '../../log/createLog'
 

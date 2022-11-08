@@ -12,7 +12,7 @@ export const resendVerificationEmail = function resendVerificationEmail ({ userI
   }
 
   if (Users.helpers.verify(user)) {
-    //logError(new Meteor.Error('user.verifyEmail.alreadyVerified', userId))
+    // logError(new Meteor.Error('user.verifyEmail.alreadyVerified', userId))
     // fails silently to prevent sniffing email addresses
     return
   }

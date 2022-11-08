@@ -141,7 +141,8 @@ Template.adminSettings.events({
     Meteor.call(Settings.methods.updateSettings.name, settingsDoc, (err) => {
       if (err) {
         API.notify(err)
-      } else {
+      }
+      else {
         API.notify(true)
       }
     })

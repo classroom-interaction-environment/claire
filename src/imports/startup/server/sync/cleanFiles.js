@@ -12,7 +12,8 @@ const getRemoveFile = fileContext => Meteor.bindEnvironment(file => {
   if (!gridFile) {
     console.info(`delete [${fileContext.name}] file `, file._id)
     return Promise.await(fileContext.filesCollection.remove(file._id))
-  } else {
+  }
+  else {
     return false
   }
 })

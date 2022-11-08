@@ -108,7 +108,6 @@ Template.lesson.onCreated(function () {
     })
   })
 
-
   // classDoc
 
   instance.autorun(() => {
@@ -137,7 +136,6 @@ Template.lesson.onCreated(function () {
   // - material
   //
   // ============================================================================
-
 
   // users
 

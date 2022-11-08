@@ -22,7 +22,7 @@ import { onServerExec } from '../../../../api/utils/archUtils'
 import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { expect } from 'chai'
 import { LessonRuntime } from '../runtime/LessonRuntime'
-import  { Unit } from '../../../curriculum/curriculum/unit/Unit'
+import { Unit } from '../../../curriculum/curriculum/unit/Unit'
 import { Task } from '../../../curriculum/curriculum/task/Task'
 import { Phase } from '../../../curriculum/curriculum/phase/Phase'
 
@@ -37,7 +37,6 @@ const TaskCollection = mockCollection(Task, { noSchema: true })
 
 describe(Lesson.name, function () {
   describe('helpers', function () {
-
     afterEach(function () {
       restoreAll()
     })
@@ -305,7 +304,8 @@ describe(Lesson.name, function () {
             const phaseDoc = originalPhases.find(entry => entry._id === phaseId)
             if (phaseDoc) {
               return Object.assign({}, phaseDoc)
-            } else {
+            }
+            else {
               return {
                 _id: Random.id(),
                 createdBy: userId,
@@ -587,7 +587,8 @@ describe(Lesson.name, function () {
           entries.forEach(([context, removeCount]) => {
             if (context === Task.name) {
               expect(removeCount).to.equal(1)
-            } else {
+            }
+            else {
               expect(removeCount).to.equal(0)
             }
           })
@@ -656,7 +657,7 @@ describe(Lesson.name, function () {
           const { lessonDoc, userId } = stubStudentDocs({ startedAt: new Date(), visibleStudent: [reference] })
 
           const materialDocs = listLessonMaterial.call({ userId }, lessonDoc)
-          expect(materialDocs).to.deep.equal({ [Task.name]: [], ['notFound']: [{ context: Task.name, _id: taskId }] })
+          expect(materialDocs).to.deep.equal({ [Task.name]: [], notFound: [{ context: Task.name, _id: taskId }] })
         })
         it('allows to skip material', function () {
           const taskId = Random.id()

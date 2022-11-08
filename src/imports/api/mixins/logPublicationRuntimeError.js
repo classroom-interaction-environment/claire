@@ -7,7 +7,8 @@ export const logPublicationRuntimeErrors = function (options) {
     const environment = this
     try {
       return run.apply(environment, args)
-    } catch (publicationRuntimeError) {
+    }
+    catch (publicationRuntimeError) {
       logError({
         error: publicationRuntimeError,
         createdBy: environment.userId,

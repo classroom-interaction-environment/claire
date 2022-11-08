@@ -10,7 +10,8 @@ export const getStateManager = (defaultState, onNext, onBack) => {
     clear (flush) {
       if (flush) {
         state.set([])
-      } else {
+      }
+      else {
         state.set([{ name: defaultState, complete: false, component: null }])
       }
     },

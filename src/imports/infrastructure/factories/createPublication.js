@@ -4,7 +4,7 @@ import { checkPermissions } from '../../api/mixins/checkPermissions'
 import { logError } from '../../api/errors/server/logerror'
 import { addErrorDetails } from '../../api/errors/server/addErrorDetails'
 import { createLog } from '../../api/log/createLog'
-import {logRuntimeEndpoints} from '../../api/mixins/logRuntimeEndpoints'
+import { logRuntimeEndpoints } from '../../api/mixins/logRuntimeEndpoints'
 
 export const createPublication = createPublicationFactory({
   schemaFactory: Schema.create,

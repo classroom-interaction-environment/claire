@@ -132,7 +132,7 @@ Template.registerHelper('stringify', function (obj, replacer = null, space = 2) 
 
 Template.registerHelper('jsonSize', function (obj = {}) {
   const value = JSON.stringify(obj, null, 0)
-  return (~-encodeURI(value).split(/%..|./).length)/1000
+  return (~-encodeURI(value).split(/%..|./).length) / 1000
 })
 
 Template.registerHelper('connected', function () {
@@ -167,7 +167,8 @@ Template.registerHelper('shorten', function (charLen, text) {
   if (!charLen || !text) return text
   if (text.length <= charLen) {
     return text
-  } else {
+  }
+  else {
     return text.substring(0, charLen - 3) + '...'
   }
 })
@@ -196,7 +197,7 @@ Template.registerHelper('roleLabel', function (roleValue) {
   return i18n.get(`roles.${roleValue}`)
 })
 
-Template.registerHelper('toDate', function (date, type='datetime') {
+Template.registerHelper('toDate', function (date, type = 'datetime') {
   if (!date) { return }
   const current = currentLanguage()
 
@@ -206,7 +207,7 @@ Template.registerHelper('toDate', function (date, type='datetime') {
 
   const todayOrYesterday = isTodayOrYesterday(date)
 
-  if (type === 'date')  {
+  if (type === 'date') {
     return todayOrYesterday
       ? i18n.get(`time.${todayOrYesterday}`)
       : date.toLocaleDateString(current?.isoCode, current?.localeDateOptions)

@@ -1,9 +1,8 @@
 import { Meteor } from 'meteor/meteor'
 
-const userExists = (userId) => !!(userId && Meteor.users.find({ _id: userId}).count() > 0)
+const userExists = (userId) => !!(userId && Meteor.users.find({ _id: userId }).count() > 0)
 
 export const getUserCheck = function () {
-
   /**
    *
    */

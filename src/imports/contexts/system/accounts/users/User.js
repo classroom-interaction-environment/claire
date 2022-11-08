@@ -5,13 +5,13 @@ import {
   firstNameSchema,
   lastNameSchema,
   emailSchema,
-  password2Schema,
+  password2Schema
 } from '../../../../api/accounts/registration/registerUserSchema'
 import { UserUtils } from './UserUtils'
 import { getCollection } from '../../../../api/utils/getCollection'
 import { profileImageSchema } from '../../../../api/accounts/schema/profileImageSchema'
 import { onServerExecLazy } from '../../../../infrastructure/loading/onServerExecLazy'
-import { usersByClass } from './usersByClass'
+import { usersByClass , usersByClass , usersByClass } from './usersByClass'
 
 export const Users = {
   name: 'users',
@@ -328,8 +328,7 @@ Users.methods.byClass = {
     'skip.$': String
   },
   run: onServerExec(function () {
-    import { usersByClass } from './usersByClass'
-
+    
     const run = usersByClass()
 
     return function ({ classId, skip }) {
@@ -372,14 +371,13 @@ Users.publications.byClass = {
     classId: String
   },
   run: onServerExecLazy(function () {
-    import { usersByClass } from './usersByClass'
-    return usersByClass
+        return usersByClass
   })
 }
 
 Users.publications.byGroup = {
   name: 'users.publications.byGroup',
-  role:  UserUtils.roles.student,
+  role: UserUtils.roles.student,
   schema: {
     groupId: String
   },
@@ -388,14 +386,14 @@ Users.publications.byGroup = {
 
     return function ({ groupId } = {}) {
       const { userId } = this
-      const groupDoc = getCollection(Group.name).findOne({ _id: groupId,  users: { $elemMatch: { userId } } })
+      const groupDoc = getCollection(Group.name).findOne({ _id: groupId, users: { $elemMatch: { userId } } })
 
       if (!groupDoc) {
         throw new Meteor.Error('error.docNotFound')
       }
 
       const userIds = groupDoc.users.map(doc => doc.userId)
-      return Meteor.users.find({ _id: { $in: userIds }}, {
+      return Meteor.users.find({ _id: { $in: userIds } }, {
         fields: Users.publicFields
       })
     }

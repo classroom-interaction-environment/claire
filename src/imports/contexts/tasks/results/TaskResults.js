@@ -3,7 +3,7 @@ import { UserUtils } from '../../system/accounts/users/UserUtils'
 import { getCollection } from '../../../api/utils/getCollection'
 import { onServerExec } from '../../../api/utils/archUtils'
 import { Item } from '../definitions/items/Item'
-import { Lesson } from '../../classroom/lessons/Lesson'
+import { Lesson , Lesson , Lesson , Lesson } from '../../classroom/lessons/Lesson'
 
 const itemTypes = Item && Object.values(Item.types).map(itemType => itemType.name)
 
@@ -68,8 +68,7 @@ TaskResults.methods.saveTask = {
     'response.$': TaskResults.schema['response.$']
   },
   run: onServerExec(function () {
-    import { Lesson } from '../../classroom/lessons/Lesson'
-    import { LessonErrors } from '../../classroom/lessons/LessonErrors'
+        import { LessonErrors } from '../../classroom/lessons/LessonErrors'
     import { SchoolClass } from '../../classroom/schoolclass/SchoolClass'
     import { LessonStates } from '../../classroom/lessons/LessonStates'
     import { createGetDoc } from '../../../api/utils/documentUtils'
@@ -164,8 +163,7 @@ TaskResults.publications.allByItem = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { Lesson } from '../../classroom/lessons/Lesson'
-    import { SchoolClass } from '../../classroom/schoolclass/SchoolClass'
+        import { SchoolClass } from '../../classroom/schoolclass/SchoolClass'
     import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
     import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
 
@@ -228,10 +226,9 @@ TaskResults.publications.byTask = {
     }
   },
   run: onServerExec(function () {
-    import { Lesson } from '../../classroom/lessons/Lesson'
-    import { SchoolClass } from '../../classroom/schoolclass/SchoolClass'
+        import { SchoolClass } from '../../classroom/schoolclass/SchoolClass'
     import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
-    import { createDocGetter} from '../../../api/utils/document/createDocGetter'
+    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
 
     const getLessonDoc = createDocGetter(Lesson)
 

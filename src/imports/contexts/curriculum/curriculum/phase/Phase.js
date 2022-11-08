@@ -92,12 +92,12 @@ export const Phase = {
     },
     'references.$.collection': {
       type: String,
-      label: translateReactive('common.collection'),
+      label: translateReactive('common.collection')
       // autoform added in respective view
     },
     'references.$.document': {
       type: String,
-      label: translateReactive('common.document'),
+      label: translateReactive('common.document')
       // autoform added in respective view
     },
 

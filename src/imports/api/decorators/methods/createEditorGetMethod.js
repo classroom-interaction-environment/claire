@@ -14,7 +14,7 @@ const filesSchema = {
   'meta.unitId': {
     type: String,
     optional: true
-  },
+  }
 }
 
 export const createEditorGetMethod = ({ name, isFilesCollection }) => {
@@ -29,7 +29,7 @@ export const createEditorGetMethod = ({ name, isFilesCollection }) => {
     timeInterval: 500,
     numRequests: 1,
     run: onServer(function ({ meta }) {
-      const query =  {}
+      const query = {}
 
       if (isFilesCollection && meta) {
         query.meta = meta

@@ -1,4 +1,4 @@
-import { check } from "meteor/check"
+import { check } from 'meteor/check'
 import { UnexpectedError } from '../../errors/types/UnexpectedError'
 import { getCollection } from '../getCollection'
 import { DocNotFoundError } from '../../errors/types/DocNotFoundError'

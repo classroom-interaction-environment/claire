@@ -309,7 +309,6 @@ describe(CodeInvitation.name, function () {
         it('removes a code document', function () {
           stubUser(user, userId, [UserUtils.roles.teacher], user.institution)
 
-
           const codeDocId = CodeCollection.insert({
             role: UserUtils.roles.student,
             code: Random.id(5),

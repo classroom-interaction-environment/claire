@@ -6,7 +6,7 @@
     "postinstall": "echo postinstall script",
     "start": "echo 'meteor run'; meteor run",
     "csslint": "csslint --quiet --ignore=node_modules ./imports",
-    "lint:code": "standardx . | snazzy",
+    "lint:code": "standardx . -v | snazzy",
     "lint:code-fix": "standardx --fix | snazzy",
     "lint:security": "standardx | snazzy",
     "lint:security-fix": "standardx --fix | snazzy",
@@ -59,7 +59,6 @@
   "devDependencies": {
     "@babel/core": "^7.17.9",
     "@babel/eslint-parser": "^7.17.0",
-    "@meteorjs/eslint-config-meteor": "^1.0.5",
     "babel-eslint": "^10.1.0",
     "babel-plugin-istanbul": "^6.1.1",
     "chai": "^4.3.6",
@@ -100,9 +99,14 @@
       "sourceType": "module",
       "allowImportExportEverywhere": true
     },
-    "extends": [
-      "@meteorjs/eslint-config-meteor"
-    ],
+    "env": {
+      "es6": true,
+      "mocha": true
+    },
+    "globals": {
+      "Promise": "readonly",
+      "AutoForm": "readonly"
+    },
     "rules": {
       "brace-style": [
         "error",

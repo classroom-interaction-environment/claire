@@ -35,7 +35,7 @@ Template.previewContainer.onCreated(function () {
       token: token
     },
     failure: API.fatal,
-    success: instance.loadDocument,
+    success: instance.loadDocument
   })
 })
 

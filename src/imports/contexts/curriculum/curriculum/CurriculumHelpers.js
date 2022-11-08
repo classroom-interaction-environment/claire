@@ -3,7 +3,7 @@ import { RevisionTypes } from '../curriculum/types/RevisionType'
 import { Lang } from '../utils/Translate'
 import { getCollection } from '../../../api/utils/getCollection'
 
-/**@deprecated**/
+/** @deprecated**/
 export const CurriculumHelpers = {
 
   /** @deprecated use utils/Lang.translate instead * */
@@ -114,7 +114,8 @@ export const CurriculumHelpers = {
 
     if (typeof value === 'string') {
       return `${this.generateSingleRef(collection, contextName, value) || value}<br >`
-    } else if (Array.isArray(value)) {
+    }
+    else if (Array.isArray(value)) {
       let ret = ''
       for (const docId of value) {
         ret += `${this.generateSingleRef(collection, contextName, docId) || docId}<br >`

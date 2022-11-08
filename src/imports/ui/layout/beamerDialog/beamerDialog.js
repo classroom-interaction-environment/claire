@@ -67,7 +67,8 @@ Template.beamerDialog.events({
     Beamer.actions.unload((err) => {
       if (err) {
         API.notify(err)
-      } else {
+      }
+      else {
         API.notify(true)
         templateInstance.$('#beamerControlDialog').modal('hide')
       }

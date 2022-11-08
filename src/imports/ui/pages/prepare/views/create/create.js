@@ -357,7 +357,8 @@ Template.createClass.events({
       })
       templateInstance.state.set({ previewMaterial })
       setTimeout(() => API.showModal('material-preview-modal'), 100)
-    } catch (e) {
+    }
+    catch (e) {
       API.notify(e)
     }
   },
@@ -389,7 +390,7 @@ function completeWizard (templateInstance, onComplete) {
   const classId = templateInstance.state.get('selectedClass')
   createLesson({ classId, unitId: originalUnitId }, ({ lessonId, unitId }) => {
     if (onComplete) {
-     setTimeout(() => onComplete({ lessonId, classId, originalUnitId, unitId }), 500)
+      setTimeout(() => onComplete({ lessonId, classId, originalUnitId, unitId }), 500)
     }
   })
 }

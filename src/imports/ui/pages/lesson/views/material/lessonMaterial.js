@@ -391,9 +391,9 @@ Template.lessonMaterial.events({
     templateInstance.$('#lesson-material-preview-modal').modal('show')
 
     LessonMaterial.loadPreviewTemplate({
-        name: context,
-        referenceId
-      }, templateInstance)
+      name: context,
+      referenceId
+    }, templateInstance)
       .catch(e => API.API.notify(e))
       .then(() => {
         const previewDoc = { name: context, referenceId }

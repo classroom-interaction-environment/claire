@@ -15,7 +15,8 @@ Template.disconnected.onRendered(function () {
           instance.$('#global-disconnected-modal').modal('show')
         }
       }, 1000)
-    } else {
+    }
+    else {
       console.info('[Connection]: connected')
       setTimeout(() => {
         instance.$('#global-disconnected-modal').modal('hide')

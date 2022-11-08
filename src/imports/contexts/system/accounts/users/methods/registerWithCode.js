@@ -86,7 +86,8 @@ export const registerWithCode = function ({ code, email, firstName, lastName, pa
   // send verification email
   if (password && password.length > 0) {
     Accounts.sendVerificationEmail(userId)
-  } else {
+  }
+  else {
     Accounts.sendEnrollmentEmail(userId)
   }
 

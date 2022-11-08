@@ -1,6 +1,6 @@
 import { Mongo } from 'meteor/mongo'
 import { createLog } from '../../api/log/createLog'
-import {assignToWindow} from '../../utils/assignToWindow'
+import { assignToWindow } from '../../utils/assignToWindow'
 
 const cache = new Map()
 

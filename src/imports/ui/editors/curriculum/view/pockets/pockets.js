@@ -133,7 +133,7 @@ Template.curriculumPockets.onRendered(function () {
           updateUnitIndices({ indices })
             .catch(API.notify)
             .then(() => API.notify(true))
-        },
+        }
       })
     })
   })
@@ -160,12 +160,12 @@ Template.curriculumPockets.events({
     templateInstance.expanded.set(targetId, newValue)
   },
   'mouseover/mousedown/tap .pocket-entry,.unit-entry' (event, templateInstance) {
-    //event.preventDefault()
+    // event.preventDefault()
     const hovered = dataTarget(event, templateInstance)
     templateInstance.state.set({ hovered })
   },
   'mouseout/blur .pocket-entry,.unit-entry' (event, templateInstance) {
-    //event.preventDefault()
+    // event.preventDefault()
     const hovered = dataTarget(event, templateInstance)
 
     if (templateInstance.state.get('hovered') === hovered) {
@@ -215,7 +215,7 @@ Template.curriculumPockets.events({
       modalName: '#editPocketModal',
       updateName: 'newPocket',
       editDocName: 'editDoc',
-      API:API,
+      API: API,
       templateInstance
     })
   },
@@ -319,4 +319,3 @@ async function updateUnitIndices ({ indices, onError, timeout = 100 }) {
     await sleep(timeout)
   }
 }
-

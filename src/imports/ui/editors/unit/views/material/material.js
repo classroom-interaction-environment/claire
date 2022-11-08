@@ -365,7 +365,8 @@ Template.uematerial.events({
 
     if (references.find(el => el.document === materialId)) {
       references = references.filter(el => el.document !== materialId)
-    } else {
+    }
+    else {
       references.push({ collection: context.name, document: materialId })
     }
 
@@ -518,17 +519,17 @@ Template.uematerial.events({
 
     const confirmOptions = deleteMaterial
       ? {
-        text: 'editor.unit.material.confirmDelete',
-        textOptions,
-        codeRequired: true,
-        type: 'danger'
-      }
+          text: 'editor.unit.material.confirmDelete',
+          textOptions,
+          codeRequired: true,
+          type: 'danger'
+        }
       : {
-        text: 'editor.unit.material.confirmRemove',
-        textOptions,
-        codeRequired: false,
-        type: 'secondary'
-      }
+          text: 'editor.unit.material.confirmRemove',
+          textOptions,
+          codeRequired: false,
+          type: 'secondary'
+        }
 
     confirmDialog(confirmOptions)
       .then(result => {
@@ -570,8 +571,9 @@ Template.uematerial.events({
               }, (err, phaseDoc) => {
                 if (err) {
                   return API.notify(err)
-                } else {
-                  return API.notify('editor.unit.material.unlinkedFromPhase',)
+                }
+                else {
+                  return API.notify('editor.unit.material.unlinkedFromPhase')
                 }
               })
             }
@@ -582,7 +584,8 @@ Template.uematerial.events({
               Meteor.call(context.methods.remove.name, { _id: targetId }, (err) => {
                 if (err) {
                   API.notify(err)
-                } else {
+                }
+                else {
                   getLocalCollection(context.name).remove({ _id: targetId })
                   API.notify('editor.unit.material.taskRemoved')
                 }

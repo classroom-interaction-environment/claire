@@ -101,17 +101,17 @@ Template.myClasses.helpers({
       sort: {
         updatedAt: -1,
         startedAt: -1,
-        completedAt: -1,
+        completedAt: -1
       }
     }
     return LessonCollection.find({ classId }, projection)
     // TODO check if this is still needed
-    //.map(lessonDoc => {
-    //lessonDoc.unitOriginal = UnitCollection.findOne(lessonDoc.unitOriginal)
-    //lessonDoc.unit = UnitCollection.findOne(lessonDoc.unit) || lessonDoc.unit
-    //lessonDoc.unit.pocket = PocketCollection.findOne(lessonDoc.unit.pocket)
-    //return lessonDoc
-    //})
+    // .map(lessonDoc => {
+    // lessonDoc.unitOriginal = UnitCollection.findOne(lessonDoc.unitOriginal)
+    // lessonDoc.unit = UnitCollection.findOne(lessonDoc.unit) || lessonDoc.unit
+    // lessonDoc.unit.pocket = PocketCollection.findOne(lessonDoc.unit.pocket)
+    // return lessonDoc
+    // })
   },
   lessonIsNotIdle (lessonDoc) {
     return !LessonStates.isIdle(lessonDoc)

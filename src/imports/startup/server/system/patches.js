@@ -6,4 +6,3 @@ import './patches/renameImageFiles'
 import './patches/renameAdminsCollection'
 import './patches/migrateRoles'
 import './patches/removeMaterialReferences'
-

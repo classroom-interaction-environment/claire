@@ -22,13 +22,13 @@ describe('loggedIn', function () {
   })
 
   it('returns true on a logged in user', function () {
-    stub(Meteor, 'userId', () =>  {})
+    stub(Meteor, 'userId', () => {})
     stub(Meteor, 'user', () => user)
     assert.isTrue(loggedIn())
   })
 
   it('returns true on  a logged in but maybe not yet subscribed user', function () {
-    stub(Meteor, 'userId', () =>  user._id)
+    stub(Meteor, 'userId', () => user._id)
     stub(Meteor, 'user', () => {})
     assert.isTrue(loggedIn())
   })

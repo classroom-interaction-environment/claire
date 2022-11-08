@@ -10,7 +10,7 @@ export const createFilesMaterial = async ({ unitDoc, field, removeId, viewState,
     await callMethod({
       name: viewState.context.methods.setMasterState.name,
       args: { _id: insertDocId, value: true },
-      failure: err => API.notify(err),
+      failure: err => API.notify(err)
     })
   }
 
@@ -18,7 +18,7 @@ export const createFilesMaterial = async ({ unitDoc, field, removeId, viewState,
     await callMethod({
       name: viewState.context.methods.setCustomState.name,
       args: { _id: insertDocId, value: true },
-      failure: err => API.notify(err),
+      failure: err => API.notify(err)
     })
   }
 

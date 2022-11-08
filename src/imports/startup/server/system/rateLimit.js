@@ -10,7 +10,8 @@ Meteor.startup(() => {
   const callback = (reply, input) => {
     if (reply.allowed) {
       return undefined
-    } else {
+    }
+    else {
       log('limit exceeded', JSON.stringify(input), JSON.stringify(reply))
       // TODO track error
     }

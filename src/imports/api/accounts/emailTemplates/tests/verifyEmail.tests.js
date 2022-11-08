@@ -41,8 +41,8 @@ describe('verify email', function () {
       })
 
       const subject = getVerifyEmailSubject({
-          siteName, defaultLocale
-        })
+        siteName, defaultLocale
+      })
 
       ;[{}, null, undefined].forEach(u => {
         expect(subject(u)).to.equal('accounts.verifyEmail.subject')

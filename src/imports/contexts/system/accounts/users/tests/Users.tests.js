@@ -214,7 +214,7 @@ describe('Users', function () {
           throwed.with.property('reason', 'user.tokenInvalid')
           throwed.with.property('details', 'user.tokenInvalid')
         })
-        it ('throws if the reason is not valid', function () {
+        it('throws if the reason is not valid', function () {
           const userDoc = { email: Random.id(), password: Random.id() }
           const userId = Accounts.createUser(userDoc)
           const tokenId = Random.id()

@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { Admin } from '../../../../contexts/system/accounts/admin/Admin'
 import { createAdmin } from '../createAdmin'
 import { mockCollection } from '../../../../../tests/testutils/mockCollection'

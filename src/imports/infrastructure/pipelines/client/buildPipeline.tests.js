@@ -29,7 +29,7 @@ describe(buildPipeline.name, function () {
 
     const context = {
       name: Random.id(6),
-      isFilesCollection: true,
+      isFilesCollection: true
     }
 
     const products = buildPipeline(context, options)

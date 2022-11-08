@@ -1,7 +1,7 @@
 export const showTooltip = function showTooltip (event, templateInstance) {
   const { data } = templateInstance
   if (!data.title || data.tooltip === false) {
-    return //event.preventDefault()
+    return // event.preventDefault()
   }
   const $target = templateInstance.$(event.currentTarget)
   $target.tooltip('show')
@@ -9,7 +9,7 @@ export const showTooltip = function showTooltip (event, templateInstance) {
 
 export const hideTooltip = function hideTooltip (event, templateInstance) {
   const { data } = templateInstance
-  if (!data.title || data.tooltip === false) return //event.preventDefault()
+  if (!data.title || data.tooltip === false) return // event.preventDefault()
   templateInstance.$(event.currentTarget).tooltip('hide')
 }
 

@@ -13,7 +13,8 @@ Template.taskListRenderer.helpers({
   pages (arr) {
     if (!arr || arr.length === 0) {
       return { noPages: true }
-    } else {
+    }
+    else {
       return { length: arr.length }
     }
   },

@@ -14,7 +14,7 @@ export const loadMaterial = function ({ source = {}, destination = {}, dependenc
 
     // if there is no material attached to this context, we can safely skip
     if (!materialDocIds || materialDocIds.length === 0) {
-      //destination[contextName] = 0
+      // destination[contextName] = 0
       return
     }
 
@@ -26,10 +26,10 @@ export const loadMaterial = function ({ source = {}, destination = {}, dependenc
     const documents = materialCollection.find(materialQuery).fetch()
 
     if (documents.length !== materialDocIds.length) {
-      destination['notFound'] = destination['notFound'] || []
+      destination.notFound = destination.notFound || []
       materialDocIds.forEach(materialId => {
         if (!documents.find(doc => doc._id === materialId)) {
-          destination['notFound'].push({
+          destination.notFound.push({
             context: contextName,
             _id: materialId
           })

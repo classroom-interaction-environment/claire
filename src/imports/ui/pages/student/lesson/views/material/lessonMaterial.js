@@ -5,9 +5,9 @@ import { Files } from '../../../../../../contexts/files/Files'
 import { WebResources } from '../../../../../../contexts/resources/web/WebResources'
 import { ContextRegistry } from '../../../../../../infrastructure/context/ContextRegistry'
 import { getMaterialContexts } from '../../../../../../contexts/material/initMaterial'
+import { Routes } from '../../../../../../api/routes/Routes'
 import '../../../../../components/student/task/status/taskWorkingStatus'
 import './lessonMaterial.html'
-import { Routes } from '../../../../../../api/routes/Routes'
 
 /**
  * Lesson Material Student
@@ -17,7 +17,7 @@ import { Routes } from '../../../../../../api/routes/Routes'
  * It also resolves the proper routes for the Material
  */
 
-const API = Template.lessonMaterial.setDependencies({
+Template.lessonMaterial.setDependencies({
   contexts: getMaterialContexts()
 })
 

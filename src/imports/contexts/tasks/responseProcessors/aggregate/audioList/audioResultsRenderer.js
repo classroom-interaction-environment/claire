@@ -53,7 +53,7 @@ Template.audioResultsRenderer.helpers({
   },
   link (audio, version) {
     return audio.versions[version].link
-  },
+  }
 })
 
 Template.audioResultsRenderer.events({

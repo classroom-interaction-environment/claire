@@ -30,7 +30,8 @@ export const stubUser = function (userObj, userId, roles, group) {
     stub(Roles, 'userIsInRole', (id, role, domain) => {
       if (userObj) {
         return id === userObj._id && roles.includes(role) && domain === group
-      } else {
+      }
+      else {
         return id === userId && roles.includes(role) && domain === group
       }
     })

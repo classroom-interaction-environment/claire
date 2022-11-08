@@ -16,10 +16,9 @@ import '../../components/forms/create/createForm'
 import '../../components/documentState/documentState'
 import './taskWizard.html'
 
-
 const API = Template.taskWizard.setDependencies({
   contexts: [Unit, Task],
-  language: taskWizardLanguage,
+  language: taskWizardLanguage
 })
 const sort = { sort: { updatedAt: -1 } }
 const defaultSchema = Defaults.schema()
@@ -40,14 +39,14 @@ Template.taskWizard.onCreated(function () {
     name: Task.methods.my,
     collection: TaskCollection,
     failure: API.fatal,
-    success:  () => instance.state.set('tasksReady', true)
+    success: () => instance.state.set('tasksReady', true)
   })
 
   loadIntoCollection({
     name: Unit.methods.my,
     collection: UnitCollection,
     failure: API.fatal,
-    success:  () => instance.state.set('unitsReady', true)
+    success: () => instance.state.set('unitsReady', true)
   })
 })
 
@@ -59,21 +58,21 @@ Template.taskWizard.helpers({
     const query = {
       createdBy: Meteor.userId(),
       _master: { $exists: false },
-      _custom: { $exists: false },
+      _custom: { $exists: false }
     }
     return cursor(() => TaskCollection.find(query, sort))
   },
   customTasks () {
     const query = {
       createdBy: Meteor.userId(),
-      _custom: { $exists: true },
+      _custom: { $exists: true }
     }
     return cursor(() => TaskCollection.find(query, sort))
   },
   masterTasks () {
     const query = {
       createdBy: Meteor.userId(),
-      _master: { $exists: true },
+      _master: { $exists: true }
     }
     return cursor(() => TaskCollection.find(query, sort))
   },
@@ -107,7 +106,8 @@ Template.taskWizard.events({
       })
       templateInstance.state.set({ previewMaterial })
       setTimeout(() => API.showModal('material-preview-modal'), 100)
-    } catch (e) {
+    }
+    catch (e) {
       API.notify(e)
     }
   }
@@ -173,7 +173,7 @@ Template.twRenderer.events({
             }))
           })
         })
-        .catch(e => notify(e))
+        .catch(e => API.notify(e))
     })
   }
 })

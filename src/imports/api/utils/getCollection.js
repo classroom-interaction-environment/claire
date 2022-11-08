@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { Mongo } from 'meteor/mongo'
-import {assignToWindow} from '../../utils/assignToWindow'
+import { assignToWindow } from '../../utils/assignToWindow'
 
 const _cache = new Map()
 

@@ -6,7 +6,7 @@ export const ContextPlugins = createGenericPluginRegistry({
   all: function (filter = {}) {
     const all = Array.from(this.registered.values())
     const filterKeys = Object.keys(filter)
-    console.info(all, filterKeys)
+
     return all.filter(ctx => {
       if (filterKeys.length === 0) return true
 

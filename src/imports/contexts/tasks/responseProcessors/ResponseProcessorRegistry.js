@@ -89,7 +89,8 @@ ResponseProcessorRegistry.register = function (context) {
       dataType.default = name
       dataType.defaultIndex = index
       dataType.values.unshift(name)
-    } else {
+    }
+    else {
       dataType.values.push(name)
     }
 
@@ -137,7 +138,7 @@ ResponseProcessorRegistry.allForDataType = dataType => {
     : dataType
 
   const typeMap = dataTypeMap.get(dataTypeName) || { values: [] }
-  console.debug({dataTypeMap, typeMap})
+  console.debug({ dataTypeMap, typeMap })
   const contexts = new Set(typeMap.values.map(toContext))
   contexts.add(RawResponse)
 
@@ -200,4 +201,3 @@ ResponseProcessorRegistry.byType = type => {
   })
   return out
 }
-

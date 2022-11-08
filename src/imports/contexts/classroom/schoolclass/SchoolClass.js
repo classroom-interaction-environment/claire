@@ -390,7 +390,7 @@ SchoolClass.methods.update = {
         })
       }
 
-      return SchoolClassCollection.update(_id, { $set: { title } } )
+      return SchoolClassCollection.update(_id, { $set: { title } })
     }
   })
 }
@@ -475,7 +475,6 @@ SchoolClass.publications.single = {
   timeInterval: 1000,
   numRequests: 10
 }
-
 
 SchoolClass.publications.my = {
   name: 'schoolClass.publications.my',

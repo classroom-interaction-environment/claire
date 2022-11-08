@@ -46,7 +46,7 @@ AudioFiles.material = {
           icon: AudioFiles.icon,
           accept: AudioFiles.files.accept,
           maxSize: AudioFiles.files.maxSize,
-          capture: AudioFiles.files.capture,
+          capture: AudioFiles.files.capture
         }
       }
     }
@@ -71,7 +71,7 @@ AudioFiles.material = {
           meta: name,
           preview: preview,
           print: print,
-          student: student,
+          student: student
         }, document)
       },
       previewData (targetId) {

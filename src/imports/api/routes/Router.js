@@ -24,10 +24,12 @@ Router.go = function (value, ...optionalArgs) {
     const path = value.path(...optionalArgs)
     debug('go', path)
     return FlowRouter.go(path)
-  } else if (type === 'string') {
+  }
+  else if (type === 'string') {
     debug('go', value)
     return FlowRouter.go(value)
-  } else {
+  }
+  else {
     throw new Error(`Unexpected format: [${typeof type}], expected string or object`)
   }
 }
@@ -169,7 +171,8 @@ function createRoute (routeDef, onError) {
 
       try {
         this.render(routeDef.target || _defaultTarget, routeDef.template, data)
-      } catch (e) {
+      }
+      catch (e) {
         console.error(e)
         if (typeof onError === 'function') {
           onError(e)
@@ -179,7 +182,7 @@ function createRoute (routeDef, onError) {
   }
 }
 
-let lastRoute = {
+const lastRoute = {
   search: '',
   pathname: ''
 }

@@ -5,12 +5,11 @@ import { createFilesCollection } from '../../../infrastructure/factories/createF
 import { isSupportedObject } from '../../../api/utils/isSupportedObject'
 import { isFilesContext } from '../../../contexts/files/isFilesContext'
 
-
 export const buildPipeline = createPipeline('build', function (context, api, options) {
   const { collection, filesCollection, debug } = options
   const products = {
     collection: null,
-    filesCollection: null,
+    filesCollection: null
   }
 
   if (collection && isSupportedObject(context.schema)) {
@@ -22,7 +21,7 @@ export const buildPipeline = createPipeline('build', function (context, api, opt
     api.info(`create files collection [${context.name}]`)
 
     const FilesMongoCollection = products.collection || new Mongo.Collection(context.name)
-    const { files } =  context
+    const { files } = context
 
     products.filesCollection = createFilesCollection({
       collection: FilesMongoCollection,

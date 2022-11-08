@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { ReactiveVar } from 'meteor/reactive-var'
-import { Notify } from '../components/notifications/Notify'
+import { Notify , Notify } from '../components/notifications/Notify'
 import { SubscriptionRegistry } from '../subscriptions/SubscriptionRegistry'
 import { SubsManager } from '../subscriptions/SubsManager'
 import { DocNotFoundError } from '../../api/errors/types/DocNotFoundError'
@@ -35,8 +35,7 @@ export const initTemplateDependencies = function initTemplate ({ contexts = [], 
   import { initOnce } from '../../infrastructure/loading/initOnce'
   import { initLanguage } from '../../api/language/initLanguage'
   import { initForms } from '../components/forms/Form'
-  import { Notify } from '../components/notifications/Notify'
-
+  
   const template = this
   template.initComplete = new ReactiveVar(false)
 
@@ -51,7 +50,7 @@ export const initTemplateDependencies = function initTemplate ({ contexts = [], 
   const warn = createLog({ name: viewName, type: 'warn' })
   const debugLog = debug
     ? createLog({ name: viewName, type: 'debug' })
-    : (() => {})
+    : () => {}
   debugLog('init')
 
   const api = {}
@@ -65,9 +64,7 @@ export const initTemplateDependencies = function initTemplate ({ contexts = [], 
   const modal = (id, action) => {
     const modalId = id.includes('#') ? id : `#${id}`
     const instance = Template.instance()
-    const target = instance
-      ? instance
-      : window
+    const target = instance || window
     target.$(modalId).modal(action)
   }
 
@@ -91,7 +88,8 @@ export const initTemplateDependencies = function initTemplate ({ contexts = [], 
         clearSubs(key)
         onDestroy.forEach(fn => fn())
         onDestroy.length = 0
-      } catch (e) {
+      }
+ catch (e) {
         onError(e)
       }
     }
@@ -197,7 +195,8 @@ export const initTemplateDependencies = function initTemplate ({ contexts = [], 
         const component = instance.$(selector)
         if (!component) {
           warn('no component found for lookup:', selector)
-        } else {
+        }
+ else {
           instance._lookup.set(selector, component)
         }
       }
@@ -239,7 +238,8 @@ const subscribe = ({ key, name, args, callbacks, debug }) => {
     SubscriptionRegistry.registerTemplate(key)
     SubscriptionRegistry.add(key, pubName)
     return SubsManager.subscribe(pubName, args, callbacks)
-  } catch (e) {
+  }
+ catch (e) {
     onError(e)
   }
 }
@@ -296,12 +296,7 @@ const createSchema = (schema, options = {}, deprecatedOpt) => {
  */
 const notify = value => {
   if (value instanceof Error) {
-    console.error(value)
-    return Notify.add({
-      type: 'danger',
-      message: value.reason || value.message,
-      icon: 'exclamation-triangle'
-    })
+    return Notify.error(value)
   }
 
   if (value === true) {

@@ -13,7 +13,8 @@ Template.teacherContainer.events({
     event.preventDefault()
     if (Beamer.status()) {
       templateInstance.$('#beamerControlDialog').modal('show')
-    } else {
+    }
+    else {
       const location = Routes.present.path()
       setTimeout(() => Beamer.actions.init(location), 500)
     }

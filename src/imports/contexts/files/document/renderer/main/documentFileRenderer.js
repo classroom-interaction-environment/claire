@@ -73,7 +73,8 @@ Template.documentFileRenderer.onRendered(function () {
           instance.renderPDFJSFallback(pdfUrl).catch(API.notify)
         }
       }, 500)
-    } else {
+    }
+    else {
       API.log('no native PDF support')
       instance.renderPDFJSFallback().catch(API.notify)
     }

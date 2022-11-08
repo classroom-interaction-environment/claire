@@ -5,7 +5,7 @@ export const GroupMode = {
   off: {
     index: 0,
     value: 'off',
-    label: 'groupMode.off',
+    label: 'groupMode.off'
   },
   /**
    * One answers for all, answers will override each other

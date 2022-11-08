@@ -167,9 +167,9 @@ Template.afUserGroupSelect.events({
   'dragstart .user-element' (event, templateInstance) {
     const userId = dataTarget(event, templateInstance)
     const groupIndex = dataTarget(event, templateInstance, 'index')
-    event.originalEvent.dataTransfer.setData("application/groupBuilder-userId", userId);
-    event.originalEvent.dataTransfer.setData("application/groupBuilder-groupIndex", groupIndex || '');
-    event.originalEvent.dataTransfer.effectAllowed = "move";
+    event.originalEvent.dataTransfer.setData('application/groupBuilder-userId', userId)
+    event.originalEvent.dataTransfer.setData('application/groupBuilder-groupIndex', groupIndex || '')
+    event.originalEvent.dataTransfer.effectAllowed = 'move'
   },
   'dragenter .user-dropzone' (event, templateInstance) {
     const index = Number.parseInt(dataTarget(event, templateInstance, 'index'), 10)
@@ -180,13 +180,13 @@ Template.afUserGroupSelect.events({
     templateInstance.state.set('dragOverIndex', null)
   },
   'drop .user-dropzone' (event, templateInstance) {
-    event.preventDefault();
+    event.preventDefault()
     // the user id
-    const userId = event.originalEvent.dataTransfer.getData("application/groupBuilder-userId");
+    const userId = event.originalEvent.dataTransfer.getData('application/groupBuilder-userId')
 
     // index of the group the user came from
     // if -1 the user is "new" and came from no group
-    const groupIndexStr = event.originalEvent.dataTransfer.getData("application/groupBuilder-groupIndex")
+    const groupIndexStr = event.originalEvent.dataTransfer.getData('application/groupBuilder-groupIndex')
     const groupIndex = groupIndexStr ? Number.parseInt(groupIndexStr, 10) : -1
 
     // index of the group, where the user is dropped

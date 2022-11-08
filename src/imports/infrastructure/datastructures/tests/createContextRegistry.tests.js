@@ -7,7 +7,7 @@ describe(createContextRegistry.name, function () {
   it('throws if options is not correct', function () {
     [
       ['name', {}],
-      ['hasIdentity', { name: Random.id(6) }],
+      ['hasIdentity', { name: Random.id(6) }]
     ].forEach(([name, options]) => {
       expect(() => createContextRegistry(options))
         .to.throw(`Match error: Missing key '${name}'`)

@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor'
 import crypto from 'crypto'
 import { WebApp } from 'meteor/webapp'
 import { Autoupdate } from 'meteor/autoupdate'
-import { check } from "meteor/check"
+import { check } from 'meteor/check'
 
 const self = '\'self\''
 const data = 'data:'
@@ -44,8 +44,8 @@ export function cspOptions (externalHostUrls = []) {
 
   const opt = {
     crossOriginEmbedderPolicy: false,
-    //crossOriginOpenerPolicy: false,
-    crossOriginResourcePolicy:  { policy: "cross-origin" },
+    // crossOriginOpenerPolicy: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
     contentSecurityPolicy: {
       blockAllMixedContent: true,
       directives: {
@@ -89,8 +89,8 @@ export function cspOptions (externalHostUrls = []) {
           'allow-scripts',
           'allow-forms',
           'allow-modals',
-          'allow-presentation',
-          //'allow-top-navigation',
+          'allow-presentation'
+          // 'allow-top-navigation',
           // 'allow-storage-access-by-user-activation ', // experimental
           // 'allow-top-navigation',
           // 'allow-top-navigation-by-user-activation'
@@ -133,7 +133,6 @@ export function cspOptions (externalHostUrls = []) {
 
   return opt
 }
-
 
 /** @private Transforms a given url to a valid connect-src */
 const getConnectSrc = url => {

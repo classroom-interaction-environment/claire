@@ -210,4 +210,3 @@ export const agreementSchema = () => ({
     label: onClient(i18n.reactive('agreements.privacyPolicy.read'))
   }
 })
-

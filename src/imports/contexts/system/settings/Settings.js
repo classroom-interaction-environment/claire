@@ -78,14 +78,14 @@ export const Settings = {
         type: 'trix'
       }
     },
-    'researchOptions': {
+    researchOptions: {
       type: Array,
       optional: true,
-      label: () => i18n.get('user.research.options'),
+      label: () => i18n.get('user.research.options')
     },
     'researchOptions.$': {
       type: String,
-      label: () => i18n.get('common.entry'),
+      label: () => i18n.get('common.entry')
     },
     logos: {
       type: Array,
@@ -209,10 +209,8 @@ Settings.methods.updateTheme = {
       const SettingsCollection = getCollection(Settings.name)
       const settingsDoc = SettingsCollection.findOne()
       const modifier = {
-        $set:  {
-          'ui.theme': theme
-            ?  theme
-            :  ''
+        $set: {
+          'ui.theme': theme || ''
         }
       }
 

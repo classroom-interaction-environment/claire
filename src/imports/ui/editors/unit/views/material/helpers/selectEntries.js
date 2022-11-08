@@ -1,5 +1,5 @@
 import { $in } from '../../../../../../api/utils/query/inSelector'
-import { Meteor } from "meteor/meteor"
+import { Meteor } from 'meteor/meteor'
 import { Unit } from '../../../../../../contexts/curriculum/curriculum/unit/Unit'
 import { $nin } from '../../../../../../api/utils/query/notInSelector'
 import { getCollection } from '../../../../../../api/utils/getCollection'

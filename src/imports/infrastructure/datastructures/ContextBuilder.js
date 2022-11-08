@@ -99,7 +99,6 @@ ContextBuilder.build = function (context, buildCallback) {
 
   // we go through all registries and check for any pipelines
   registryMap.forEach(({ registry, pipelines }) => {
-
     if (registry.hasIdentity(context)) {
       allPipelines.push(...pipelines)
       registry.add(context)

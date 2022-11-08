@@ -169,7 +169,7 @@ Group.publications.single = {
   name: 'group.publications.single',
   schema: {
     groupId: {
-      type: String,
+      type: String
     }
   },
   run: onServer(function ({ groupId }) {
@@ -251,7 +251,7 @@ Group.methods.users = {
   name: 'group.methods.users',
   schema: { groupId: String },
   role: UserUtils.roles.student,
-  run: onServerExec(function (){
+  run: onServerExec(function () {
     import { Users } from '../../system/accounts/users/User'
     import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
     import { createDocGetter } from '../../../api/utils/document/createDocGetter'

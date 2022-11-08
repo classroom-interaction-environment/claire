@@ -5,7 +5,8 @@ Meteor.startup(() => {
   AppImages.helpers.init((err, res) => {
     if (err) {
       console.error(`[${AppImages.name}]: error`, err)
-    } else {
+    }
+    else {
       console.info(`[${AppImages.name}]: loaded`, res && res.length)
     }
   })

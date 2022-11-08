@@ -32,7 +32,7 @@ const getAllChildren = (parent) => {
 }
 
 const API = Template.curriculumObjectives.setDependencies({
-  contexts: [Objective],
+  contexts: [Objective]
 })
 
 const objectiveSchema = API.createSchema(Objective.schema, { withDefault: true })
@@ -179,7 +179,7 @@ Template.deObjective.helpers({
   },
   childCount (parentId) {
     return getCollection(Objective.name).find({ parent: parentId }).count()
-  },
+  }
 })
 
 Template.deObjective.events({

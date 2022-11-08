@@ -2,7 +2,7 @@
 import { LessonRuntime } from '../runtime/LessonRuntime'
 import { Beamer } from '../../../beamer/Beamer'
 import { TaskResults } from '../../../tasks/results/TaskResults'
-//import { Files } from '../../../imports/api/decorators/methods/files/Files'
+// import { Files } from '../../../imports/api/decorators/methods/files/Files'
 
 import { Random } from 'meteor/random'
 import { mockCollection } from '../../../../../tests/testutils/mockCollection'
@@ -46,7 +46,8 @@ const randomReferences = (beamerDoc, lessonId) => {
     if (Math.random() > 0.53) {
       refLessonId = lessonId
       lessonRefs++
-    } else {
+    }
+    else {
       refLessonId = Random.id()
       nonLessonRefs++
     }

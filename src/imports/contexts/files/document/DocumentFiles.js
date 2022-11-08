@@ -70,7 +70,7 @@ DocumentFiles.material = {
           meta: name,
           preview: preview,
           print: print,
-          student: student,
+          student: student
         }, document)
       },
       previewData (targetId) {

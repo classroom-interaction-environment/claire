@@ -1,4 +1,4 @@
-import { Meteor } from "meteor/meteor"
+import { Meteor } from 'meteor/meteor'
 import { userExists } from '../../../../../api/accounts/user/userExists'
 
 /**

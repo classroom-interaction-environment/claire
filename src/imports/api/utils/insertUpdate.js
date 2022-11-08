@@ -62,7 +62,8 @@ export const insertUpdate = function insertUpdate (collection, doc, hash, debug)
       console.info(`[${collection._name}]: update ${docId} ${updated}`)
     }
     return updated
-  } catch (e) {
+  }
+  catch (e) {
     console.log(e.message)
     console.log('collection: ' + collection._name)
     console.log('document: ')

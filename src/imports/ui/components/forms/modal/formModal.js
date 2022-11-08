@@ -99,7 +99,8 @@ Template.formModal.events({
 
       const hideModalHandler = () => API.hideModal(defaultId)
       setTimeout(hideModalHandler, formState.timeout)
-    } catch (e) {
+    }
+    catch (e) {
       console.error(e.name, e.message, e.details)
 
       // use the details to attach sticky error messages to the form
@@ -124,7 +125,8 @@ Template.formModal.events({
       })
 
       templateInstance.state.set({ successful: false })
-    } finally {
+    }
+    finally {
       templateInstance.state.set('submitting', false)
     }
   },
@@ -146,7 +148,8 @@ Template.formModal.events({
           result: cachedResult,
           ...formState.bind
         })
-      } catch (e) {
+      }
+      catch (e) {
         // TODO should we pipe this trough formState.onError?
         console.error(e)
       }

@@ -108,7 +108,7 @@ export const createDashboardFormActions = ({ onError, translate }) => {
   formActions[SchoolClass.name].update = {
     action: 'update',
     schema: createClassSchema,
-    doc({ _id }) {
+    doc ({ _id }) {
       return getCollection(SchoolClass.name).findOne(_id)
     },
     onSubmit: async prams => {

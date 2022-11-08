@@ -146,7 +146,8 @@ Routes.codeRegister = {
       Meteor.loginWithPassword(username, password, function (err) {
         if (err) {
           Router.go(Routes.login)
-        } else {
+        }
+        else {
           Router.go(Routes.root)
         }
       })

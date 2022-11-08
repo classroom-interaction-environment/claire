@@ -188,13 +188,15 @@ export const createRemoveDoc = function createRemoveDoc ({ name, isFilesCollecti
       if (isFilesCollection) {
         Collection.remove(query)
         removed = cursor.count()
-      } else {
+      }
+      else {
         removed = Collection.remove(query)
       }
 
       return removed
     }
-  } else {
+  }
+  else {
     return function removeDoc (_id) {
       const Collection = isFilesCollection
         ? getFilesCollection(name)
@@ -212,7 +214,8 @@ export const createRemoveDoc = function createRemoveDoc ({ name, isFilesCollecti
       if (isFilesCollection) {
         Collection.remove(query)
         removed = 1
-      } else {
+      }
+      else {
         removed = Collection.remove(query)
       }
 

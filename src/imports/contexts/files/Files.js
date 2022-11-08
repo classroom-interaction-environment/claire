@@ -2,7 +2,7 @@ import { FileTypes } from './shared/FileTypes'
 import { FileSize } from './shared/SizeUnits'
 import { createContextRegistry } from '../../infrastructure/datastructures/createContextRegistry'
 import { auto, onClientExec, onServerExec } from '../../api/utils/archUtils'
-import { ReactiveVar } from 'meteor/reactive-var'
+import { ReactiveVar , ReactiveVar } from 'meteor/reactive-var'
 import { isMaterial } from '../material/isMaterial'
 import { FilesTemplates } from './FilesTemplates'
 
@@ -45,8 +45,7 @@ Files.getMaterialContexts = auto(function () {
 
 
 onClientExec(function () {
-  import { ReactiveVar } from 'meteor/reactive-var'
-  import { ITaskDefinition } from '../tasks/definitions/ITaskDefinition'
+    import { ITaskDefinition } from '../tasks/definitions/ITaskDefinition'
   import { FilesTemplates } from './FilesTemplates'
 
   /** @deprecated move into own module FilesTemplates **/
@@ -173,4 +172,3 @@ onServerExec(function () {
       : nullConverter
   }
 })
-

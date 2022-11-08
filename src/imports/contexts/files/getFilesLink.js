@@ -8,9 +8,11 @@ export const getFilesLink = ({ file, name, version = 'original' }) => {
 
   if (linkType === 'string') {
     link = file.link
-  } else if (linkType === 'function') {
-    link  = file.link(version)
-  } else {
+  }
+  else if (linkType === 'function') {
+    link = file.link(version)
+  }
+  else {
     const collection = name && getFilesCollection(name)
     link = collection && collection.link(file, version)
   }

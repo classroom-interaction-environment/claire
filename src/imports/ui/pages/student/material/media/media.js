@@ -109,7 +109,6 @@ Template.media.onCreated(function () {
       groupDoc.visible.find(byMediaId)
 
     if (!isVisible && !isGroupVisible) {
-
       return instance.state.set({
         mediaDoc: null,
         materialLoaded: true,

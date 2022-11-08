@@ -61,7 +61,7 @@ Template.dashboard.onCreated(function () {
           collection: DimensionCollection
         })
       }
-    },
+    }
   })
 
   instance.updateLessonCounts = () => {
@@ -106,7 +106,7 @@ Template.dashboard.onCreated(function () {
           // and several static definitions of the lessons, such as dimensions, objectives etc.
           const UnitCollection = getLocalCollection(Unit.name)
           const ids = getCollection(Lesson.name).find({ classId }).map(lessonDoc => lessonDoc.unit)
-          const skip = UnitCollection.find({ _id: { $in: ids }}).map(toDocId)
+          const skip = UnitCollection.find({ _id: { $in: ids } }).map(toDocId)
 
           if (ids.length === 0) {
             return
@@ -319,7 +319,7 @@ Template.dashboard.events({
 
     if (currentClassId && !isCurrent) {
       const target = templateInstance.$(`.collapse[data-class="${currentClassId}"]`)
-      const openCollapse = new Collapse(target.get(0),  { toggle: false })
+      const openCollapse = new Collapse(target.get(0), { toggle: false })
       openCollapse.hide()
     }
 

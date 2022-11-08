@@ -70,7 +70,8 @@ export const Charts = {
     try {
       targetObj = $(options.target).get(0)
       if (!targetObj) { throw new Error('element is undefined') }
-    } catch (err) {
+    }
+    catch (err) {
       console.error(err)
       // TODO alert user and reload page
       return

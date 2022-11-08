@@ -49,7 +49,7 @@ ImageFiles.material = {
           icon: ImageFiles.icon,
           accept: ImageFiles.files.accept,
           maxSize: ImageFiles.files.maxSize,
-          capture: ImageFiles.files.capture,
+          capture: ImageFiles.files.capture
         }
       }
     }

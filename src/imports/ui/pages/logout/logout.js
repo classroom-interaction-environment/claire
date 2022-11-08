@@ -14,7 +14,8 @@ Template.logout.onCreated(function onLogoutCreated () {
   const logout = () => Meteor.logout((err) => {
     if (err) {
       instance.state.set('err', err)
-    } else {
+    }
+    else {
       Notify.success('logout.success')
       instance.state.set('complete', true)
       instance.data.onSuccess()
@@ -25,7 +26,8 @@ Template.logout.onCreated(function onLogoutCreated () {
 
   if (allSubs.length > 0) {
     setTimeout(logout, 1000)
-  } else {
+  }
+  else {
     logout()
   }
 })

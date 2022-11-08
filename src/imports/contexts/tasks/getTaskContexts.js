@@ -1,4 +1,4 @@
-import { Literature } from '../resources/web/literature/Literature'
+import { Literature , Literature } from '../resources/web/literature/Literature'
 
 export const getTaskContexts = () => {
   import { Task } from '../curriculum/curriculum/task/Task'
@@ -7,8 +7,7 @@ export const getTaskContexts = () => {
   import { WebResources } from '../resources/web/WebResources'
   import { LinkedResource } from '../resources/web/linked/LinkedResource'
   import { EmbeddedResource } from '../resources/web/embedded/EmbeddedResource'
-  import { Literature } from '../resources/web/literature/Literature'
-
+  
   // FILES
   import { ImageFiles } from '../files/image/ImageFiles'
   import { AudioFiles } from '../files/audio/AudioFiles'

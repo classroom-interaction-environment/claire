@@ -1,9 +1,14 @@
 import { Meteor } from 'meteor/meteor'
+import { Blaze } from 'meteor/blaze'
+import { Template } from 'meteor/templating'
 import { Tracker } from 'meteor/tracker'
 import { Router } from '../../api/routes/Router'
 import { Roles } from 'meteor/alanning:roles'
 import { dynamicImport } from '../../ui/utils/dynamicImport'
 import { createLog } from '../../api/log/createLog'
+
+if (Blaze.setExceptionHandler) Blaze.setExceptionHandler(console.error)
+if (Template.stateName) Template.stateName('state')
 
 const debug = createLog({ name: 'routes', type: 'debug' })
 

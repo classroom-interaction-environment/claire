@@ -82,7 +82,7 @@ EmbeddedResource.material = {
       /**
        * @deprecated
        */
-      previewData(targetId) {
+      previewData (targetId) {
         console.warn(this.name, 'previewData is deprecated!')
         if (!targetId) return
         const { collection } = this

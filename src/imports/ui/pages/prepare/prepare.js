@@ -110,12 +110,12 @@ Template.prepare.helpers({
           classId: classId
         })
       },
-      onCompleteEdit ({ /* lessonId, classId,*/  unitId }) {
+      onCompleteEdit ({ /* lessonId, classId, */ unitId }) {
         if (onCompleteEdit) onCompleteEdit({ unitId })
       }
     }, instance.data, view.templateData)
     return Object.assign({}, view, { templateData })
-  },
+  }
 })
 
 Template.prepare.events({

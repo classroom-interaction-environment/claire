@@ -6,7 +6,6 @@ import { dataTarget } from '../../../../../ui/utils/dataTarget'
 import './videoResultsRenderer.html'
 import '../shared/cssbox.scss'
 
-
 const API = Template.videoResultsRenderer.setDependencies({
   contexts: [VideoFiles],
   debug: false

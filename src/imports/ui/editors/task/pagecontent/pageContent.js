@@ -481,7 +481,7 @@ Template.taskPageContent.events({
     }
 
     if ($form) {
-      $form.scrollIntoView({ behavior: 'smooth'})
+      $form.scrollIntoView({ behavior: 'smooth' })
       const selector = $form.querySelector('*[autofocus]')
       if (selector) { selector.focus() }
     }

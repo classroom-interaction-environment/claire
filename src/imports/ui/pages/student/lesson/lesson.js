@@ -82,10 +82,7 @@ Template.lesson.onCreated(function () {
       args: { lessonId },
       key: lessonSubKeyStudent,
       callbacks: {
-        onError: instance.displayError,
-        onReady () {
-          console.debug('groups loaded')
-        }
+        onError: instance.displayError
       }
     })
   })
@@ -147,7 +144,7 @@ Template.lesson.onDestroyed(function () {
 })
 
 Template.lesson.helpers({
-  loadComplete() {
+  loadComplete () {
     return API.initComplete()
   },
   error () {

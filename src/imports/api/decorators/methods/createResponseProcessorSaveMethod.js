@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor'
 import { onServer } from '../../utils/archUtils'
 import { getCollection } from '../../utils/getCollection'
 
-
 export const createResponseProcessorSaveMethod = function ({ name, schema }) {
   import { isMemberOfLesson } from '../../../contexts/classroom/lessons/runtime/isMemberOfLesson'
 

@@ -41,8 +41,8 @@ describe('enroll account', function () {
       })
 
       const subject = getEnrollAccountSubject({
-          siteName, defaultLocale
-        })
+        siteName, defaultLocale
+      })
 
       ;[{}, null, undefined].forEach(u => {
         expect(subject(u)).to.equal('accounts.enroll.subject')
@@ -57,7 +57,7 @@ describe('enroll account', function () {
       const user = {
         firstName: Random.id(6),
         lastName: Random.id(6),
-        emails: [{ address: `${Random.id()}@example.com`}],
+        emails: [{ address: `${Random.id()}@example.com` }],
         locale: Random.id(6)
       }
 
@@ -88,7 +88,7 @@ describe('enroll account', function () {
       const text = getEnrollAccountText({
         expiration, defaultLocale
       })
-      
+
       expect(text(user, originalUrl)).to.equal('accounts.enroll.text')
     })
   })

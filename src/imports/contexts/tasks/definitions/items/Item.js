@@ -172,7 +172,7 @@ const processPlugin = (name, plugin) => {
 }
 
 Item.register = function (context, schemaDefinitions) {
-  debug('(register item context)',context.name)
+  debug('(register item context)', context.name)
   check(context.name, String)
   check(context.label, String)
   check(context.dataType, Match.Where(isResponseDataType))
@@ -188,7 +188,7 @@ Item.register = function (context, schemaDefinitions) {
 
   // item add to the internal contexts map
   const name = context.name
-    contextMap.set(name, Object.assign({}, context, schemaDefinitions, {
+  contextMap.set(name, Object.assign({}, context, schemaDefinitions, {
     icon: context.icon || context.category.icon,
     publicFields: publicFields,
     dataType: context.dataType || ResponseDataTypes.string
@@ -233,7 +233,7 @@ Item.getDataTypeBy = function (name) {
 Item.extract = function (itemId, document) {
   if (!itemId || !document) return
 
-  let item = undefined
+  let item
 
   document.pages.some(page => {
     if (!page.content) return false

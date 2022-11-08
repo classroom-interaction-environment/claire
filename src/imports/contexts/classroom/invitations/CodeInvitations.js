@@ -5,7 +5,7 @@ import { Random } from 'meteor/random'
 import { i18n } from '../../../api/language/language'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
 import { Users } from '../../system/accounts/users/User'
-import { SchoolClass } from '../schoolclass/SchoolClass'
+import { SchoolClass , SchoolClass , SchoolClass } from '../schoolclass/SchoolClass'
 import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
 import { DocNotFoundError } from '../../../api/errors/types/DocNotFoundError'
 import { getCollection } from '../../../api/utils/getCollection'
@@ -596,8 +596,7 @@ CodeInvitation.methods.verify = {
   },
   isPublic: true,
   run: onServerExec(function () {
-    import { SchoolClass } from '../schoolclass/SchoolClass'
-
+    
     return function ({ code }) {
       const codeDoc = getCollection(CodeInvitation.name).findOne({ code })
 
@@ -664,8 +663,7 @@ CodeInvitation.methods.addToClass = {
   roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher, UserUtils.roles.student],
   schema: { code: String },
   run: onServerExec(function () {
-    import { SchoolClass } from '../schoolclass/SchoolClass'
-    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
+        import { createDocGetter } from '../../../api/utils/document/createDocGetter'
 
     const getClassDoc = createDocGetter(SchoolClass)
 
@@ -710,14 +708,16 @@ CodeInvitation.methods.addToClass = {
       const thisContext = { userId: codeDoc.createdBy }
       if (role === UserUtils.roles.teacher) {
         SchoolClass.helpers.addTeacher.call(thisContext, { classId, userId })
-      } else if (role === UserUtils.roles.student) {
+      }
+ else if (role === UserUtils.roles.student) {
         const added = SchoolClass.helpers.addStudent.call(thisContext, {
           classId,
           userId
         })
         if (!added) throw new Meteor.Error(500)
         Meteor.users.update(userId, { $set: { 'ui.classId': classId } })
-      } else {
+      }
+ else {
         throw new PermissionDeniedError(SchoolClass.errors.invalidRole, role)
       }
 

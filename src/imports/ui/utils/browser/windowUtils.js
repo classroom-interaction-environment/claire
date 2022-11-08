@@ -61,7 +61,8 @@ export const openWindow = (location, {
   try {
     const windowRef = window.open(location, windowId, windowOptions)
     return { ref: windowRef, id: windowId }
-  } catch (e) {
+  }
+  catch (e) {
     console.error(e)
     return { ref: null, id: windowId }
   }

@@ -26,7 +26,7 @@ export const usersByClass = function () {
     const projection = {
       fields: {
         emails: 0,
-        services: 0,
+        services: 0
       },
       limit: allUsers.length
     }

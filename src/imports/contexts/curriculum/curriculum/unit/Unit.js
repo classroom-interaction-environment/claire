@@ -58,7 +58,7 @@ export const Unit = {
     dimensions: {
       label: i18n.reactive('curriculum.dimension'),
       type: Array,
-      optional: true,
+      optional: true
     },
     'dimensions.$': {
       type: String,

@@ -55,7 +55,8 @@ export const loadIntoCollection = ({ name, args = {}, collection, prepare, recei
     success: docs => {
       try {
         onSuccess(docs)
-      } catch (e) {
+      }
+      catch (e) {
         failure(e)
       }
     }

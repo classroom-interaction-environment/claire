@@ -12,7 +12,7 @@ export const confirmResearch = ({ email, token }) => {
   return Meteor.users.update(user._id, {
     $set: {
       'research.confirmed': true,
-      'research.confirmedAt': confirmedAt,
+      'research.confirmedAt': confirmedAt
     },
     $unset: {
       'research.token': 1

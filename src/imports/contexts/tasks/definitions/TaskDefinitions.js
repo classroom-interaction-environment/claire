@@ -114,7 +114,6 @@ const processPlugin = (name, plugin) => {
 //
 /// ////////////////////////////////////////////////////////////////////////////
 
-
 const getTaskElementCategory = name => {
   const category = typeMap.get(name)
   if (!category) {

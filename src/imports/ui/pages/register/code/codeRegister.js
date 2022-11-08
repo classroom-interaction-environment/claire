@@ -213,12 +213,14 @@ Template.codeRegister.onCreated(function () {
               Meteor.call(CodeInvitation.methods.addToClass.name, { code: finalParams.code }, (err) => {
                 if (err) {
                   return API.notify(err)
-                } else {
+                }
+                else {
                   API.notify(true)
                   return Router.go(Routes.root.path())
                 }
               })
-            } else {
+            }
+            else {
               Router.go(Routes.root.path())
             }
           })
@@ -229,7 +231,8 @@ Template.codeRegister.onCreated(function () {
       instance.state.set('queryParams', finalParams)
       instance.state.set('loadComplete', true)
     })
-  } catch (e) {
+  }
+  catch (e) {
     // as fallback we handle any error during this process as failed
     // and also switch to the failed state
     console.error(e)
@@ -277,9 +280,6 @@ Template.codeRegister.helpers({
   userAlreadyExists () {
     return Template.getState('userAlreadyExists')
   },
-  profileImageSchema () {
-    return profileImageUploadSchema
-  },
   registering () {
     return Template.getState('registering')
   },
@@ -318,7 +318,8 @@ Template.codeRegister.events({
       if (err) return API.notify(err)
       if (!res) {
         templateInstance.state.set('userAlreadyExists', true)
-      } else {
+      }
+      else {
         templateInstance.state.set('userAlreadyExists', false)
         templateInstance.state.set('usernameDoc', insertDoc)
         templateInstance.wizard.pushView(ViewStates.password, ViewStates.username)
@@ -378,7 +379,8 @@ Template.codeRegister.events({
           console.error(loginError)
           API.notify('codeInvitation.successful')
           Router.go(Routes.login.path())
-        } else {
+        }
+        else {
           setTimeout(() => {
             templateInstance.state.set('registerSuccessful', true)
             templateInstance.wizard.pushView(ViewStates.profile, ViewStates.terms)

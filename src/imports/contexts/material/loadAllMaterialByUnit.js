@@ -26,4 +26,3 @@ export const loadAllMaterialByUnit = onServer((unitDoc) => {
 
   return material
 })
-

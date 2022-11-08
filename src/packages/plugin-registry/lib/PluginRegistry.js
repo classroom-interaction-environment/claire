@@ -1,5 +1,1 @@
-export class PluginRegistry {
-  constructor () {
-
-  }
-}
+export class PluginRegistry {}

@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { auto, onClient, onServer, onServerExec } from '../../../../api/utils/archUtils'
 import { AdminErrors } from './AdminErrors'
-import { UserUtils } from '../users/UserUtils'
+import { UserUtils , UserUtils , UserUtils } from '../users/UserUtils'
 
 export const Admin = {
   name: 'admin',
@@ -80,8 +80,7 @@ Admin.methods.createUser = {
   })(),
   run: onServerExec(function () {
     import { Accounts } from 'meteor/accounts-base'
-    import { UserUtils } from '../users/UserUtils'
-    import { UserFactory } from '../../../../api/accounts/registration/UserFactory'
+        import { UserFactory } from '../../../../api/accounts/registration/UserFactory'
     import { createAdmin } from '../../../../api/accounts/admin/createAdmin'
     import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
     import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
@@ -173,8 +172,7 @@ Admin.methods.updateRole = {
   })(),
   run: onServerExec(function () {
     import { Roles } from 'meteor/alanning:roles'
-    import { UserUtils } from '../users/UserUtils'
-    import { createAdmin } from '../../../../api/accounts/admin/createAdmin'
+        import { createAdmin } from '../../../../api/accounts/admin/createAdmin'
     import { removeAdmin } from '../../../../api/accounts/admin/removeAdmin'
     import { userExists } from '../../../../api/accounts/user/userExists'
     import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
@@ -224,7 +222,7 @@ Admin.methods.users = {
     },
     'ids.$': String
   },
-  run: onServer(function ({ids }) {
+  run: onServer(function ({ ids }) {
     const query = {}
     if (ids?.length) {
       query._id = { $in: ids }

@@ -73,7 +73,7 @@ Template.lessonInfo.onCreated(function () {
   instance.autorun(() => {
     const { classDoc } = Template.currentData()
     if (!classDoc) { return }
-    const students = Meteor.users.find({ _id: { $in: classDoc.students ?? [] }}).fetch()
+    const students = Meteor.users.find({ _id: { $in: classDoc.students ?? [] } }).fetch()
     instance.state.set({ students })
   })
 })

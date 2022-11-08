@@ -30,7 +30,7 @@ Meteor.startup(() => {
     if (!beamerSub) {
       beamerSub = SubsManager.subscribe(Beamer.publications.my.name)
     }
-    
+
     if (beamerSub.ready()) {
       const beamerDoc = getCollection(Beamer.name).findOne()
 

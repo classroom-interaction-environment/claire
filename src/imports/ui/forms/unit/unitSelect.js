@@ -96,7 +96,6 @@ Template.afUnitSelect.helpers({
   },
   lesson (unitId) {
     const { classId } = Template.currentData().atts
-    return
   },
   pocketCtx () {
     return Pocket

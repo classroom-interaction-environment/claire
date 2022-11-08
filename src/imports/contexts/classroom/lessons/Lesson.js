@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
 import { i18n } from '../../../api/language/language'
-import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
+import { PermissionDeniedError , PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
 import { auto, onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
 import { SchoolClass } from '../schoolclass/SchoolClass'
@@ -395,8 +395,7 @@ Lesson.publications.single = {
   },
   run: onServerExec(function () {
     import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
-    import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
-
+    
     return function ({ _id }) {
       const { userId } = this
       const isMember = Lesson.helpers.isMemberOfLesson({
@@ -498,7 +497,7 @@ Lesson.methods.my = {
     'units.$': String
   },
   role: UserUtils.roles.teacher,
-  run: onServer(function ({ classId, ids = [], skip = [], completed, custom,  units = [] }) {
+  run: onServer(function ({ classId, ids = [], skip = [], completed, custom, units = [] }) {
     const query = { createdBy: this.userId }
 
     if (classId) {
@@ -589,7 +588,7 @@ Lesson.methods.start = {
   },
   role: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { LessonStates } from './LessonStates'
+    import { LessonStates , LessonStates , LessonStates , LessonStates , LessonStates , LessonStates , LessonStates } from './LessonStates'
     import { LessonErrors } from './LessonErrors'
     import { createUpdateDoc } from '../../../api/utils/documentUtils'
 
@@ -629,8 +628,7 @@ Lesson.methods.complete = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { LessonStates } from './LessonStates'
-    import { createUpdateDoc } from '../../../api/utils/documentUtils'
+        import { createUpdateDoc } from '../../../api/utils/documentUtils'
 
     const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
 
@@ -674,8 +672,7 @@ Lesson.methods.stop = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { LessonStates } from './LessonStates'
-    import { LessonErrors } from './LessonErrors'
+        import { LessonErrors } from './LessonErrors'
     import { createUpdateDoc } from '../../../api/utils/documentUtils'
 
     const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
@@ -708,8 +705,7 @@ Lesson.methods.resume = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { LessonStates } from './LessonStates'
-    import { LessonErrors } from './LessonErrors'
+        import { LessonErrors } from './LessonErrors'
     import { createUpdateDoc } from '../../../api/utils/documentUtils'
 
     const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
@@ -743,8 +739,7 @@ Lesson.methods.restart = {
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
     import { LessonRuntime } from './runtime/LessonRuntime'
-    import { LessonStates } from './LessonStates'
-    import { createUpdateDoc } from '../../../api/utils/documentUtils'
+        import { createUpdateDoc } from '../../../api/utils/documentUtils'
 
     const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
 
@@ -802,8 +797,7 @@ Lesson.methods.toggle = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { LessonStates } from './LessonStates'
-    import { LessonErrors } from './LessonErrors'
+        import { LessonErrors } from './LessonErrors'
     import { createGetDoc, createUpdateDoc } from '../../../api/utils/documentUtils'
 
     const updateLesson = createUpdateDoc(Lesson)
@@ -916,8 +910,7 @@ Lesson.methods.material = {
   run: onServerExec(function () {
     import { Group } from '../group/Group'
     import { SchoolClass } from '../schoolclass/SchoolClass'
-    import { LessonStates } from './LessonStates'
-    import { LessonErrors } from './LessonErrors'
+        import { LessonErrors } from './LessonErrors'
     import { createGetDoc } from '../../../api/utils/documentUtils'
     import { loadMaterial } from '../../material/loadMaterial'
     import { createDocGetter } from '../../../api/utils/document/createDocGetter'

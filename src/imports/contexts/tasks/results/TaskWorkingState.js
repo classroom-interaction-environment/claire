@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
 import { onServerExec } from '../../../api/utils/archUtils'
-import { getCollection } from '../../../api/utils/getCollection'
+import { getCollection , getCollection } from '../../../api/utils/getCollection'
 
 export const TaskWorkingState = {
   name: 'taskWorkingState',
@@ -56,8 +56,7 @@ TaskWorkingState.methods.saveState = {
     import { Group } from '../../classroom/group/Group'
     import { Features } from '../../../api/config/Features'
     import {LessonErrors } from '../../classroom/lessons/LessonErrors'
-    import { getCollection } from '../../../api/utils/getCollection'
-    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
+        import { createDocGetter } from '../../../api/utils/document/createDocGetter'
     import { ensureDocumentExists } from '../../../api/utils/document/ensureDocumentExists'
 
     const checkTaskDoc = createDocGetter({ name: Task.name, optional: false })

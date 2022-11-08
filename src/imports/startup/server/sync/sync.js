@@ -76,10 +76,12 @@ async function loadChunks (filesToLoad) {
       if (err) {
         console.error(err)
         resolve([])
-      } else if (chunks.length === 0 || filesToLoad.length > chunks.length) {
+      }
+      else if (chunks.length === 0 || filesToLoad.length > chunks.length) {
         console.error(new Error(`Expected ${filesToLoad.length} to be grater than ${chunks.length}`))
         resolve([])
-      } else {
+      }
+      else {
         resolve(chunks)
       }
     })
@@ -111,7 +113,8 @@ function setupSyncPipeline () {
       if (err) {
         console.error(err)
         throw err
-      } else {
+      }
+      else {
         let filesCount = 0
         let chunksCount = 0
         files.forEach(fsFile => {
@@ -176,12 +179,14 @@ Meteor.startup(() => {
         if (error) {
           console.error(error)
           throw error
-        } else {
+        }
+        else {
           SyncPipeline.complete(SyncPipeline.events.loggedin)
           trackerComputation.stop()
         }
       })
-    } else if (status.retryCount > 2) {
+    }
+    else if (status.retryCount > 2) {
       console.info('=> NO CONNECTION ,ABORT SYNC AFTER 3 RETRIES')
       console.log('==========================================')
       trackerComputation.stop()

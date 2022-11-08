@@ -43,7 +43,7 @@ Template.ueobjectives.helpers({
   },
   objectives () {
     const unitDoc = Template.getState('unitDoc')
-    if (!unitDoc?.objectives) { return  }
+    if (!unitDoc?.objectives) { return }
 
     const cursor = ObjectiveLocalCollection.find({ _id: $in(unitDoc.objectives) })
     return (cursor && cursor.count() > 0) ? cursor : null
@@ -148,7 +148,8 @@ Template.ueobjectives.events({
     if (ObjectiveLocalCollection.find(query).count() > 0) {
       templateInstance.state.set('postFilter', query)
       templateInstance.state.set('postFilterNotFound', false)
-    } else {
+    }
+    else {
       templateInstance.state.set('postFilter', null)
       templateInstance.state.set('postFilterNotFound', true)
     }

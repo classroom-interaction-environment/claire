@@ -44,7 +44,7 @@ ContextBuilder.addRegistry(Files, {
 // necessary in oder to execute run the CLAIRE
 ;[
   AppImages,
-  ProfileImages,
+  ProfileImages
 ].forEach(fileContext => {
   Files.add(fileContext)
   ContextBuilder.addContext(fileContext)

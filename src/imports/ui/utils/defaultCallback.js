@@ -6,7 +6,8 @@ export const defaultCallback = (cb) => {
   return (err, res) => {
     if (err) {
       return cb ? cb(err, nothing) : Notify.add({ type: 'error', message: err.reason || err.message })
-    } else {
+    }
+    else {
       return cb ? cb(nothing, res) : Notify.add({ type: 'error' })
     }
   }

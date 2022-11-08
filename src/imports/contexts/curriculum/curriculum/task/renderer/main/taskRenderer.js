@@ -73,7 +73,6 @@ Template.taskRenderer.onCreated(function () {
     const { data: task } = data
     const { isComplete } = data
 
-
     if (!task) { return }
 
     check(data.isComplete, Match.Maybe(Boolean))

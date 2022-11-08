@@ -20,7 +20,8 @@ AutoForm.addInputType('customFileUpload', {
 
     try {
       return JSON.parse(value)
-    } catch (e) {
+    }
+    catch (e) {
       console.error(e)
       return value
     }
@@ -190,7 +191,8 @@ Template.afCustomFileUpload.onCreated(function () {
         if (progress >= 100 || ['completed', 'aborted'].includes(state)) {
           computation.stop()
           instance.setFileProps(file.id, { complete: true })
-        } else {
+        }
+        else {
           instance.setFileProps(file.id, { progress })
         }
       })

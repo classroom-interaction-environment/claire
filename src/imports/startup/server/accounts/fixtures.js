@@ -24,7 +24,6 @@ if (Meteor.settings.accounts.fixtures) {
     }
 
     defaultAccountsKeys.forEach(role => {
-
       if (!UserUtils.roles[role]) {
         throw new Error(`Unexpected role ${role}`)
       }

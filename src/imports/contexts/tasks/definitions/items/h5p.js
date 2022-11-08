@@ -4,5 +4,4 @@ export const H5PItems = {
   icon: 'square-5'
 }
 
-
 export const H5PItem = {}

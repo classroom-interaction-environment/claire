@@ -166,7 +166,8 @@ Template.inviteStudents.onCreated(function () {
     const codeDoc = instance.state.get('codeDoc')
     if (data.countDownActive && codeDoc) {
       instance.startCountdown(codeDoc)
-    } else {
+    }
+    else {
       instance.endCountdown()
     }
   })
@@ -270,7 +271,8 @@ Template.inviteStudents.events({
       templateInstance.state.set('creating', false)
       if (err) {
         return API.notify(err)
-      } else {
+      }
+      else {
         API.notify(true)
         templateInstance.state.set('showForm', false)
         templateInstance.state.set('invitationExpiredOrComplete', false)
@@ -306,7 +308,8 @@ Template.inviteStudents.events({
       templateInstance.state.set('updateBeamer', false)
       if (err) {
         API.notify(err)
-      } else {
+      }
+      else {
         API.notify(true)
       }
     }))
