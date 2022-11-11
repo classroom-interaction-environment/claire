@@ -25,9 +25,12 @@ Roles.addRolesToParent(student, teacher, { unlessExists: true })
 
 log('remove unused / deprecated roles')
 const removedRoles = Meteor.roles.remove({ _id: $nin(allRoles) })
-log('removed', removedRoles, 'roles')
 
-log('create publication')
+if (removedRoles) {
+  log('removed', removedRoles, 'roles')
+}
+
+log('publish own roles')
 Meteor.publish(null, function () {
   const { userId } = this
   if (userId) {

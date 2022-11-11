@@ -1,7 +1,7 @@
-import { createInfoLog } from '../../../../api/log/createLog'
+import { createLog } from '../../../../api/log/createLog'
 
 if (Meteor.settings.patch?.admin) {
-  const info = createInfoLog('admin')
+  const info = createLog({ name: 'patch admin' })
   const oldAdmins = new Mongo.Collection('Admins')
   const rawCollection = oldAdmins.rawCollection()
 

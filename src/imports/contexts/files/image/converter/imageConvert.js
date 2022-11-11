@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
-import { createInfoLog } from '../../../../api/log/createLog'
+import { createLog } from '../../../../api/log/createLog'
 
-const info = createInfoLog('imageConvert', { devOnly: true })
+const info = createLog({ name: 'imageConvert', devOnly: true })
 let fs
 let gm
 

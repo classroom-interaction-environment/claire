@@ -4,10 +4,7 @@ import { Unit } from '../../contexts/curriculum/curriculum/unit/Unit'
 import { Phase } from '../../contexts/curriculum/curriculum/phase/Phase'
 import { Material } from '../../contexts/material/Material'
 import { $in } from '../../api/utils/query/inSelector'
-import {
-  createDebugLog,
-  LogTypes
-} from '../../api/log/createLog'
+import { createLog } from '../../api/log/createLog'
 import { callMethod } from './document/callMethod'
 import { getLocalCollection } from '../../infrastructure/collection/getLocalCollection'
 import { getCollection } from '../../api/utils/getCollection'
@@ -17,7 +14,7 @@ import { getMaterialRenderer } from '../../api/material/getMaterialRenderer'
 
 export const LessonMaterial = {}
 
-const debug = createDebugLog('LessonMaterial', LogTypes.debug, { devOnly: true })
+const debug = createLog({ name: 'LessonMaterial', type: 'debug', devOnly: true })
 
 //= =============================================================================
 //

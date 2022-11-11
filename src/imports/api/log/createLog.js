@@ -1,32 +1,11 @@
 import { Meteor } from 'meteor/meteor'
 
-export const LogTypes = {
-  debug: 'debug',
-  info: 'info',
-  warn: 'warn',
-  error: 'error'
-}
-
-/**
- * @deprecated
- */
-export const createDebugLog = (name, type = LogTypes.debug, { devOnly } = {}) => {
-  console.warn(name, 'Deprecated: createDebugLog is deprecated, use createLog instead')
-  return noOp
-}
-
 const time = () => new Date().toISOString()
 const noOp = () => {}
-/**
- * @deprecated
- */
-export const createInfoLog = (name, { devOnly } = {}) => {
-  console.warn(name, 'Deprecated: createInfoLog is deprecated, use createLog instead')
-  return noOp
-}
-
 const LOG_LEVEL = Meteor.settings.public.logLevel || 0
 const isDevelopment = Meteor.isDevelopment
+
+// eslint-disable no-console
 const internal = {
   debug: {
     level: 0,
@@ -49,16 +28,17 @@ const internal = {
     run: (...args) => console.error(...args)
   }
 }
+// eslint-enable no-console
 
 /**
  * Creates a log for a given name and type.
  * Returns a no-op function if devOnly is true but app is in prod mode
- * @param name {
- * @param type
- * @param devOnly
- * @return {*}
+ * @param name {string}
+ * @param type {string='log'}
+ * @param devOnly {boolean=false}
+ * @return {function}
  */
-export const createLog = ({ name, type = 'log', devOnly }) => {
+export const createLog = ({ name, type = 'log', devOnly = false }) => {
   if (!Object.prototype.hasOwnProperty.call(internal, type)) {
     throw new TypeError(`Unsupported log type ${type}.`)
   }
@@ -72,9 +52,12 @@ export const createLog = ({ name, type = 'log', devOnly }) => {
   const logName = `${type} [${name}]:`
   const logFn = logProp.run
 
+  // on the server we need to add a timestamp in production mode
+  // since they are not there by default
   if (Meteor.isProduction && Meteor.isServer) {
     return (...args) => logFn(time(), logName, ...args)
   }
+
   // by default node and browsers add timestamp on their own
   return (...args) => logFn(logName, ...args)
 }

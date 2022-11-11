@@ -1,7 +1,7 @@
 import { check, Match } from 'meteor/check'
-import { createInfoLog } from '../../api/log/createLog'
+import { createLog } from '../../api/log/createLog'
 
-const info = createInfoLog('ContextRegistry')
+const info = createLog({ name: 'ContextRegistry' })
 const _contexts = new Map()
 const _settings = new Map()
 

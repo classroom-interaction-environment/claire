@@ -1,10 +1,8 @@
 import { Meteor } from 'meteor/meteor'
 import { Accounts } from 'meteor/accounts-base'
-import { Roles } from 'meteor/alanning:roles'
-import { Random } from 'meteor/random'
 import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
 import { UserFactory } from '../../../api/accounts/registration/UserFactory'
-import { createInfoLog } from '../../../api/log/createLog'
+import { createLog } from '../../../api/log/createLog'
 
 /**
  * Generate some default users for given roles and institution.
@@ -13,7 +11,7 @@ import { createInfoLog } from '../../../api/log/createLog'
 if (Meteor.settings.accounts.fixtures) {
   const defaultAccounts = Object.assign({}, Meteor.settings.accounts.fixtures)
   const defaultAccountsKeys = Object.keys(defaultAccounts)
-  const info = createInfoLog('user fixtures')
+  const info = createLog({ name: 'user fixtures' })
 
   Meteor.startup(() => {
     info('start setup')

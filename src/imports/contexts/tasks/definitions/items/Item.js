@@ -4,7 +4,7 @@ import { check, Match } from 'meteor/check'
 import { editSchema, itemLoad, itemSchema, option } from '../common/helpers'
 import { ResponseDataTypes } from '../../../../api/plugins/ResponseDataTypes'
 import { isResponseDataType } from '../../../../api/utils/check/isResponseDataType'
-import { createDebugLog, LogTypes } from '../../../../api/log/createLog'
+import { createLog } from '../../../../api/log/createLog'
 import { ITaskDefinition } from '../ITaskDefinition'
 import { ItemPlugins } from 'meteor/claire:plugin-registry'
 import { getItemBase } from './getItemBase'
@@ -34,7 +34,7 @@ Item.renderer = {
   }
 }
 
-const debug = createDebugLog(Item.name, LogTypes.debug)
+const debug = createLog({ name: Item.name, type: 'debug' })
 
 /// /////////////////////////////////////////////////////////////////////////////////////////////
 //

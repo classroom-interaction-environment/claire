@@ -10,14 +10,14 @@ import { cursor } from '../../../../api/utils/cursor'
 import { loggedIn } from '../../../../api/accounts/user/loggedIn'
 import { insertUpdate } from '../../../../api/utils/insertUpdate'
 import { getLocalCollection } from '../../../../infrastructure/collection/getLocalCollection'
-import { createDebugLog } from '../../../../api/log/createLog'
+import { createLog } from '../../../../api/log/createLog'
 import { $nin } from '../../../../api/utils/query/notInSelector'
 import { getCollection } from '../../../../api/utils/getCollection'
 import lessonStudentLanguage from '../i18n/lessonStudentLanguage'
 import '../../../components/lesson/status/lessonStatus'
 import './lessons.html'
 
-const warn = createDebugLog('Lessons', 'warn')
+const warn = createLog({ name: 'Lessons', type: 'warn' })
 const API = Template.lessons.setDependencies({
   contexts: [SchoolClass, Lesson, Unit],
   language: lessonStudentLanguage

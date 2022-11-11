@@ -3,7 +3,7 @@ import { RawResponse } from './aggregate/raw/RawResponse'
 import { isResponseDataType } from '../../../api/utils/check/isResponseDataType'
 import { isMaybeObject } from '../../../api/utils/check/isMaybeObject'
 import { isResponseProcessorType } from './isResponseProcessorType'
-import { createDebugLog } from '../../../api/log/createLog'
+import { createLog } from '../../../api/log/createLog'
 
 /**
  * Registers and manages all available response processors for various data
@@ -13,7 +13,7 @@ import { createDebugLog } from '../../../api/log/createLog'
  */
 export const ResponseProcessorRegistry = {}
 
-const log = createDebugLog('ResponseProcessorRegistry')
+const debugLog = createLog({ name: 'ResponseProcessorRegistry', type: 'debug' })
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -50,7 +50,7 @@ const checkResponseProcessorContext = ({ name, label, icon, isResponseProcessor,
  */
 ResponseProcessorRegistry.register = function (context) {
   const { name, type, dataTypes, fileType, csp, renderer } = context
-  log('register', { context })
+  debugLog('register', { context })
 
   check(name, String)
   check(type, Match.Where(isResponseProcessorType))
@@ -98,7 +98,7 @@ ResponseProcessorRegistry.register = function (context) {
   })
 
   contextsMap.set(name, context)
-  log(`registered "${name}" for type "${type}"`)
+  debugLog(`registered "${name}" for type "${type}"`)
 
   return contextsMap.get(name)
 }

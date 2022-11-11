@@ -63,7 +63,6 @@ export const buildPipeline = createPipeline('build', function (context, api, opt
   // CREATE METHODS
 
   if (methods && isSupportedObject(context.methods)) {
-    api.info('create methods')
     products.methods = Object.values(context.methods).map(methodDef => {
       api.info(`> [${methodDef.name}]`)
       const method = createMethod(methodDef)
@@ -78,7 +77,6 @@ export const buildPipeline = createPipeline('build', function (context, api, opt
   // CREATE PUBLICATIONS
 
   if (publications && isSupportedObject(context.publications)) {
-    api.info('create publications')
     products.publications = Object.values(context.publications).map(pubDef => {
       api.info(`> [${pubDef.name}]`)
       const pub = createPublication(pubDef)

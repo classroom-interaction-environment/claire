@@ -6,7 +6,7 @@ import { Files } from '../../files/Files'
 import { H5P } from './h5p/H5P'
 import { i18n } from '../../../api/language/language'
 import { TaskElementPlugins } from '../../../api/plugins/PluginRegistry'
-import { createDebugLog } from '../../../api/log/createLog'
+import { createLog } from '../../../api/log/createLog'
 import { isMaterial } from '../../material/isMaterial'
 
 export const TaskDefinitions = {} // TODO rename to TaskElements
@@ -36,7 +36,7 @@ const typeMap = new Map(Object.entries({
   [H5P.name]: H5P
 }))
 
-const log = createDebugLog(TaskDefinitions.name)
+const log = createLog({ name: TaskDefinitions.name, type: 'debug' })
 
 /// ////////////////////////////////////////////////////////////////////////////
 //

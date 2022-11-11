@@ -1,4 +1,4 @@
-import { createInfoLog, createLog } from '../../../../api/log/createLog'
+import { createLog } from '../../../../api/log/createLog'
 import fs from 'fs'
 
 const info = createLog({ name: 'audioConvert' })

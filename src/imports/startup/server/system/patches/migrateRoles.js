@@ -1,9 +1,9 @@
 import { Meteor } from 'meteor/meteor'
 import { Roles } from 'meteor/alanning:roles'
-import { createInfoLog } from '../../../../api/log/createLog'
+import { createLog } from '../../../../api/log/createLog'
 
 const shouldMigrate = Meteor.settings.patch?.roles
-const info = createInfoLog('Roles')
+const info = createLog({ name: 'Roles' })
 const migrateRoles = Meteor.bindEnvironment(function (count) {
   info('running database migration, count=', count)
   Roles._forwardMigrate()

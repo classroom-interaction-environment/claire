@@ -1,5 +1,5 @@
 import { check, Match } from 'meteor/check'
-import { createInfoLog } from '../../api/log/createLog'
+import { createLog } from '../../api/log/createLog'
 import { isContext } from './isContext'
 
 /**
@@ -35,14 +35,14 @@ export const createContextRegistry = (options) => {
     ...props
   } = options
 
-  const info = createInfoLog(name)
+  const info = createLog({ name })
   const internalHooks = {
     afterAdd: hooks.afterAdd || (() => {})
   }
 
   return {
     name: name,
-    info: createInfoLog(name, { devOnly: false }),
+    info: createLog({ name, devOnly: false }),
     add: function (context) {
       check(context, Match.ObjectIncluding(isContext()))
 
