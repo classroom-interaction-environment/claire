@@ -41,7 +41,7 @@ export const LessonStatesDefinitions = {
   completed: {
     name: 'completed',
     label: 'lesson.states.completed',
-    icon: 'check',
+    icon: 'flag',
     timeMode: {
       label: 'common.completedAt',
       field: 'completedAt'

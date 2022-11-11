@@ -22,10 +22,16 @@ export const Task = {
         const { content } = target
         ;(content || []).forEach(entry => {
           if (entry._id) {
-            if (!deps[entry.meta]) {
-              deps[entry.meta] = []
+            let meta = entry.meta
+
+            if (meta === 'imagefiles') {
+              meta = 'imageFiles'
             }
-            deps[entry.meta].push(entry._id)
+
+            if (!deps[meta]) {
+              deps[meta] = []
+            }
+            deps[meta].push(entry._id)
           }
         })
       }
@@ -37,7 +43,7 @@ export const Task = {
       return deps
     },
     onCreated (taskId, unitDoc /*, viewState */) {
-            const options = this || {}
+      const options = this || {}
       const { redirect, isMasterMaterial, isMasterMode } = options
 
       if (redirect && isMasterMaterial && !isMasterMode) {

@@ -1,6 +1,7 @@
-import { createInfoLog } from '../../../../api/log/createLog'
+import { createInfoLog, createLog } from '../../../../api/log/createLog'
+import fs from 'fs'
 
-const info = createInfoLog('audioConvert')
+const info = createLog({ name: 'audioConvert' })
 
 const disableVideo = '-vn'
 const samplingFreq = '-ar 44100'

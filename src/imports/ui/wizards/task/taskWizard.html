@@ -4,7 +4,7 @@
     {{else}}
         <div class="card-body d-flex justify-content-between">
             <span>{{i18n "wizard.task.custom"}}</span>
-            {{> createForm id="createTaskForm" title=(i18n "wizard.task.create") doc=createTaskDoc hideLegend=true schema=createTaskSchema method=createTaskMethod }}
+            {{> createForm (createFormAtts "wizard.task.create.title")}}
         </div>
         {{#twRenderer tasks=customTasks}}
             {{> actionButton

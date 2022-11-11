@@ -10,6 +10,11 @@ import { Material } from './Material'
  */
 export const loadMaterial = function ({ source = {}, destination = {}, dependencies = {} }) {
   Object.keys(source).forEach(contextName => {
+    // fixme remove the next line's hotfix and get this running correctly
+    if (contextName === 'imagefiles') {
+      contextName = 'imageFiles'
+    }
+
     const materialDocIds = source[contextName]
 
     // if there is no material attached to this context, we can safely skip

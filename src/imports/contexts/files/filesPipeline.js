@@ -9,6 +9,7 @@ import { createFilesByItemPublication } from '../../api/decorators/publications/
 import { createDeleteFile } from '../../api/decorators/methods/files/createDeleteFile'
 import { createEditorGetMethod } from '../../api/decorators/methods/createEditorGetMethod'
 import { createMyMethod } from '../../api/decorators/methods/createMyMethod'
+import { createUploadPublication } from '../../api/decorators/publications/files/createUploadPublication'
 
 export const filesPipeline = createPipeline(Files.name, function (filesContext, api) {
   filesContext.schema = Object.assign({}, filesContext.schema, FilesDefaults.schema())
@@ -54,8 +55,14 @@ export const filesPipeline = createPipeline(Files.name, function (filesContext, 
 
   const myFiles = createMyFilesPublication(filesContext)
   const items = createFilesByItemPublication(filesContext)
+  const upload = createUploadPublication(filesContext)
 
-  filesContext.publications = Object.assign({}, editorPublications, myFiles, items, filesContext.publications)
+  filesContext.publications = Object.assign({},
+    editorPublications,
+    myFiles,
+    items,
+    upload,
+    filesContext.publications)
 
   if (!Files.has(filesContext.name)) {
     Files.add(filesContext)

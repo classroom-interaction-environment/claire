@@ -229,7 +229,7 @@ Template.afCustomFileUpload.onCreated(function () {
         return onError(error)
       }
 
-      instance.setFileProps(file.id, { doc })
+      instance.setFileProps(file.id, { doc, progress: 100, complete: true })
       instance.updateField({
         id: instance.id,
         value: doc._id,
@@ -412,7 +412,7 @@ Template.afCustomFileUpload.helpers({
     return deleting && deleting[id]
   },
   previewData (file) {
-    return Template.getState('previewTemplate') && file && file.doc
+    return Template.getState('previewTemplate') && file?.doc
   },
   previewTemplate () {
     return Template.getState('previewTemplate')

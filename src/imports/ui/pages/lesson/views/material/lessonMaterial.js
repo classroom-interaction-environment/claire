@@ -94,9 +94,6 @@ Template.lessonMaterial.onCreated(function () {
       if (!refDoc) {
         console.warn('could not resolve', reference.document)
       }
-      else {
-        console.warn('resolved', reference.document)
-      }
       instance.references.set(reference.document, refDoc)
     }
   }

@@ -1,9 +1,19 @@
 <template name="downloadButton">
-    <a href="{{fileLink file.link}}?download=true" download="{{this.name}}" target="_blank"
-       title="{{i18n "actions.download"}}"
+    <a href="{{fileLink}}?download=true" download="{{this.name}}" target="_blank"
+       title="{{#if title}}{{title}}{{else}}{{i18n "actions.download"}}{{/if}}"
        class="btn btn-outline-secondary btn-sm claire-download-button no-wrap">
-        <small class="font-weight-normal py-2">
+        <span class="font-weight-normal py-2">
             {{> icon name="download"}}
-        </small>
+            {{#if showLabel}}
+                {{#if title}}
+                    {{title}}
+                {{else}}
+                    {{i18n "actions.download"}}
+                {{/if}}
+            {{/if}}
+            {{#if showSize}}
+                ({{b2mb file.size}} {{i18n 'fileSize.mb'}})
+            {{/if}}
+        </span>
     </a>
 </template>

@@ -110,12 +110,12 @@ Template.uematerial.onCreated(function onUeMaterialCreated () {
   })
 
   // ===========================================================================
-  //
+  // 4. load subview
   // ===========================================================================
 
   // Reactively retrieve the current view state and load the respective
   // templates, as well as subscribe to the data / documents (if necessary)
-  // This function gets triggered when the previous autorun updadates the parameter
+  // This function gets triggered when the previous autorun updates the parameter
   instance.autorun(() => {
     const currentView = instance.state.get('view')
 
@@ -147,6 +147,11 @@ Template.uematerial.onCreated(function onUeMaterialCreated () {
   //  LOAD MATERIAL
   // ===========================================================================
 
+  /**
+   * Loads material into a local collection
+   * @param ids
+   * @param onComplete
+   */
   instance.loadMaterial = ({ ids, onComplete }) => {
     const currentView = instance.state.get('view')
     const ctx = MaterialSubviews.getContext(currentView)
@@ -306,7 +311,11 @@ Template.uematerial.helpers({
     const instance = Template.instance()
     const targetId = instance.state.get('previewTarget')
     const viewState = instance.getViewState()
-    const previewCtx = viewState && viewState.previewRenderer.previewData.call(viewState, targetId, instance)
+    if (!viewState) { return null }
+
+    const previewCtx = viewState.previewRenderer.previewData.call(viewState, targetId, instance)
+    if (!previewCtx) { return null }
+
     previewCtx.print = !!instance.state.get('isPrintPreview')
     return previewCtx
   },
@@ -502,7 +511,8 @@ Template.uematerial.events({
 
     const { context } = viewState
     const materialDoc = getLocalCollection(context.name).findOne(targetId)
-    const textOptions = { title: materialDoc.title || materialDoc.name }
+    const title = materialDoc.title || materialDoc.name || i18n.get(context.label)
+    const textOptions = { title }
 
     // material can be fully deleted if
     // - its own material or
@@ -587,7 +597,7 @@ Template.uematerial.events({
                 }
                 else {
                   getLocalCollection(context.name).remove({ _id: targetId })
-                  API.notify('editor.unit.material.taskRemoved')
+                  API.notify(i18n.get('editor.unit.material.deleted', { title }))
                 }
               })
             }

@@ -4,6 +4,7 @@ import { DocumentFiles } from '../../DocumentFiles'
 import { getFilesLink } from '../../../getFilesLink'
 import { asyncTimeout } from '../../../../../api/utils/asyncTimeout'
 import PDFObject from 'pdfobject'
+import '../../../../../ui/components/download/downloadButton'
 import './documentFileRenderer.scss'
 import './documentFileRenderer.html'
 
@@ -88,11 +89,17 @@ Template.documentFileRenderer.helpers({
       name: DocumentFiles.name
     })
   },
+  file () {
+    return Template.instance().data
+  },
   fallback () {
     return Template.getState('fallback')
   },
   pdfUrl () {
     return Template.getState('pdfUrl')
+  },
+  collectionName () {
+    return DocumentFiles.name
   }
 })
 

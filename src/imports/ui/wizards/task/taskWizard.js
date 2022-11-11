@@ -48,6 +48,15 @@ Template.taskWizard.onCreated(function () {
     failure: API.fatal,
     success: () => instance.state.set('unitsReady', true)
   })
+
+  instance.onCreated = taskId => {
+    loadIntoCollection({
+      name: Task.methods.get,
+      args: { _id: taskId },
+      collection: TaskCollection,
+      failure: API.notify
+    })
+  }
 })
 
 Template.taskWizard.helpers({
@@ -76,17 +85,20 @@ Template.taskWizard.helpers({
     }
     return cursor(() => TaskCollection.find(query, sort))
   },
-  createTaskSchema () {
-    return createTaskSchema
-  },
-  createTaskMethod () {
-    return Task.methods.insert.name
-  },
-  createTaskDoc () {
-    return createTaskDoc
-  },
   previewMaterial () {
     return Template.getState('previewMaterial')
+  },
+  createFormAtts (label) {
+    const instance = Template.instance()
+    return {
+      id: 'createTaskForm',
+      title: API.translate(label),
+      doc: createTaskDoc,
+      schema: createTaskSchema,
+      hideLegend: true,
+      method: Task.methods.insert.name,
+      onCreated: instance.onCreated
+    }
   }
 })
 
@@ -94,16 +106,12 @@ Template.taskWizard.events({
   'click .view-task-button': async (event, templateInstance) => {
     event.preventDefault()
 
-    // TODO move into own function like "previewMaterial"
     const docId = dataTarget(event, templateInstance)
     const contextName = Task.name
+    const materialDoc = { docId, contextName, templateInstance }
 
     try {
-      const previewMaterial = await createMaterialPreview({
-        docId,
-        contextName,
-        templateInstance
-      })
+      const previewMaterial = await createMaterialPreview(materialDoc)
       templateInstance.state.set({ previewMaterial })
       setTimeout(() => API.showModal('material-preview-modal'), 100)
     }
@@ -169,6 +177,7 @@ Template.twRenderer.events({
                 return API.notify(new Error('errors.deleteFailed'))
               }
 
+              TaskCollection.remove({ _id: taskId })
               API.notify(true)
             }))
           })

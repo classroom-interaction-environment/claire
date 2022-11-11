@@ -1,24 +1,9 @@
 <template name="videoFileRenderer">
-    {{! processingComplete is false until we have fully converted the video }}
-    {{#unless processingComplete this}}
-        {{#with getPoster this}}
-            {{! at least display the thumbnail already with some loading indicator }}
-            {{> image src=this class="img-fluid"}}
-        {{/with}}
-
-
-        <div class="text-center w-100">
-            <p>{{i18n "files.uploadSuccess"}}</p>
-            <p>{{i18n "files.converting"}}</p>
-        </div>
-
+    {{#with this.error}}
+        <div class="alert alert-error">{{this}}</div>
+        <a href class="delete-audiofile-button">{{i18n "actions.delete"}}</a>
     {{else}}
-        {{! will only return true ín case processing is complete }}
         {{#with getLink this}}
-            <div class="d-block text-center">
-                {{../name}}
-            </div>
-
             <div class="w-100">
                 <video controls class="w-100" preload="none" poster="{{getPoster ..}}">
                     <source src="{{this}}" type="{{../type}}">
@@ -27,6 +12,8 @@
                 </video>
             </div>
 
+        <div class="w-100 d-flex justify-content-between">
+            <span>{{../name}}</span>
             <a href="{{this}}?download=true" download="{{../name}}" target="_top"
                class="btn btn-outline-secondary btn-sm border-0 file-image-download-button no-wrap">
                 <small class="font-weight-normal py-2">
@@ -34,8 +21,8 @@
                     <span>{{../name}}</span>
                     <span>({{b2mb ../size}} {{i18n 'fileSize.mb'}})</span>
                 </small>
-
             </a>
+        </div>
         {{/with}}
-    {{/unless}}
+    {{/with}}
 </template>

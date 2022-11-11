@@ -1,11 +1,11 @@
 import { check, Match } from 'meteor/check'
-import { createInfoLog } from '../../api/log/createLog'
+import { createLog } from '../../api/log/createLog'
 import { isContext } from './isContext'
 import { isRegistry } from './isRegistry'
 
 const contextMap = new Map()
 const registryMap = new Map()
-const info = createInfoLog('ContextBuilder')
+const info = createLog({ name: 'ContextBuilder' })
 
 /**
  * Creates contexts by running them through registered pipelines.

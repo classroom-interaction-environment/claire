@@ -2,6 +2,7 @@ import { FileTypes } from '../shared/FileTypes'
 import { FilesTemplates } from '../FilesTemplates'
 import { onServerExec } from '../../../api/utils/archUtils'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
+import { getCollection } from '../../../api/utils/getCollection'
 
 export const ImageFiles = {
   name: 'imageFiles',
@@ -93,7 +94,12 @@ ImageFiles.material = {
        */
       previewData (targetId) {
         console.warn(ImageFiles.name, 'previewData is deprecated!')
-        return targetId && getLocalCollection(ImageFiles.name).findOne(targetId)
+        if (!targetId) {
+          return targetId
+        }
+
+        const subDoc = getCollection(ImageFiles.name).findOne(targetId)
+        return subDoc || getLocalCollection(ImageFiles.name).findOne(targetId)
       }
     }
   },

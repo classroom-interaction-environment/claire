@@ -23,6 +23,7 @@
     "wrongLesson": "Başka bir sekansta devam eden dersler var",
     "wrongLessonDescription": "Kursunuza dönün ve geçerli sekansı girin.",
     "confirmRemove": "Bu dersle birlikte tüm materyalleri ve sonuçları silme sürecindedirler.",
+    "completeMessage": "Dersi tekrar gerçekleştirmek için lütfen Katılımcılar bölümündeki \"Dersi yeniden başlat\" düğmesine tıklayın.",
     "actions": {
       "restart": "Dersleri yeniden başlatın",
       "restartConfirm": "Dikkat! Dersi yeniden başlattığınızda tüm içerikler sıfırlanır.",

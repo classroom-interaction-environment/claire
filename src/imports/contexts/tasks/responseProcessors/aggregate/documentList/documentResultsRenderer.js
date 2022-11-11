@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating'
 import { DocumentFiles } from '../../../../files/document/DocumentFiles'
 import { getResponseFiles } from '../../getResponseFiles'
 import { getFilesCollection } from '../../../../../api/utils/getFilesCollection'
+import '../../../../../ui/components/download/downloadButton'
 import './documentResultsRenderer.html'
 
 const API = Template.documentResultsRenderer.setDependencies({
@@ -52,10 +53,12 @@ Template.documentResultsRenderer.helpers({
     return Template.getState('hasDocs')
   },
   link (doc, version = 'original') {
-    console.debug(doc)
     return doc.versions?.[version]?.link
   },
   loadComplete () {
     return API.initComplete()
+  },
+  collectionName () {
+    return DocumentFiles.name
   }
 })

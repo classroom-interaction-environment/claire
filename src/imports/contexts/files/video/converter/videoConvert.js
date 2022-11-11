@@ -1,8 +1,9 @@
 import { createLog } from '../../../../api/log/createLog'
 import checkMime from 'file-type'
+import fs from 'fs'
+
 const log = createLog({ name: 'videoConvert' })
 const mp4Extension = 'mp4'
-
 /**
  * Converts a given file to mp4/h264
  * @param uploadedFile

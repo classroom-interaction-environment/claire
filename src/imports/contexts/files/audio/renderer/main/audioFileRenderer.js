@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating'
 import { AudioFiles } from '../../AudioFiles'
 import { createDeleteFile } from '../../../shared/createDeleteFile'
 import { getFilesLink } from '../../../getFilesLink'
+import '../../../../../ui/components/download/downloadButton'
 import './audioFileRenderer.html'
 
 const API = Template.audioFileRenderer.setDependencies({
@@ -19,11 +20,16 @@ Template.audioFileRenderer.onCreated(function () {
 
 Template.audioFileRenderer.helpers({
   getLink (audioFile) {
-    console.debug(audioFile)
     return getFilesLink({
       file: audioFile,
       name: AudioFiles.name
     })
+  },
+  file () {
+    return Template.instance().data
+  },
+  collectionName () {
+    return AudioFiles.name
   }
 })
 

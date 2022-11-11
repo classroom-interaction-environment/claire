@@ -28,6 +28,7 @@ import { asyncTimeout } from '../../../../api/utils/asyncTimeout'
 
 import './pageContent.scss'
 import './pageContent.html'
+import { getMaterialRenderer } from '../../../../api/material/getMaterialRenderer'
 
 const API = Template.taskPageContent.setDependencies({
   contexts: getTaskContexts()
@@ -464,6 +465,12 @@ Template.taskPageContent.events({
     // TODO move away from here, use a pattern, that sticks this form-loading to TaskDefinitions
     if (typeof elementDef.form === 'function') {
       await elementDef.form()
+    }
+
+    // TODO same for this one, we have no definite method for this case yet
+    if (elementDef.isFilesCollection) {
+      const renderer = getMaterialRenderer(elementDef.material)
+      await renderer.load()
     }
 
     templateInstance.state.set({

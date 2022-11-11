@@ -41,7 +41,7 @@ AudioFiles.material = {
         afFieldInput: {
           type: FilesTemplates.upload.type,
           uploadTemplate: FilesTemplates.upload.template,
-          previewTemplate: 'imageFileRenderer',
+          previewTemplate: 'audioFileRenderer',
           collection: AudioFiles.name,
           icon: AudioFiles.icon,
           accept: AudioFiles.files.accept,

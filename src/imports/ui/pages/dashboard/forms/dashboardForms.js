@@ -79,7 +79,6 @@ export const createDashboardFormActions = ({ onError, translate }) => {
         type: 'secondary',
         onSubmit: onCreateClassSubmit,
         onClosed: ({ successful, result, templateInstance }) => {
-          debugger
           if (successful) {
             templateInstance.state.set({ schoolClassUpdated: result })
             return {

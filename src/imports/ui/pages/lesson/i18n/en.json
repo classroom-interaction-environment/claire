@@ -23,6 +23,7 @@
     "wrongLesson": "There are currently lessons in progress in another sequence",
     "wrongLessonDescription": "Return to your course and enter the current sequence",
     "confirmRemove": "You are about to delete all materials and results along with this lesson.",
+    "completeMessage": "To restart, click on the button \"Restart class\" under the \"Participants\" tab.",
     "actions": {
       "restart": "Restart class",
       "restartConfirm": "Attention! If you restart the lesson all contents will be reset",

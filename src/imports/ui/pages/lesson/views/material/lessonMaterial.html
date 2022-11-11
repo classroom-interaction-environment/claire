@@ -417,6 +417,18 @@
     {{! -------------------------- }}
 
     <div class="row">
+        {{#if isComplete}}
+            <div class="col-12">
+                <div class="card-body border border-success rounded">
+                    <div class="card-title">
+                        {{> lessonStatus lessonDoc=lessonDoc unitDoc=unitDoc showLabel=true bg=false}}
+                    </div>
+                    <p>
+                        {{i18n "lesson.completeMessage"}}
+                    </p>
+                </div>
+            </div>
+        {{else}}
         <div class="col-xs-12 col-sm-6">
             {{#if isIdle}}
                 {{>actionButton
@@ -449,7 +461,7 @@
                         label=(i18n "lesson.actions.complete")}}
             {{/if}}
         </div>
-
+        {{/if}}
     </div>
 
     {{! ===================================================================== }}

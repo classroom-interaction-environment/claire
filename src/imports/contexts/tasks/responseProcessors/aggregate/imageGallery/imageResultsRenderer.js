@@ -9,7 +9,6 @@ import './imageResultsRenderer.html'
 
 const API = Template.imageResultsRenderer.setDependencies({
   contexts: [ImageFiles],
-  debug: false
 })
 
 const ImageFilesCollection = getFilesCollection(ImageFiles.name)

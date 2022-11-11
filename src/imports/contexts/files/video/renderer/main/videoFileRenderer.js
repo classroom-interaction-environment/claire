@@ -10,31 +10,22 @@ const API = Template.videoFileRenderer.setDependencies({
 
 Template.videoFileRenderer.onCreated(function () {
   const instance = this
+  console.debug('video file renderer created')
   instance.state.setDefault('version', 'original')
   instance.deleteFile = createDeleteFile({
     context: VideoFiles,
     onSuccess: () => API.notify(true),
     onError: API.notify
   })
-
-  instance.autorun(() => {
-    const data = Template.currentData()
-    if (!data) return
-
-    const { imageType } = data
-    if (imageType) {
-      instance.state.set({ version: imageType })
-    }
-  })
 })
 
 Template.videoFileRenderer.helpers({
   getLink (videoFile) {
-    const version = Template.getState('version')
+    console.debug(videoFile)
     return getFilesLink({
       file: videoFile,
       name: VideoFiles.name,
-      version
+      version: Template.getState('version')
     })
   },
   getPoster (videoFile) {
