@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import {createLog} from '../log/createLog'
+import { createLog } from '../log/createLog'
 
 const debugLog = createLog({ name: 'insertUpdate', type: 'debug' })
 

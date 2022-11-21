@@ -43,9 +43,8 @@ Files.getMaterialContexts = auto(function () {
   }
 })
 
-
 onClientExec(function () {
-    import { ITaskDefinition } from '../tasks/definitions/ITaskDefinition'
+  import { ITaskDefinition } from '../tasks/definitions/ITaskDefinition'
   import { FilesTemplates } from './FilesTemplates'
 
   /** @deprecated move into own module FilesTemplates **/

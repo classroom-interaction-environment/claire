@@ -1,7 +1,7 @@
 import { i18n } from '../../language/language'
 import { Meteor } from 'meteor/meteor'
 import { getCredentialsAsBuffer, getFullName } from './common'
-import {createLog} from '../../log/createLog'
+import { createLog } from '../../log/createLog'
 
 const debug = createLog({ name: 'email/resetPassword', type: 'debug' })
 

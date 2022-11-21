@@ -6,7 +6,7 @@ let fs
 let im
 
 // convert -density 150 presentation.pdf[0] -quality 90 test.jpg
-export const documentConverter = async function (fileRef, options){
+export const documentConverter = async function (fileRef, options) {
   if (!fileRef.isPDF) {
     return fileRef
   }
@@ -18,7 +18,7 @@ export const documentConverter = async function (fileRef, options){
     throw Meteor.Error('upload.convertError')
   }
 
-  if (!im) im = require('gm').subClass({imageMagick: true})
+  if (!im) im = require('gm').subClass({ imageMagick: true })
 
   let document
   const thumbnailPath = (filesCollection.storagePath(fileRef)) + '/thumbnail-' + fileRef._id + '.png'
@@ -38,7 +38,8 @@ export const documentConverter = async function (fileRef, options){
       .filter('Triangle')
       .resize('50%')
       .interlace('Line')
-  } catch (imError) {
+  }
+  catch (imError) {
     // if we catch an error here we skip the rest as we have nothing
     // created neither on disk nor in the database
     console.error(imError)
@@ -47,7 +48,8 @@ export const documentConverter = async function (fileRef, options){
 
   try {
     await gmexec(document, document.write, thumbnailPath)
-  } catch (imErr) {
+  }
+  catch (imErr) {
     console.error(imErr)
     return fileRef
   }

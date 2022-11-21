@@ -63,7 +63,7 @@ Template.documentResultsRenderer.helpers({
     return DocumentFiles.name
   },
   hasThumbnail (fileObj = {}) {
-    return fileObj.isPDF && fileObj.versions?.thumbnail;
+    return fileObj.isPDF && fileObj.versions?.thumbnail
   },
   getThumbnail (fileObj) {
     return getFilesLink({

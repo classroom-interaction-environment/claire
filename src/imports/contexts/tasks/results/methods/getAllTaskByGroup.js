@@ -1,8 +1,8 @@
 import { Group } from '../../../classroom/group/Group'
 import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
-import {getCollection} from '../../../../api/utils/getCollection'
-import {TaskResults} from '../TaskResults'
+import { getCollection } from '../../../../api/utils/getCollection'
+import { TaskResults } from '../TaskResults'
 
 const getGroupDoc = createDocGetter(Group)
 

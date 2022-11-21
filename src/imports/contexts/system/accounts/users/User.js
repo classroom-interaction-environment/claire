@@ -371,7 +371,7 @@ Users.publications.byClass = {
     classId: String
   },
   run: onServerExecLazy(function () {
-    const{ usersByClass } = require('./usersByClass')
+    const { usersByClass } = require('./usersByClass')
     return usersByClass
   })
 }

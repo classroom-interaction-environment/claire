@@ -6,7 +6,7 @@ export const getTaskContexts = () => {
   import { WebResources } from '../resources/web/WebResources'
   import { LinkedResource } from '../resources/web/linked/LinkedResource'
   import { EmbeddedResource } from '../resources/web/embedded/EmbeddedResource'
-  import { Literature  } from '../resources/web/literature/Literature'
+  import { Literature } from '../resources/web/literature/Literature'
 
   // FILES
   import { ImageFiles } from '../files/image/ImageFiles'

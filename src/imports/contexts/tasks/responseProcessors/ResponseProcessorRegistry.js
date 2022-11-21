@@ -49,7 +49,7 @@ const checkResponseProcessorContext = ({ name, label, icon, isResponseProcessor,
  * @return {any}
  */
 ResponseProcessorRegistry.register = function (context) {
-  const { name, type, dataTypes, fileType, csp, renderer } = context
+  const { name, type, dataTypes, fileType /*, csp, renderer  */ } = context
   debugLog('register', { context })
 
   check(name, String)

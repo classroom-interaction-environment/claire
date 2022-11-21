@@ -15,7 +15,7 @@ import { getLocalCollection } from '../../infrastructure/collection/getLocalColl
  * @param options.preferLocal {boolean=false}
  * @return {null|object}
  */
-export const resolveMaterialReference = (refObj, { preferLocal=false } = {}) => {
+export const resolveMaterialReference = (refObj, { preferLocal = false } = {}) => {
   const { collection, document } = refObj
 
   if (!collection || !document) {

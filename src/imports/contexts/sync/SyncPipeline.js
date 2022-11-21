@@ -1,4 +1,4 @@
-import {createLog} from '../../api/log/createLog'
+import { createLog } from '../../api/log/createLog'
 
 export const SyncPipeline = {}
 

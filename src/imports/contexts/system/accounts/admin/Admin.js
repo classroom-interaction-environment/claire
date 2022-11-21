@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { auto, onClient, onServer, onServerExec } from '../../../../api/utils/archUtils'
 import { AdminErrors } from './AdminErrors'
-import {  UserUtils } from '../users/UserUtils'
+import { UserUtils } from '../users/UserUtils'
 
 export const Admin = {
   name: 'admin',
@@ -80,7 +80,7 @@ Admin.methods.createUser = {
   })(),
   run: onServerExec(function () {
     import { Accounts } from 'meteor/accounts-base'
-        import { UserFactory } from '../../../../api/accounts/registration/UserFactory'
+    import { UserFactory } from '../../../../api/accounts/registration/UserFactory'
     import { createAdmin } from '../../../../api/accounts/admin/createAdmin'
     import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
     import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
@@ -107,7 +107,8 @@ Admin.methods.createUser = {
         lastName: correctName(lastName, options),
         institution: correctName(institution, options),
         email,
-        role })
+        role
+      })
 
       if (willBeAdmin) {
         createAdmin(newUserId)
@@ -172,7 +173,7 @@ Admin.methods.updateRole = {
   })(),
   run: onServerExec(function () {
     import { Roles } from 'meteor/alanning:roles'
-        import { createAdmin } from '../../../../api/accounts/admin/createAdmin'
+    import { createAdmin } from '../../../../api/accounts/admin/createAdmin'
     import { removeAdmin } from '../../../../api/accounts/admin/removeAdmin'
     import { userExists } from '../../../../api/accounts/user/userExists'
     import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'

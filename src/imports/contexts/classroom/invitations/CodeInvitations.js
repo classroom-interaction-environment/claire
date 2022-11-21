@@ -463,13 +463,13 @@ CodeInvitation.helpers.isPending = function isPending (doc) {
  * @return {*}
  */
 CodeInvitation.helpers.getStatus = function getStatus ({
-                                                         invalid,
-                                                         createdAt,
-                                                         expires,
-                                                         registeredUsers,
-                                                         maxUsers,
-                                                         _id
-                                                       }) {
+  invalid,
+  createdAt,
+  expires,
+  registeredUsers,
+  maxUsers,
+  _id
+}) {
   const isExpired = CodeInvitation.helpers.isExpired({
     invalid,
     createdAt,
@@ -605,7 +605,6 @@ CodeInvitation.methods.verify = {
   },
   isPublic: true,
   run: onServerExec(function () {
-
     return function ({ code }) {
       const codeDoc = getCollection(CodeInvitation.name).findOne({ code })
 

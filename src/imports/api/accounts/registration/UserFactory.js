@@ -5,8 +5,7 @@ import { Schema } from '../../schema/Schema'
 import { Roles } from 'meteor/alanning:roles'
 import { rollbackAccount } from './rollbackAccount'
 import { userExists } from '../user/userExists'
-import {createLog} from '../../log/createLog'
-
+import { createLog } from '../../log/createLog'
 
 /**
  * Creates new user accounts
@@ -16,7 +15,7 @@ export const UserFactory = {}
 
 UserFactory.name = 'UserFactory'
 
-const debug = createLog({ name: UserFactory.name, type: 'debug'})
+const debug = createLog({ name: UserFactory.name, type: 'debug' })
 let createSchema
 
 /**

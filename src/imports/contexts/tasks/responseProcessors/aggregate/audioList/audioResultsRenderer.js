@@ -31,7 +31,7 @@ Template.audioResultsRenderer.onCreated(function () {
           },
           onReady: () => {
             API.debug('sub complete')
-          },
+          }
         }
       })
       c.stop()

@@ -9,7 +9,7 @@ Template.documentFilesListRenderer.helpers({
     return DocumentFiles.name
   },
   hasThumbnail (fileObj) {
-    return fileObj?.versions?.thumbnail;
+    return fileObj?.versions?.thumbnail
   },
   getThumbnail (fileObj) {
     return getFilesLink({

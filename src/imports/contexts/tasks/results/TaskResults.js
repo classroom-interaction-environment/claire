@@ -72,7 +72,6 @@ TaskResults.methods.saveTask = {
 
 TaskResults.publications = {}
 
-
 /**
  * Reveal all results for a specific item, usable for instance in presentation mode
  */
@@ -104,6 +103,7 @@ TaskResults.publications.byGroup = {
   },
   run: onServerExec(function () {
     import { getAllTasksByGroupAndItem } from './methods/getAllTaskByGroup'
+    return getAllTasksByGroupAndItem
   })
 }
 

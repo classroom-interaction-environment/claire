@@ -45,7 +45,6 @@ const log = createLog({ name: TaskDefinitions.name, type: 'debug' })
 /// ////////////////////////////////////////////////////////////////////////////
 
 const init = new ReactiveVar()
-let localeTracker
 let initializing = false
 
 TaskDefinitions.initialize = function () {
@@ -76,7 +75,7 @@ async function initialize () {
   plugins.forEach(({ name, plugin }) => processPlugin(name, plugin))
 
   // TODO merge localeTrackers into one Tracker in plugin registry
-  localeTracker = Tracker.autorun(() => {
+  Tracker.autorun(() => {
     const currentLocale = i18n.getLocale()
     TaskElementPlugins.onLanguageChange(currentLocale)
       .catch(e => console.error(e))

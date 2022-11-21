@@ -352,15 +352,13 @@ Lesson.publications.my = {
     const { userId } = this
     const query = {
       $or: [
-        { createdBy: userId},
+        { createdBy: userId },
         { teachers: userId }
       ]
     }
     return getCollection(Lesson.name).find(query)
   })
 }
-
-
 
 /**
  * Publishes all Lessons, associated with a unit and which I have created
@@ -394,7 +392,7 @@ Lesson.publications.single = {
   },
   run: onServerExec(function () {
     import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
-    
+
     return function ({ _id }) {
       const { userId } = this
       const isMember = Lesson.helpers.isMemberOfLesson({
@@ -759,7 +757,7 @@ Lesson.methods.restart = {
      * @return {object} A boolean value, whether the operation has been successful
      */
     function restartLesson ({ _id }) {
-      const {userId, log } = this
+      const { userId, log } = this
       const { lessonDoc } = Lesson.helpers.docsForTeacher({
         userId,
         lessonId: _id
@@ -907,7 +905,7 @@ Lesson.methods.material = {
     _id: String,
     groupId: {
       type: String,
-      optional: true,
+      optional: true
     },
     skip: {
       type: Array,

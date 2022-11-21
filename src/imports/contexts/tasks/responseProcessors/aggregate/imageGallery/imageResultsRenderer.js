@@ -8,7 +8,7 @@ import '../shared/cssbox.scss'
 import './imageResultsRenderer.html'
 
 const API = Template.imageResultsRenderer.setDependencies({
-  contexts: [ImageFiles],
+  contexts: [ImageFiles]
 })
 
 const ImageFilesCollection = getFilesCollection(ImageFiles.name)

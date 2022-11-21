@@ -108,6 +108,7 @@
       "AutoForm": "readonly"
     },
     "rules": {
+      "import/no-duplicates":"off",
       "brace-style": [
         "error",
         "stroustrup",
