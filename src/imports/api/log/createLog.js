@@ -34,7 +34,7 @@ const internal = {
  * Creates a log for a given name and type.
  * Returns a no-op function if devOnly is true but app is in prod mode
  * @param name {string}
- * @param type {string='log'}
+ * @param type {'log'|'info'|'debug'|'warn'|'error'}
  * @param devOnly {boolean=false}
  * @return {function}
  */

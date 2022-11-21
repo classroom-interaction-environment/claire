@@ -138,7 +138,6 @@ ResponseProcessorRegistry.allForDataType = dataType => {
     : dataType
 
   const typeMap = dataTypeMap.get(dataTypeName) || { values: [] }
-  console.debug({ dataTypeMap, typeMap })
   const contexts = new Set(typeMap.values.map(toContext))
   contexts.add(RawResponse)
 

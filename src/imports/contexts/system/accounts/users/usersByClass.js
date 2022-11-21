@@ -7,6 +7,7 @@ export const usersByClass = function () {
   // run phase
   return function usersByClass ({ classId, skip }) {
     const classDoc = getCollection(SchoolClass.name).findOne(classId)
+
     if (!classDoc) {
       throw new Meteor.Error('usersByClass.failed', 'errors.docNotFound', classId)
     }

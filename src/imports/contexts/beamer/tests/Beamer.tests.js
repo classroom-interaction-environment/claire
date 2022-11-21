@@ -255,7 +255,6 @@ describe('Beamer', function () {
 
           // after update
           Beamer.doc.background(Beamer.ui.backgroundColors.dark.value, (err, color) => {
-            console.info(err, color)
             if (err) {
               console.error(err)
               return done(err)

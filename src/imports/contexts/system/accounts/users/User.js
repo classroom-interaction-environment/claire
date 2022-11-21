@@ -327,7 +327,8 @@ Users.methods.byClass = {
     'skip.$': String
   },
   run: onServerExec(function () {
-    import { usersByClass } from './usersByClass'
+    const { usersByClass } = require('./usersByClass')
+
     const run = usersByClass()
 
     return function ({ classId, skip }) {
@@ -370,7 +371,7 @@ Users.publications.byClass = {
     classId: String
   },
   run: onServerExecLazy(function () {
-    import { usersByClass } from './usersByClass'
+    const{ usersByClass } = require('./usersByClass')
     return usersByClass
   })
 }

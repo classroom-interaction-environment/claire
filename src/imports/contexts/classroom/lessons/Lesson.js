@@ -842,7 +842,7 @@ Lesson.methods.toggle = {
       else {
         throw new Meteor.Error(LessonErrors.unexpectedMaterialIndex, index)
       }
-      console.debug('UPDATE LESSON DOC', _id, transform)
+
       return !!updateLesson.call(this, _id, transform)
     }
 

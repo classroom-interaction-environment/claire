@@ -3,6 +3,12 @@ import { getResponseProcessors } from '../../api/response/getResponseProcessors'
 import { getFileType } from '../../api/files/getFileType'
 import { Files } from '../files/Files'
 
+/**
+ * Extracts all items from a given taskDoc
+ *
+ * @param taskDoc
+ * @returns {*[]}
+ */
 export const getAllItemsInTask = taskDoc => {
   if (!Item.isInitialized() || !Files.isInitialized()) {
     throw new Error('Items and Files need to be initialized to get all items in task')

@@ -19,7 +19,6 @@ Template.audioResultsRenderer.onCreated(function () {
   const { itemId } = instance.data
 
   instance.autorun(c => {
-    console.debug(AudioFiles)
     if (API.initComplete()) {
       API.subscribe({
         name: AudioFiles.publications.byItem,
@@ -69,6 +68,8 @@ Template.audioResultsRenderer.helpers({
   }
 })
 
+/*
+// dev-only, uncomment, if needed
 Template.audioResultsRenderer.events({
   '* audio' (event) {
     console.info(event)
@@ -80,3 +81,4 @@ Template.audioResultsRenderer.events({
     console.info(event)
   }
 })
+ */

@@ -1,7 +1,5 @@
-import { Meteor } from 'meteor/meteor'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
 import { onServerExec } from '../../../api/utils/archUtils'
-import { getMyTaskWorkingState } from './methods/getMyTaskWorkingState'
 
 export const TaskWorkingState = {
   name: 'taskWorkingState',
