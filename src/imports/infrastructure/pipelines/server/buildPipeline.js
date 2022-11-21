@@ -1,4 +1,3 @@
-import { Mongo } from 'meteor/mongo'
 import { createPipeline } from '../createPipeline'
 import {
   rateLimitMethod,
@@ -8,6 +7,7 @@ import { createPublication } from '../../factories/createPublication'
 import { createFilesCollection } from '../../factories/createFilesCollection'
 import { createMethod } from '../../factories/createMethod'
 import { i18n } from '../../../api/language/language'
+import { Mongo } from 'meteor/mongo'
 import { createCollection } from '../../factories/createCollection'
 import { isSupportedObject } from '../../../api/utils/isSupportedObject'
 import { getCheckMime } from '../../../api/files/getCheckMime'
@@ -37,9 +37,8 @@ export const buildPipeline = createPipeline('build', function (context, api, opt
   }
 
   // CREATE FILES COLLECTION
-
   if (filesCollection && isFilesContext(context)) {
-    const FilesMongoCollection = products.collection || new Mongo.Collection(context.name)
+    const FilesMongoCollection = products.collection ?? new Mongo.Collection(context.name)
     const { files } = context
 
     api.info('Files context detected, create files collection')

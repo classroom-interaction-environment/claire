@@ -44,11 +44,12 @@ export function cspOptions (externalHostUrls = []) {
 
   const opt = {
     crossOriginEmbedderPolicy: false,
-    // crossOriginOpenerPolicy: false,
+    crossOriginOpenerPolicy: { policy: 'unsafe-none' },
     crossOriginResourcePolicy: { policy: 'cross-origin' },
     contentSecurityPolicy: {
       blockAllMixedContent: true,
       directives: {
+        upgradeInSecureRequests: Meteor.isDevelopment ? null : [],
         defaultSrc: [self],
         scriptSrc: [
           self,

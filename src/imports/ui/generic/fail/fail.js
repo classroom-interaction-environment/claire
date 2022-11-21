@@ -3,7 +3,6 @@ import './fail.html'
 
 Template.fail.helpers({
   title (err) {
-    console.info(err)
     return err.error || err.message
   }
 })

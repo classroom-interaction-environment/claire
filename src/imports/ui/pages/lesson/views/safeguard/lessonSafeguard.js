@@ -3,7 +3,7 @@ import { Task } from '../../../../../contexts/curriculum/curriculum/task/Task'
 import './lessonSafeguard.html'
 import { getCollection } from '../../../../../api/utils/getCollection'
 
-const API = Template.lessonSafeguard.setDependencies({
+Template.lessonSafeguard.setDependencies({
   contexts: [Task]
 })
 const TaskCollection = getCollection(Task.name)

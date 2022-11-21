@@ -6,13 +6,20 @@
             <ul class="list-group">
                 {{#each doc in documents}}
                     <li class="list-group-item d-flex justify-content-between">
-                        <span class="font-weight-bold">{{doc.name}}</span>
+                        {{#if hasThumbnail doc}}
+                            {{> image src=(getThumbnail doc) height=64 class="border border-light"}}
+                        {{else}}
+                            {{> icon name=(getIcon doc.extension) fw=true}}
+                        {{/if}}
+                        <span class="font-weight-bold flex-fill">{{doc.name}}</span>
+                        <span>
                         {{> downloadButton
                                 collection=collectionName
                                 file=doc
                                 showLabel=true
                                 showSize=true
                                 title=(i18n 'actions.open')}}
+                        </span>
                     </li>
                 {{/each}}
             </ul>

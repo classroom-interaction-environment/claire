@@ -1,8 +1,21 @@
-import { getCollection } from '../../api/utils/getCollection'
 import { Material } from './Material'
+import { getCollection } from '../../api/utils/getCollection'
 import { getLocalCollection } from '../../infrastructure/collection/getLocalCollection'
 
-export const resolveMaterialReference = refObj => {
+/**
+ * Resolves a referenced material by context's collection name and document query.
+ * Prefers subs-collection over local collection by default.
+ *
+ * TODO throw errors instead of returning null
+ *
+ * @param refObj {object}
+ * @param refObj.collection {string} name of the corresponding material collection
+ * @param refObj.document {object|string} query to get the document
+ * @param options {object}
+ * @param options.preferLocal {boolean=false}
+ * @return {null|object}
+ */
+export const resolveMaterialReference = (refObj, { preferLocal=false } = {}) => {
   const { collection, document } = refObj
 
   if (!collection || !document) {
@@ -18,12 +31,13 @@ export const resolveMaterialReference = refObj => {
   const Context = Material.get(collection)
   const MaterialCollection = getCollection(collection)
   const LocalCollection = getLocalCollection(collection)
-  const resolvedDocument = MaterialCollection.findOne(document) || LocalCollection.findOne(document)
+  const resolvedDocument = preferLocal
+    ? MaterialCollection.findOne(document) || LocalCollection.findOne(document)
+    : MaterialCollection.findOne(document) || LocalCollection.findOne(document)
 
   if (!resolvedDocument) {
     console.warn('could not resolve document for ', collection, document)
-    console.info('May check subsc docs of this collection:', getCollection(collection).find().fetch())
-    console.info('May check local docs of this collection:', getLocalCollection(collection).find().fetch())
+    return null
   }
 
   return Object.assign({

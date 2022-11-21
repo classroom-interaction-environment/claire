@@ -1,7 +1,6 @@
 /* global describe it afterEach */
 import { Random } from 'meteor/random'
-import { TaskWorkingState } from '../TaskWorkingState'
-import { Lesson } from '../../../classroom/lessons/Lesson'
+import { TaskWorkingState } from '../../state/TaskWorkingState'
 import { LessonStates } from '../../../classroom/lessons/LessonStates'
 import { restoreAll } from '../../../../../tests/testutils/stub'
 import { mockCollection } from '../../../../../tests/testutils/mockCollection'

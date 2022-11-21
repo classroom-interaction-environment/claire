@@ -1,3 +1,5 @@
+import { Meteor } from 'meteor/meteor'
+import { Mongo } from 'meteor/mongo'
 import { createLog } from '../../../../api/log/createLog'
 
 if (Meteor.settings.patch?.admin) {

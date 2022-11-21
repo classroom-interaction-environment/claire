@@ -1,3 +1,4 @@
+/* global DDP */
 const exists = function (value) {
   return value !== null && typeof value !== 'undefined'
 }

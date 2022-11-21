@@ -49,7 +49,7 @@
     "inform": {
       "passwordReset": {
         "subject": "{{siteName}} info: Passwort wurde zurückgesetzt",
-        "text": "Hallo,\n\nfolgender User hat das Password zurückgesetzt bzw. neu gesetzt: {{name}}. Dies ist eine automatische Mail vom {{siteName}} system."
+        "text": "Hallo,\n\nfolgender User hat das Password zurückgesetzt bzw. neu gesetzt: {{name}} ({{institution}}). Dies ist eine automatische Mail vom {{siteName}} system."
       }
     }
   },

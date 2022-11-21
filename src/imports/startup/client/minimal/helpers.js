@@ -1,4 +1,3 @@
-/* global Roles */
 import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { Roles } from 'meteor/alanning:roles'
@@ -13,6 +12,7 @@ import { contrastColor } from '../../../ui/utils/color/contrastColor'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
 import { Features } from '../../../api/config/Features'
 import { isTodayOrYesterday } from '../../../utils/isTodayOrYesterday'
+import { createLog } from '../../../api/log/createLog'
 
 Template.registerHelper('feature', function (name) {
   return Features.get(name)
@@ -100,9 +100,8 @@ Template.registerHelper('concat', function (...strings) {
   return strings.join('')
 })
 
-Template.registerHelper('log', function (...args) {
-  console.log(...args)
-})
+const log = createLog({ name: 'Template.globalHelper' })
+Template.registerHelper('log', function (...args) { log(...args) })
 
 Template.registerHelper('oneOf', function (compare, ...args) {
   args.pop()

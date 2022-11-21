@@ -45,7 +45,7 @@ Meteor.startup(() => {
       else {
         // otherwise we need to create a new beamer doc
         Beamer.doc.create((err, newBeamerDoc) => {
-          if (err) return notifyErr(err)
+          if (err) return Notify.error(err)
           if (!newBeamerDoc) {
             return Notify.add(new Error('beamer doc is not created'))
           }

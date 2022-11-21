@@ -49,7 +49,7 @@
     "inform": {
       "passwordReset": {
         "subject": "{{siteName}} Bilgi: Şifreyi sıfırla",
-        "text": "Merhaba,\n\naşağıdaki kullanıcı şifreyi sıfırladı: {{name}}. Bu, {{siteName}} sisteminden gelen otomatik bir postadır."
+        "text": "Merhaba,\n\naşağıdaki kullanıcı şifreyi sıfırladı: {{name}} ({{institution}}). Bu, {{siteName}} sisteminden gelen otomatik bir postadır."
       }
     }
   },

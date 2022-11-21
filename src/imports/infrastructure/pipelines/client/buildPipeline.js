@@ -1,3 +1,4 @@
+import { Mongo } from 'meteor/mongo'
 import { createPipeline } from '../createPipeline'
 import { createCollection } from '../../../infrastructure/factories/createCollection'
 import { getUserCheck } from '../../../api/files/getUserCheck'

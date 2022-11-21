@@ -1,6 +1,6 @@
 import { check } from 'meteor/check'
 import { TaskResults } from '../../../tasks/results/TaskResults'
-import { TaskWorkingState } from '../../../tasks/results/TaskWorkingState'
+import { TaskWorkingState } from '../../../tasks/state/TaskWorkingState'
 
 import { createRemoveDoc } from '../../../../api/utils/documentUtils'
 

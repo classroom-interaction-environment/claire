@@ -94,9 +94,6 @@ Template.afUnitSelect.helpers({
   availablePockets () {
     return Template.getState('availablePockets')
   },
-  lesson (unitId) {
-    const { classId } = Template.currentData().atts
-  },
   pocketCtx () {
     return Pocket
   },
@@ -140,6 +137,8 @@ Template.afUnitSelect.events({
   }
 })
 
-const updateHidden = ({ templateInstance }) => templateInstance
-  .$('.hidden-input')
-  .val(templateInstance.state.get('selectedUnit'))
+const updateHidden = ({ templateInstance }) => {
+  templateInstance
+    .$('input[data-unitselect-hidden=""]')
+    .val(templateInstance.state.get('selectedUnit'))
+}

@@ -94,7 +94,6 @@ let createSchema
 
 Template.uephases.onCreated(function onPhasesCreated () {
   const instance = this
-  let phaseSub
 
   instance.autorun(() => {
     instance.state.set('loadComplete', false)
@@ -157,13 +156,12 @@ Template.uephases.onCreated(function onPhasesCreated () {
     }
 
     LessonMaterial.load(unitDoc, result => {
-      console.debug(result)
       instance.state.set('materialLoadComplete', true)
     })
 
     if (originalUnitDoc) {
       LessonMaterial.load(originalUnitDoc, result => {
-        console.debug(result)
+        API.debug(result)
       })
     }
   })

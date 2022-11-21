@@ -49,7 +49,7 @@
     "inform": {
       "passwordReset": {
         "subject": "{{siteName}} password reset",
-        "text": "Hello,\n\n{{name}} has reset their password on {{siteName}}."
+        "text": "Hello,\n\n{{name}} ({{institution}}) has reset their password on {{siteName}}."
       }
     }
   },

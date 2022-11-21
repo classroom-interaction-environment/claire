@@ -87,7 +87,6 @@ MaterialSubviews.exists = name => {
  * }}
  */
 MaterialSubviews.create = ({ name }) => {
-  console.log('[MaterialSubviews]: create', name)
   const context = Material.get(name)
   const material = context?.material
 

@@ -2,18 +2,16 @@ import { Template } from 'meteor/templating'
 import { Curriculum } from '../../../../../contexts/curriculum/Curriculum.js'
 import { Unit } from '../../../../../contexts/curriculum/curriculum/unit/Unit'
 import { Dimension } from '../../../../../contexts/curriculum/curriculum/dimension/Dimension'
-import { unitEditorSubscriptionKey } from '../../unitEditorSubscriptionKey'
-
 import { formIsValid } from '../../../../components/forms/formUtils'
 import { updateContextDoc } from '../../../../controllers/document/updateContextDoc'
 import { toUpdateDoc } from '../../../../utils/toUpdateDoc'
 import { firstOption } from '../../../../../contexts/tasks/definitions/common/helpers'
 import { dimensionOptions } from '../../../../../contexts/curriculum/curriculum/dimension/dimensionOptions'
 import { getLocalCollection } from '../../../../../infrastructure/collection/getLocalCollection'
+import { callMethod } from '../../../../controllers/document/callMethod'
 
 import './basicInfo.scss'
 import './basicInfo.html'
-import { callMethod } from '../../../../controllers/document/callMethod'
 
 /*******************************************************************************
  * This view generates a form, that can be utilized to edit basic data, like

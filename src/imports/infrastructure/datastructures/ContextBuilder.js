@@ -5,7 +5,7 @@ import { isRegistry } from './isRegistry'
 
 const contextMap = new Map()
 const registryMap = new Map()
-const info = createLog({ name: 'ContextBuilder' })
+const info = createLog({ name: 'ContextBuilder', type: 'info' })
 
 /**
  * Creates contexts by running them through registered pipelines.
@@ -94,7 +94,7 @@ ContextBuilder.build = function (context, buildCallback) {
   check(context, Match.ObjectIncluding(isContext()))
   check(buildCallback, Function)
 
-  const contextInfo = createLog(context)
+  const contextInfo = createLog({ name: context.name })
   const allPipelines = []
 
   // we go through all registries and check for any pipelines
@@ -107,10 +107,10 @@ ContextBuilder.build = function (context, buildCallback) {
 
   contextInfo(`start build with ${allPipelines.length + 1} pipelines`)
   allPipelines.forEach(pipeline => {
-    pipeline.call(null, context)
+    pipeline(context)
   })
 
-  buildCallback.call(null, context)
+  buildCallback(context)
 }
 
 /**
