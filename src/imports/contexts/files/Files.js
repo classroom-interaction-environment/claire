@@ -34,10 +34,12 @@ Files.helpers = {}
 Files.getMaterialContexts = auto(function () {
   import { isMaterial } from '../material/isMaterial'
 
-  return function () {
+  return function getMaterialContexts () {
     const contexts = []
     filesMap.forEach(ctx => {
-      if (isMaterial(ctx)) contexts.push(ctx)
+      if (isMaterial(ctx)) {
+        contexts.push(ctx)
+      }
     })
     return contexts
   }

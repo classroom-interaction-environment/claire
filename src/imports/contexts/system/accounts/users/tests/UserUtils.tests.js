@@ -5,6 +5,7 @@ import { UserUtils } from '../UserUtils'
 import { assert } from 'chai'
 import { mockCollection } from '../../../../../../tests/testutils/mockCollection'
 import { Admin } from '../../admin/Admin'
+import { onClientExec, onServer, onServerExec } from '../../../../../api/utils/archUtils'
 
 const userObj = () => ({
   _id: Random.id(),
@@ -39,15 +40,24 @@ describe('UserUtils', function () {
       assert.isFalse(UserUtils.isAdmin())
     })
 
-    it('returns false for a fake admin', function () {
-      stubUser(user, user._id, [UserUtils.roles.admin], user.institution)
-      assert.isFalse(UserUtils.isAdmin())
+    onServerExec(function () {
+      it('returns false for a fake admin', function () {
+        stubUser(user, user._id, [UserUtils.roles.admin], user.institution)
+        assert.isFalse(UserUtils.isAdmin())
+      })
+
+      it('returns true for a true admin', function () {
+        stubUser(user, user._id, [UserUtils.roles.admin], user.institution)
+        AdminCollection.insert({ userId: user._id })
+        assert.isTrue(UserUtils.isAdmin())
+      })
     })
 
-    it('returns true for a true admin', function () {
-      stubUser(user, user._id, [UserUtils.roles.admin], user.institution)
-      AdminCollection.insert({ userId: user._id })
-      assert.isTrue(UserUtils.isAdmin())
+    onClientExec(function () {
+      it('returns true for a roles-admin', function () {
+        stubUser(user, user._id, [UserUtils.roles.admin], user.institution)
+        assert.isTrue(UserUtils.isAdmin())
+      })
     })
   })
 

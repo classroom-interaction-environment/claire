@@ -139,23 +139,24 @@ UserUtils.isCurriculum = function (userId = Meteor.userId(), scope) {
 }
 
 UserUtils.isAdmin = isomporph({
-  client: onClient(function () {
+  client: function () {
     return function isAdmin (userId = Meteor.userId()) {
       if (!userId) return false
       const user = Meteor.users.findOne(userId)
+
       if (!user) return false
       return Roles.userIsInRole(userId, UserUtils.roles.admin, user.institution)
     }
-  }),
+  },
 
-  server: onServer(function () {
+  server: function () {
     import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
 
     return function isAdmin (userId = Meteor.userId()) {
       if (!userId) return false
       return userIsAdmin(userId)
     }
-  })
+  }
 })
 
 const roleMap = mapFromObject(UserUtils.roles)
