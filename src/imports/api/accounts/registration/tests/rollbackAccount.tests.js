@@ -1,12 +1,29 @@
 import { Random } from 'meteor/random'
 import { Admin } from '../../../../contexts/system/accounts/admin/Admin'
+import { Users } from '../../../../contexts/system/accounts/users/User'
 import { rollbackAccount } from '../rollbackAccount'
-import { mockCollection } from '../../../../../tests/testutils/mockCollection'
+import {
+  clearCollections,
+  mockCollections,
+  restoreAllCollections
+} from '../../../../../tests/testutils/mockCollection'
 import { expect } from 'chai'
 
-const AdminCollection = mockCollection(Admin)
+
 
 describe(rollbackAccount.name, function () {
+  let AdminCollection
+  let UsersCollection
+
+  before(function () {
+    [AdminCollection, UsersCollection] = mockCollections(Admin, Users)
+  })
+  afterEach(function () {
+    clearCollections(Admin, Users)
+  })
+  after(function () {
+    restoreAllCollections()
+  })
   it('removes a user from the account system', function () {
     const userId = Accounts.createUser({ username: Random.id() })
     expect(Meteor.users.find(userId).count()).to.equal(1)

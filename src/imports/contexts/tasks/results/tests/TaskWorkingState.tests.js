@@ -40,9 +40,12 @@ describe(TaskWorkingState.name, function () {
         const { lessonDoc, userId } = stubStudentDocs({ startedAt: new Date() })
         const lessonId = lessonDoc._id
         const taskId = Random.id()
-        expect(() => saveState.call({ userId }, { lessonId, taskId })).to.throw('docNotFound')
-        expect(() => saveState.call({ userId }, { lessonId, taskId })).to.throw(taskId)
+        expect(() => saveState.call({ userId }, { lessonId, taskId }))
+          .to.throw('getDocument.docUndefined')
+          .with.property('details')
+          .with.property('query', taskId)
       })
+      it('throws if a given groupdoc does not exist by griupd id')
       it('throws if the task is not editable', function () {
         const { lessonDoc, userId } = stubStudentDocs({ startedAt: new Date() })
         const taskId = Random.id()
@@ -53,8 +56,10 @@ describe(TaskWorkingState.name, function () {
           taskId: taskId
         }
 
-        expect(() => saveState.call({ userId }, insertDoc)).to.throw(TaskWorkingState.errors.taskNotEditable)
-        expect(() => saveState.call({ userId }, insertDoc)).to.throw(taskId)
+        expect(() => saveState.call({ userId }, insertDoc))
+          .to.throw('taskWorkingState.notVisible')
+          .with.property('details')
+          .with.property('taskId', taskId)
       })
       it('creates a new task progress document if none exists for the given task', function () {
         const taskId = Random.id()

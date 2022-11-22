@@ -2,7 +2,7 @@
 import { Random } from 'meteor/random'
 import { SchoolClass } from '../SchoolClass'
 import { Lesson } from '../../lessons/Lesson'
-import { mockCollection } from '../../../../../tests/testutils/mockCollection'
+import { clearCollection, mockCollection, restoreAllCollections } from '../../../../../tests/testutils/mockCollection'
 import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { InvocationChecker } from '../../../../api/utils/InvocationChecker'
 import { onServerExec } from '../../../../api/utils/archUtils'
@@ -11,8 +11,8 @@ import { restoreAll, stub } from '../../../../../tests/testutils/stub'
 import { stubMethod, unstubMethod } from '../../../../../tests/testutils/stubMethod'
 import { expect } from 'chai'
 
-const SchoolClassCollection = mockCollection(SchoolClass)
-const LessonCollection = mockCollection(Lesson)
+let SchoolClassCollection
+let LessonCollection
 
 const { isStudent } = SchoolClass.helpers
 const { isTeacher } = SchoolClass.helpers
@@ -21,10 +21,20 @@ const { addStudent } = SchoolClass.helpers
 const { removeStudent } = SchoolClass.helpers
 
 describe(SchoolClass.name, function () {
+
+  before(function () {
+    SchoolClassCollection = mockCollection(SchoolClass)
+    LessonCollection = mockCollection(Lesson)
+  })
+
   afterEach(function () {
-    SchoolClassCollection.remove({})
-    LessonCollection.remove({})
+    clearCollection(SchoolClass)
+    clearCollection(Lesson)
     restoreAll()
+  })
+
+  after(function () {
+    restoreAllCollections()
   })
 
   describe('helpers', function () {
@@ -249,7 +259,11 @@ describe(SchoolClass.name, function () {
           let otherLessons = []
           otherLessons.length = Math.floor(1 + Math.random() * 10)
           otherLessons.fill(0)
-          otherLessons = otherLessons.map(() => LessonCollection.insert({ classId: otherClassId, title: Random.id(), createdBy: userId }))
+          otherLessons = otherLessons.map(() => LessonCollection.insert({
+            classId: otherClassId,
+            title: Random.id(),
+            createdBy: userId
+          }))
 
           // before
           lessons.forEach(lessonId => expect(LessonCollection.find(lessonId).count()).to.equal(1))

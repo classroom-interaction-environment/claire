@@ -1,16 +1,29 @@
 import { Meteor } from 'meteor/meteor'
 import { Admin } from '../../../../contexts/system/accounts/admin/Admin'
 import { removeAdmin } from '../removeAdmin'
-import { mockCollection } from '../../../../../tests/testutils/mockCollection'
+import {
+  mockCollections,
+  clearCollections,
+  restoreAllCollections
+} from '../../../../../tests/testutils/mockCollection'
 import { Random } from 'meteor/random'
 import { expect } from 'chai'
+import { Users } from '../../../../contexts/system/accounts/users/User'
 
-const AdminCollection = mockCollection(Admin)
+let AdminCollection
+let UsersCollection
 
 describe(removeAdmin.name, function () {
-  beforeEach(function () {
-    Meteor.users.remove({})
-    AdminCollection.remove({})
+  before(function () {
+    [AdminCollection, UsersCollection] = mockCollections(Admin, Users)
+  })
+
+  afterEach(function () {
+    clearCollections(Admin, Users)
+  })
+
+  after(function () {
+    restoreAllCollections()
   })
 
   it('throws if no userId is given', function () {

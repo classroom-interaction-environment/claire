@@ -64,9 +64,9 @@ UserFactory.create = function create ({ email, password, role, firstName, lastNa
   const profileDoc = {
     $set: {
       role,
-      firstName,
-      lastName,
-      institution
+      firstName: clean(firstName),
+      lastName: clean(lastName),
+      institution: clean(institution)
     }
   }
 
@@ -94,4 +94,11 @@ UserFactory.create = function create ({ email, password, role, firstName, lastNa
   }
 
   return userId
+}
+
+const clean = name => {
+  const cleaned = name.trim().replace(/\s+/g, ' ')
+  const first = cleaned.substring(0, 1).toUpperCase()
+  const rest = cleaned.substring(1, name.length)
+  return `${first}${rest}`
 }

@@ -17,6 +17,7 @@ const getGroupDoc = createDocGetter({ name: Group.name, optional: false })
  * Saves a current task working state.
  * @param lessonId
  * @param taskId
+ * @param groupId
  * @param complete
  * @param page
  * @param progress

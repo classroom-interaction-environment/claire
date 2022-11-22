@@ -7,6 +7,13 @@ import { removeLesson } from '../../lessons/methods/removeLesson'
 
 const getClassDoc = createGetDoc(SchoolClass)
 
+/**
+ * Removes a class by given _id and userId. The user must be externally validated!
+ * @param classId {string}
+ * @param userId {string}
+ * @param log {function=}
+ * @return {number}
+ */
 export const removeClass = function removeClass ({ classId, userId, log = () => {} }) {
   const { Lesson } = require('../../lessons/Lesson')
   const schoolClassDoc = getClassDoc.call({ userId }, classId)

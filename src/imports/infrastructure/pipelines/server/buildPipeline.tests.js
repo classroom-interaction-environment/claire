@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-import { Mongo } from 'meteor/mongo'
+import { Mongo, Cursor } from 'meteor/mongo'
 import { Random } from 'meteor/random'
 import { FilesCollection } from 'meteor/ostrio:files'
 import { expect } from 'chai'
@@ -93,10 +93,10 @@ describe(buildPipeline.name, function () {
 
     const products = buildPipeline(context, options)
     const Collection = products.collection
-
     const publication = products.publications[0]
     const docId = Collection.insert({ title })
-    const docs = collectPublication(publication())
+    const cursor = publication()
+    const docs = collectPublication(cursor)
 
     expect(docs.length).to.equal(1)
     expect(docs[0]._id).to.equal(docId)
