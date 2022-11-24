@@ -2,7 +2,12 @@
 import { Random } from 'meteor/random'
 import { SchoolClass } from '../SchoolClass'
 import { Lesson } from '../../lessons/Lesson'
-import { clearCollection, mockCollection, restoreAllCollections } from '../../../../../tests/testutils/mockCollection'
+import {
+  clearAllCollections,
+  clearCollection,
+  mockCollections,
+  restoreAllCollections
+} from '../../../../../tests/testutils/mockCollection'
 import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { InvocationChecker } from '../../../../api/utils/InvocationChecker'
 import { onServerExec } from '../../../../api/utils/archUtils'
@@ -10,9 +15,12 @@ import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDe
 import { restoreAll, stub } from '../../../../../tests/testutils/stub'
 import { stubMethod, unstubMethod } from '../../../../../tests/testutils/stubMethod'
 import { expect } from 'chai'
+import { Users } from '../../../system/accounts/users/User'
+import { LessonRuntime } from '../../lessons/runtime/LessonRuntime'
+import { Unit } from '../../../curriculum/curriculum/unit/Unit'
+import { Phase } from '../../../curriculum/curriculum/phase/Phase'
 
-let SchoolClassCollection
-let LessonCollection
+
 
 const { isStudent } = SchoolClass.helpers
 const { isTeacher } = SchoolClass.helpers
@@ -21,15 +29,17 @@ const { addStudent } = SchoolClass.helpers
 const { removeStudent } = SchoolClass.helpers
 
 describe(SchoolClass.name, function () {
+  let SchoolClassCollection
+  let LessonCollection
+  let UsersCollection
 
   before(function () {
-    SchoolClassCollection = mockCollection(SchoolClass)
-    LessonCollection = mockCollection(Lesson)
+    [SchoolClassCollection, LessonCollection, UsersCollection] = mockCollections(SchoolClass, Lesson, Users, Unit, Phase)
+
   })
 
   afterEach(function () {
-    clearCollection(SchoolClass)
-    clearCollection(Lesson)
+    clearAllCollections()
     restoreAll()
   })
 
@@ -202,34 +212,27 @@ describe(SchoolClass.name, function () {
 
   onServerExec(function () {
     describe('methods', function () {
-      const create = SchoolClass.methods.create.run
-      const remove = SchoolClass.methods.remove.run
+      const createClass = SchoolClass.methods.create.run
+      const removeClass = SchoolClass.methods.remove.run
 
       describe(SchoolClass.methods.create.name, function () {
         it('creates a new school class doc', function () {
-          const classDocDef = { title: Random.id(), students: [Random.id()], teachers: [Random.id()] }
+          const classDocDef = { title: Random.id() }
           const environment = { userId: Random.id() }
-          const classDocId = create.call(environment, Object.assign({}, classDocDef))
+          const classDocId = createClass.call(environment, Object.assign({}, classDocDef))
           const classDoc = SchoolClassCollection.findOne(classDocId)
           expect(classDoc.title).to.equal(classDocDef.title)
-          expect(classDoc.title).to.equal(classDocDef.title)
-          expect(classDoc.students).to.deep.equal(classDocDef.students)
-          expect(classDoc.teachers).to.deep.equal(classDocDef.teachers.concat([environment.userId]))
+          expect(classDoc.createdBy).to.equal(environment.userId)
+
+          // there are no students invited so none should be added
+          // at the same time there is the only teacher the owner of the class
+          expect(classDoc.students).to.deep.equal([])
+          expect(classDoc.teachers).to.deep.equal([environment.userId])
         })
       })
       describe(SchoolClass.methods.remove.name, function () {
-        beforeEach(function () {
-          stubMethod(Lesson.methods.remove.name, function ({ _id }) {
-            return LessonCollection.remove(_id)
-          })
-        })
-
-        afterEach(function () {
-          unstubMethod(Lesson.methods.remove.name)
-        })
-
         it('throws if the classDoc is not found', function () {
-          expect(() => remove({ _id: Random.id() })).to.throw(DocNotFoundError.name)
+          expect(() => removeClass({ _id: Random.id() })).to.throw(DocNotFoundError.name)
         })
         it('removes the class (and only this class) by given _id', function () {
           const userId = Random.id()
@@ -237,7 +240,7 @@ describe(SchoolClass.name, function () {
           const classId = SchoolClassCollection.insert(classDoc)
           const otherClassId = SchoolClassCollection.insert(classDoc)
 
-          remove.call({ userId }, { _id: classId })
+          removeClass.call({ userId }, { _id: classId })
           expect(SchoolClassCollection.find(classId).count()).to.equal(0)
           expect(SchoolClassCollection.find(otherClassId).count()).to.equal(1)
         })
@@ -253,7 +256,7 @@ describe(SchoolClass.name, function () {
           let lessons = []
           lessons.length = Math.floor(1 + Math.random() * 10)
           lessons.fill(0)
-          lessons = lessons.map(() => LessonCollection.insert({ classId, title: Random.id(), createdBy: userId }))
+          lessons = lessons.map(() => LessonCollection.insert({ classId, title: Random.id(), createdBy: userId, unit: Random.id() }))
 
           // create other lessons
           let otherLessons = []
@@ -262,7 +265,8 @@ describe(SchoolClass.name, function () {
           otherLessons = otherLessons.map(() => LessonCollection.insert({
             classId: otherClassId,
             title: Random.id(),
-            createdBy: userId
+            createdBy: userId,
+            unit: Random.id()
           }))
 
           // before
@@ -270,7 +274,19 @@ describe(SchoolClass.name, function () {
           otherLessons.forEach(lessonId => expect(LessonCollection.find(lessonId).count()).to.equal(1))
           expect(LessonCollection.find({ classId }).count()).to.equal(lessons.length)
 
-          remove.call({ userId }, { _id: classId })
+          // stub lesson runtime, make sure we don't remove
+          // content from other lessons
+          stub(LessonRuntime, 'removeDocuments', ({ lessonId, userId: id }) => {
+            expect(id).to.equal(userId)
+            const byLessonId = id => id === lessonId
+            expect(lessons.some(byLessonId)).to.equal(true)
+            expect(otherLessons.some(byLessonId)).to.equal(false)
+            return 1
+          })
+
+          stub(LessonRuntime, 'resetBeamer', () => 1)
+
+          removeClass.call({ userId }, { _id: classId })
 
           // after
           expect(LessonCollection.find({ classId }).count()).to.equal(0)

@@ -8,6 +8,7 @@ import { Task } from '../../../curriculum/curriculum/task/Task'
 import { Group } from '../../../classroom/group/Group'
 import { getCollection } from '../../../../api/utils/getCollection'
 import { TaskResults } from '../TaskResults'
+import { LessonHelpers } from '../../../classroom/lessons/LessonHelpers'
 
 const getLessonDoc = createDocGetter(Lesson)
 const checkTask = createDocGetter(Task)
@@ -25,7 +26,7 @@ const getGroupDoc = createDocGetter(Group)
 
 export const saveTaskResult = function ({ lessonId, taskId, itemId, groupId, groupMode, response }) {
   const { userId } = this
-  if (!Lesson.helpers.isMemberOfLesson({ userId, lessonId })) {
+  if (!LessonHelpers.isMemberOfLesson({ userId, lessonId })) {
     throw new Meteor.Error('errors.permissionDenied', SchoolClass.errors.notMember)
   }
 
@@ -47,7 +48,7 @@ export const saveTaskResult = function ({ lessonId, taskId, itemId, groupId, gro
   }
 
   // check if we can even edit the task
-  if (!Lesson.helpers.taskIsEditable({ lessonDoc, taskId, groupDoc })) {
+  if (!LessonHelpers.taskIsEditable({ lessonDoc, taskId, groupDoc })) {
     throw new Meteor.Error('errors.permissionDenied', TaskResults.errors.notEditable)
   }
 

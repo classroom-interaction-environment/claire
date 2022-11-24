@@ -5,6 +5,7 @@ import { SchoolClass } from '../../../../classroom/schoolclass/SchoolClass'
 import { rollbackAccount } from '../../../../../api/accounts/registration/rollbackAccount'
 import { correctName } from '../../../../../api/utils/correctName'
 import { userExists } from '../../../../../api/accounts/user/userExists'
+import { createDocGetter } from '../../../../../api/utils/document/createDocGetter'
 
 const errors = {
   codeInvalid: 'codeRegister.codeInvalid',
@@ -13,6 +14,8 @@ const errors = {
   invitationNotUpdated: 'codeRegister.invitationNotUpdated',
   studentNotAdded: 'codeRegister.studentNotAdded'
 }
+
+const getCodeDoc = createDocGetter({ name: CodeInvitation.name, optional: true })
 
 /**
  * Registers a new user with a given invitation code.
@@ -27,7 +30,7 @@ const errors = {
  * @return {*}
  */
 export const registerWithCode = function ({ code, email, firstName, lastName, password, institution, locale }) {
-  const codeDoc = CodeInvitation.helpers.getCodeDoc(code)
+  const codeDoc = getCodeDoc({ code })
 
   // first we validate if the related code doc exists and is still valid
   if (!CodeInvitation.helpers.validate(codeDoc)) {
@@ -46,9 +49,9 @@ export const registerWithCode = function ({ code, email, firstName, lastName, pa
     userId = UserFactory.create({
       email: email || codeDoc.email,
       password: password,
-      firstName: correctName(firstName || codeDoc.firstName, options),
-      lastName: correctName(lastName || codeDoc.lastName, options),
-      institution: correctName(codeDoc.institution || institution, options),
+      firstName: correctName(firstName ?? codeDoc.firstName, options),
+      lastName: correctName(lastName ?? codeDoc.lastName, options),
+      institution: correctName(codeDoc.institution ?? institution, options),
       role: codeDoc.role,
       locale: locale
     })
@@ -72,10 +75,10 @@ export const registerWithCode = function ({ code, email, firstName, lastName, pa
 
     if (!studentAdded) {
       rollbackAccount(userId)
-      throw new Meteor.Error(errors.failed, errors.studentNotAdded, JSON.stringify({
+      throw new Meteor.Error(errors.failed, errors.studentNotAdded, {
         classId,
         studentAdded
-      }))
+      })
     }
   }
 

@@ -30,7 +30,7 @@ describe(createAdmin.name, function () {
     expect(() => createAdmin('')).to.throw('Match error: Failed Match.Where validation')
   })
   it('throws if there is no user found for the given userId', function () {
-    expect(() => createAdmin(Random.id())).to.throw('userId is invalid in null insert')
+    expect(() => createAdmin(Random.id())).to.throw('userId is invalid')
   })
   it('throws if the user is already an Admin', function () {
     const userId = UsersCollection.insert({ username: Random.id() })

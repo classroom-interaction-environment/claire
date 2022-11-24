@@ -4,37 +4,59 @@ import { Random } from 'meteor/random'
 import { TaskResults } from '../TaskResults'
 import { Lesson } from '../../../classroom/lessons/Lesson'
 import { SchoolClass } from '../../../classroom/schoolclass/SchoolClass'
-import { mockCollection } from '../../../../../tests/testutils/mockCollection'
+import {
+  clearAllCollections,
+  mockCollections,
+  restoreAllCollections
+} from '../../../../../tests/testutils/mockCollection'
 import { LessonStates } from '../../../classroom/lessons/LessonStates'
 import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { restoreAll, stub } from '../../../../../tests/testutils/stub'
 import { expect } from 'chai'
 import { Task } from '../../../curriculum/curriculum/task/Task'
 import { LessonErrors } from '../../../classroom/lessons/LessonErrors'
-
-const LessonCollection = mockCollection(Lesson)
-const TaskCollection = mockCollection(Task, { noSchema: true })
-const TaskResultCollection = mockCollection(TaskResults)
+import { LessonHelpers } from '../../../classroom/lessons/LessonHelpers'
 
 describe(TaskResults.name, function () {
+  let LessonCollection
+  let TaskCollection
+  let TaskResultCollection
+
+  before(function () {
+    [LessonCollection, TaskCollection, TaskResultCollection] = mockCollections(Lesson, [Task, { noSchema: true }], TaskResults)
+  })
+
+  afterEach(function () {
+    restoreAll()
+    clearAllCollections()
+  })
+
+  after(function () {
+    restoreAllCollections()
+  })
+
   describe('methods', function () {
     describe(TaskResults.methods.saveTask.name, function () {
-      afterEach(function () {
-        TaskResultCollection.remove({})
-        restoreAll()
-      })
 
       const save = TaskResults.methods.saveTask.run
+
       it('throws if the lesson does not exists', function () {
         const userId = Random.id()
         const createDoc = { lessonId: Random.id() }
         stub(Meteor.users, 'findOne', () => ({ _id: userId }))
-        expect(() => save.call({ userId }, createDoc)).to.throw(DocNotFoundError.name, createDoc.lessonId)
+
+        const thrown = expect(() => save.call({ userId }, createDoc))
+          .to.throw(DocNotFoundError.name)
+        thrown.with.property('reason', 'getDocument.docUndefined')
+        thrown.with.deep.property('details', {
+          name: Lesson.name,
+          query: createDoc.lessonId
+        })
       })
       it('throws if the lesson is not running', function () {
         const taskId = Random.id()
         const createDoc = { lessonId: Random.id(), taskId, itemId: Random.id(), response: [Random.id()] }
-        stub(Lesson.helpers, 'isMemberOfLesson', () => true)
+        stub(LessonHelpers, 'isMemberOfLesson', () => true)
         stub(LessonCollection, 'findOne', () => ({ _id: createDoc.lessonId, visibleStudent: [taskId] }))
         stub(TaskCollection, 'findOne', () => ({ _id: createDoc.taskId }))
         stub(LessonStates, 'isRunning', () => false)
@@ -43,7 +65,7 @@ describe(TaskResults.name, function () {
       })
       it('throws if the task is not editable', function () {
         const createDoc = { lessonId: Random.id(), taskId: Random.id(), itemId: Random.id(), response: [Random.id()] }
-        stub(Lesson.helpers, 'isMemberOfLesson', () => true)
+        stub(LessonHelpers, 'isMemberOfLesson', () => true)
         stub(LessonCollection, 'findOne', () => ({ _id: createDoc.lessonId }))
         stub(TaskCollection, 'findOne', () => ({ _id: createDoc.taskId }))
         stub(LessonStates, 'isRunning', () => false)
@@ -52,22 +74,27 @@ describe(TaskResults.name, function () {
       })
       it('throws if the task does not exists', function () {
         const createDoc = { taskId: Random.id() }
-        stub(Lesson.helpers, 'isMemberOfLesson', () => true)
+        stub(LessonHelpers, 'isMemberOfLesson', () => true)
         expect(() => save(createDoc)).to.throw(DocNotFoundError.name, createDoc.taskId)
       })
       it('throws if not member of the lesson', function () {
-        stub(Lesson.helpers, 'isMemberOfLesson', () => false)
+        stub(LessonHelpers, 'isMemberOfLesson', () => false)
         expect(() => save({})).to.throw('errors.permissionDenied', SchoolClass.errors.notMember)
       })
       it('creates a new response document if none exists for the given item', function () {
         const createDoc = { lessonId: Random.id(), taskId: Random.id(), itemId: Random.id(), response: [Random.id()] }
-        stub(Lesson.helpers, 'isMemberOfLesson', () => true)
-        stub(Lesson.helpers, 'taskIsEditable', () => true)
+        stub(LessonHelpers, 'isMemberOfLesson', () => true)
+        stub(LessonHelpers, 'taskIsEditable', () => true)
         stub(TaskCollection, 'findOne', () => ({ _id: createDoc.taskId }))
         stub(LessonCollection, 'findOne', () => ({ _id: createDoc.lessonId }))
         stub(LessonStates, 'isRunning', () => true)
 
+        expect(TaskResultCollection.find().count()).to.equal(0)
+
         const docId = save(createDoc)
+        expect(docId).to.be.a('string')
+        expect(TaskResultCollection.find().count()).to.equal(1)
+
         const resultDoc = TaskResultCollection.findOne(docId)
         delete resultDoc._id
 
@@ -75,11 +102,11 @@ describe(TaskResults.name, function () {
       })
       it('updates the response document if one exists already for the given item', function () {
         const createDoc = { lessonId: Random.id(), taskId: Random.id(), itemId: Random.id(), response: [Random.id()] }
-        stub(Lesson.helpers, 'isMemberOfLesson', () => true)
+        stub(LessonHelpers, 'isMemberOfLesson', () => true)
         stub(TaskCollection, 'findOne', () => ({ _id: createDoc.taskId }))
         stub(LessonCollection, 'findOne', () => ({ _id: createDoc.lessonId }))
         stub(LessonStates, 'isRunning', () => true)
-        stub(Lesson.helpers, 'taskIsEditable', () => true)
+        stub(LessonHelpers, 'taskIsEditable', () => true)
 
         const docId = TaskResultCollection.insert(createDoc)
         const updateDoc = Object.assign({}, createDoc, { response: [Random.id()] })

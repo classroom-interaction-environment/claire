@@ -6,6 +6,7 @@ import { Roles } from 'meteor/alanning:roles'
 import { rollbackAccount } from './rollbackAccount'
 import { userExists } from '../user/userExists'
 import { createLog } from '../../log/createLog'
+import { getUsersCollection } from '../../utils/getUsersCollection'
 
 /**
  * Creates new user accounts
@@ -78,7 +79,7 @@ UserFactory.create = function create ({ email, password, role, firstName, lastNa
     profileDoc.$set.locale = locale
   }
 
-  const profileUpdated = Meteor.users.update(userId, profileDoc)
+  const profileUpdated = getUsersCollection().update(userId, profileDoc)
 
   if (!profileUpdated) {
     rollbackAccount(userId)

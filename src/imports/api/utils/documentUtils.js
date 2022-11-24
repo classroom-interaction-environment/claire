@@ -168,6 +168,7 @@ export const createRemoveDoc = function createRemoveDoc ({ name, isFilesCollecti
         ? getFilesCollection(name)
         : getCollection(name)
       const cursor = Collection.find(query)
+
       if (!cursor) {
         throw new DocNotFoundError(query, name)
       }
@@ -185,9 +186,10 @@ export const createRemoveDoc = function createRemoveDoc ({ name, isFilesCollecti
       }
 
       let removed
+
       if (isFilesCollection) {
-        Collection.remove(query)
         removed = cursor.count()
+        Collection.remove(query)
       }
       else {
         removed = Collection.remove(query)

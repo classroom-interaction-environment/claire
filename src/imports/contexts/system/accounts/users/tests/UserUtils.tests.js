@@ -3,9 +3,13 @@ import { Random } from 'meteor/random'
 import { stubUser, unstubUser } from '../../../../../../tests/testutils/stubUser'
 import { UserUtils } from '../UserUtils'
 import { assert } from 'chai'
-import { mockCollection } from '../../../../../../tests/testutils/mockCollection'
+import {
+  clearAllCollections, mockCollections,
+  restoreAllCollections
+} from '../../../../../../tests/testutils/mockCollection'
 import { Admin } from '../../admin/Admin'
-import { onClientExec, onServer, onServerExec } from '../../../../../api/utils/archUtils'
+import { onClientExec, onServerExec } from '../../../../../api/utils/archUtils'
+import { Users } from '../User'
 
 const userObj = () => ({
   _id: Random.id(),
@@ -15,18 +19,26 @@ const userObj = () => ({
   custom: 'foo'
 })
 
-const AdminCollection = mockCollection(Admin)
 
 describe('UserUtils', function () {
   let user
+  let AdminCollection
+
+  before(function () {
+    [AdminCollection] = mockCollections(Admin, Users)
+  })
 
   beforeEach(function () {
     user = userObj()
-    AdminCollection.remove({})
   })
 
   afterEach(function () {
     unstubUser(true, true)
+    clearAllCollections()
+  })
+
+  after(function () {
+    restoreAllCollections()
   })
 
   describe('isAdmin', function () {

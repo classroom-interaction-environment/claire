@@ -11,6 +11,7 @@ import { getCollection } from '../../../api/utils/getCollection'
 import { onClient, onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getSchemaField } from '../../../ui/utils/form/getSchemaField'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
+import { getUsersCollection } from '../../../api/utils/getUsersCollection'
 
 const mappedRoles = Object.values(UserUtils.roles).map(role => ({
   value: role,
@@ -42,6 +43,10 @@ export const CodeInvitation = {
   MAX_EXPIRY: 7
 }
 
+/**
+ * Will soon be an own module
+ * @deprecated
+ */
 CodeInvitation.status = {
   pending: {
     value: 'pending',
@@ -63,6 +68,10 @@ CodeInvitation.status = {
   }
 }
 
+/**
+ * Will soon be an own module
+ * @deprecated
+ */
 CodeInvitation.errors = {
   expirationExceeded: 'codeInvitation.expirationExceeded',
   removeNoPermission: 'codeInvitation.removeNoPermission',
@@ -330,11 +339,9 @@ CodeInvitation.publications.class = {
 }
 
 /**
- *
- *  HELPERS
- *
+ * Will soon be an own module
+ * @deprecated
  */
-
 CodeInvitation.helpers = {}
 
 /**
@@ -402,17 +409,25 @@ CodeInvitation.helpers.timeLeft = function timeLeft (createdAt, expires) {
 
 /**
  * Checks, whether a code doc is expired. Checks for validity and expiration date.
- * @param invalid - the invalid flag for force-expired docs
- * @param createdAt - the creation date of the doc
- * @param expires - the number of days until expiration
+ * @param codeDoc {object}
+ * @param codeDoc.invalid {boolean=} - the invalid flag for force-expired docs
+ * @param codeDoc.createdAt {Date} - the creation date of the doc
+ * @param codeDoc.expires {Number} - the number of days until expiration
  * @return {boolean} true if
  */
 
-CodeInvitation.helpers.isExpired = function isExpired ({ invalid, createdAt, expires }) {
-  check(invalid, Match.Maybe(Boolean))
-  check(createdAt, Date)
-  check(expires, Number)
-  if (invalid) return true
+CodeInvitation.helpers.isExpired = function isExpired (codeDoc) {
+  check(codeDoc, Match.ObjectIncluding({
+    createdAt: Date,
+    expires: Number
+  }))
+
+  const { invalid, createdAt, expires } = codeDoc
+
+  if (invalid) {
+    return true
+  }
+
   const now = new Date().getTime()
   const expirationDate = CodeInvitation.helpers.getOffset(new Date(createdAt), expires)
   return (now - expirationDate) >= 0
@@ -421,19 +436,22 @@ CodeInvitation.helpers.isExpired = function isExpired ({ invalid, createdAt, exp
 /**
  * Checks, whether a code document is considered complete. This is the case when all users have fulfilled their
  * invitation with a registration. It does not differentiate , whether a registration failed or succeeded.
- * @param _id the _id of the current code doc
- * @param registeredUsers the current registered users
- * @param maxUsers the number of maxmimum allowed registrations
+ * @param codeDoc {object}
+ * @param codeDoc._id {string} the _id of the current code doc
+ * @param codeDoc.registeredUsers {[string]=} the current registered users
+ * @param codeDoc.maxUsers {Number} the number of maxmimum allowed registrations
  * @return {boolean} true if max users is exactly reached, otherwise false
  * @throws {Meteor.Error} if parameters are not contained or validated
  * @throws {Meteor.Error} in case the registered users amount has exceeded the max users
  */
-CodeInvitation.helpers.isComplete = function isComplete ({ _id, registeredUsers, maxUsers }) {
-  check(_id, String)
-  check(maxUsers, Number)
-  check(registeredUsers, Match.Maybe([String]))
+CodeInvitation.helpers.isComplete = function isComplete (codeDoc) {
+  check(codeDoc, Match.ObjectIncluding({
+    _id: String,
+    maxUsers: Number,
+  }))
+  const { _id, registeredUsers, maxUsers } = codeDoc
 
-  if (!registeredUsers || !registeredUsers.length) {
+  if (!Array.isArray(registeredUsers) || !registeredUsers.length) {
     return false
   }
   else if (registeredUsers.length > maxUsers) {
@@ -545,25 +563,34 @@ CodeInvitation.methods = {}
 CodeInvitation.methods.create = {
   name: 'codeInvitations.methods.create',
   schema: CodeInvitation.createCodeSchema,
-  roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher],
+  roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.curriculum, UserUtils.roles.teacher],
   run: onServerExec(function () {
-    import { createGetDoc } from '../../../api/utils/documentUtils'
+    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
+    import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
 
-    const getClassDoc = createGetDoc(SchoolClass)
+    const getClassDoc = createDocGetter(SchoolClass)
 
     return function (createDoc) {
       const { userId } = this
 
       if (!UserUtils.canInvite(userId, createDoc.role)) {
-        throw new Meteor.Error(CodeInvitation.errors.insufficientRole)
+        throw new Meteor.Error(
+          'codeInvitation.createFailed',
+          CodeInvitation.errors.insufficientRole,
+          { userId, role: createDoc.role }
+        )
       }
 
       // check if institution matches
-      const user = Meteor.users.findOne(userId)
+      const user = getUsersCollection().findOne(userId)
       const { institution } = user
 
-      if (!UserUtils.isAdmin(userId) && institution !== createDoc.institution) {
-        throw new Meteor.Error(CodeInvitation.errors.institutionMismatch)
+      if (institution !== createDoc.institution && !userIsAdmin(userId)) {
+        throw new Meteor.Error(
+          'codeInvitation.createFailed',
+          CodeInvitation.errors.institutionMismatch,
+          { institution: createDoc.institution, userId }
+        )
       }
 
       const insertDoc = {
@@ -581,7 +608,12 @@ CodeInvitation.methods.create = {
 
       // verify class ownership
       if (createDoc.role === UserUtils.roles.student) {
-        getClassDoc.call(this, insertDoc.classId)
+        const { classId } = insertDoc
+        const classDoc = getClassDoc(classId)
+
+        if (!SchoolClass.helpers.isTeacher({ classDoc, userId })) {
+          throw new PermissionDeniedError('schoolClass.notTeacher', { classId, userId })
+        }
       }
       // otherwise remove class entirely
       else {
@@ -605,14 +637,24 @@ CodeInvitation.methods.verify = {
   },
   isPublic: true,
   run: onServerExec(function () {
+    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
+
+    const getCodeDoc = createDocGetter({ name: CodeInvitation.name, optional: true })
+    const getClassDoc = createDocGetter({ name: SchoolClass.name })
+
     return function ({ code }) {
-      const codeDoc = getCollection(CodeInvitation.name).findOne({ code })
+      const codeDoc = getCodeDoc({ code })
 
       if (!codeDoc || CodeInvitation.helpers.isExpired(codeDoc) || CodeInvitation.helpers.isComplete(codeDoc)) {
         throw new Meteor.Error(CodeInvitation.errors.invalidLink, CodeInvitation.errors.invalidLinkReason)
       }
 
-      const classDoc = getCollection(SchoolClass.name).findOne(codeDoc.classId)
+      let classDoc
+
+      if (codeDoc.classId) {
+        classDoc = getClassDoc(codeDoc.classId)
+      }
+
       return {
         firstName: codeDoc.firstName,
         lastName: codeDoc.lastName,
@@ -685,7 +727,7 @@ CodeInvitation.methods.addToClass = {
 
       // 2nd validate user
       const userId = this.userId
-      const user = Meteor.users.findOne(userId)
+      const user = getUsersCollection().findOne(userId)
       if (!Users.helpers.verify(user)) {
         console.warn('warning adding unverified user', user._id)
         // throw new PermissionDeniedError('user.notVerified')
@@ -724,7 +766,7 @@ CodeInvitation.methods.addToClass = {
           userId
         })
         if (!added) throw new Meteor.Error(500)
-        Meteor.users.update(userId, { $set: { 'ui.classId': classId } })
+        getUsersCollection().update(userId, { $set: { 'ui.classId': classId } })
       }
       else {
         throw new PermissionDeniedError(SchoolClass.errors.invalidRole, role)

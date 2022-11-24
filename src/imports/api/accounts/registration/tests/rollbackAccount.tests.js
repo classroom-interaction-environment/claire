@@ -25,16 +25,16 @@ describe(rollbackAccount.name, function () {
     restoreAllCollections()
   })
   it('removes a user from the account system', function () {
-    const userId = Accounts.createUser({ username: Random.id() })
-    expect(Meteor.users.find(userId).count()).to.equal(1)
+    const userId = UsersCollection.insert({ username: Random.id() })
+    expect(UsersCollection.find(userId).count()).to.equal(1)
     const { userRemoved, adminRemoved, rolesRemoved } = rollbackAccount(userId)
     expect(userRemoved).to.equal(1)
     expect(adminRemoved).to.equal(0)
     expect(rolesRemoved).to.equal(0)
-    expect(Meteor.users.find(userId).count()).to.equal(0)
+    expect(UsersCollection.find(userId).count()).to.equal(0)
   })
   it('removes all roles from the user', function () {
-    const userId = Accounts.createUser({ username: Random.id() })
+    const userId =UsersCollection.insert({ username: Random.id() })
     const role = Random.id()
     const scope = Random.id()
 
@@ -56,7 +56,7 @@ describe(rollbackAccount.name, function () {
     expect(Roles.userIsInRole(userId, role, scope)).to.equal(false)
   })
   it('removes Admin status', function () {
-    const userId = Accounts.createUser({ username: Random.id() })
+    const userId = UsersCollection.insert({ username: Random.id() })
     AdminCollection.insert({ userId })
 
     const { userRemoved, rolesRemoved, adminRemoved } = rollbackAccount(userId)

@@ -2,13 +2,13 @@ import { Meteor } from 'meteor/meteor'
 import { TaskWorkingState } from '../TaskWorkingState'
 import { Task } from '../../../curriculum/curriculum/task/Task'
 import { LessonStates } from '../../../classroom/lessons/LessonStates'
-import { Lesson } from '../../../classroom/lessons/Lesson'
 import { Group } from '../../../classroom/group/Group'
 import { Features } from '../../../../api/config/Features'
 import { LessonErrors } from '../../../classroom/lessons/LessonErrors'
 import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
 import { ensureDocumentExists } from '../../../../api/utils/document/ensureDocumentExists'
 import { getCollection } from '../../../../api/utils/getCollection'
+import { LessonHelpers } from '../../../classroom/lessons/LessonHelpers'
 
 const checkTaskDoc = createDocGetter({ name: Task.name, optional: false })
 const getGroupDoc = createDocGetter({ name: Group.name, optional: false })
@@ -25,7 +25,7 @@ const getGroupDoc = createDocGetter({ name: Group.name, optional: false })
  */
 export const saveTaskWorkingState = function ({ lessonId, taskId, groupId, complete, page, progress }) {
   const { userId } = this
-  const { lessonDoc } = Lesson.helpers.docsForStudent({ userId, lessonId })
+  const { lessonDoc } = LessonHelpers.docsForStudent({ userId, lessonId })
 
   ensureDocumentExists({
     document: lessonDoc,

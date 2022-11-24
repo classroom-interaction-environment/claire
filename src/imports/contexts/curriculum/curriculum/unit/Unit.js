@@ -445,6 +445,7 @@ Unit.methods.remove = {
     import { createRemoveAllMaterial } from '../../../material/createRemoveAllMaterial'
     import { checkOwnership } from '../../../../api/utils/document/checkOwnership'
     import { ensureDocumentExists } from '../../../../api/utils/document/ensureDocumentExists'
+
     const removeAllMaterial = createRemoveAllMaterial({ isCurriculum: true })
 
     return function ({ _id }) {

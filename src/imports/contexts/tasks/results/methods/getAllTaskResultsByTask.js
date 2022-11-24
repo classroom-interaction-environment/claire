@@ -4,6 +4,7 @@ import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDe
 import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
 import { getCollection } from '../../../../api/utils/getCollection'
 import { TaskResults } from '../TaskResults'
+import { LessonHelpers } from '../../../classroom/lessons/LessonHelpers'
 
 const getLessonDoc = createDocGetter(Lesson)
 
@@ -18,7 +19,7 @@ export const getAllTaskResultsByTask = function ({ lessonId, taskId }) {
   const lessonDoc = getLessonDoc({ _id: lessonId })
   const isTeacher = lessonDoc.createdBy === userId
 
-  if (!isTeacher && !Lesson.helpers.isMemberOfLesson({ userId, lessonId })) {
+  if (!isTeacher && !LessonHelpers.isMemberOfLesson({ userId, lessonId })) {
     throw new PermissionDeniedError(SchoolClass.errors.notMember)
   }
 

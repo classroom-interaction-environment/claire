@@ -3,21 +3,37 @@ import { Random } from 'meteor/random'
 import { TaskWorkingState } from '../../state/TaskWorkingState'
 import { LessonStates } from '../../../classroom/lessons/LessonStates'
 import { restoreAll } from '../../../../../tests/testutils/stub'
-import { mockCollection } from '../../../../../tests/testutils/mockCollection'
+import {
+  clearAllCollections,
+  mockCollections,
+  restoreAllCollections
+} from '../../../../../tests/testutils/mockCollection'
 import { checkClass, checkLesson, stubStudentDocs, stubTaskDoc } from '../../../../../tests/testutils/doc/stubDocs'
 import { expect } from 'chai'
 import { Task } from '../../../curriculum/curriculum/task/Task'
 import { LessonErrors } from '../../../classroom/lessons/LessonErrors'
-
-const TaskWorkingStateCollection = mockCollection(TaskWorkingState)
+import { Lesson } from '../../../classroom/lessons/Lesson'
+import { Users } from '../../../system/accounts/users/User'
+import { SchoolClass } from '../../../classroom/schoolclass/SchoolClass'
+import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 
 describe(TaskWorkingState.name, function () {
-  describe('methods', function () {
-    afterEach(function () {
-      restoreAll()
-      TaskWorkingStateCollection.remove({})
-    })
+  let TaskWorkingStateCollection
 
+  before(function () {
+    [TaskWorkingStateCollection] = mockCollections(TaskWorkingState, Lesson, Users, SchoolClass, Task)
+  })
+
+  afterEach(function () {
+    restoreAll()
+    clearAllCollections()
+  })
+
+  after(function () {
+    restoreAllCollections()
+  })
+
+  describe('methods', function () {
     describe(TaskWorkingState.methods.saveState.name, function () {
       const saveState = TaskWorkingState.methods.saveState.run
 
@@ -26,8 +42,9 @@ describe(TaskWorkingState.name, function () {
 
       it('throws if the lesson does not exists', function () {
         const lessonId = Random.id()
-        expect(() => saveState({ lessonId })).to.throw('docNotFound')
-        expect(() => saveState({ lessonId })).to.throw(lessonId)
+        const thrown = expect(() => saveState({ lessonId })).to.throw(DocNotFoundError.name)
+        thrown.with.property('reason', 'getDocument.docUndefined')
+        thrown.with.deep.property('details', { name: Lesson.name, query: lessonId })
       })
       it('throws if the lesson is not running', function () {
         const { lessonDoc, userId } = stubStudentDocs()

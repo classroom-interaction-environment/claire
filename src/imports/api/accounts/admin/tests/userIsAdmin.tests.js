@@ -36,7 +36,7 @@ describe(userIsAdmin.name, function () {
   })
 
   it('returns true if the user is in Admins', function () {
-    const userId = Meteor.users.insert({ username: Random.id() })
+    const userId = UsersCollection.insert({ username: Random.id() })
     AdminCollection.insert({ userId })
     expect(userIsAdmin(userId)).to.equal(true)
   })

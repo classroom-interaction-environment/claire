@@ -1,9 +1,9 @@
 import { SchoolClass } from '../../../classroom/schoolclass/SchoolClass'
-import { Lesson } from '../../../classroom/lessons/Lesson'
 import { TaskResults } from '../TaskResults'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
 import { getCollection } from '../../../../api/utils/getCollection'
+import { LessonHelpers } from '../../../classroom/lessons/LessonHelpers'
 
 /**
  * Creates a query for all given references that contain the combination of lessonId, taskId and itemId.
@@ -18,7 +18,7 @@ export const getAllTasksByItem = function run ({ references }) {
   const query = { $or: [] }
 
   references.forEach(({ lessonId, taskId, itemId }) => {
-    if (!userIsAdmin(userId) && !Lesson.helpers.isTeacher({ userId, lessonId })) {
+    if (!userIsAdmin(userId) && !LessonHelpers.isTeacher({ userId, lessonId })) {
       throw new PermissionDeniedError(SchoolClass.errors.notMember)
     }
 

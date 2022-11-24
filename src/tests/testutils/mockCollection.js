@@ -1,6 +1,8 @@
 import { Mongo } from 'meteor/mongo'
 import { Schema } from '../../imports/api/schema/Schema'
 import Collection2 from 'meteor/aldeed:collection2'
+import { Random } from 'meteor/random'
+import { FilesCollection } from 'meteor/ostrio:files'
 
 // XXX: backwards compat for pre 4.0 collection2
 if (Collection2 && 'function' === typeof Collection2.load) {
@@ -8,12 +10,16 @@ if (Collection2 && 'function' === typeof Collection2.load) {
 }
 
 const originals = new Map()
-Mongo.Collection.get = name => originals.get(name)
+
+Mongo.Collection.get = (name) => {
+  return originals.get(name)
+}
 
 export const mockCollection = ({ name, schema } = {}, {
   noSchema = false,
   noDefaults = false,
-  override = false
+  override = false,
+  isFilesCollection = false
 } = {}) => {
   let collection = Mongo.Collection.get(name)
 
@@ -24,11 +30,17 @@ export const mockCollection = ({ name, schema } = {}, {
   if (collection) {
     return collection
   }
+
+  else if (isFilesCollection) {
+    const filesCollection = new FilesCollection({ collectionName: Random.id() })
+    collection = filesCollection.collection
+  }
   else {
     collection = new Mongo.Collection(null)
+    collection._name = `${name}-mocked`
   }
 
-  if (!noSchema) {
+  if (schema && noSchema !== true) {
     const schemaInstance = noDefaults
       ? Schema.create(schema)
       : Schema.withDefault(schema)
@@ -54,7 +66,7 @@ export const restoreCollection = ({ name }) => {
 }
 
 export const restoreAllCollections = () => {
-  originals.forEach(collection => collection.remove({}))
+  clearAllCollections()
   originals.clear()
 }
 
@@ -65,4 +77,8 @@ const clearCollection = ({ name }) => {
 
 export const clearCollections = (...contexts) => {
   return contexts.map(c => clearCollection(c))
+}
+
+export const clearAllCollections = () => {
+  originals.forEach(collection => collection.remove({}))
 }

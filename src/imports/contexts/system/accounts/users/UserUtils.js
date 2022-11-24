@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor'
 import { Roles } from 'meteor/alanning:roles'
 import { mapFromObject } from '../../../../api/utils/mapFromObject'
 import { isomporph, onClient, onServer } from '../../../../api/utils/archUtils'
+import { getUsersCollection } from '../../../../api/utils/getUsersCollection'
 
 const roleIndices = mapFromObject({
   admin: 0,
@@ -30,7 +31,7 @@ export const UserUtils = {
 
     let finalScope
     if (!scope) {
-      const user = Meteor.users.findOne(userId)
+      const user = getUsersCollection().findOne(userId)
       finalScope = user.institution
     }
     else {
@@ -47,18 +48,23 @@ export const UserUtils = {
   /**
    * @deprecated TODO extract
    */
-  canInvite (userId, role, scope) {
+  canInvite (userId, role, institution) {
     check(userId, String)
     check(role, String)
-    check(scope, Match.Maybe(String))
+    check(institution, Match.Maybe(String))
 
     let finalScope
-    if (!scope) {
-      const user = Meteor.users.findOne(userId)
-      finalScope = user.institution
+
+    if (!institution) {
+      const user = getUsersCollection().findOne(userId)
+      finalScope = user?.institution
     }
     else {
-      finalScope = scope
+      finalScope = institution
+    }
+
+    if (!finalScope) {
+      return false
     }
 
     switch (role) {
@@ -121,7 +127,7 @@ export const UserUtils = {
 UserUtils.isCurriculum = function (userId = Meteor.userId(), scope) {
   let finalScope
   if (!scope) {
-    const user = Meteor.users.findOne(userId)
+    const user = getUsersCollection().findOne(userId)
     finalScope = user.institution
   }
   else {
@@ -142,7 +148,7 @@ UserUtils.isAdmin = isomporph({
   client: function () {
     return function isAdmin (userId = Meteor.userId()) {
       if (!userId) return false
-      const user = Meteor.users.findOne(userId)
+      const user = getUsersCollection().findOne(userId)
 
       if (!user) return false
       return Roles.userIsInRole(userId, UserUtils.roles.admin, user.institution)
