@@ -37,7 +37,7 @@ export const ContextBuilder = {}
  * @param context {Object} a context instance
  * @return {ContextBuilder} self for chaining
  */
-ContextBuilder.addContext = function add (context) {
+ContextBuilder.addContext = function addContext (context) {
   check(context, Match.ObjectIncluding(isContext()))
 
   if (!contextMap.has(context.name)) {
@@ -54,7 +54,7 @@ ContextBuilder.addContext = function add (context) {
  * @param options.pipelines {[function]|undefined} a queue-like list of pipelines
  * @return {ContextBuilder} self for chaining
  */
-ContextBuilder.addRegistry = function (registry, options = {}) {
+ContextBuilder.addRegistry = function addRegistry (registry, options = {}) {
   check(registry, Match.ObjectIncluding(isRegistry()))
   check(options, Match.ObjectIncluding({
     pipelines: Match.Maybe([Function])
@@ -73,7 +73,7 @@ ContextBuilder.addRegistry = function (registry, options = {}) {
  * {ContextBuilder.add} against a given build function.
  * @param buildFct
  */
-ContextBuilder.buildAll = function (buildFct) {
+ContextBuilder.buildAll = function buildAll (buildFct) {
   info('run build process')
   contextMap.forEach(({ context }) => {
     ContextBuilder.build(context, buildFct)
@@ -90,7 +90,7 @@ ContextBuilder.buildAll = function (buildFct) {
  *        as argument and where you can call your factories to create Methods,
  *        Publications, Collections etc.
  */
-ContextBuilder.build = function (context, buildCallback) {
+ContextBuilder.build = function build (context, buildCallback) {
   check(context, Match.ObjectIncluding(isContext()))
   check(buildCallback, Function)
 
@@ -116,7 +116,7 @@ ContextBuilder.build = function (context, buildCallback) {
 /**
  * Clears all registered contexts, registries and pipelines.
  */
-ContextBuilder.flush = function () {
+ContextBuilder.flush = function flush () {
   info('flush all')
   contextMap.clear()
   registryMap.clear()

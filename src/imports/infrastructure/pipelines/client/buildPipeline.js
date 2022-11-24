@@ -13,7 +13,7 @@ export const buildPipeline = createPipeline('build', function (context, api, opt
     filesCollection: null
   }
 
-  if (collection && isSupportedObject(context.schema)) {
+  if (collection && !context.collection && isSupportedObject(context.schema)) {
     api.info(`create collection [${context.name}]`)
     products.collection = createCollection(context)
   }

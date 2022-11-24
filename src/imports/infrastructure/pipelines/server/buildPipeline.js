@@ -19,6 +19,8 @@ const i18nFactory = (...args) => i18n.get(...args)
 /**
  * The default build pipeline for sever-contexts
  * @server
+ * @param context {object} the object to create
+ * @param options {object}  the build options for this pipeline
  */
 export const buildPipeline = createPipeline('build', function (context, api, options) {
   const { collection, filesCollection, methods, publications, debug } = options
@@ -31,7 +33,7 @@ export const buildPipeline = createPipeline('build', function (context, api, opt
 
   // CREATE COLLECTION
 
-  if (collection && isSupportedObject(context.schema)) {
+  if (collection && !context.collection && isSupportedObject(context.schema)) {
     api.info(`create collection [${context.name}]`)
     products.collection = createCollection(context)
   }
