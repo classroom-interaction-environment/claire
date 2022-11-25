@@ -19,7 +19,6 @@ const userObj = () => ({
   custom: 'foo'
 })
 
-
 describe('UserUtils', function () {
   let user
   let AdminCollection

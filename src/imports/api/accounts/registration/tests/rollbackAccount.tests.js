@@ -1,6 +1,8 @@
+import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
 import { Admin } from '../../../../contexts/system/accounts/admin/Admin'
 import { Users } from '../../../../contexts/system/accounts/users/User'
+import { Roles } from 'meteor/alanning:roles'
 import { rollbackAccount } from '../rollbackAccount'
 import {
   clearCollections,
@@ -8,8 +10,6 @@ import {
   restoreAllCollections
 } from '../../../../../tests/testutils/mockCollection'
 import { expect } from 'chai'
-
-
 
 describe(rollbackAccount.name, function () {
   let AdminCollection
@@ -34,7 +34,7 @@ describe(rollbackAccount.name, function () {
     expect(UsersCollection.find(userId).count()).to.equal(0)
   })
   it('removes all roles from the user', function () {
-    const userId =UsersCollection.insert({ username: Random.id() })
+    const userId = UsersCollection.insert({ username: Random.id() })
     const role = Random.id()
     const scope = Random.id()
 

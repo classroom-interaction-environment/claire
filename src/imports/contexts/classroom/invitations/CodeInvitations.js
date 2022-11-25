@@ -447,7 +447,7 @@ CodeInvitation.helpers.isExpired = function isExpired (codeDoc) {
 CodeInvitation.helpers.isComplete = function isComplete (codeDoc) {
   check(codeDoc, Match.ObjectIncluding({
     _id: String,
-    maxUsers: Number,
+    maxUsers: Number
   }))
   const { _id, registeredUsers, maxUsers } = codeDoc
 

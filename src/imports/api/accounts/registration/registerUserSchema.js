@@ -105,13 +105,13 @@ export const emailSchema = ({ hidden, label, classNames, autofocus, autocomplete
 })
 
 export const passwordSchemaClassic = ({
-                                        label,
-                                        min = 8,
-                                        max = 64,
-                                        hint,
-                                        autocomplete,
-                                        regExp = passwordRegExp
-                                      } = {}) => ({
+  label,
+  min = 8,
+  max = 64,
+  hint,
+  autocomplete,
+  regExp = passwordRegExp
+} = {}) => ({
   type: String,
   label: label || i18n.reactive('userProfile.password'),
   regEx: regExp && new RegExp(regExp),
@@ -129,19 +129,19 @@ export const passwordSchemaClassic = ({
 })
 
 export const password2Schema = ({
-                                  min = 8,
-                                  label,
-                                  max = 128,
-                                  optional,
-                                  autocomplete,
-                                  rules,
-                                  regExp,
-                                  visibilityButton,
-                                  visible,
-                                  userIcon,
-                                  css,
-                                  autofocus
-                                } = {}) => ({
+  min = 8,
+  label,
+  max = 128,
+  optional,
+  autocomplete,
+  rules,
+  regExp,
+  visibilityButton,
+  visible,
+  userIcon,
+  css,
+  autofocus
+} = {}) => ({
   type: String,
   optional: optional,
   label: label || i18n.reactive('login.password.title'),

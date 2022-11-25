@@ -748,7 +748,7 @@ Lesson.methods.units = {
       const classDocs = getCollection(SchoolClass.name).find({ _id: $in(classIds) }).fetch()
       const validQuery = lessonDocs.fetch().every(lessonDoc => {
         const { classId } = lessonDoc
-        const classDoc = classDocs.find(({ _id }) => _id === classId )
+        const classDoc = classDocs.find(({ _id }) => _id === classId)
 
         if (!classDoc) {
           return false

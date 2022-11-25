@@ -20,7 +20,7 @@ export const removeClass = function removeClass ({ classId, userId, log = () => 
 
   // check if user is even allowed to delete
   const canDelete = userId === schoolClassDoc.createdBy || userIsAdmin(userId)
-  
+
   if (!canDelete) {
     throw new Error('errors.permissionDenied', 'errors.notOwnerOrAdmin')
   }

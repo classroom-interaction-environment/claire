@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-import { Mongo, Cursor } from 'meteor/mongo'
+import { Mongo } from 'meteor/mongo'
 import { Random } from 'meteor/random'
 import { FilesCollection } from 'meteor/ostrio:files'
 import { expect } from 'chai'

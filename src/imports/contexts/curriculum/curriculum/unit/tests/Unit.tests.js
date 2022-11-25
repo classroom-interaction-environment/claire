@@ -11,7 +11,6 @@ import { PermissionDeniedError } from '../../../../../api/errors/types/Permissio
 import { DocNotFoundError } from '../../../../../api/errors/types/DocNotFoundError'
 import { Phase } from '../../phase/Phase'
 
-
 describe(Unit.name, function () {
   let UnitCollection
 

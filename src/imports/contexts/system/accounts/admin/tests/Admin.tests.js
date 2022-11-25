@@ -1,4 +1,5 @@
 /* eslint-env mocha */
+import { Roles } from 'meteor/alanning:roles'
 import { Admin } from '../Admin'
 import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
@@ -180,7 +181,7 @@ describe(Admin.name, function () {
           const userId = Random.id()
           const env = { userId }
 
-          const thrownWithId = expect(() => updateRole.call(env,env)).to.throw('admin.updateRoleFailed')
+          const thrownWithId = expect(() => updateRole.call(env, env)).to.throw('admin.updateRoleFailed')
           thrownWithId.with.property('reason', 'admin.noOwnRolesChangeAllowed')
           thrownWithId.with.deep.property('details', { userId })
         })

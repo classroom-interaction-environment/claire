@@ -2,7 +2,7 @@ import { Admin } from '../../../../contexts/system/accounts/admin/Admin'
 import { Users } from '../../../../contexts/system/accounts/users/User'
 import { createAdmin } from '../createAdmin'
 import {
-  clearCollection, clearCollections,
+  clearCollections,
   mockCollections,
   restoreAllCollections
 } from '../../../../../tests/testutils/mockCollection'

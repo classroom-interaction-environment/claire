@@ -1,4 +1,3 @@
-/* global Roles */
 import { Meteor } from 'meteor/meteor'
 import { check } from 'meteor/check'
 import { i18n } from '../../../api/language/language'

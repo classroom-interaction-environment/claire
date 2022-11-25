@@ -1,8 +1,6 @@
 import { Meteor } from 'meteor/meteor'
-import { createLog } from '../../../../api/log/createLog'
 import { fileExists } from '../../../../api/utils/filesystem/fileExists'
 
-let fs
 let im
 
 // convert -density 150 presentation.pdf[0] -quality 90 test.jpg

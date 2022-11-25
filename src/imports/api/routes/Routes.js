@@ -17,11 +17,6 @@ export const Routes = {}
 //
 // ////////////////////////////////////////////////////////////////////////////////////////////////
 
-let loggedInTrigger
-let loginTrigger
-let toCodeRegisterRoute
-let toNotFoundRoute
-let toLoginRoute
 const baseUrl = Meteor.absoluteUrl().slice(0, -1)
 
 Routes.fallback = {
@@ -268,13 +263,14 @@ Object.keys(Routes).forEach(routeKey => {
 })
 
 // create default goto actions
-loginTrigger = function () {
+const loginTrigger = function () {
   if (!Meteor.userId()) {
     // set redirect URL and go to login
     return toLoginRoute()
   }
 }
-loggedInTrigger = createLoggedinTrigger(() => resolveRedirect() || Routes.root.path())
-toCodeRegisterRoute = createToRoute(Routes.codeRegister)
-toNotFoundRoute = createToRoute(Routes.notFound)
-toLoginRoute = createToRoute(Routes.login)
+
+const loggedInTrigger = createLoggedinTrigger(() => resolveRedirect() || Routes.root.path())
+const toCodeRegisterRoute = createToRoute(Routes.codeRegister)
+const toNotFoundRoute = createToRoute(Routes.notFound)
+const toLoginRoute = createToRoute(Routes.login)

@@ -1,10 +1,9 @@
-/* global describe it beforeEach afterEach */
+/* eslint-env mocha */
 import { Random } from 'meteor/random'
 import { SchoolClass } from '../SchoolClass'
 import { Lesson } from '../../lessons/Lesson'
 import {
   clearAllCollections,
-  clearCollection,
   mockCollections,
   restoreAllCollections
 } from '../../../../../tests/testutils/mockCollection'
@@ -13,14 +12,11 @@ import { InvocationChecker } from '../../../../api/utils/InvocationChecker'
 import { onServerExec } from '../../../../api/utils/archUtils'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 import { restoreAll, stub } from '../../../../../tests/testutils/stub'
-import { stubMethod, unstubMethod } from '../../../../../tests/testutils/stubMethod'
 import { expect } from 'chai'
 import { Users } from '../../../system/accounts/users/User'
 import { LessonRuntime } from '../../lessons/runtime/LessonRuntime'
 import { Unit } from '../../../curriculum/curriculum/unit/Unit'
 import { Phase } from '../../../curriculum/curriculum/phase/Phase'
-
-
 
 const { isStudent } = SchoolClass.helpers
 const { isTeacher } = SchoolClass.helpers
@@ -31,11 +27,9 @@ const { removeStudent } = SchoolClass.helpers
 describe(SchoolClass.name, function () {
   let SchoolClassCollection
   let LessonCollection
-  let UsersCollection
 
   before(function () {
-    [SchoolClassCollection, LessonCollection, UsersCollection] = mockCollections(SchoolClass, Lesson, Users, Unit, Phase)
-
+    [SchoolClassCollection, LessonCollection] = mockCollections(SchoolClass, Lesson, Users, Unit, Phase)
   })
 
   afterEach(function () {

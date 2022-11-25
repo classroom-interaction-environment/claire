@@ -11,15 +11,13 @@ import { Task } from '../../../curriculum/curriculum/task/Task'
 import { expect } from 'chai'
 import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { stubClassDoc } from '../../../../../tests/testutils/doc/stubDocs'
-import { Meteor } from 'meteor/meteor'
 
 describe('LessonHelpers', function () {
   let LessonCollection
   let SchoolClassCollection
-  let UsersCollection
 
   beforeEach(function () {
-    [UsersCollection, LessonCollection, SchoolClassCollection] = mockCollections([Users, { noSchema: true }], [Lesson, { noSchema: true }], SchoolClass, Unit, Phase, Task)
+    [LessonCollection, SchoolClassCollection] = mockCollections(Lesson, SchoolClass, Unit, Phase, Task, Users)
   })
 
   afterEach(function () {

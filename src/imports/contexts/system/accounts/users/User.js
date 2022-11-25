@@ -1,4 +1,3 @@
-/* global Accounts */
 import { Meteor } from 'meteor/meteor'
 import { auto, onServer, onServerExec } from '../../../../api/utils/archUtils'
 import {
@@ -31,7 +30,7 @@ Users.publicFields = {
 Users.schema = {
   username: {
     type: String,
-    optional: true,
+    optional: true
   },
   profileImage: profileImageSchema({ optional: true }),
   emails: {
@@ -71,7 +70,7 @@ Users.schema = {
     type: Object,
     blackbox: true,
     optional: true
-  },
+  }
 }
 
 /** @deprecated **/

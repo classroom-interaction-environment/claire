@@ -5,7 +5,7 @@ import { Random } from 'meteor/random'
 import { FilesCollection } from 'meteor/ostrio:files'
 
 // XXX: backwards compat for pre 4.0 collection2
-if (Collection2 && 'function' === typeof Collection2.load) {
+if (Collection2 && typeof Collection2.load === 'function') {
   Collection2.load()
 }
 

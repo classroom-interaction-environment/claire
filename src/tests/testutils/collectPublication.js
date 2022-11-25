@@ -1,4 +1,3 @@
-import { LocalCollection } from 'meteor/minimongo'
 import { assert } from 'chai'
 
 export const collectPublication = cursor => {

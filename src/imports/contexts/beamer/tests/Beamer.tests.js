@@ -20,10 +20,9 @@ describe('Beamer', function () {
   let userId
   let environment
   let BeamerCollection
-  let UsersCollection
 
   before(function () {
-    [BeamerCollection, UsersCollection] = mockCollections(Beamer, Users)
+    [BeamerCollection] = mockCollections(Beamer, Users)
   })
 
   beforeEach(function () {

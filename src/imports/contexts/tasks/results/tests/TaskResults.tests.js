@@ -37,7 +37,6 @@ describe(TaskResults.name, function () {
 
   describe('methods', function () {
     describe(TaskResults.methods.saveTask.name, function () {
-
       const save = TaskResults.methods.saveTask.run
 
       it('throws if the lesson does not exists', function () {

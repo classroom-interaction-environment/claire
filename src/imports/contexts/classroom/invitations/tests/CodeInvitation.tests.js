@@ -9,7 +9,6 @@ import { createCodeDoc } from '../../../../../tests/testutils/doc/createCodeDoc'
 import { Users } from '../../../system/accounts/users/User'
 import { stub, restoreAll } from '../../../../../tests/testutils/stub'
 import { InvocationChecker } from '../../../../api/utils/InvocationChecker'
-import { clearCollections, mockCollections, restoreAllCollections } from '../../../../../tests/testutils/mockCollection'
 import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 import { Admin } from '../../../system/accounts/admin/Admin'
@@ -166,13 +165,12 @@ describe(CodeInvitation.name, function () {
   })
 
   onServerExec(function () {
-    import { mockCollections } from '../../../../../tests/testutils/mockCollection'
+    import { mockCollections, clearCollections, restoreAllCollections } from '../../../../../tests/testutils/mockCollection'
     import { exampleUser } from '../../../../../tests/testutils/exampleUser'
     import { unstubUser, stubUser } from '../../../../../tests/testutils/stubUser'
 
     let CodeCollection
     let SchoolClassCollection
-    let UsersCollection
 
     let user
     let userId
@@ -182,7 +180,7 @@ describe(CodeInvitation.name, function () {
 
     describe('methods', function () {
       before(function () {
-        [UsersCollection, CodeCollection, SchoolClassCollection] = mockCollections(Users, CodeInvitation, SchoolClass, Admin)
+        [CodeCollection, SchoolClassCollection] = mockCollections(CodeInvitation, SchoolClass, Admin, Users)
       })
 
       beforeEach(function () {

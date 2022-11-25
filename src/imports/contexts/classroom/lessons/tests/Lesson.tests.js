@@ -11,7 +11,6 @@ import { UserUtils } from '../../../system/accounts/users/UserUtils'
 import { LessonStates } from '../LessonStates'
 import { stub, restore, restoreAll } from '../../../../../tests/testutils/stub'
 import {
-  stubLessonDoc,
   stubTaskDoc,
   stubUserDoc,
   stubClassDoc,
@@ -48,10 +47,9 @@ describe(Lesson.name, function () {
   let SchoolClassCollection
   let PhaseCollection
   let TaskCollection
-  let UsersCollection
 
   before(function () {
-    [LessonCollection, UnitCollection, SchoolClassCollection, PhaseCollection, TaskCollection, UsersCollection] = mockCollections(
+    [LessonCollection, UnitCollection, SchoolClassCollection, PhaseCollection, TaskCollection] = mockCollections(
       [Lesson, { noSchema: false }],
       Unit,
       SchoolClass,

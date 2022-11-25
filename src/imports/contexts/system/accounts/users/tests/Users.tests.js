@@ -17,30 +17,28 @@ import {
   restoreAllCollections
 } from '../../../../../../tests/testutils/mockCollection'
 import { collectPublication } from '../../../../../../tests/testutils/collectPublication'
-import { InvocationChecker } from '../../../../../api/utils/InvocationChecker'
 import { UserUtils } from '../UserUtils'
 import { mockClassDoc } from '../../../../../../tests/testutils/doc/mockClassDoc'
 import { PermissionDeniedError } from '../../../../../api/errors/types/PermissionDeniedError'
 import { DocNotFoundError } from '../../../../../api/errors/types/DocNotFoundError'
 
 const createRegisterDoc = ({
-                             code = Random.id(),
-                             email = `${Random.id()}@example.app`,
-                             firstName,
-                             lastName,
-                             institution = Random.id()
-                           } = {}) => ({
+  code = Random.id(),
+  email = `${Random.id()}@example.app`,
+  firstName,
+  lastName,
+  institution = Random.id()
+} = {}) => ({
   code, email, firstName, lastName, institution
 })
 
 describe('Users', function () {
   let SchoolClassCollection
   let CodeInvitationCollection
-  let AdminCollection
   let UsersCollection
 
   before(function () {
-    [SchoolClassCollection, CodeInvitationCollection, AdminCollection, UsersCollection] = mockCollections(SchoolClass, CodeInvitation, Admin, Users)
+    [SchoolClassCollection, CodeInvitationCollection, UsersCollection] = mockCollections(SchoolClass, CodeInvitation, Users, Admin)
   })
 
   afterEach(function () {
@@ -87,7 +85,7 @@ describe('Users', function () {
         })
         it('throws if a user exists already by given email', function () {
           const registerDoc = createRegisterDoc()
-          UsersCollection.insert({ emails: [{ address: registerDoc.email }]})
+          UsersCollection.insert({ emails: [{ address: registerDoc.email }] })
 
           stub(CodeInvitation.helpers, CodeInvitation.helpers.validate.name, () => true)
           expect(() => registerWithCode(registerDoc))
@@ -280,7 +278,6 @@ describe('Users', function () {
             }
           })
 
-
           expect(checkResetPasswordToken({
             email: email,
             token: tokenId,
@@ -389,7 +386,7 @@ describe('Users', function () {
         })
         it('sends a password-reset mail to the given user', function () {
           const email = Random.id()
-          const userId = UsersCollection.insert({ emails: [{ address: email }]})
+          const userId = UsersCollection.insert({ emails: [{ address: email }] })
           stub(Accounts, 'sendResetPasswordEmail', () => userId)
           const sent = send({ email })
           expect(sent).to.equal(userId)
@@ -456,7 +453,7 @@ describe('Users', function () {
 
         it('returns if a user exists by mail', function () {
           const email = Random.id()
-          UsersCollection.insert({ emails: [{ address: email }]})
+          UsersCollection.insert({ emails: [{ address: email }] })
           expect(userIsAvailable({ email })).to.equal(false)
           expect(userIsAvailable({ email: Random.id() })).to.equal(true)
         })

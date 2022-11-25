@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { createResearchConfirmToken } from './createResearchConfirmToken'
 import { createResearchConfirmUrl } from './createResearchConfirmUrl'
 import { sendResearchConfirmationEmail } from './sendResearchConfirmationEmail'

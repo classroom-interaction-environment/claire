@@ -1,11 +1,11 @@
-/* global describe it beforeEach */
+/* eslint-env mocha */
 import { LessonRuntime } from '../runtime/LessonRuntime'
 import { Beamer } from '../../../beamer/Beamer'
 import { TaskResults } from '../../../tasks/results/TaskResults'
 import { Random } from 'meteor/random'
 import {
   clearAllCollections,
-   mockCollections,
+  mockCollections,
   restoreAllCollections
 } from '../../../../../tests/testutils/mockCollection'
 import { expect } from 'chai'
@@ -48,15 +48,15 @@ const randomReferences = (beamerDoc, lessonId) => {
 describe(LessonRuntime.name, function () {
   // remove runtimedocs related
 
-// TODO 1.0
-// TODO we should have a function that we can call and
-// TODO that returns all the context names for those context
-// TODO that are related to the lesson runtime
-// TODO why?
-// TODO because in the furutre we want to have packages to be
-// TODO added, that can augment lessons with custom items
-// TODO and therefore custom artifacts, so they need to be
-// TODO registered somewhere and retrievable somehow
+  // TODO 1.0
+  // TODO we should have a function that we can call and
+  // TODO that returns all the context names for those context
+  // TODO that are related to the lesson runtime
+  // TODO why?
+  // TODO because in the furutre we want to have packages to be
+  // TODO added, that can augment lessons with custom items
+  // TODO and therefore custom artifacts, so they need to be
+  // TODO registered somewhere and retrievable somehow
   const noSchema = { noSchema: true }
   const forFiles = { noSchema: true, isFilesCollection: true }
   let TaskResultCollection

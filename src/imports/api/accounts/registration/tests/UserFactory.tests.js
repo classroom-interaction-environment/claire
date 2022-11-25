@@ -58,8 +58,6 @@ describe(UserFactory.name, function () {
   })
 
   describe('input validation', function () {
-
-
     afterEach(function () {
       restoreAll()
     })
@@ -77,30 +75,30 @@ describe(UserFactory.name, function () {
           value: undefined,
           message: 'Email is required.'
         },
-          {
-            name: 'role',
-            type: 'required',
-            value: undefined,
-            message: 'Invitee\'s role is required.'
-          },
-          {
-            name: 'firstName',
-            type: 'required',
-            value: undefined,
-            message: 'First name is required.'
-          },
-          {
-            name: 'lastName',
-            type: 'required',
-            value: undefined,
-            message: 'Last name is required.'
-          },
-          {
-            name: 'institution',
-            type: 'required',
-            value: undefined,
-            message: 'Institution / Company is required.'
-          }
+        {
+          name: 'role',
+          type: 'required',
+          value: undefined,
+          message: 'Invitee\'s role is required.'
+        },
+        {
+          name: 'firstName',
+          type: 'required',
+          value: undefined,
+          message: 'First name is required.'
+        },
+        {
+          name: 'lastName',
+          type: 'required',
+          value: undefined,
+          message: 'Last name is required.'
+        },
+        {
+          name: 'institution',
+          type: 'required',
+          value: undefined,
+          message: 'Institution / Company is required.'
+        }
         ])
       }
     })
@@ -141,7 +139,6 @@ describe(UserFactory.name, function () {
   })
 
   describe('creation', function () {
-
     afterEach(function () {
       restoreAll()
     })
@@ -259,7 +256,7 @@ describe(UserFactory.name, function () {
       stub(AdminCollection, 'remove', ({ userId }) => {
         expect(userId).to.equal(user._id)
       })
-      stub(Meteor.roleAssignment, 'remove', (query) =>  {
+      stub(Meteor.roleAssignment, 'remove', (query) => {
         expect(query['user._id']).to.equal(user._id)
       })
       stub(UsersCollection, 'remove', (userId) => {
@@ -276,7 +273,7 @@ describe(UserFactory.name, function () {
       stub(AdminCollection, 'remove', ({ userId }) => {
         expect(userId).to.equal(user._id)
       })
-      stub(Meteor.roleAssignment, 'remove', (query) =>  {
+      stub(Meteor.roleAssignment, 'remove', (query) => {
         expect(query['user._id']).to.equal(user._id)
       })
       stub(UsersCollection, 'remove', (userId) => {

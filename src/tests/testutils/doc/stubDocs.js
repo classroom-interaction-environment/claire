@@ -1,5 +1,4 @@
 /* global it */
-import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
 import { UserUtils } from '../../../imports/contexts/system/accounts/users/UserUtils'
 import { SchoolClass } from '../../../imports/contexts/classroom/schoolclass/SchoolClass'

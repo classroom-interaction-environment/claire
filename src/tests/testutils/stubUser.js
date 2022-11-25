@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { Roles } from 'meteor/alanning:roles'
 import { stub, restore, isStubbed } from './stub'
 import { getUsersCollection } from '../../imports/api/utils/getUsersCollection'
@@ -5,7 +6,7 @@ import { getUsersCollection } from '../../imports/api/utils/getUsersCollection'
 export const stubUser = function (userObj, userId, roles, institution) {
   const userIsDefined = typeof userObj !== 'undefined'
   const UsersCollection = getUsersCollection()
-  
+
   if (userIsDefined) {
     if (userObj !== null) {
       UsersCollection.upsert({ _id: userObj._id }, { $set: { ...userObj } })

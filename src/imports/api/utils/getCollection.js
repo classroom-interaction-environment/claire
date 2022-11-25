@@ -21,4 +21,3 @@ onClientExec(function () {
   import { assignToWindow } from '../../utils/assignToWindow'
   assignToWindow({ getCollection })
 })
-

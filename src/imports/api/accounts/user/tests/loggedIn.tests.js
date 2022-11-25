@@ -1,8 +1,9 @@
 /* eslint.env mocha */
+import { Meteor } from 'meteor/meteor'
 import { loggedIn } from '../loggedIn'
 import { assert } from 'chai'
 import { Random } from 'meteor/random'
-import { stub, restoreAll, overrideStub } from '../../../../../tests/testutils/stub'
+import { stub, restoreAll } from '../../../../../tests/testutils/stub'
 
 describe('loggedIn', function () {
   let user

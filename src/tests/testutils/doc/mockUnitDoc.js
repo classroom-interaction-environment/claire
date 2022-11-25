@@ -46,7 +46,7 @@ export const mockUnitDoc = (options = {}, collection) => {
     videos: options.videos,
     tasks: options.tasks,
     literature: options.literature,
-    phases: options.phases,
+    phases: options.phases
   }
 
   if (options._master) {

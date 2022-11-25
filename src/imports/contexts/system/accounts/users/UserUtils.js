@@ -2,7 +2,7 @@ import { check, Match } from 'meteor/check'
 import { Meteor } from 'meteor/meteor'
 import { Roles } from 'meteor/alanning:roles'
 import { mapFromObject } from '../../../../api/utils/mapFromObject'
-import { isomporph, onClient, onServer } from '../../../../api/utils/archUtils'
+import { isomporph } from '../../../../api/utils/archUtils'
 import { getUsersCollection } from '../../../../api/utils/getUsersCollection'
 
 const roleIndices = mapFromObject({

@@ -3,8 +3,6 @@ import { FileSize } from './shared/SizeUnits'
 import { createContextRegistry } from '../../infrastructure/datastructures/createContextRegistry'
 import { auto, onClientExec, onServerExec } from '../../api/utils/archUtils'
 import { ReactiveVar } from 'meteor/reactive-var'
-import { isMaterial } from '../material/isMaterial'
-import { FilesTemplates } from './FilesTemplates'
 
 const filesMap = new Map()
 

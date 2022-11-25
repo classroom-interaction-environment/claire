@@ -1,3 +1,4 @@
+import { Template } from 'meteor/templating'
 import { toExternalUrl } from '../../../lib/toExternalUrl'
 import './linkedResourceRenderer.html'
 

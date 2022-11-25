@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { Email } from 'meteor/email'
 import { i18n } from '../../../../../api/language/language'
 import { createLog } from '../../../../../api/log/createLog'

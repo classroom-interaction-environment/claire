@@ -1,4 +1,3 @@
-import { Meteor } from 'meteor/meteor'
 import { Admin } from '../../../../contexts/system/accounts/admin/Admin'
 import { removeAdmin } from '../removeAdmin'
 import {

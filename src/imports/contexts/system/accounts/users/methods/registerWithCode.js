@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor'
+import { Accounts } from 'meteor/accounts-base'
 import { CodeInvitation } from '../../../../classroom/invitations/CodeInvitations'
 import { UserFactory } from '../../../../../api/accounts/registration/UserFactory'
 import { SchoolClass } from '../../../../classroom/schoolclass/SchoolClass'

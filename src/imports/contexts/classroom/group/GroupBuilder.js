@@ -325,17 +325,6 @@ const shuffleArray = input => {
   return array
 }
 
-const getRandomElement = array => {
-  const index = getRandomIntInclusive(0, array.length - 1)
-  return array[index]
-}
-
-const getRandomIntInclusive = (min, max) => {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  return Math.floor(Math.random() * (max - min + 1) + min) // The maximum is inclusive and the minimum is inclusive
-}
-
 const userHasBeenAssigned = (groups, userId) => {
   return groups.some(group => {
     if (!group.users?.length) return false

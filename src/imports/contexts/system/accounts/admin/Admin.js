@@ -91,7 +91,7 @@ Admin.methods.createUser = {
 
     return function ({ role, firstName, lastName, email, institution }) {
       const willBeAdmin = role === UserUtils.roles.admin
-console.debug(this.userId, { willBeAdmin })
+
       // deny any attempt to create a new admin from a non-admin account
       if (willBeAdmin && !userIsAdmin(this.userId)) {
         throw new PermissionDeniedError('roles.notAdmin', {

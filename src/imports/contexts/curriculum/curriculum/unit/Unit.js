@@ -387,7 +387,7 @@ Unit.methods.byTaskId = {
     import { userIsCurriculum } from '../../../../api/accounts/userIsCurriculum'
 
     return function ({ taskId }) {
-      const { userId, log } = this
+      const { userId } = this
       const UnitCollection = getCollection(Unit.name)
 
       // build queries
