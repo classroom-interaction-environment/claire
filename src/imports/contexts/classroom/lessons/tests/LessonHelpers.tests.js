@@ -136,38 +136,43 @@ describe('LessonHelpers', function () {
     it('throws if there is no linked classDoc', function () {
       const userId = Random.id()
       const classId = Random.id()
-      const lessonDocId = LessonCollection.insert({ createdBy: Random.id(), classId })
+      const unit = Random.id()
+      const lessonDocId = LessonCollection.insert({ createdBy: Random.id(), classId, unit })
       const defDoc = { userId, lessonId: lessonDocId }
       expect(() => isTeacher(defDoc)).to.throw(DocNotFoundError.name, classId, SchoolClass.name)
     })
     it('returns true if the user creator of the lesson', function () {
       const userId = Random.id()
-      const lessonId = LessonCollection.insert({ createdBy: userId, classId: Random.id() })
+      const unit = Random.id()
+      const lessonId = LessonCollection.insert({ createdBy: userId, classId: Random.id(), unit })
       const defDoc = { userId, lessonId }
       expect(isTeacher(defDoc)).to.equal(true)
     })
     it('returns true if the user is in teachers of the class', function () {
       const userId = Random.id()
+      const unit = Random.id()
       const classId = SchoolClassCollection.insert({ createdBy: Random.id(), title: Random.id(), teachers: [userId] })
-      const lessonId = LessonCollection.insert({ createdBy: Random.id(), classId })
+      const lessonId = LessonCollection.insert({ createdBy: Random.id(), classId, unit })
       const defDoc = { userId, lessonId }
       expect(isTeacher(defDoc)).to.equal(true)
     })
     it('returns true if the user is creator of the class', function () {
       const userId = Random.id()
+      const unit = Random.id()
       const classId = SchoolClassCollection.insert({ createdBy: userId, title: Random.id(), teachers: [Random.id()] })
-      const lessonId = LessonCollection.insert({ createdBy: Random.id(), classId })
+      const lessonId = LessonCollection.insert({ createdBy: Random.id(), classId, unit })
       const defDoc = { userId, lessonId }
       expect(isTeacher(defDoc)).to.equal(true)
     })
     it('returns false otherwise', function () {
       const userId = Random.id()
+      const unit = Random.id()
       const classId = SchoolClassCollection.insert({
         createdBy: Random.id(),
         title: Random.id(),
         teachers: [Random.id()]
       })
-      const lessonId = LessonCollection.insert({ createdBy: Random.id(), classId })
+      const lessonId = LessonCollection.insert({ createdBy: Random.id(), classId, unit })
       const defDoc = { userId, lessonId }
       expect(isTeacher(defDoc)).to.equal(false)
     })
