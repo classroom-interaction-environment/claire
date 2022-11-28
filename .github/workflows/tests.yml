@@ -18,17 +18,20 @@ jobs:
     - name: setup node
       uses: actions/setup-node@v3
       with:
-        node-version: '14.x'
+        node-version: 14
 
     - name: cache dependencies
       uses: actions/cache@v3
       with:
         path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-node-14-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-node-
-    - run: npm install
-    - run: npm run lint:code
+          ${{ runner.os }}-node-14-
+          
+    - run: |
+        cd src
+        npm ci
+        npm run lint:code
 
   lintstyle:
     name: SCSS lint
@@ -41,17 +44,19 @@ jobs:
     - name: setup node
       uses: actions/setup-node@v3
       with:
-        node-version: '14.x'
+        node-version: 14
 
     - name: cache dependencies
       uses: actions/cache@v1
       with:
         path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-node-14-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-node-
-    - run: npm install
-    - run: npm run lint:style
+          ${{ runner.os }}-node-14-
+    - run: |
+        cd src
+        npm ci
+        npm run lint:style
 
   lintdocs:
     name: documentation lint
@@ -64,17 +69,19 @@ jobs:
     - name: setup node
       uses: actions/setup-node@v3
       with:
-        node-version: '14.x'
+        node-version: 14
 
     - name: cache dependencies
       uses: actions/cache@v3
       with:
         path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-node-14-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-node-
-    - run: npm install
-    - run: npm run lint:markdown
+          ${{ runner.os }}-node-14-
+    - run: |
+        cd src
+        npm ci
+        npm run lint:markdown
 
   tests:
     name: Meteor ${{ matrix.meteor }} tests
@@ -117,14 +124,17 @@ jobs:
       - name: Install NPM Dependencies
         run: meteor npm ci
 
+        # uses -o for running once -c for coverage
       - name: Run Tests
-        run: sh ./test.sh -c -o # run -o once with -c coverage
+        run: |
+          cd src
+          sh ./scripts/test.sh -c -o
 
       - name: Upload coverage
         uses: actions/upload-artifact@v2
         with:
           name: coverage-folder
-          path: .coverage/
+          path: src/.coverage/
 
   coverage:
     name: Coverage report
@@ -138,7 +148,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: coverage-folder
-          path: .coverage/
+          path: src/.coverage/
 
 
       - name: Coverage Report
