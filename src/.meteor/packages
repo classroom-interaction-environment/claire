@@ -112,6 +112,7 @@ claire:item-range
 # TESTING
 #========================================
 meteortesting:mocha@2.0.2
+meteortesting:browser-tests@1.5.1
 lmieulet:meteor-coverage@3.2.0
 hwillson:stub-collections
 

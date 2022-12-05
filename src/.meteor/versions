@@ -76,7 +76,7 @@ logging@1.3.1
 mdg:validated-method@1.2.0
 meteor@1.10.0
 meteor-base@1.5.1
-meteortesting:browser-tests@1.3.5
+meteortesting:browser-tests@1.5.1
 meteortesting:mocha@2.0.3
 meteortesting:mocha-core@8.1.2
 minifier-css@1.6.1
@@ -90,7 +90,7 @@ mongo@1.15.0
 mongo-decimal@0.1.3
 mongo-dev-server@1.1.0
 mongo-id@1.0.8
-muqube:autoform-nouislider@0.6.0
+muqube:autoform-nouislider@0.5.2
 npm-mongo@4.3.1
 observe-sequence@1.0.20
 ordered-dict@1.1.0
