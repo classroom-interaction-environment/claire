@@ -8,80 +8,80 @@ on:
   pull_request:
 
 jobs:
-  lintcode:
+  lintCode:
     name: Javascript lint
     runs-on: ubuntu-latest
     steps:
-    - name: checkout
-      uses: actions/checkout@v3
+      - name: checkout
+        uses: actions/checkout@v3
 
-    - name: setup node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 14
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
 
-    - name: cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-14-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-14-
-          
-    - run: |
-        cd src
-        npm ci
-        npm run lint:code
+      - name: cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-14-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-14-
 
-  lintstyle:
+      - run: |
+          cd src
+          npm ci
+          npm run lint:code
+
+  lintStyle:
     name: SCSS lint
     runs-on: ubuntu-latest
-    needs: [lintcode]
+    needs: [ lintCode ]
     steps:
-    - name: checkout
-      uses: actions/checkout@v3
+      - name: checkout
+        uses: actions/checkout@v3
 
-    - name: setup node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 14
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
 
-    - name: cache dependencies
-      uses: actions/cache@v1
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-14-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-14-
-    - run: |
-        cd src
-        npm ci
-        npm run lint:style
+      - name: cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-14-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-14-
+      - run: |
+          cd src
+          npm ci
+          npm run lint:style
 
-  lintdocs:
+  lintDocs:
     name: documentation lint
     runs-on: ubuntu-latest
-    needs: [lintcode,lintstyle]
+    needs: [ lintCode,lintStyle ]
     steps:
-    - name: checkout
-      uses: actions/checkout@v3
+      - name: checkout
+        uses: actions/checkout@v3
 
-    - name: setup node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 14
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
 
-    - name: cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-14-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-14-
-    - run: |
-        cd src
-        npm ci
-        npm run lint:markdown
+      - name: cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-14-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-14-
+      - run: |
+          cd src
+          npm ci
+          npm run lint:markdown
 
   tests:
     name: Meteor ${{ matrix.meteor }} tests
@@ -95,7 +95,7 @@ jobs:
           path: ~/.meteor
           key: v1-meteor-${{ hashFiles('.meteor/versions') }}
           restore-keys: |
-                v1-meteor-
+            v1-meteor-
       - name: Cache NPM dependencies
         id: cache-meteor-npm
         uses: actions/cache@v3
@@ -103,7 +103,7 @@ jobs:
           path: ~/.npm
           key: v1-npm-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-                v1-npm-
+            v1-npm-
       - name: Cache Meteor build
         id: cache-meteor-build
         uses: actions/cache@v3
@@ -141,7 +141,7 @@ jobs:
   coverage:
     name: Coverage report
     runs-on: ubuntu-latest
-    needs: [tests]
+    needs: [ tests ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
