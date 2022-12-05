@@ -71,13 +71,13 @@ Template.imageResultsRenderer.helpers({
 })
 
 Template.imageResultsRenderer.events({
-  'click .irr-thumbnail,.cssbox_prev,.cssbox_next' (event, templateInstance) {
+  'click .irr-thumbnail,.cssbox-prev,.cssbox-next' (event, templateInstance) {
     const id = dataTarget(event, templateInstance)
     const images = templateInstance.state.get('images')
     const { prev, next } = getPrevAndNext(id, images)
     templateInstance.state.set({ prev, next })
   },
-  'click .cssbox_close' (event, templateInstance) {
+  'click .cssbox-close' (event, templateInstance) {
     templateInstance.state.set({ prev: null, next: null })
   }
 })

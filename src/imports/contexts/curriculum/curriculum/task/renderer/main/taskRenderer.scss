@@ -1,125 +1,39 @@
 .item-ref-text-panel {
-	max-height : 8em;
-	overflow-y : auto;
+  max-height: 8em;
+  overflow-y: auto;
 }
 
-.break-auto  {
-	break-before: auto;
-	break-inside: auto;
-	break-after: auto;
+.break-auto {
+  break-after: auto;
+  break-before: auto;
+  break-inside: auto;
 }
 
 .at-nouislider {
-	min-height: 100px;
+  min-height: 100px;
 }
 
-.task-renderer-prev-button, .task-renderer-next-button, .task-finish-button {
-	z-index : 1060;
+.task-renderer-prev-button,
+.task-renderer-next-button,
+.task-finish-button {
+  z-index: 1060;
 }
-
 
 .task-content {
-	margin-top    : 8px;
-	margin-bottom : 8px;
+  margin-bottom: 8px;
+  margin-top: 8px;
 }
-
 
 .task-renderer-hyphen-active {
-	word-wrap       : break-word;
-	overflow-wrap   : break-word;
-
-	-webkit-hyphens : auto;
-	-moz-hyphens    : auto;
-	hyphens         : auto;
+  hyphens: auto;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
-
 
 .task-renderer-respect-newline {
-	white-space : pre-wrap;
+  white-space: pre-wrap;
 }
-
-
-.task-renderer-next-button {
-}
-
-
-.task-renderer-prev-button {
-}
-
 
 .task-renderer-progressbar {
-	z-index : 999;
+  z-index: 999;
 }
-
-
-.task-renderer-separator {
-}
-
-
-/*
-@media (max-width : 575.98px) {
-	.task-renderer-next-button {
-		position : fixed;
-		bottom   : 0px;
-		right    : 0px;
-		width    : 50%;
-	}
-
-	.task-renderer-prev-button {
-		position : fixed;
-		bottom   : 0px;
-		left     : 0px;
-		width    : 50%;
-	}
-
-	.task-renderer-progressbar {
-		position : sticky;
-		top      : 0px;
-		left     : 0px;
-		height   : 7px !important;
-	}
-
-	.task-renderer-separator {
-		height : 2rem;
-	}
-}
-
-
-@media (min-width : 576px) and (max-width : 767.98px) {
-	.task-renderer-next-button {
-		position : fixed;
-		bottom   : 0px;
-		right    : 0px;
-		width    : 50%;
-	}
-
-	.task-renderer-prev-button {
-		position : fixed;
-		bottom   : 0px;
-		left     : 0px;
-		width    : 50%;
-	}
-
-	.task-renderer-progressbar {
-		position : fixed;
-		top      : 57px;
-		left     : 0px;
-		height   : 7px !important;
-	}
-
-	.task-renderer-separator {
-		height : 1.5rem;
-	}
-}
-
-
-@media (min-width : 768px) {
-	.task-renderer-next-button {
-		float : right;
-	}
-
-	.task-renderer-prev-button {
-		float : left;
-	}
-}
-*/
