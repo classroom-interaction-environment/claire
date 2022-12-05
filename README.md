@@ -95,7 +95,8 @@ the provided run script:
 
 ```bash
 $ cd src
-$ meteor npm install
+$ meteor npm run install:core
+$ meteor npm run install:peers
 $ ./scripts/run.sh
 ```
 
