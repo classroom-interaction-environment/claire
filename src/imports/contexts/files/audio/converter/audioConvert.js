@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { createLog } from '../../../../api/log/createLog'
 import fs from 'fs'
 

@@ -1,3 +1,4 @@
+import { Mongo } from 'meteor/mongo'
 import { createPipeline } from '../createPipeline'
 import { createCollection } from '../../../infrastructure/factories/createCollection'
 import { getUserCheck } from '../../../api/files/getUserCheck'
@@ -12,7 +13,7 @@ export const buildPipeline = createPipeline('build', function (context, api, opt
     filesCollection: null
   }
 
-  if (collection && isSupportedObject(context.schema)) {
+  if (collection && !context.collection && isSupportedObject(context.schema)) {
     api.info(`create collection [${context.name}]`)
     products.collection = createCollection(context)
   }

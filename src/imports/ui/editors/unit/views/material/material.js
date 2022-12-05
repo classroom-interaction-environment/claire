@@ -20,7 +20,7 @@ import { $in } from '../../../../../api/utils/query/inSelector'
 import { unitEditorIsMasterMode } from '../../utils/unitEditorIsMasterMode'
 import { createMaterial } from './createMaterial'
 import { isCurriculumDoc } from '../../../../../api/decorators/methods/isCurriculumDoc'
-import { selectEntries } from './helpers/selectEntries'
+import { createSelectableMaterialEntriesQuery } from './helpers/createSelectableMaterialEntriesQuery'
 import { entries } from './helpers/entries'
 import { getMaterialContexts } from '../../../../../contexts/material/initMaterial'
 import { loadIntoCollection } from '../../../../../infrastructure/loading/loadIntoCollection'
@@ -257,7 +257,7 @@ Template.uematerial.helpers({
     const unitDoc = instance.state.get('unitDoc')
     const originalUnitDoc = instance.state.get('originalUnitDoc')
     const viewState = instance.getViewState()
-    return viewState && selectEntries(viewState, unitDoc, originalUnitDoc)
+    return viewState && createSelectableMaterialEntriesQuery(viewState, unitDoc, originalUnitDoc)
   },
   selectEntryModalData (entry) {
     return Object.assign({}, entry, { isModal: true })

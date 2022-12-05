@@ -9,9 +9,8 @@ import { $in } from '../../../../../../api/utils/query/inSelector'
 import { getCollection } from '../../../../../../api/utils/getCollection'
 import { getAllItemsInTask } from '../../../../../../contexts/tasks/getAllItemsInTask'
 import { dataTarget } from '../../../../../utils/dataTarget'
-import './taskResulTable.html'
-import { Group } from '../../../../../../contexts/classroom/group/Group'
 import { GroupMode } from '../../../../../../contexts/classroom/group/GroupMode'
+import './taskResulTable.html'
 
 const API = Template.taskResultTable.setDependencies({})
 Item.initialize().catch(API.notify)

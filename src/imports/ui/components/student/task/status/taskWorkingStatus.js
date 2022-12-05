@@ -1,9 +1,9 @@
 import { Template } from 'meteor/templating'
-import { TaskWorkingState } from '../../../../../contexts/tasks/results/TaskWorkingState'
+import { TaskWorkingState } from '../../../../../contexts/tasks/state/TaskWorkingState'
 import './taskWorkingStatus.html'
 import { getCollection } from '../../../../../api/utils/getCollection'
 
-const API = Template.taskWorkingStatus.setDependencies({
+Template.taskWorkingStatus.setDependencies({
   contexts: [TaskWorkingState]
 })
 

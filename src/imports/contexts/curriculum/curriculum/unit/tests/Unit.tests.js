@@ -2,13 +2,30 @@
 import { Unit } from '../Unit'
 import { Random } from 'meteor/random'
 import { expect } from 'chai'
-import { mockCollection } from '../../../../../../tests/testutils/mockCollection'
+import {
+  clearAllCollections,
+  mockCollections,
+  restoreAllCollections
+} from '../../../../../../tests/testutils/mockCollection'
 import { PermissionDeniedError } from '../../../../../api/errors/types/PermissionDeniedError'
 import { DocNotFoundError } from '../../../../../api/errors/types/DocNotFoundError'
-
-const UnitCollection = mockCollection(Unit)
+import { Phase } from '../../phase/Phase'
 
 describe(Unit.name, function () {
+  let UnitCollection
+
+  before(function () {
+    [UnitCollection] = mockCollections(Unit, Phase)
+  })
+
+  afterEach(function () {
+    clearAllCollections()
+  })
+
+  after(function () {
+    restoreAllCollections()
+  })
+
   describe('methods', function () {
     describe(Unit.methods.byTaskId.name, function () {
       it('returns all units that reference a task by id if curriculum user')

@@ -1,18 +1,33 @@
 import { Meteor } from 'meteor/meteor'
 import { check, Match } from 'meteor/check'
 import { delayedCallback } from '../../utils/delayedCallback'
+import { createLog } from '../../../api/log/createLog'
+
+const debugLog = createLog({ name: 'callMethod', type: 'debug' })
 
 /**
- * Provides a Promise that wraps a Meteor method call
+ * Provides a Promise that wraps a Meteor method call and allows to hook into several stages of the request.
  * @param name
  * @param connection
  * @param args
  * @param prepare
  * @param receive
  * @param success
+ * @param timeout
  * @param failure
+ * @param debug
  */
-export const callMethod = ({ name, connection = Meteor, args = {}, timeout, prepare, receive, success, failure, debug }) => {
+export const callMethod = ({
+  name,
+  connection = Meteor,
+  args = {},
+  timeout,
+  prepare,
+  receive,
+  success,
+  failure,
+  debug
+}) => {
   const methodName = typeof name === 'object' ? name.name : name
   check(methodName, String)
   check(args, Match.Maybe(Object))
@@ -27,12 +42,16 @@ export const callMethod = ({ name, connection = Meteor, args = {}, timeout, prep
   }
 
   if (debug) {
-    console.debug('[callMethod]:', methodName, args)
+    debugLog(methodName, args)
   }
 
   // then we create the promise
   const promise = new Promise((resolve, reject) => {
     const cb = (error, result) => {
+      if (debug) {
+        debugLog('received', { error, result })
+      }
+
       // call receive hook in any case the method has completed
       if (typeof receive === 'function') {
         receive()

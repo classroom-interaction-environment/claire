@@ -1,24 +1,39 @@
 /* global describe it afterEach */
 import { Random } from 'meteor/random'
-import { TaskWorkingState } from '../TaskWorkingState'
-import { Lesson } from '../../../classroom/lessons/Lesson'
+import { TaskWorkingState } from '../../state/TaskWorkingState'
 import { LessonStates } from '../../../classroom/lessons/LessonStates'
 import { restoreAll } from '../../../../../tests/testutils/stub'
-import { mockCollection } from '../../../../../tests/testutils/mockCollection'
+import {
+  clearAllCollections,
+  mockCollections,
+  restoreAllCollections
+} from '../../../../../tests/testutils/mockCollection'
 import { checkClass, checkLesson, stubStudentDocs, stubTaskDoc } from '../../../../../tests/testutils/doc/stubDocs'
 import { expect } from 'chai'
 import { Task } from '../../../curriculum/curriculum/task/Task'
 import { LessonErrors } from '../../../classroom/lessons/LessonErrors'
-
-const TaskWorkingStateCollection = mockCollection(TaskWorkingState)
+import { Lesson } from '../../../classroom/lessons/Lesson'
+import { Users } from '../../../system/accounts/users/User'
+import { SchoolClass } from '../../../classroom/schoolclass/SchoolClass'
+import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 
 describe(TaskWorkingState.name, function () {
-  describe('methods', function () {
-    afterEach(function () {
-      restoreAll()
-      TaskWorkingStateCollection.remove({})
-    })
+  let TaskWorkingStateCollection
 
+  before(function () {
+    [TaskWorkingStateCollection] = mockCollections(TaskWorkingState, Lesson, Users, SchoolClass, Task)
+  })
+
+  afterEach(function () {
+    restoreAll()
+    clearAllCollections()
+  })
+
+  after(function () {
+    restoreAllCollections()
+  })
+
+  describe('methods', function () {
     describe(TaskWorkingState.methods.saveState.name, function () {
       const saveState = TaskWorkingState.methods.saveState.run
 
@@ -27,8 +42,9 @@ describe(TaskWorkingState.name, function () {
 
       it('throws if the lesson does not exists', function () {
         const lessonId = Random.id()
-        expect(() => saveState({ lessonId })).to.throw('docNotFound')
-        expect(() => saveState({ lessonId })).to.throw(lessonId)
+        const thrown = expect(() => saveState({ lessonId })).to.throw(DocNotFoundError.name)
+        thrown.with.property('reason', 'getDocument.docUndefined')
+        thrown.with.deep.property('details', { name: Lesson.name, query: lessonId })
       })
       it('throws if the lesson is not running', function () {
         const { lessonDoc, userId } = stubStudentDocs()
@@ -41,9 +57,12 @@ describe(TaskWorkingState.name, function () {
         const { lessonDoc, userId } = stubStudentDocs({ startedAt: new Date() })
         const lessonId = lessonDoc._id
         const taskId = Random.id()
-        expect(() => saveState.call({ userId }, { lessonId, taskId })).to.throw('docNotFound')
-        expect(() => saveState.call({ userId }, { lessonId, taskId })).to.throw(taskId)
+        expect(() => saveState.call({ userId }, { lessonId, taskId }))
+          .to.throw('getDocument.docUndefined')
+          .with.property('details')
+          .with.property('query', taskId)
       })
+      it('throws if a given groupdoc does not exist by griupd id')
       it('throws if the task is not editable', function () {
         const { lessonDoc, userId } = stubStudentDocs({ startedAt: new Date() })
         const taskId = Random.id()
@@ -54,8 +73,10 @@ describe(TaskWorkingState.name, function () {
           taskId: taskId
         }
 
-        expect(() => saveState.call({ userId }, insertDoc)).to.throw(TaskWorkingState.errors.taskNotEditable)
-        expect(() => saveState.call({ userId }, insertDoc)).to.throw(taskId)
+        expect(() => saveState.call({ userId }, insertDoc))
+          .to.throw('taskWorkingState.notVisible')
+          .with.property('details')
+          .with.property('taskId', taskId)
       })
       it('creates a new task progress document if none exists for the given task', function () {
         const taskId = Random.id()

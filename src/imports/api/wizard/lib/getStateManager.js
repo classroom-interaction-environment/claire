@@ -1,3 +1,4 @@
+/* global $ */
 import { ReactiveVar } from 'meteor/reactive-var'
 
 const byState = stateName => entry => entry.name === stateName

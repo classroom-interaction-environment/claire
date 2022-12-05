@@ -1,5 +1,4 @@
 import { check, Match } from 'meteor/check'
-import { ReactiveDict } from 'meteor/reactive-dict'
 import { getStateManager } from './getStateManager'
 
 export const create = ({ defaultState, loadComplete, onNext, onBack, onComplete }) => {

@@ -1,3 +1,4 @@
+/* global $ */
 import { Template } from 'meteor/templating'
 import { ReactiveDict } from 'meteor/reactive-dict'
 import { Dimension } from '../../../../../contexts/curriculum/curriculum/dimension/Dimension'

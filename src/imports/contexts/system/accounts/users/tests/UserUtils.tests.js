@@ -3,8 +3,13 @@ import { Random } from 'meteor/random'
 import { stubUser, unstubUser } from '../../../../../../tests/testutils/stubUser'
 import { UserUtils } from '../UserUtils'
 import { assert } from 'chai'
-import { mockCollection } from '../../../../../../tests/testutils/mockCollection'
+import {
+  clearAllCollections, mockCollections,
+  restoreAllCollections
+} from '../../../../../../tests/testutils/mockCollection'
 import { Admin } from '../../admin/Admin'
+import { onClientExec, onServerExec } from '../../../../../api/utils/archUtils'
+import { Users } from '../User'
 
 const userObj = () => ({
   _id: Random.id(),
@@ -14,18 +19,25 @@ const userObj = () => ({
   custom: 'foo'
 })
 
-const AdminCollection = mockCollection(Admin)
-
 describe('UserUtils', function () {
   let user
+  let AdminCollection
+
+  before(function () {
+    [AdminCollection] = mockCollections(Admin, Users)
+  })
 
   beforeEach(function () {
     user = userObj()
-    AdminCollection.remove({})
   })
 
   afterEach(function () {
     unstubUser(true, true)
+    clearAllCollections()
+  })
+
+  after(function () {
+    restoreAllCollections()
   })
 
   describe('isAdmin', function () {
@@ -39,15 +51,24 @@ describe('UserUtils', function () {
       assert.isFalse(UserUtils.isAdmin())
     })
 
-    it('returns false for a fake admin', function () {
-      stubUser(user, user._id, [UserUtils.roles.admin], user.institution)
-      assert.isFalse(UserUtils.isAdmin())
+    onServerExec(function () {
+      it('returns false for a fake admin', function () {
+        stubUser(user, user._id, [UserUtils.roles.admin], user.institution)
+        assert.isFalse(UserUtils.isAdmin())
+      })
+
+      it('returns true for a true admin', function () {
+        stubUser(user, user._id, [UserUtils.roles.admin], user.institution)
+        AdminCollection.insert({ userId: user._id })
+        assert.isTrue(UserUtils.isAdmin())
+      })
     })
 
-    it('returns true for a true admin', function () {
-      stubUser(user, user._id, [UserUtils.roles.admin], user.institution)
-      AdminCollection.insert({ userId: user._id })
-      assert.isTrue(UserUtils.isAdmin())
+    onClientExec(function () {
+      it('returns true for a roles-admin', function () {
+        stubUser(user, user._id, [UserUtils.roles.admin], user.institution)
+        assert.isTrue(UserUtils.isAdmin())
+      })
     })
   })
 

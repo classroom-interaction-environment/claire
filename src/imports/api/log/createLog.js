@@ -5,36 +5,34 @@ const noOp = () => {}
 const LOG_LEVEL = Meteor.settings.public.logLevel || 0
 const isDevelopment = Meteor.isDevelopment
 
-// eslint-disable no-console
 const internal = {
   debug: {
     level: 0,
-    run: (...args) => console.debug(...args)
+    run: (...args) => console.debug(...args) // eslint-disable-line no-console
   },
   info: {
     level: 1,
-    run: (...args) => console.info(...args)
+    run: (...args) => console.info(...args) // eslint-disable-line no-console
   },
   log: {
     level: 2,
-    run: (...args) => console.log(...args)
+    run: (...args) => console.log(...args) // eslint-disable-line no-console
   },
   warn: {
     level: 3,
-    run: (...args) => console.warn(...args)
+    run: (...args) => console.warn(...args) // eslint-disable-line no-console
   },
   error: {
     level: 4,
-    run: (...args) => console.error(...args)
+    run: (...args) => console.error(...args) // eslint-disable-line no-console
   }
 }
-// eslint-enable no-console
 
 /**
  * Creates a log for a given name and type.
  * Returns a no-op function if devOnly is true but app is in prod mode
  * @param name {string}
- * @param type {string='log'}
+ * @param type {'log'|'info'|'debug'|'warn'|'error'}
  * @param devOnly {boolean=false}
  * @return {function}
  */

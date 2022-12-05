@@ -22,7 +22,7 @@ ContextBuilder
 export const initContext = (context, buildFct) => {
   if (!ContextRegistry.has(context.name)) {
     ContextBuilder.build(context, function () {
-      (buildFct || buildPipeline).call(null, context, {
+      (buildFct || buildPipeline)(context, {
         collection: true,
         filesCollection: true
       })

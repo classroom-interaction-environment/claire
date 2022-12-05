@@ -281,7 +281,7 @@ Template.userProfile.events({
   },
   'change .research-option-select' (event, templateInstance) {
     const form = templateInstance.$('#researchOptionsForm').get(0)
-    const formData = new FormData(form)
+    const formData = new window.FormData(form)
     const participateVisible = Array.from(formData.values()).every(val => !!val)
     templateInstance.state.set({ participateVisible })
   },

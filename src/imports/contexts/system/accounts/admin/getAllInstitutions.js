@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 

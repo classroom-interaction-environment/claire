@@ -1,9 +1,10 @@
 import { Meteor } from 'meteor/meteor'
 import { userExists } from '../../../../../api/accounts/user/userExists'
+import { getUsersCollection } from '../../../../../api/utils/getUsersCollection'
 
 export const updateUI = function updateUI ({ userId, fluid, classId }) {
   if (!userExists({ userId })) {
-    throw new Meteor.Error('errors.403', 'user.updateUI', 'user.userNotFound')
+    throw new Meteor.Error('user.updateUI', 'user.userNotFound', { userId })
   }
 
   const query = { ui: {} }
@@ -11,5 +12,5 @@ export const updateUI = function updateUI ({ userId, fluid, classId }) {
   if (typeof fluid === 'boolean') query.ui.fluid = fluid
   if (typeof classId === 'string') query.ui.classId = classId
 
-  return Meteor.users.update(userId, { $set: query })
+  return getUsersCollection().update(userId, { $set: query })
 }

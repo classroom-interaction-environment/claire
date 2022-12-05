@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { check, Match } from 'meteor/check'
 import { ReactiveVar } from 'meteor/reactive-var'
-import { Random } from 'meteor/random'
 import { UserUtils } from '../system/accounts/users/UserUtils'
 import { getCollection } from '../../api/utils/getCollection'
 import { onClientExec, onServer } from '../../api/utils/archUtils'
@@ -185,14 +184,16 @@ Beamer.methods.insert = {
   timeInterval: 50000,
   run: onServer(function () {
     const BeamerCollection = getCollection(Beamer.name)
-    console.log(BeamerCollection.findOne({ createdBy: this.userId }))
+
     if (BeamerCollection.findOne({ createdBy: this.userId })) {
       throw new Meteor.Error('errors.docAlreadyExists')
     }
+
     const ui = {
       background: Beamer.defaultBackground,
       grid: Beamer.defaultGridlayout
     }
+
     return BeamerCollection.insert({ createdBy: this.userId, references: [], ui })
   })
 }

@@ -71,13 +71,13 @@ Template.videoResultsRenderer.helpers({
 })
 
 Template.videoResultsRenderer.events({
-  'click .irr-thumbnail,.cssbox_prev,.cssbox_next' (event, templateInstance) {
+  'click .irr-thumbnail,.cssbox-prev,.cssbox-next' (event, templateInstance) {
     const id = dataTarget(event, templateInstance)
     const videos = templateInstance.state.get('videos')
     const { prev, next } = getPrevAndNext(id, videos)
     templateInstance.state.set({ prev, next })
   },
-  'click .cssbox_close' (event, templateInstance) {
+  'click .cssbox-close' (event, templateInstance) {
     templateInstance.state.set({ prev: null, next: null })
   },
   'error source' (event, templateInstance) {

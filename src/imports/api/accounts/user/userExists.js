@@ -1,13 +1,14 @@
-import { Meteor } from 'meteor/meteor'
-import { Accounts } from 'meteor/accounts-base'
+import { Users } from '../../../contexts/system/accounts/users/User'
+import { getCollection } from '../../utils/getCollection'
+import { getUserByEmail } from './getUserByEmail'
 
 export const userExists = ({ userId, email } = {}) => {
   if (userId) {
-    return Meteor.users.find(userId).count() > 0
+    return getCollection(Users.name).find(userId).count() > 0
   }
 
   if (email) {
-    return !!Accounts.findUserByEmail(email)
+    return !!getUserByEmail(email)
   }
 
   return false

@@ -1,26 +1,23 @@
 import { Meteor } from 'meteor/meteor'
 import { Mongo } from 'meteor/mongo'
-import { assignToWindow } from '../../utils/assignToWindow'
-
-const _cache = new Map()
+import { onClientExec } from './archUtils'
 
 export const getCollection = function (contextOrName) {
   const name = typeof contextOrName === 'object'
     ? contextOrName.name
     : contextOrName
 
-  let collection = _cache.get(name)
+  const collection = Mongo.Collection.get(name)
 
   if (!collection) {
-    collection = Mongo.Collection.get(name)
-
-    if (!collection) {
-      throw new Meteor.Error('errors.collectionNotFound', name)
-    }
-    _cache.set(name, collection)
+    throw new Meteor.Error('errors.collectionNotFound', 'getCollection.notFoundByName', { name })
   }
 
   return collection
 }
 
-assignToWindow({ getCollection })
+// TODO move into client startup somewhere
+onClientExec(function () {
+  import { assignToWindow } from '../../utils/assignToWindow'
+  assignToWindow({ getCollection })
+})

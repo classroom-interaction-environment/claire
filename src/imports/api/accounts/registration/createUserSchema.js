@@ -9,8 +9,12 @@ import {
   password2Schema
 } from './registerUserSchema'
 
+/** @private */
 const passwordConfig = PasswordConfig.from(Meteor.settings.public.password)
 
+/**
+ * Default schema to validate arguments for creating new users.
+ */
 export const createUserSchema = {
   email: emailSchema(),
   firstName: firstNameSchema(),

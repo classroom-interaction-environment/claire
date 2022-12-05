@@ -28,7 +28,6 @@ Template.rpBarChart.onRendered(function () {
   instance.autorun(() => {
     const data = Template.currentData()
     const { choices = [], results, api } = data
-    const item = api.item()
     const dataType = api.dataType()
 
     const plotData = {

@@ -3,13 +3,27 @@ import { i18n } from '../../language/language'
 import { Schema } from '../../schema/Schema'
 import { onClient } from '../../utils/archUtils'
 
-const nameRegex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/
+const nameRegex = /^[^!$%&/^()=?\\{[\]};<>|+#:\d]+$/
 const passwordRegExp = '[a-z0-9A-Z_@\\-\\!\\?\\.]+'
 
-export const firstNameSchema = ({ max = 50, autofocus, autocomplete, optional = false } = {}) => ({
+export const firstNameSchema = ({ label, max = 50, autofocus, autocomplete, optional = false } = {}) => ({
   type: String,
   optional: optional,
-  label: onClient(i18n.reactive('userProfile.firstName')),
+  label: label || i18n.reactive('userProfile.firstName'),
+  regEx: nameRegex,
+  min: 2,
+  max: max,
+  autoform: onClient({
+    type: 'text',
+    autofocus: autofocus,
+    autocomplete: autocomplete
+  })
+})
+
+export const lastNameSchema = ({ max = 50, label, autofocus, autocomplete, optional = false } = {}) => ({
+  type: String,
+  optional: optional,
+  label: label || i18n.reactive('userProfile.lastName'),
   regEx: nameRegex,
   max: max,
   autoform: onClient({
@@ -19,22 +33,9 @@ export const firstNameSchema = ({ max = 50, autofocus, autocomplete, optional = 
   })
 })
 
-export const lastNameSchema = ({ max = 50, autofocus, autocomplete, optional = false } = {}) => ({
+export const userNameSchema = ({ label, min = 4, max = 32, regExp = passwordRegExp } = {}) => ({
   type: String,
-  optional: optional,
-  label: onClient(i18n.reactive('userProfile.lastName')),
-  regEx: nameRegex,
-  max: max,
-  autoform: onClient({
-    type: 'text',
-    autofocus: autofocus,
-    autocomplete: autocomplete
-  })
-})
-
-export const userNameSchema = ({ min = 4, max = 32, regExp = passwordRegExp } = {}) => ({
-  type: String,
-  label: onClient(i18n.reactive('userProfile.username')),
+  label: label || i18n.reactive('userProfile.username'),
   regEx: regExp,
   min: min,
   max: max,
@@ -43,9 +44,9 @@ export const userNameSchema = ({ min = 4, max = 32, regExp = passwordRegExp } = 
   })
 })
 
-export const codeSchema = ({ max = 20, label = i18n.reactive('codeRegister.code'), autofocus, autocomplete } = {}) => ({
+export const codeSchema = ({ max = 20, label, autofocus, autocomplete } = {}) => ({
   type: String,
-  label: onClient(label),
+  label: label || i18n.reactive('codeRegister.code'),
   max: max,
   autoform: onClient({
     autofocus: autofocus,
@@ -55,14 +56,14 @@ export const codeSchema = ({ max = 20, label = i18n.reactive('codeRegister.code'
 
 let roleSchema
 
-(function () {
+;(function () {
   import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
   const rolesList = Object.values(UserUtils.roles)
   let mappedRoles
 
   roleSchema = () => ({
     type: String,
-    label: onClient(i18n.reactive('codeInvitation.role')),
+    label: i18n.reactive('codeInvitation.role'),
     allowedValues: rolesList,
     autoform: onClient({
       firstOption: () => i18n.reactive('form.selectOne'),
@@ -91,7 +92,7 @@ export { roleSchema }
 export const emailSchema = ({ hidden, label, classNames, autofocus, autocomplete, optional } = {}) => ({
   type: String,
   optional: optional,
-  label: onClient(label || i18n.reactive('userProfile.email')),
+  label: label || i18n.reactive('userProfile.email'),
   max: 100,
   regEx: () => Schema.provider.RegEx.EmailWithTLD,
   autoform: onClient({
@@ -103,9 +104,16 @@ export const emailSchema = ({ hidden, label, classNames, autofocus, autocomplete
   })
 })
 
-export const passwordSchemaClassic = ({ min = 8, max = 64, hint, autocomplete, regExp = passwordRegExp } = {}) => ({
+export const passwordSchemaClassic = ({
+  label,
+  min = 8,
+  max = 64,
+  hint,
+  autocomplete,
+  regExp = passwordRegExp
+} = {}) => ({
   type: String,
-  label: onClient(i18n.reactive('userProfile.password')),
+  label: label || i18n.reactive('userProfile.password'),
   regEx: regExp && new RegExp(regExp),
   min: min,
   max: max,
@@ -120,10 +128,23 @@ export const passwordSchemaClassic = ({ min = 8, max = 64, hint, autocomplete, r
   })
 })
 
-export const password2Schema = ({ min = 8, label, max = 128, optional, autocomplete, rules, regExp, visibilityButton, visible, userIcon, css, autofocus } = {}) => ({
+export const password2Schema = ({
+  min = 8,
+  label,
+  max = 128,
+  optional,
+  autocomplete,
+  rules,
+  regExp,
+  visibilityButton,
+  visible,
+  userIcon,
+  css,
+  autofocus
+} = {}) => ({
   type: String,
   optional: optional,
-  label: onClient(label || i18n.reactive('login.password.title')),
+  label: label || i18n.reactive('login.password.title'),
   min: min,
   max: max,
   autoform: onClient({
@@ -172,15 +193,16 @@ export const password2Schema = ({ min = 8, label, max = 128, optional, autocompl
   }
 })
 
-export const institutionSchema = ({ optional = true, max = 250 } = {}) => ({
+export const institutionSchema = ({ label, optional = false, max = 250 } = {}) => ({
   type: String,
-  label: onClient(i18n.reactive('codeInvitation.institution')),
-  max: max
+  label: label || i18n.reactive('codeInvitation.institution'),
+  max: max,
+  optional: optional
 })
 
-export const confirmSchema = ({ formName, rules, visibilityButton, visible, userIcon, css } = {}) => ({
+export const confirmSchema = ({ label, rules, visibilityButton, visible, userIcon, css } = {}) => ({
   type: String,
-  label: onClient(i18n.reactive('login.confirm')),
+  label: label || i18n.reactive('login.confirm'),
   autoform: onClient({
     type: 'password2',
     rules: rules,
@@ -200,13 +222,13 @@ export const confirmSchema = ({ formName, rules, visibilityButton, visible, user
   }
 })
 
-export const agreementSchema = () => ({
+export const agreementSchema = ({ termsOfServiceLabel, privacyLabel } = {}) => ({
   termsOfService: {
     type: Boolean,
-    label: onClient(i18n.reactive('agreements.termsOfService.read'))
+    label: termsOfServiceLabel || i18n.reactive('agreements.termsOfService.read')
   },
   privacyPolicy: {
     type: Boolean,
-    label: onClient(i18n.reactive('agreements.privacyPolicy.read'))
+    label: privacyLabel || i18n.reactive('agreements.privacyPolicy.read')
   }
 })

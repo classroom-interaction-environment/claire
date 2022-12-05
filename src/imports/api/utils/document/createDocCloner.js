@@ -24,7 +24,6 @@ export const createDocCloner = function getClone ({ name } = {}) {
 
   function cloneDoc (docId, { $set } = {}) {
     const Collection = getCollection(name)
-
     const sourceDoc = Collection.findOne(docId)
 
     if (!sourceDoc) {
@@ -44,7 +43,6 @@ export const createDocCloner = function getClone ({ name } = {}) {
     delete sourceDoc.updatedAt
 
     const insertDoc = $set ? Object.assign({}, sourceDoc, $set) : sourceDoc
-
     // XXX: simple sanity check if we really have a new _id
     // Could be the case, when someone weirdly added the original _id to the $set
     const clonedDocId = Collection.insert(insertDoc)

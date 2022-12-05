@@ -3,6 +3,7 @@ import { Settings } from '../../../contexts/system/settings/Settings'
 import { setFatalError } from '../../../ui/components/fatal/fatal'
 import { callMethod } from '../../../ui/controllers/document/callMethod'
 import { CurriculumSession } from '../../../ui/curriculum/CurriculumSession'
+import { createLog } from '../../../api/log/createLog'
 
 const themes = {
   default: {
@@ -29,6 +30,7 @@ Meteor.defer(async () => {
 
   if (!currentTheme || currentTheme === 'caroDefault') {
     let currentIsCurriculum = false
+    const debug = createLog({ name: 'Theme' })
 
     const enable = ({ id, url }) => {
       for (const style of document.styleSheets) {
@@ -37,7 +39,9 @@ Meteor.defer(async () => {
           return
         }
       }
-      console.debug('[Theme]: enable', id, url)
+
+      debug('enable', id, url)
+
       const link = document.createElement('link')
       link.setAttribute('id', id)
       link.setAttribute('rel', 'stylesheet')
@@ -55,7 +59,7 @@ Meteor.defer(async () => {
     }
 
     CurriculumSession.onStateChange(isCurriculum => {
-      console.debug('[CurriculumSession]: onState changed', { isCurriculum, currentIsCurriculum })
+      debug('(CurriculumSession) onState changed', { isCurriculum, currentIsCurriculum })
       // switch to curriculum
       if (isCurriculum && !currentIsCurriculum) {
         enable(themes.curriculum)

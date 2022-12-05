@@ -17,7 +17,7 @@ const selectedEntriesSort = { sort: { title: 1 } }
  * @param userId
  * @return {*|null}
  */
-export const selectEntries = function (viewState, unitDoc, unitDocOriginal, userId = Meteor.userId()) {
+export const createSelectableMaterialEntriesQuery = function (viewState, unitDoc, unitDocOriginal, userId = Meteor.userId()) {
   const { collection, field } = viewState
 
   let originalUnit = unitDocOriginal || getCollection(Unit.name).findOne(unitDoc._original) || getLocalCollection(Unit.name).findOne(unitDoc._original)
@@ -41,11 +41,11 @@ export const selectEntries = function (viewState, unitDoc, unitDocOriginal, user
     // - my global material (non-clones)
     // TODO include, once we have a working concept of how to
     // TODO handle global custom material
-    //const myGlobals = {
-    //  createdBy: userId,
-    //  _original: { $exists: false },
-    //  _id: $nin(target)
-    //}
+    //  const myGlobals = {
+    //    createdBy: userId,
+    //    _original: { $exists: false },
+    //    _id: $nin(target)
+    //  }
 
     // - master material for this unit, that is not in the list but in the original unit
     const masterDocs = {

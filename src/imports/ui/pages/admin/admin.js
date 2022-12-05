@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { AdminViewStates } from './adminViewStates'
 import { Form } from '../../components/forms/Form'

@@ -1,4 +1,3 @@
-/* global Roles */
 import { Meteor } from 'meteor/meteor'
 import { check } from 'meteor/check'
 import { i18n } from '../../../api/language/language'
@@ -20,6 +19,10 @@ export const SchoolClass = {
     students: 1
   },
   dependencies: [],
+  /**
+   * Extract into own namespace
+   * @deprecated
+   */
   errors: {
     progressIncomplete: 'schoolClass.progressIncomplete',
     invalidSchoolYear: 'schoolClass.invalidSchoolYear',
@@ -408,6 +411,7 @@ SchoolClass.methods.remove = {
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
     import { removeClass } from './methods/removeClass'
+
     return function ({ _id }) {
       const { userId, log } = this
       const classId = _id

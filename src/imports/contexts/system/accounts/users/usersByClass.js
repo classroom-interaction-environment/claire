@@ -1,28 +1,24 @@
-import { Meteor } from 'meteor/meteor'
-import { getCollection } from '../../../../api/utils/getCollection'
+import { getUsersCollection } from '../../../../api/utils/getUsersCollection'
+import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
+import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 
 export const usersByClass = function () {
   import { SchoolClass } from '../../../classroom/schoolclass/SchoolClass'
 
+  const getClassDoc = createDocGetter({ name: SchoolClass.name })
+
   // run phase
   return function usersByClass ({ classId, skip }) {
-    const classDoc = getCollection(SchoolClass.name).findOne(classId)
-    if (!classDoc) {
-      throw new Meteor.Error('usersByClass.failed', 'errors.docNotFound', classId)
+    const { userId } = this
+    const classDoc = getClassDoc(classId)
+
+    if (!SchoolClass.helpers.isMember({ classDoc, userId })) {
+      throw new PermissionDeniedError(SchoolClass.errors.notMember, { userId, classId })
     }
 
     const allStudents = (classDoc.students || [])
     const allTeachers = (classDoc.teachers || [])
     const allUsers = allStudents.concat(allTeachers)
-
-    const { userId } = this
-    const isOwner = userId && (classDoc.createdBy === userId)
-    const isMember = !isOwner && allUsers.includes(userId)
-
-    if (!isOwner && !isMember) {
-      throw new Meteor.Error('usersByClass.failed', 'errors.permissionDenied', classId)
-    }
-
     const projection = {
       fields: {
         emails: 0,
@@ -37,6 +33,6 @@ export const usersByClass = function () {
       query._id.$nin = skip
     }
 
-    return Meteor.users.find(query, projection)
+    return getUsersCollection().find(query, projection)
   }
 }

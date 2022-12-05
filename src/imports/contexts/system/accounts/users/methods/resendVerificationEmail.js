@@ -1,9 +1,9 @@
-import { Meteor } from 'meteor/meteor'
 import { Accounts } from 'meteor/accounts-base'
 import { Users } from '../User'
+import { getUsersCollection } from '../../../../../api/utils/getUsersCollection'
 
 export const resendVerificationEmail = function resendVerificationEmail ({ userId }) {
-  const user = Meteor.users.findOne(userId)
+  const user = getUsersCollection().findOne(userId)
 
   if (!user) {
     // logError()

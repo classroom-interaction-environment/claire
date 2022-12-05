@@ -1,6 +1,6 @@
 import { check } from 'meteor/check'
 import { TaskResults } from '../../../tasks/results/TaskResults'
-import { TaskWorkingState } from '../../../tasks/results/TaskWorkingState'
+import { TaskWorkingState } from '../../../tasks/state/TaskWorkingState'
 
 import { createRemoveDoc } from '../../../../api/utils/documentUtils'
 
@@ -13,7 +13,6 @@ const removeImageFiles = createRemoveDoc(ImageFiles, { checkOwner: false, multip
 const removeAudioFiles = createRemoveDoc(AudioFiles, { checkOwner: false, multiple: true })
 const removeDocumentFiles = createRemoveDoc(DocumentFiles, { checkOwner: false, multiple: true })
 const removeVideoFiles = createRemoveDoc(VideoFiles, { checkOwner: false, multiple: true })
-
 const removeTaskResults = createRemoveDoc(TaskResults, { checkOwner: false, multiple: true })
 const removeTaskWorkingState = createRemoveDoc(TaskWorkingState, { checkOwner: false, multiple: true })
 
@@ -29,7 +28,6 @@ export const removeDocuments = function ({ lessonId } = {}) {
   check(lessonId, String)
   const docQuery = { lessonId }
   const fileQuery = { 'meta.lessonId': lessonId }
-
   // the context <-> count map
   const removed = {}
 

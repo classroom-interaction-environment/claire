@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { TaskResults } from '../../../../../contexts/tasks/results/TaskResults'
-import { TaskWorkingState } from '../../../../../contexts/tasks/results/TaskWorkingState'
+import { TaskWorkingState } from '../../../../../contexts/tasks/state/TaskWorkingState'
 import {
   fromResponse,
   toResponse

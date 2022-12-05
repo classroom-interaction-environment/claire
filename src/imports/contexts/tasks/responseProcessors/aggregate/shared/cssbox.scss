@@ -6,7 +6,7 @@
   display: inline-block;
 }
 
-.cssbox_full {
+.cssbox-full {
   background-color: rgba(0, 0, 0, 0.8);
   cursor: default;
   height: 100%;
@@ -20,7 +20,7 @@
   z-index: 3456;
 }
 
-.cssbox_full img {
+.cssbox-full img {
   background-color: #fff;
   box-shadow: 0 0 20px #000;
   left: 50%;
@@ -34,9 +34,9 @@
   transform: translate(-50%, -50%);
 }
 
-.cssbox_close,
-.cssbox_prev,
-.cssbox_next {
+.cssbox-close,
+.cssbox-prev,
+.cssbox-next {
   color: #fff;
   font-size: 36px;
   position: fixed;
@@ -45,43 +45,43 @@
   z-index: 3457;
 }
 
-.cssbox_close {
+.cssbox-close {
   right: 1%;
   top: 1%;
 }
 
-.cssbox_close::after {
+.cssbox-close::after {
   content: '\00d7';
 }
 
-.cssbox_prev,
-.cssbox_next {
+.cssbox-prev,
+.cssbox-next {
   top: 50%;
   transform: translate(0%, -50%);
 }
 
-.cssbox_prev {
+.cssbox-prev {
   left: 5%;
 }
 
-.cssbox_next {
+.cssbox-next {
   right: 5%;
 }
 
-:target ~ .cssbox_close,
-:target ~ .cssbox_prev,
-:target ~ .cssbox_next {
+:target ~ .cssbox-close,
+:target ~ .cssbox-prev,
+:target ~ .cssbox-next {
   visibility: visible;
 }
 
-a:target > .cssbox_thumb + .cssbox_full {
+a:target > .cssbox-thumb + .cssbox-full {
   opacity: 1;
   pointer-events: initial;
   visibility: visible;
 }
 
-.cssbox_thumb {
-  max-width: 10rem;
+.cssbox-thumb {
   max-height: 10rem;
+  max-width: 10rem;
 }
 /* This is the end of CSSBox */

@@ -1,4 +1,3 @@
-import { logError } from '../errors/server/logerror'
 import { createLog } from '../log/createLog'
 import { Random } from 'meteor/random'
 

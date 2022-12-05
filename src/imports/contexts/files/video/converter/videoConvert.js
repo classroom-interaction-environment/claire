@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { createLog } from '../../../../api/log/createLog'
 import checkMime from 'file-type'
 import fs from 'fs'
@@ -14,7 +15,7 @@ export const videoConvert = function convertVideo (uploadedFile) {
   log('run on', uploadedFile.name, uploadedFile._id)
 
   return new Promise(Meteor.bindEnvironment(function (resolve) {
-    const { _id, size, path, extension, name, _storagePath } = uploadedFile
+    const { _id, size, path, /* extension, */ name, _storagePath } = uploadedFile
 
     // create screenshot for video thumbnail here so we can early on display
     // some loading indicator with also a "preview" image

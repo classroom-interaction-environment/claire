@@ -49,7 +49,7 @@ const checkResponseProcessorContext = ({ name, label, icon, isResponseProcessor,
  * @return {any}
  */
 ResponseProcessorRegistry.register = function (context) {
-  const { name, type, dataTypes, fileType, csp, renderer } = context
+  const { name, type, dataTypes, fileType /*, csp, renderer  */ } = context
   debugLog('register', { context })
 
   check(name, String)
@@ -138,7 +138,6 @@ ResponseProcessorRegistry.allForDataType = dataType => {
     : dataType
 
   const typeMap = dataTypeMap.get(dataTypeName) || { values: [] }
-  console.debug({ dataTypeMap, typeMap })
   const contexts = new Set(typeMap.values.map(toContext))
   contexts.add(RawResponse)
 

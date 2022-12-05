@@ -1,4 +1,3 @@
-import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { ReactiveDict } from 'meteor/reactive-dict'
 import { ReactiveVar } from 'meteor/reactive-var'
@@ -448,9 +447,6 @@ Template.lessonMaterial.events({
         })
       }, 500)
     }
-    else {
-
-    }
   },
 
   // ===========================================================================
@@ -508,8 +504,7 @@ Template.lessonMaterial.events({
       args: { lessonId },
       key: lessonSubKey,
       callbacks: {
-        onError: API.notify,
-        onReady: () => console.debug('results ready', getCollection(TaskResults.name).find().fetch())
+        onError: API.notify
       }
     })
 

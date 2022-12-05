@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
@@ -158,9 +159,7 @@ Group.publications.my = {
 
     query.$or.push(myGroups, iamMember)
 
-    const cursor = getCollection(Group.name).find(query, { fields: Group.publicFields })
-    console.log(this.userId, JSON.stringify(query), cursor.count())
-    return cursor
+    return getCollection(Group.name).find(query, { fields: Group.publicFields })
   })
 }
 
@@ -174,9 +173,7 @@ Group.publications.single = {
   run: onServer(function ({ groupId }) {
     const { userId } = this
     const query = { _id: groupId, users: { $elemMatch: { userId } } }
-    const cursor = getCollection(Group.name).find(query, { fields: Group.publicFields })
-    console.log(this.userId, JSON.stringify(query), cursor.count())
-    return cursor
+    return getCollection(Group.name).find(query, { fields: Group.publicFields })
   })
 }
 

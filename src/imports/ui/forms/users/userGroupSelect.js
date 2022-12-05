@@ -5,25 +5,18 @@ import { Schema } from '../../../api/schema/Schema'
 import { dataTarget } from '../../utils/dataTarget'
 import { formIsValid } from '../../components/forms/formUtils'
 import './autoform'
-import './users.scss'
-import './users.html'
+import './userGroupSelect.scss'
+import './userGroupSelect.html'
 
-// TODO rename this file users.js to userGroupSelect
-
-const API = Template.afUserGroupSelect.setDependencies()
+Template.afUserGroupSelect.setDependencies()
 
 Template.afUserGroupSelect.onCreated(function () {
   const instance = this
   instance.state.set('selectedUsers', [])
 
-  instance.autorun(() => {
-    const data = Template.currentData()
-    console.debug(data)
-  })
-
-  const { minCount, maxCount } = instance.data
+  // const { minCount, maxCount } = instance.data
   const { builder, allMaterial } = instance.data.atts
-  const { users = [], roles = [], material = [], maxUsers, maxGroups, materialForAllGroups } = builder
+  const { users = [], roles = [], material = [], maxUsers, materialForAllGroups } = builder
   const materialOptions = (allMaterial || []).filter(opt => material.includes(opt.value))
   instance.builder = builder
 

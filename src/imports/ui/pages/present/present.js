@@ -293,15 +293,19 @@ Template.present.onCreated(function () {
       }
 
       // TaskDoc = ref.document
-      // search in the task doc for the current item and skip where possible
+      // search in the task doc for the current item and skip, if possible
       const { itemId } = ref
       ref.document.pages.some(page => {
-        if (!page.content) return
+        if (!page.content) return false
 
         const entry = page.content.find(entry => entry.itemId === itemId)
+
         if (entry) {
-          return referenceQueue.push({ ref, entry })
+          referenceQueue.push({ ref, entry })
+          return true
         }
+
+        return false
       })
     })
 
