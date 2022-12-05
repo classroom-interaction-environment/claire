@@ -122,7 +122,9 @@ jobs:
           meteor-release: '2.7.3'
 
       - name: Install NPM Dependencies
-        run: meteor npm ci
+        run: |
+          cd src
+          meteor npm ci
 
         # uses -o for running once -c for coverage
       - name: Run Tests
