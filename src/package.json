@@ -34,10 +34,8 @@
     "dely": "^1.0.2",
     "dragscroll": "0.0.8",
     "driver.js": "^0.9.8",
-    "ffmpeg-cli": "^2.7.5",
     "file-type": "^16.5.4",
     "gm": "^1.23.1",
-    "gridfs-stream": "^1.1.1",
     "helmet": "6.0.0",
     "interactjs": "^1.10.11",
     "jquery": "^3.6.0",
@@ -55,6 +53,9 @@
     "sortablejs": "^1.15.0",
     "trix": "^2.0.0-alpha.1",
     "validator": "^13.7.0"
+  },
+  "peerDependencies": {
+    "ffmpeg-cli": "^2.7.5"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
@@ -108,7 +109,7 @@
       "AutoForm": "readonly"
     },
     "rules": {
-      "import/no-duplicates":"off",
+      "import/no-duplicates": "off",
       "brace-style": [
         "error",
         "stroustrup",
