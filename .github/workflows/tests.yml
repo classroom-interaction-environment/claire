@@ -103,6 +103,10 @@ jobs:
           key: ${{ runner.os }}-node-14-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-14-
+      - run: |
+          cd src
+          npm ci
+
       - name: Cache Meteor build
         id: cache-meteor-build
         uses: actions/cache@v3
@@ -119,13 +123,6 @@ jobs:
         uses: meteorengineer/setup-meteor@v1
         with:
           meteor-release: '2.7.3'
-
-      - name: Install NPM Dependencies
-        run: |
-          pwd
-          ls -la
-          cd src
-          meteor npm ci
 
         # uses -o for running once -c for coverage
       - name: Run Tests
