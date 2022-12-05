@@ -1,6 +1,6 @@
 # Renderer
 
-This folder contains generic components that "render" certain elements or 
+This folder contains generic components that "render" certain elements or
 contexts in a reproducible and determined way.
 
 Note, that renderers may use each other.
