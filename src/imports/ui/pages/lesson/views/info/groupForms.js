@@ -6,6 +6,8 @@ import { Phase } from '../../../../../contexts/curriculum/curriculum/phase/Phase
 import { $in } from '../../../../../api/utils/query/inSelector'
 import { getFullName } from '../../../../../api/accounts/emailTemplates/common'
 import { callMethod } from '../../../../controllers/document/callMethod'
+import { GroupBuilder } from '../../../../../contexts/classroom/group/GroupBuilder'
+import { editGroupSchema } from '../../../../forms/groupbuilder/api/editGroupSchema'
 
 export const createGroupForms = ({ translate, onError }) => {
   const groupForms = {}
@@ -81,6 +83,35 @@ export const createGroupForms = ({ translate, onError }) => {
     doc: toGroupViewDoc,
     load: async () => {
       await import('../../../../forms/doclist/docList')
+    }
+  }
+
+  groupForms.update = {
+    action: 'update',
+    custom: {},
+    cancel: () => translate('actions.close'),
+    doc: ({ groupDoc }) => groupDoc,
+    schema: ({ groupDoc, classDoc, material }) => {
+      const groupBuilder = new GroupBuilder({ groupTitleDefault: groupDoc.title })
+      groupBuilder.setOptions({
+        users: classDoc?.students,
+        material: material.map(({ value }) => value),
+        maxGroups: 1
+      })
+
+      groupBuilder.addGroup(groupDoc)
+
+      const editSchemaOptions = { material }
+      return Schema.create(editGroupSchema(groupBuilder, editSchemaOptions))
+    },
+    validation: 'none',
+    onSubmit ({ doc, groupDoc }) {
+      const updateDoc = doc.$set.groups[0]
+      return callMethod({
+        name: Group.methods.update,
+        args: { _id: groupDoc._id, ...updateDoc },
+        failure: onError
+      })
     }
   }
 

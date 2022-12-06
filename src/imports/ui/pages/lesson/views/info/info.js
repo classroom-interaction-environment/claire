@@ -15,7 +15,7 @@ import { dataTarget } from '../../../../utils/dataTarget'
 import { createGroupForms } from './groupForms'
 import { getLocalCollection } from '../../../../../infrastructure/collection/getLocalCollection'
 import '../../../../renderer/user/list/userListRenderer'
-import '../../../../components/groupbuilder/groupBuilder'
+import '../../../../forms/groupbuilder/groupBuilder'
 import './info.html'
 import './info.scss'
 
@@ -120,29 +120,41 @@ Template.lessonInfo.helpers({
   },
   phaseDocs (phaseIds) {
     return phaseIds && cursor(() => getLocalCollection(Phase.name).find({ _id: { $in: phaseIds } }))
+  },
+  groupEditMode () {
+    return Template.getState('groupEditMode')
   }
 })
 
 Template.lessonInfo.events({
   'hidden.bs.modal #manageGroupModal' (event, templateInstance) {
-    templateInstance.state.set('groupBuilderActive', false)
+    templateInstance.state.set({
+      groupBuilderActive: false,
+      groupEditMode: null
+    })
   },
   'click .group-action-btn' (event, templateInstance) {
     const action = dataTarget(event, templateInstance, 'action')
+    const groupId = dataTarget(event, templateInstance, 'id')
+    const groupDoc = groupId && getCollection(Group.name).findOne(groupId)
+
     if (action === 'create') {
-      templateInstance.state.set('groupBuilderActive', true)
+      templateInstance.state.set({
+        groupBuilderActive: true,
+        groupEditMode: action
+      })
       return API.showModal('manageGroupModal')
     }
 
+    const { classDoc } = templateInstance.data
     const material = templateInstance.state.get('materialOptions')
-    const groupId = dataTarget(event, templateInstance, 'id')
-    const groupDoc = groupId && getCollection(Group.name).findOne(groupId)
+    const phases = templateInstance.data.unitDoc.phases ?? []
     const definitions = groupForms[action]
     const doc = definitions.doc || groupDoc
     const options = {
       action,
       doc: doc,
-      bind: { groupId, groupDoc, material },
+      bind: { groupId, groupDoc, classDoc, material, phases },
       ...definitions
     }
     FormModal.show(options)

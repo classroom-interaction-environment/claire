@@ -237,7 +237,7 @@ Template.lessonMaterial.helpers({
   },
   downloadButtonDisabled (refType) {
     const ctx = Material.get(refType)
-    const downloadable = ctx.material?.downloadable
+    const downloadable = ctx?.material?.downloadable
     return downloadable !== true
   },
   showResults (referenceId, groupId) {

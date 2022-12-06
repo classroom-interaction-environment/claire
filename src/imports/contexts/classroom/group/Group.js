@@ -204,6 +204,14 @@ Group.methods.save = {
   })
 }
 
+Group.methods.update = {
+  name: 'group.methods.update',
+  schema: { _id: String, ...Group.schema },
+  run: onServer(function ({ _id, ...updateDoc }) {
+    return getCollection(Group.name).update({ _id }, { $set: updateDoc })
+  })
+}
+
 Group.methods.delete = {
   name: 'group.methods.delete',
   schema: { _id: String },

@@ -17,7 +17,7 @@ Template.afUserGroupSelect.onCreated(function () {
   // const { minCount, maxCount } = instance.data
   const { builder, allMaterial } = instance.data.atts
   const { users = [], roles = [], material = [], maxUsers, materialForAllGroups } = builder
-  const materialOptions = (allMaterial || []).filter(opt => material.includes(opt.value))
+  const materialOptions = (allMaterial || []).filter(({ value }) => material.includes(value))
   instance.builder = builder
 
   const query = { _id: { $in: users } }
@@ -74,14 +74,29 @@ Template.afUserGroupSelect.helpers({
   maxUsers () {
     return Template.getState('maxUsers')
   },
+  canAddGroups () {
+    const { builder } = Template.instance()
+    return builder && !builder.hasMaxGroups()
+  },
   materialForAllGroups () {
     return Template.getState('materialForAllGroups')
   },
   materialOptions () {
     return Template.getState('materialOptions')
   },
-  hasMaterial (list = [], id) {
-    return list.includes(id)
+  addedMaterials (groupIndex) {
+    const { builder } = Template.instance()
+    const group = builder.getGroup(groupIndex)
+    const material = group.material ?? []
+    const options = Template.getState('materialOptions') ?? []
+    return options.filter(({ value }) => material.includes(value))
+  },
+  materialsToAdd (groupIndex) {
+    const { builder } = Template.instance()
+    const group = builder.getGroup(groupIndex)
+    const material = group.material ?? []
+    const options = Template.getState('materialOptions') ?? []
+    return options.filter(({ value }) => !material.includes(value))
   },
   inputAtts () {
     const { builder, allMaterial, ...atts } = Template.currentData().atts
@@ -124,6 +139,7 @@ Template.afUserGroupSelect.events({
   },
   'click .material-toggle' (event, templateInstance) {
     event.preventDefault()
+
     const materialId = dataTarget(event, templateInstance)
     const index = Number.parseInt(dataTarget(event, templateInstance, 'index'), 10)
     const action = dataTarget(event, templateInstance, 'action')

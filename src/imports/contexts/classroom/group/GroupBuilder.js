@@ -17,6 +17,18 @@ class GroupBuilder {
     this.groupTitleDefault = groupTitleDefault
   }
 
+  /**
+   * @param options {object}
+   * @param options.users {[string]=}
+   * @param options.phases {[string]=}
+   * @param options.material {[string]=}
+   * @param options.roles {[string]=}
+   * @param options.maxGroups {number=}
+   * @param options.maxUsers {number=}
+   * @param options.materialForAllGroups {boolean=}
+   * @param options.materialAutoShuffle {boolean=}
+   * @return {GroupBuilder}
+   */
   setOptions (options) {
     check(options, {
       users: Match.Maybe([String]),
@@ -127,6 +139,14 @@ class GroupBuilder {
   // GROUPS
   // ---------------------------------------------------------------------------
 
+  /**
+   * Adds a new group to the internal group stack
+   * @param options {object}
+   * @param options.users {[object]}
+   * @param options.title {string}
+   * @param options.material {[string]}
+   * @return {GroupBuilder}
+   */
   addGroup (options) {
     checkGroupOptions(options)
     checkUsers(options.users, this.maxUsers * this.maxGroups)
@@ -175,6 +195,10 @@ class GroupBuilder {
   resetGroups () {
     this.groups.set([])
     return this
+  }
+
+  hasMaxGroups () {
+    return (this.groups.get() ?? []).length >= this.maxGroups
   }
 
   // ---------------------------------------------------------------------------
