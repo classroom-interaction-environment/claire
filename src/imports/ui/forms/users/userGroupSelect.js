@@ -167,11 +167,13 @@ Template.afUserGroupSelect.events({
     }
     const { title } = insertDoc
     templateInstance.builder.updateGroup({ index, title })
+    updateInput(templateInstance)
   },
   'click .remove-group-btn' (event, templateInstance) {
     event.preventDefault()
     const index = Number.parseInt(dataTarget(event, templateInstance), 10)
     templateInstance.builder.removeGroup({ index })
+    updateInput(templateInstance)
   },
   'dragstart .user-element' (event, templateInstance) {
     const userId = dataTarget(event, templateInstance)
