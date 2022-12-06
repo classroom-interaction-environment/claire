@@ -331,7 +331,7 @@ describe(Lesson.name, function () {
         expect(runtimeDocs).to.equal(123)
         expect(beamerReset).to.equal(456)
         expect(lessonReset).to.equal(true)
-        expect(groupDocs).to.equal(0)
+        expect(groupDocs).to.deep.equal({ removed: 0, updated: 0 })
 
         restore(LessonCollection, 'findOne')
         const updatedDoc = LessonCollection.findOne(lessonDoc._id)

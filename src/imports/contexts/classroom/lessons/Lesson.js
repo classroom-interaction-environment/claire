@@ -629,7 +629,7 @@ Lesson.methods.restart = {
         )
       }
 
-      const options = { lessonId: _id, userId }
+      const options = { lessonId: _id, userId, unitId: lessonDoc.unit }
       const runtimeDocs = LessonRuntime.removeDocuments(options)
       const groupDocs = LessonRuntime.resetGroups(options)
       const beamerReset = LessonRuntime.resetBeamer(options)

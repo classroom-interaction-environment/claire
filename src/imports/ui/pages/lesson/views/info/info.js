@@ -164,7 +164,9 @@ Template.lessonInfo.events({
 
     confirmDialog({ text: 'lesson.actions.restartConfirm', codeRequired: true, type: 'warning' })
       .then(result => {
-        if (!result) return
+        if (!result) {
+          return
+        }
 
         const { lessonDoc } = templateInstance.data
         LessonActions.restart({
