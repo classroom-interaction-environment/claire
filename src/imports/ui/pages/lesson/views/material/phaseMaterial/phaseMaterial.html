@@ -1,0 +1,109 @@
+<template name="lessonPhaseMaterial">
+    {{! material title }}
+    <span class="d-flex mr-2 align-items-start flex-fill">
+        {{>tooltip title=(i18n material.label) icon=material.icon}}
+        <span class="text-wrap ml-2 d-none d-md-inline-flex">
+            {{#if material.isFilesCollection}}
+                {{material.doc.name}}
+            {{else}}
+                {{material.doc.title}}
+            {{/if}}
+        </span>
+    </span>
+
+    {{! material actions }}
+    <span class="ml-auto">
+        {{> actionButton
+                class="preview-material-button"
+                type="outline-primary"
+                title=(i18n "common.preview")
+                icon="eye"
+                data-type=material.name
+                data-phase=phase._id
+                data-group=group._id
+                data-reference=materialId
+                blocked=false}}
+        {{> actionButton
+                type="outline-primary"
+                class="material-download-button"
+                title=(i18n "actions.download")
+                icon="cloud-download-alt"
+                data-phase=phase._id
+                data-group=group._id
+                data-type=material.name
+                data-reference=materialId
+                disabled=downloadButtonDisabled
+                blocked=downloading }}
+        {{#if isActiveStudent}}
+            {{> actionButton
+                    class="toggle-mobile-button"
+                    type="primary"
+                    title=(i18n "lesson.actions.makeMobileInactive")
+                    icon="mobile-alt"
+                    data-phase=phase._id
+                    data-group=group._id
+                    data-reference=materialId
+                    data-type=material.name
+                    disabled=isIdle
+                    blocked=updating}}
+        {{else}}
+            {{> actionButton
+                    class="toggle-mobile-button"
+                    type="outline-primary"
+                    title=(i18n "lesson.actions.makeMobileActive")
+                    icon="mobile-alt"
+                    data-phase=phase._id
+                    data-group=group._id
+                    data-reference=materialId
+                    data-type=material.name
+                    disabled=isIdle
+                    blocked=updating}}
+        {{/if}}
+        {{#if showResults}}
+            {{> actionButton
+                    type="primary"
+                    class="lesson-show-results-button"
+                    title=(i18n "actions.showResults")
+                    icon="list"
+                    data-phase=phase._id
+                    data-group=group._id
+                    data-reference=materialId
+                    disabled=resultButtonDisabled
+                    blocked=false}}
+        {{else}}
+            {{> actionButton
+                    type="outline-primary"
+                    class="lesson-show-results-button"
+                    title=(i18n "actions.showResults")
+                    icon="list"
+                    data-phase=phase._id
+                    data-group=group._id
+                    data-reference=materialId
+                    disabled=resultButtonDisabled
+                    blocked=false}}
+        {{/if}}
+        {{#if isOnBeamer}}
+            {{> actionButton
+                    type="primary"
+                    class="toggle-beamer-material-button"
+                    title=(i18n "actions.presentResults")
+                    icon="video"
+                    data-context=material.name
+                    data-group=group._id
+                    data-reference=materialId
+                    disabled=presentButtonDisabled
+                    blocked=sendingToBeamer}}
+        {{else}}
+            {{> actionButton
+                    type="outline-primary"
+                    class="toggle-beamer-material-button"
+                    title=(i18n "actions.presentResults")
+                    icon="video"
+                    data-context=material.name
+                    data-reference=materialId
+                    data-group=group._id
+                    disabled=presentButtonDisabled
+                    blocked=sendingToBeamer}}
+        {{/if}}
+    </span>
+</template>

@@ -19,13 +19,14 @@ import { getCollection } from '../../../../../api/utils/getCollection'
 import { resolveMaterialReference } from '../../../../../contexts/material/resolveMaterialReference'
 import { callMethod } from '../../../../controllers/document/callMethod'
 import { getLocalCollection } from '../../../../../infrastructure/collection/getLocalCollection'
+import { lessonSubKey } from '../../lessonSubKey'
 import '../../../../renderer/phase/full/phaseFullRenderer'
 import '../../../../renderer/phase/compact/compactPhases'
 import '../../../../renderer/phase/nonphaseMaterial/nonPhaseMaterial'
 import '../progress/taskProgress'
+import './phaseMaterial/phaseMaterial'
 import './lessonMaterial.scss'
 import './lessonMaterial.html'
-import { lessonSubKey } from '../../lessonSubKey'
 
 const API = Template.lessonMaterial.setDependencies({
   contexts: getMaterialContexts().concat([TaskResults]),
@@ -60,6 +61,42 @@ Template.lessonMaterial.onCreated(function () {
   instance.isDownloading = function (key) {
     const downloading = instance.state.get('downloading')
     return downloading[key]
+  }
+
+  instance.isActiveStudent = (materialId, groupMaterial) => {
+    if (groupMaterial && groupMaterial.some(m => m._id === materialId)) {
+      return true
+    }
+
+    const { lessonDoc } = instance.data
+    return lessonDoc &&
+      lessonDoc.visibleStudent &&
+      lessonDoc.visibleStudent.find(ref => ref._id === materialId)
+  }
+
+  instance.showResults = (materialId, groupId) => {
+    const states = Template.getState('showResults')
+    let showId = materialId
+    if (typeof groupId === 'string') {
+      showId += groupId
+    }
+    return states && states[showId]
+  }
+
+  instance.resultButtonDisabled = (materialName) => {
+    const { lessonDoc } = instance.data
+    return !lessonDoc || LessonStates.isIdle(lessonDoc) || materialName !== Task.name
+  }
+
+  instance.isIdle = () => {
+    const { lessonDoc } = instance.data
+    return LessonStates.isIdle(lessonDoc)
+  }
+
+  instance.isOnBeamer = (referenceId, itemId) => {
+    const { lessonDoc } = instance.data
+    const lessonId = lessonDoc && lessonDoc._id
+    return lessonId && Beamer.doc.has({ referenceId, lessonId, itemId })
   }
 
   const lessonId = instance.data.lessonDoc._id
@@ -124,23 +161,16 @@ Template.lessonMaterial.helpers({
     return Template.instance().data.unassociatedMaterial
   },
   hasGroups (phaseId) {
-    return Template.getState('hasGroups')[phaseId]
+    const dict = Template.getState('hasGroups')
+    return phaseId === 'global'
+      ? dict.global
+      : dict[phaseId]
   },
   groups (phaseId) {
-    if (phaseId === 'global') {
-      return
-    }
-    return getCollection(Group.name).find({ phases: phaseId })
-  },
-  isActiveStudent (referenceId, groupMaterial) {
-    if (groupMaterial && groupMaterial.some(m => m._id === referenceId)) {
-      return true
-    }
-
-    const { lessonDoc } = Template.instance().data
-    return lessonDoc &&
-      lessonDoc.visibleStudent &&
-      lessonDoc.visibleStudent.find(ref => ref._id === referenceId)
+    const query = phaseId === 'global'
+      ? { phases: { $exists: false } }
+      : { phases: phaseId }
+    return getCollection(Group.name).find(query)
   },
   lessonId () {
     const { lessonDoc } = Template.instance().data
@@ -150,12 +180,47 @@ Template.lessonMaterial.helpers({
     const { unitDoc } = Template.instance().data
     return unitDoc.phases
   },
-  resolvedReference (refId) {
-    return Template.instance().references.get(refId)
+  phaseMaterialAtts (materialId, phase, group) {
+    const groupId = group?._id
+    const instance = Template.instance()
+    const material = instance.references.get(materialId)
+    if (!material) {
+      return null
+    }
+
+    const ctx = Material.get(material.name)
+    const downloadable = ctx?.material?.downloadable
+    const downloading = instance.isDownloading(materialId, group)
+    const downloadButtonDisabled = downloadable !== true
+    const isActiveStudent = instance.isActiveStudent(materialId, group?.visible)
+    const isIdle = instance.isIdle()
+    const updating = instance.isUpdating(materialId, groupId)
+    const presentButtonDisabled = !Beamer.actions.get()
+    const showResults = instance.showResults(materialId, groupId)
+    const resultButtonDisabled = instance.resultButtonDisabled()
+    const isOnBeamer = instance.isOnBeamer(material)
+
+    return {
+      materialId,
+      material,
+      phase,
+      group,
+      downloadButtonDisabled,
+      downloading,
+      isActiveStudent,
+      isIdle,
+      updating,
+      presentButtonDisabled,
+      showResults,
+      resultButtonDisabled,
+      isOnBeamer
+    }
+  },
+  showResults (materialId, groupId) {
+    return Template.instance().showResults(materialId, groupId)
   },
   isIdle () {
-    const { lessonDoc } = Template.instance().data
-    return LessonStates.isIdle(lessonDoc)
+    return Template.instance().isIdle()
   },
   canStart () {
     const { lessonDoc } = Template.instance().data
@@ -172,9 +237,6 @@ Template.lessonMaterial.helpers({
   canComplete () {
     const { lessonDoc } = Template.instance().data
     return LessonStates.canComplete(lessonDoc)
-  },
-  updating (phaseId, referenceId) {
-    return Template.instance().isUpdating(referenceId)
   },
   downloading (phaseId, referenceId) {
     return Template.instance().isDownloading(referenceId)
@@ -227,27 +289,6 @@ Template.lessonMaterial.helpers({
       ? i18n.get('lesson.actions.toggleMobileActive')
       : i18n.get('lesson.actions.toggleMobileInactive')
   },
-  resultButtonDisabled (refType) {
-    const { lessonDoc } = Template.instance().data
-    if (!lessonDoc || LessonStates.isIdle(lessonDoc)) return true
-    return refType !== Task.name
-  },
-  presentButtonDisabled (refType) {
-    return !Beamer.actions.get()
-  },
-  downloadButtonDisabled (refType) {
-    const ctx = Material.get(refType)
-    const downloadable = ctx?.material?.downloadable
-    return downloadable !== true
-  },
-  showResults (referenceId, groupId) {
-    const states = Template.getState('showResults')
-    let showId = referenceId
-    if (typeof groupId === 'string') {
-      showId += groupId
-    }
-    return states && states[showId]
-  },
   currentItems () {
     return Template.instance().currentItems.get()
   },
@@ -275,9 +316,7 @@ Template.lessonMaterial.helpers({
     return item.responseProcessors?.[0]
   },
   isOnBeamer (referenceId, itemId) {
-    const { lessonDoc } = Template.instance().data
-    const lessonId = lessonDoc && lessonDoc._id
-    return lessonId && Beamer.doc.has({ referenceId, lessonId, itemId })
+    return Template.instance().isOnBeamer(referenceId, itemId)
   },
   sendingToBeamer (referenceId, itemId) {
     const sendingToBeamerDoc = Template.instance().state.get('sendingToBeamer')
