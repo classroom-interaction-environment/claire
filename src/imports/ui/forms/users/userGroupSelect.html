@@ -1,11 +1,14 @@
 <template name="afUserGroupSelect">
-    <div class="user-pool">
+    <div class="user-pool user-dropzone p-3   border rounded border-{{#if isOver -1 "-1"}}secondary{{else}}white{{/if}}"
+         data-index=-1 data-role="-1">
         {{#each user in allUsers}}
-            <span class="btn btn-outline-{{#if isOnline
-                                               user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
+            <span class="btn btn-outline-{{#if isOnline user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
                   draggable="true"
                   data-target="{{user._id}}">
-                    {{user.firstName}} {{user.lastName}}
+                    <span class="d-block text-center">
+                        {{>profileImage user=user height=32}}
+                    </span>
+                {{user.firstName}} {{user.lastName}}
             </span>
         {{/each}}
     </div>
@@ -16,27 +19,35 @@
                 {{#let groupIndex=@index}}
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header d-flex justify-content-between">
+                            <div class="card-header d-flex justify-content-between px-3">
                                 {{#if editTitle groupIndex}}
                                     {{> quickForm id="editGroupTitleForm"
                                             schema=titleSchema doc=group type="normal" class="form-inline bg-transparent"
                                             buttonContent=(i18n "actions.update")}}
                                 {{else}}
                                     <span class="font-weight-bold">
-                            {{group.title}}
-                                        {{> actionButton type="outline-secondary" class="border-0 edit-title-btn"
+                                        {{group.title}}
+                                        {{> actionButton
+                                                type="outline-secondary"
+                                                class="border-0 edit-title-btn"
                                                 data-target=groupIndex
                                                 icon="edit"}}
-                        </span>
+                                     </span>
                                 {{/if}}
                                 <span class="details">
-                            {{#if eq group.users.length maxUsers}}
-                                {{> icon name="check" class="text-success"}}
-                            {{/if}}
-                                    {{#if gt group.users.length maxUsers}}
-                                        {{> icon name="exclamation-triangle" class="text-warning"}}
+                                    {{#if maxUsers}}
+                                        {{> icon name="user"}}
+                                        {{#if eq group.users.length maxUsers}}
+                                            {{> icon name="check" class="text-success"}}
+                                        {{/if}}
+                                        {{#if gt group.users.length maxUsers}}
+                                            {{> icon name="exclamation-triangle" class="text-warning"}}
+                                        {{/if}}
+                                        {{group.users.length}}/{{maxUsers}}
+                                    {{else}}
+                                        {{> icon name="user"}}
+                                        {{group.users.length}}
                                     {{/if}}
-                                    {{group.users.length}}/{{maxUsers}}
 
                                     {{#unless removeDisabled}}
                                         {{> actionButton type="outline-danger"
@@ -50,36 +61,40 @@
                             </div>
                             <div class="card-body">
                                 {{#each role in roles}}
-                                    <div class="mt-3 p-3 user-dropzone {{#if isOver groupIndex
-                                                                             role}}border border-secondary{{/if}}"
+                                    <div class="mt-3 p-3 user-dropzone border rounded border-{{#if isOver groupIndex
+                                                                                                   role}}secondary{{else}}light{{/if}}"
                                          data-index="{{groupIndex}}"
                                          data-role="{{role}}">
                                         <span class="font-weight-bold">{{role}}</span>
                                         {{#each entry in (roleUsers group.users role)}}
                                             {{#let user=(toUser entry.userId)}}
-                                                <span class="btn btn-outline-{{#if isOnline
-                                                                                   user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
+                                                <span class="btn btn-outline-{{#if isOnline user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
                                                       draggable="true"
                                                       data-index="{{groupIndex}}"
                                                       data-target="{{user._id}}">
-                                            {{user.firstName}} {{user.lastName}}
+                                            <span class="d-block text-center">
+                                                {{>profileImage user=user height=32 }}
+                                            </span>
+                                                    {{user.firstName}} {{user.lastName}}
                                     </span>
                                             {{/let}}
                                         {{/each}}
                                     </div>
                                 {{else}}
-                                    <div class="p-3 user-dropzone {{#if isOver groupIndex
-                                                                        "none"}}border border-secondary{{/if}}"
+                                    <div class="p-3 user-dropzone border rounded border-{{#if isOver groupIndex
+                                                                                              "none"}}secondary{{else}}light{{/if}}"
                                          data-index="{{groupIndex}}"
                                          data-role="none">
                                         {{#each user in group.users}}
                                             {{#let user=(toUser user.userId)}}
-                                                <span class="btn btn-outline-{{#if isOnline
-                                                                                   user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
+                                                <span class="btn btn-outline-{{#if isOnline user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
                                                       draggable="true"
                                                       data-index="{{groupIndex}}"
                                                       data-target="{{user._id}}">
-                                            {{user.firstName}} {{user.lastName}}
+                                                    <span class="d-block text-center">
+                                                        {{>profileImage user=user height=32}}
+                                                    </span>
+                                                    {{user.firstName}} {{user.lastName}}
                                     </span>
                                             {{/let}}
                                         {{/each}}

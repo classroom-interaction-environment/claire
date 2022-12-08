@@ -184,6 +184,7 @@ Template.lessonMaterial.helpers({
     const groupId = group?._id
     const instance = Template.instance()
     const material = instance.references.get(materialId)
+
     if (!material) {
       return null
     }
@@ -197,7 +198,7 @@ Template.lessonMaterial.helpers({
     const updating = instance.isUpdating(materialId, groupId)
     const presentButtonDisabled = !Beamer.actions.get()
     const showResults = instance.showResults(materialId, groupId)
-    const resultButtonDisabled = instance.resultButtonDisabled()
+    const resultButtonDisabled = instance.resultButtonDisabled(material.name)
     const isOnBeamer = instance.isOnBeamer(material)
 
     return {

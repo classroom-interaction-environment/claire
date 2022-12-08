@@ -15,7 +15,9 @@ export const editGroupSchema = (groupBuilderInstance, options = {}) => {
     maxUsers,
     maxGroups /*, materialForAllGroups, roles = [], material = [] */
   } = groupBuilderInstance
-  const minCount = Math.floor(users.length / (maxUsers || 1))
+  const minCount = maxUsers
+    ? Math.floor(users.length / maxUsers)
+    : 1
 
   return {
     groups: {

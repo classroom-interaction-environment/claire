@@ -9,7 +9,7 @@ class GroupBuilder {
     this.phases = []
     this.material = []
     this.maxGroups = 0
-    this.maxUsers = 2 // per group
+    this.maxUsers = 0 // per group
     this.materialForAllGroups = false
     this.materialAutoShuffle = false
     this.roles = []

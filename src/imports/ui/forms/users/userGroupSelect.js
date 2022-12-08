@@ -185,9 +185,22 @@ Template.afUserGroupSelect.events({
   'dragenter .user-dropzone' (event, templateInstance) {
     const index = Number.parseInt(dataTarget(event, templateInstance, 'index'), 10)
     const role = dataTarget(event, templateInstance, 'role') || undefined
+    const isDraggable = event.relatedTarget && event.relatedTarget.getAttribute('draggable')
+
+    if (isDraggable) {
+      overDraggable = true
+    }
+
     templateInstance.state.set('dragOverIndex', { index, role })
   },
   'dragleave .user-dropzone' (event, templateInstance) {
+    if (overDraggable) {
+      event.preventDefault()
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+      overDraggable = false
+      return false
+    }
     templateInstance.state.set('dragOverIndex', null)
   },
   'drop .user-dropzone' (event, templateInstance) {
@@ -203,12 +216,21 @@ Template.afUserGroupSelect.events({
     // index of the group, where the user is dropped
     const index = Number.parseInt(dataTarget(event, templateInstance, 'index'), 10)
 
+    if (index === groupIndex) {
+      return templateInstance.state.set('dragOverIndex', null) // skip here as there is nothing to update
+    }
+
     // role is only defined if roles exist and user is dropped on a role' dropzone
     const roleStr = dataTarget(event, templateInstance, 'role')
     const role = roleStr === 'none' ? undefined : roleStr
 
+    // if target index is -1 then we remove the users back to the user-pool
+    if (index === -1) {
+      templateInstance.builder.removeUser({ index: groupIndex, userId, role })
+    }
+
     // if this is an unselected user
-    if (groupIndex === -1) {
+    else if (groupIndex === -1) {
       templateInstance.builder.addUser({ index, userId, role })
     }
 
@@ -222,10 +244,13 @@ Template.afUserGroupSelect.events({
       templateInstance.builder.addUser({ index, userId, role })
       templateInstance.builder.removeUser({ index: groupIndex, userId, role })
     }
+
     templateInstance.state.set('dragOverIndex', null)
     updateInput(templateInstance)
   }
 })
+
+let overDraggable = false
 
 function updateInput (templateInstance) {
   const groups = templateInstance.builder.groups.get()
