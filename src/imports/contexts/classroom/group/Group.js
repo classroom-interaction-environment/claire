@@ -179,6 +179,26 @@ Group.publications.single = {
 
 Group.methods = {}
 
+Group.methods.get = {
+  name: 'group.methods.get',
+  schema: {
+    ids: Array,
+    'ids.$': String
+  },
+  roles: UserUtils.roles.teacher,
+  run: onServerExec(function () {
+    import { checkEditPermission } from '../../../api/document/checkEditPermissions'
+    import { $in } from '../../../api/utils/query/inSelector'
+    return function ({ ids }) {
+      const query = { _id: $in(ids) }
+      const docs = getCollection(Group.name).find(query)
+      const { userId } = this
+      docs.forEach(doc => checkEditPermission({ doc, userId }))
+      return docs.fetch()
+    }
+  })
+}
+
 Group.methods.save = {
   name: 'group.methods.save',
   schema: Object.assign({
