@@ -2,7 +2,7 @@
 
 cd ..
 CARO_PATH=$(pwd)
-cd ${CARO_PATH}/caro-core
+cd "$CARO_PATH/src" || exit 1
 
 PACKAGE_DIRS="${CARO_PATH}/lib/api:${CARO_PATH}/lib/ui:${CARO_PATH}/lib/contexts:${CARO_PATH}/lib/dev"
 
