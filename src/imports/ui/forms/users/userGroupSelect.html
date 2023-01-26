@@ -2,7 +2,8 @@
     <div class="user-pool user-dropzone p-3   border rounded border-{{#if isOver -1 "-1"}}secondary{{else}}white{{/if}}"
          data-index=-1 data-role="-1">
         {{#each user in allUsers}}
-            <span class="btn btn-outline-{{#if isOnline user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
+            <span class="btn btn-outline-{{#if isOnline
+                                               user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
                   draggable="true"
                   data-target="{{user._id}}">
                     <span class="d-block text-center">
@@ -22,7 +23,10 @@
                             <div class="card-header d-flex justify-content-between px-3">
                                 {{#if editTitle groupIndex}}
                                     {{> quickForm id="editGroupTitleForm"
-                                            schema=titleSchema doc=group type="normal" class="form-inline bg-transparent"
+                                            schema=titleSchema
+                                            doc=group
+                                            type="normal"
+                                            class="form-inline bg-transparent"
                                             buttonContent=(i18n "actions.update")}}
                                 {{else}}
                                     <span class="font-weight-bold">
@@ -68,7 +72,8 @@
                                         <span class="font-weight-bold">{{role}}</span>
                                         {{#each entry in (roleUsers group.users role)}}
                                             {{#let user=(toUser entry.userId)}}
-                                                <span class="btn btn-outline-{{#if isOnline user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
+                                                <span class="btn btn-outline-{{#if isOnline
+                                                                                   user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
                                                       draggable="true"
                                                       data-index="{{groupIndex}}"
                                                       data-target="{{user._id}}">
@@ -87,7 +92,8 @@
                                          data-role="none">
                                         {{#each user in group.users}}
                                             {{#let user=(toUser user.userId)}}
-                                                <span class="btn btn-outline-{{#if isOnline user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
+                                                <span class="btn btn-outline-{{#if isOnline
+                                                                                   user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
                                                       draggable="true"
                                                       data-index="{{groupIndex}}"
                                                       data-target="{{user._id}}">

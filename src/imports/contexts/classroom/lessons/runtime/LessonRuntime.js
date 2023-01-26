@@ -1,6 +1,6 @@
 import { resetBeamer } from './resetBeamer'
 import { removeDocuments } from './removeDocuments'
-import { resetGroups } from './resetGroups'
+import { removeGroups, resetGroups } from './resetGroups'
 import { createRemoveAllMaterial } from '../../../material/createRemoveAllMaterial'
 
 /**
@@ -19,6 +19,7 @@ export const LessonRuntime = {
    * @type {function}
    */
   removeDocuments: removeDocuments,
+  removeGroups: removeGroups,
   /**
    * @type {function}
    */

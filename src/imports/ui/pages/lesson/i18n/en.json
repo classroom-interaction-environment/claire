@@ -65,18 +65,10 @@
       "artifacts": "Artifacts"
     },
     "info": {
-      "title": "Participants",
-      "createGroups": "Create groups"
+      "title": "Participants"
     },
     "student": {
       "docNotVisible": "The material was probably disabled by the teacher."
     }
-  },
-  "group": {
-    "title": "Group",
-    "groups": "Groups",
-    "users": "Members",
-    "phases": "Limited to phases",
-    "material": "L. Material for groups"
   }
 }

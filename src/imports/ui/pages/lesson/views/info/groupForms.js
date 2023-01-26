@@ -1,4 +1,3 @@
-import { Meteor } from 'meteor/meteor'
 import { Schema } from '../../../../../api/schema/Schema'
 import { Group } from '../../../../../contexts/classroom/group/Group'
 import { getLocalCollection } from '../../../../../infrastructure/collection/getLocalCollection'
@@ -8,6 +7,7 @@ import { getFullName } from '../../../../../api/accounts/emailTemplates/common'
 import { callMethod } from '../../../../controllers/document/callMethod'
 import { GroupBuilder } from '../../../../../contexts/classroom/group/GroupBuilder'
 import { editGroupSchema } from '../../../../forms/groupbuilder/api/editGroupSchema'
+import { getUser } from '../../../../../contexts/system/accounts/users/getUser'
 
 export const createGroupForms = ({ translate, onError }) => {
   const groupForms = {}
@@ -17,6 +17,9 @@ export const createGroupForms = ({ translate, onError }) => {
       type: Array,
       label: () => translate('group.users'),
       autoform: {
+        // we don't need renderers for this doc list, since
+        // we have already resolved the docs wo a doc with title prop
+        // in the way it's readable
         type: 'docList'
       }
     },
@@ -52,7 +55,7 @@ export const createGroupForms = ({ translate, onError }) => {
     const finalDoc = { ...groupDoc }
     finalDoc.users = groupDoc.users
       .map(({ userId, role }) => {
-        const userDoc = Meteor.users.findOne(userId)
+        const userDoc = getUser(userId)
         const name = userDoc && getFullName(userDoc)
         const title = role ? `${role}: ${name || userId}` : `${name || userId}`
         return { title }
@@ -72,6 +75,7 @@ export const createGroupForms = ({ translate, onError }) => {
           : { title: materialId }
       })
     }
+    finalDoc.isAdhoc = groupDoc.isAdhoc
     return finalDoc
   }
 

@@ -1,4 +1,3 @@
-/* global AutoForm */
 import { Tracker } from 'meteor/tracker'
 import { Template } from 'meteor/templating'
 
@@ -10,7 +9,6 @@ import { SocialStateType } from '../../../../../contexts/curriculum/curriculum/t
 import { i18n } from '../../../../../api/language/language'
 import { LessonMaterial } from '../../../../controllers/LessonMaterial'
 import { unitEditorSubscriptionKey } from '../../unitEditorSubscriptionKey'
-import { Material } from '../../../../../contexts/material/Material'
 
 import { formIsValid, formReset } from '../../../../components/forms/formUtils'
 import { dataTarget } from '../../../../utils/dataTarget'
@@ -22,62 +20,19 @@ import { insertContextDoc } from '../../../../controllers/document/insertContext
 import { removeContextDoc } from '../../../../controllers/document/removeContextDoc'
 import { $in } from '../../../../../api/utils/query/inSelector'
 import { getCollection } from '../../../../../api/utils/getCollection'
-import { firstOption } from '../../../../../contexts/tasks/definitions/common/helpers'
-import { unitEditorMaterialNames } from '../../utils/unitEditorMaterialNames'
-import { queryFromCollectionAndLocal } from '../../../../../api/utils/query/queryFromCollectionAndLocal'
 import { getMaterialContexts } from '../../../../../contexts/material/initMaterial'
-
+import { isCurriculumDoc } from '../../../../../api/decorators/methods/isCurriculumDoc'
+import { phaseBaseSchema } from './phaseBaseSchema'
 import Sortable from 'sortablejs'
-
 import '../../../../generic/info/info'
 import '../phaserenderer/phaseRenderer'
 import './phases.css'
 import './phases.html'
-import { isCurriculumDoc } from '../../../../../api/decorators/methods/isCurriculumDoc'
 
 const defaultSchema = Curriculum.getDefaultSchema()
 const API = Template.uephases.setDependencies({
   contexts: [...(new Set([Phase, Unit].concat(getMaterialContexts()))).values()]
 })
-
-const phaseBaseSchema = Object.assign({}, defaultSchema, Phase.schema)
-phaseBaseSchema['references.$.collection'].autoform = {
-  firstOption: firstOption,
-  options () {
-    const unitId = AutoForm.getFieldValue('unit')
-    if (!unitId) return []
-
-    const UnitCollection = getCollection(Unit.name)
-    const unitDoc = UnitCollection.findOne(unitId)
-
-    return unitEditorMaterialNames().filter(option => {
-      const field = option.fieldName
-      const target = unitDoc[field]
-      return target && target.length > 0
-    }).map(({ name, label }) => {
-      return { value: name, label: () => i18n.get(label) }
-    })
-  }
-}
-
-phaseBaseSchema['references.$.document'].autoform = {
-  firstOption: firstOption,
-  options () {
-    const index = this.name.split('.')[1]
-    const contextName = AutoForm.getFieldValue(`references.${index}.collection`)
-    const unitId = AutoForm.getFieldValue('unit')
-
-    if (!unitId || !contextName) return []
-
-    const UnitCollection = getCollection(Unit.name)
-    const unitDoc = UnitCollection.findOne(unitId)
-    const context = Material.get(contextName)
-    const targetIds = unitDoc[context.fieldName]
-    const query = { _id: { $in: targetIds } }
-
-    return queryFromCollectionAndLocal(contextName, query)
-  }
-}
 
 const hiddenUnitSchema = (unitDoc) => ({
   type: String,

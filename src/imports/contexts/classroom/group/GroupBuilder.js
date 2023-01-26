@@ -2,8 +2,29 @@ import { Meteor } from 'meteor/meteor'
 import { check, Match } from 'meteor/check'
 import { ReactiveVar } from 'meteor/reactive-var'
 
+const internal = {
+  defaultGroupTitle: 'group.defaultTitle'
+}
+
+/**
+ * @class
+ * @member {ReactiveVar} groups
+ * @member {[string]} users
+ * @member {[string]} phases
+ * @member {[string]} material
+ * @member {number} maxGroups
+ * @member {number} maxUsers
+ * @member {boolean} materialForAllGroups
+ * @member {boolean} materialAutoShuffle
+ * @member {[string]} roles
+ * @member {string} groupTitleDefault
+ */
 class GroupBuilder {
-  constructor ({ groupTitleDefault = 'change me!' } = {}) {
+  static defaultGroupTitle (value) {
+    internal.defaultGroupTitle = value
+  }
+
+  constructor ({ groupTitleDefault = internal.defaultGroupTitle } = {}) {
     this.groups = new ReactiveVar([])
     this.users = []
     this.phases = []
@@ -13,7 +34,6 @@ class GroupBuilder {
     this.materialForAllGroups = false
     this.materialAutoShuffle = false
     this.roles = []
-    this.oddDistribution = false
     this.groupTitleDefault = groupTitleDefault
   }
 

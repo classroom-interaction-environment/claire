@@ -1,0 +1,11 @@
+<template name="unitEditorGroupsView">
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-sm btn-success groups-action-btn"
+                data-action="create">
+            <i class="fa fa-fw fa-plus"></i> {{i18n 'actions.create'}}
+        </button>
+    </div>
+    {{#with groupsEditorAtts}}
+        {{> groupsEditor this}}
+    {{/with}}
+</template>

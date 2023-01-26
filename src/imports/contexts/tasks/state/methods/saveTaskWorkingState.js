@@ -41,18 +41,20 @@ export const saveTaskWorkingState = function ({ lessonId, taskId, groupId, compl
   checkTaskDoc(taskId)
 
   // if we have a group we need to get the groupDoc, too
-  const groupDoc = groupId && getGroupDoc(groupId)
+  let groupDoc
 
   if (groupId) {
     Features.ensure('groups')
+    groupDoc = groupId && getGroupDoc(groupId)
     ensureDocumentExists({
       document: groupDoc,
+      name: Group.name,
       docId: groupId,
       userId: userId
     })
   }
 
-  const groupVisible = groupDoc && groupDoc.visible
+  const groupVisible = groupDoc?.visible
   const allMaterial = (groupVisible || []).concat(lessonDoc.visibleStudent || [])
   const taskIsVisible = allMaterial.find(entry => entry._id === taskId)
 

@@ -194,7 +194,8 @@ describe(Group.name, function () {
           createdBy: userId,
           material: [materialId],
           title: groupInput.title,
-          lessonId: groupInput.lessonId,
+          unitId: groupInput.unitId,
+          isAdhoc: false,
           maxUsers: groupInput.maxUsers,
           users: groupInput.users,
           visible: [
@@ -221,7 +222,8 @@ describe(Group.name, function () {
           createdBy: userId,
           material: [materialId],
           title: groupInput.title,
-          lessonId: groupInput.lessonId,
+          unitId: groupInput.unitId,
+          isAdhoc: false,
           maxUsers: groupInput.maxUsers,
           users: groupInput.users,
           visible: []

@@ -2,7 +2,7 @@
 import { Random } from 'meteor/random'
 import { TaskWorkingState } from '../../state/TaskWorkingState'
 import { LessonStates } from '../../../classroom/lessons/LessonStates'
-import { restoreAll } from '../../../../../tests/testutils/stub'
+import { restoreAll, stub } from '../../../../../tests/testutils/stub'
 import {
   clearAllCollections,
   mockCollections,
@@ -16,12 +16,14 @@ import { Lesson } from '../../../classroom/lessons/Lesson'
 import { Users } from '../../../system/accounts/users/User'
 import { SchoolClass } from '../../../classroom/schoolclass/SchoolClass'
 import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
+import { Group } from '../../../classroom/group/Group'
+import { Features } from '../../../../api/config/Features'
 
 describe(TaskWorkingState.name, function () {
   let TaskWorkingStateCollection
 
   before(function () {
-    [TaskWorkingStateCollection] = mockCollections(TaskWorkingState, Lesson, Users, SchoolClass, Task)
+    [TaskWorkingStateCollection] = mockCollections(TaskWorkingState, Lesson, Users, SchoolClass, Task, Group)
   })
 
   afterEach(function () {
@@ -62,7 +64,43 @@ describe(TaskWorkingState.name, function () {
           .with.property('details')
           .with.property('query', taskId)
       })
-      it('throws if a given groupdoc does not exist by griupd id')
+      it('throws if a given groupDoc does not exist by groupId id', function () {
+        const taskId = Random.id()
+        const taskDoc = { _id: taskId }
+        const visibleStudent = [{ _id: taskId, context: Task.name }]
+        const { lessonDoc, userId } = stubStudentDocs({ startedAt: new Date(), visibleStudent })
+        stubTaskDoc(taskDoc)
+        const insertDoc = {
+          lessonId: lessonDoc._id,
+          taskId: taskId,
+          complete: false,
+          page: 1,
+          groupId: Random.id(),
+          progress: 50
+        }
+        stub(Features, 'ensure', () => {})
+        const thrown = expect(() => saveState.call({ userId }, insertDoc))
+          .to.throw('getDocument.docUndefined')
+        thrown.with.deep.property('details', { name: Group.name, query: insertDoc.groupId })
+      })
+      it('throws if a given groupId is rejected due to group features being disabled', function () {
+        const taskId = Random.id()
+        const taskDoc = { _id: taskId }
+        const visibleStudent = [{ _id: taskId, context: Task.name }]
+        const { lessonDoc, userId } = stubStudentDocs({ startedAt: new Date(), visibleStudent })
+        stubTaskDoc(taskDoc)
+        const insertDoc = {
+          lessonId: lessonDoc._id,
+          taskId: taskId,
+          complete: false,
+          page: 1,
+          groupId: Random.id(),
+          progress: 50
+        }
+        stub(Features, 'get', () => false)
+        expect(() => saveState.call({ userId }, insertDoc))
+          .to.throw('Feature "groups" is expected to be true but is false')
+      })
       it('throws if the task is not editable', function () {
         const { lessonDoc, userId } = stubStudentDocs({ startedAt: new Date() })
         const taskId = Random.id()
@@ -116,7 +154,13 @@ describe(TaskWorkingState.name, function () {
         expect(TaskWorkingStateCollection.findOne(insertDoc)).to.equal(undefined)
         const taskWorkingStateId = TaskWorkingStateCollection.insert(insertDoc)
 
-        const updated = saveState.call({ userId }, { lessonId: lessonDoc._id, taskId, complete: true, page: 5, progress: 100 })
+        const updated = saveState.call({ userId }, {
+          lessonId: lessonDoc._id,
+          taskId,
+          complete: true,
+          page: 5,
+          progress: 100
+        })
         expect(updated).to.equal(1)
 
         const updatedDoc = TaskWorkingStateCollection.findOne(taskWorkingStateId)

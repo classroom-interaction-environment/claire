@@ -1,9 +1,9 @@
-import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { Group } from '../../../contexts/classroom/group/Group'
 import { Schema } from '../../../api/schema/Schema'
 import { dataTarget } from '../../utils/dataTarget'
 import { formIsValid } from '../../components/forms/formUtils'
+import { getUser } from '../../../contexts/system/accounts/users/getUser'
 import './autoform'
 import './userGroupSelect.scss'
 import './userGroupSelect.html'
@@ -13,18 +13,11 @@ Template.afUserGroupSelect.setDependencies()
 Template.afUserGroupSelect.onCreated(function () {
   const instance = this
   instance.state.set('selectedUsers', [])
-
   // const { minCount, maxCount } = instance.data
   const { builder, allMaterial } = instance.data.atts
   const { users = [], roles = [], material = [], maxUsers, materialForAllGroups } = builder
   const materialOptions = (allMaterial || []).filter(({ value }) => material.includes(value))
   instance.builder = builder
-
-  const query = { _id: { $in: users } }
-  const transform = {
-    sort: { lastName: 1, firstName: 1 }
-  }
-
   instance.state.set({ roles, maxUsers, materialOptions, materialForAllGroups })
 
   // on internal changes
@@ -37,15 +30,16 @@ Template.afUserGroupSelect.onCreated(function () {
       (group.users || []).forEach(user => assignedUsers.add(user.userId))
     })
 
-    const users = Meteor.users
-      .find(query, transform)
-      .fetch()
-      .filter(userDoc => !assignedUsers.has(userDoc._id))
-      .sort((a, b) => (b.presence?.status === 'online' ? 1 : 0) - (a.presence?.status === 'online' ? 1 : 0))
-
-    instance.state.set({ users })
+    instance.state.set({ users: getUsers({ users, assignedUsers }) })
   })
 })
+
+const getUsers = ({ users, assignedUsers }) => {
+  return users
+    .map(getUser)
+    .filter(userDoc => userDoc && !assignedUsers.has(userDoc._id))
+    .sort((a, b) => (b.presence?.status === 'online' ? 1 : 0) - (a.presence?.status === 'online' ? 1 : 0))
+}
 
 const titleSchema = Schema.create({
   title: {

@@ -189,20 +189,15 @@ describe(LessonRuntime.name, function () {
 
   describe(LessonRuntime.resetGroups.name, function () {
     it('throws on incomplete args', function () {
-      const lessonId = Random.id()
-      const unitId = Random.id()
-      expect(() => LessonRuntime.resetGroups({})).to.throw('Match error: Missing key \'lessonId\'')
-      expect(() => LessonRuntime.resetGroups({ unitId })).to.throw('Match error: Missing key \'lessonId\'')
-      expect(() => LessonRuntime.resetGroups({ lessonId })).to.throw('Match error: Missing key \'unitId\'')
+      expect(() => LessonRuntime.resetGroups({})).to.throw('Match error: Missing key \'unitId\'')
     })
     it('removes all ad-hoc groups', function () {
-      const lessonId = Random.id()
       const unitId = Random.id()
-      const removeGroupId = GroupCollection.insert(createGroupDoc({ lessonId, title: 'to remove' }))
-      const otherGroupId = GroupCollection.insert(createGroupDoc({ title: 'other' }))
+      const removeGroupId = GroupCollection.insert(createGroupDoc({ unitId, title: 'to remove', isAdhoc: true }))
+      const otherGroupId = GroupCollection.insert(createGroupDoc({ unitId, title: 'other', isAdhoc: false }))
       expect(GroupCollection.find().count()).to.equal(2)
-      const result = LessonRuntime.resetGroups({ lessonId, unitId })
-      expect(result).to.deep.equal({ removed: 1, updated: 0 })
+      const result = LessonRuntime.resetGroups({ unitId })
+      expect(result).to.deep.equal({ removed: 1, updated: 1 })
       expect(GroupCollection.find(removeGroupId).count()).to.equal(0)
       expect(GroupCollection.find(otherGroupId).count()).to.equal(1)
       expect(GroupCollection.find().count()).to.equal(1)
@@ -210,9 +205,18 @@ describe(LessonRuntime.name, function () {
     it('resets groups that are defined on a unit-level', function () {
       const lessonId = Random.id()
       const unitId = Random.id()
-      const updateGroupId = GroupCollection.insert(createGroupDoc({ lessonId, title: 'to update', unitId, visible: [{ _id: Random.id(), context: 'foo' }] }))
+      const updateGroupId = GroupCollection.insert(createGroupDoc({
+        title: 'to update',
+        unitId,
+        visible: [{ _id: Random.id(), context: 'foo' }],
+        isAdhoc: false
+      }))
       const groupDoc = GroupCollection.findOne(updateGroupId)
-      const otherGroupId = GroupCollection.insert(createGroupDoc({ title: 'other', unitId: Random.id() }))
+      const otherGroupId = GroupCollection.insert(createGroupDoc({
+        title: 'other',
+        unitId: Random.id(),
+        isAdhoc: false
+      }))
       const otherDoc = GroupCollection.findOne(otherGroupId)
 
       expect(GroupCollection.find().count()).to.equal(2)
@@ -222,7 +226,7 @@ describe(LessonRuntime.name, function () {
         _id: updateGroupId,
         visible: [],
         title: groupDoc.title,
-        lessonId,
+        isAdhoc: false,
         unitId,
         createdBy: groupDoc.createdBy,
         users: groupDoc.users,

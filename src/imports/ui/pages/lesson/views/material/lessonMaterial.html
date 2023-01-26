@@ -68,7 +68,7 @@
                             <div class="d-flex bg-transparent border-0 mt-1">
 
                                 {{! group default info }}
-                                <div class="bg-primary text-white p-1 rounded">
+                                <div class="bg-primary text-white p-1 rounded w-25">
                                     {{group.title}}
                                 </div>
 
@@ -84,6 +84,10 @@
                                                 {{> taskResultTable this}}
                                             </li>
                                         {{/with}}
+                                    {{else}}
+                                        <li class="list-group-item">
+                                            {{group.material.length}}
+                                        </li>
                                     {{/each}}
                                 </ul>
                             </div>
@@ -124,7 +128,7 @@
                             <div class="d-flex bg-transparent border-0 mt-1">
 
                                 {{! group default info }}
-                                <div class="bg-primary text-white p-1 rounded">
+                                <div class="bg-primary text-white p-1 rounded w-25">
                                     {{group.title}}
                                 </div>
 
@@ -140,6 +144,10 @@
                                                 {{> taskResultTable this}}
                                             </li>
                                         {{/with}}
+                                    {{else}}
+                                        <li class="list-group-item">
+                                            {{group.material.length}}
+                                        </li>
                                     {{/each}}
                                 </ul>
                             </div>

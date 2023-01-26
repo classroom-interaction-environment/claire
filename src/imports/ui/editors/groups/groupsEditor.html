@@ -1,0 +1,89 @@
+<template name="groupsEditor">
+    <ul class="list-group my-4">
+        {{#each group in groups}}
+            <li class="list-group-item d-flex justify-content-between">
+                <div class="flex-fill">
+                    {{! title and number of members }}
+                    <div class="d-flex justify-content-between w-100">
+                        <span>
+                            {{> icon name="users" fw=true}}
+                            {{group.title}}
+                            {{#if group.isAdhoc}}
+                                {{> tooltip label="*" title=(i18n "group.isAdhoc")}}
+                            {{/if}}
+                        </span>
+                        <span class="px-1 align-self-center">
+                            {{group.users.length}} {{i18n "group.users"}}
+                        </span>
+                    </div>
+
+                    {{! users }}
+                    <div class="d-block text-secondary">
+                        <small>{{> icon name="user" fw=true}}</small>
+                        {{#each user in group.users}}
+                            {{#with toUser user.userId}}
+                                <small class="p-1 {{#unless isOnline this.presence}}text-muted{{/unless}}">
+                                    {{username this}} {{#if user.role}}({{user.role}}){{/if}}
+                                </small>
+                            {{/with}}
+                        {{/each}}
+                    </div>
+
+                    {{! phases}}
+                    {{#with (phaseDocs group.phases)}}
+                        <div class="d-block text-secondary">
+                            {{> icon name="shuffle" fw=true}}
+                            {{#each phase in this}}
+                                <small class="p-1">{{phase.title}}</small>
+                            {{/each}}
+                        </div>
+                    {{/with}}
+
+                    {{!  TODO add symbols}}
+
+                </div>
+                <span class="align-self-top">
+                    {{> actionButton class="groups-action-btn"
+                            type="outline-secondary"
+                            icon="eye"
+                            data-action="view"
+                            title=(i18n "actions.preview")
+                            data-id=group._id}}
+                    {{> actionButton class="groups-action-btn"
+                            type="outline-primary"
+                            icon="edit"
+                            disabled=(actionDisabled group)
+                            data-action="update"
+                            title=(i18n "actions.edit")
+                            data-id=group._id}}
+                    {{> actionButton class="groups-action-btn"
+                            type="outline-danger"
+                            icon="trash"
+                            disabled=(actionDisabled group)
+                            data-action="remove"
+                            title=(i18n "actions.delete")
+                            data-id=group._id}}
+                    </span>
+            </li>
+        {{else}}
+            <li class="list-group-item">{{> nodocs}}</li>
+        {{/each}}
+    </ul>
+
+    {{> formModal hideLegend=true }}
+
+    {{#modal id="manageGroupModal" xl=true static=true}}
+        {{> mheader title=(i18n "group.createGroups") class="bg-success text-white" dismiss=true}}
+        {{#mbody}}
+            {{#if groupEditMode "create"}}
+                {{#onLoaded complete=groupBuilderAtts}}
+                    {{> groupBuilder groupBuilderAtts}}
+                {{/onLoaded}}
+            {{else if groupEditMode "update"}}
+                update
+            {{else}}
+                {{> loading }}
+            {{/if}}
+        {{/mbody}}
+    {{/modal}}
+</template>

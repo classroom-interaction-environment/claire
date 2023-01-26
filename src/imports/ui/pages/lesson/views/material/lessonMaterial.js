@@ -99,10 +99,10 @@ Template.lessonMaterial.onCreated(function () {
     return lessonId && Beamer.doc.has({ referenceId, lessonId, itemId })
   }
 
-  const lessonId = instance.data.lessonDoc._id
+  const unitId = instance.data.unitDoc._id
   instance.autorun(() => {
     const hasGroups = {}
-    getCollection(Group.name).find({ lessonId }).forEach(groupDoc => {
+    getCollection(Group.name).find({ unitId }).forEach(groupDoc => {
       if (groupDoc.phases?.length) {
         groupDoc.phases.forEach(phaseId => {
           hasGroups[phaseId] = true
@@ -430,7 +430,7 @@ Template.lessonMaterial.events({
       name: context,
       referenceId
     }, templateInstance)
-      .catch(e => API.API.notify(e))
+      .catch(e => API.notify(e))
       .then(() => {
         const previewDoc = { name: context, referenceId }
         const template = LessonMaterial.getPreviewTemplate(previewDoc)
@@ -504,7 +504,7 @@ Template.lessonMaterial.events({
     const printRoot = dataTarget(event, templateInstance)
     printHTMLElement(printRoot, () => {
     }, err => {
-      API.API.notify(err)
+      API.notify(err)
     })
   },
 
@@ -630,7 +630,7 @@ Template.lessonMaterial.events({
         const updateDoc = { _id: beamerDoc._id, references: beamerDoc.references }
         updateDoc.references[index].responseProcessor = name
         Beamer.doc.update(updateDoc, (err) => {
-          if (err) return API.API.notify(err)
+          if (err) return API.notify(err)
         })
       }
     }

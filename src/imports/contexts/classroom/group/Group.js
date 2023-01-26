@@ -12,7 +12,9 @@ Group.publicFields = {
   title: 1,
   users: 1,
   maxUsers: 1,
-  lessonId: 1,
+  isAdhoc: 1,
+  classId: 1,
+  unitId: 1,
   phases: 1,
   material: 1,
   visible: 1
@@ -63,19 +65,21 @@ Group.schema = {
   },
 
   /**
-   * Associate a class
+   * determines, whether a group has been created
+   * during a running lesson (ad-hoc).
+   * In such case it's a temporary group that
+   * is deleted, if the lesson is reset
    */
-
-  classId: {
-    type: String,
+  isAdhoc: {
+    type: Boolean,
     optional: true
   },
 
   /**
-   * Limit scope to a certain lesson, if desired.
+   * Associate a class
    */
 
-  lessonId: {
+  classId: {
     type: String,
     optional: true
   },
@@ -135,33 +139,32 @@ Group.publications = {}
 Group.publications.my = {
   name: 'group.publications.my',
   schema: {
-    lessonId: {
+    classId: {
       type: String,
       optional: true
     },
-    classId: {
+    unitId: {
       type: String,
       optional: true
     }
   },
-  run: onServer(function ({ lessonId, classId }) {
+  run: onServer(function ({ classId, unitId }) {
     const { userId } = this
     const query = { $or: [] }
 
     // option 1: I am creator of these
     const myGroups = { createdBy: userId }
 
-    if (lessonId) myGroups.lessonId = lessonId
     if (classId) myGroups.classId = classId
+    if (unitId) myGroups.unitId = unitId
 
     // option 2: I am member of these groups
     const iamMember = { users: { $elemMatch: { userId } } }
 
-    if (lessonId) iamMember.lessonId = lessonId
     if (classId) iamMember.classId = classId
+    if (unitId) iamMember.unitId = unitId
 
     query.$or.push(myGroups, iamMember)
-
     return getCollection(Group.name).find(query, { fields: Group.publicFields })
   })
 }
@@ -214,8 +217,6 @@ Group.methods.get = {
  * @param users
  * @param maxUsers
  * @param classId
- * @param lessonId
- * @param lessonId
  * @param phases
  * @param material
  * @param visible

@@ -36,6 +36,8 @@ import { mockPhaseDoc } from '../../../../../tests/testutils/doc/mockPhaseDoc'
 import { mockClassDoc } from '../../../../../tests/testutils/doc/mockClassDoc'
 import { Group } from '../../group/Group'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
+import { createGroupDoc } from '../../../../../tests/testutils/doc/createGroupDoc'
+import { getCollection } from '../../../../api/utils/getCollection'
 
 const log = () => {
 }
@@ -339,7 +341,26 @@ describe(Lesson.name, function () {
         expect(updatedDoc.visibleStudent).to.equal(undefined)
         expect(updatedDoc.visibleBeamer).to.equal(undefined)
       })
-      it('resets all groups, associated with this lesson')
+      it('resets all groups, associated with this lesson', function () {
+        const { userId, lessonDoc } = stubTeacherDocs()
+        lessonDoc.startedAt = new Date()
+        lessonDoc.visibleStudent = [{ _id: Random.id(), context: Random.id(5) }]
+        lessonDoc.visibleBeamer = [Random.id()]
+        lessonDoc.phase = Random.id()
+        LessonCollection.insert(lessonDoc)
+        stub(LessonRuntime, LessonRuntime.removeDocuments.name, () => 0)
+        stub(LessonRuntime, LessonRuntime.resetBeamer.name, () => 0)
+
+        const unitId = lessonDoc.unit
+
+        getCollection(Group.name).insert(createGroupDoc({ title: 'not remove', unitId }))
+        getCollection(Group.name).insert(createGroupDoc({ title: 'to remove', unitId, isAdhoc: true }))
+
+        const { groupDocs } = restartLesson.call({ userId, log }, lessonDoc)
+
+        expect(groupDocs).to.deep.equal({ removed: 1, updated: 1 })
+        restore(LessonCollection, 'findOne')
+      })
     })
 
     // ======================================================================
@@ -374,14 +395,19 @@ describe(Lesson.name, function () {
         stub(LessonRuntime, LessonRuntime.resetBeamer.name, () => 456)
         stub(LessonRuntime, LessonRuntime.removeAllMaterial.name, () => 0)
 
-        const { lessonRemoved, unitRemoved, runtimeDocsRemoved, beamerRemoved } = removeLesson.call({
+        const result = removeLesson.call({
           userId,
           log
         }, { _id: lessonDoc._id })
-        expect(lessonRemoved).to.equal(1)
-        expect(unitRemoved).to.equal(1)
-        expect(runtimeDocsRemoved).to.equal(123)
-        expect(beamerRemoved).to.equal(456)
+        expect(result).to.deep.equal({
+          lessonRemoved: 1,
+          unitRemoved: 1,
+          phasesRemoved: 0,
+          materialRemoved: 0,
+          runtimeDocsRemoved: 123,
+          beamerRemoved: 456,
+          groupsRemoved: 0
+        })
         expect(LessonCollection.find(lessonDoc._id).count()).to.equal(0)
         expect(UnitCollection.find(unitDoc._id).count()).to.equal(0)
       })
@@ -398,14 +424,19 @@ describe(Lesson.name, function () {
         stub(LessonRuntime, LessonRuntime.resetBeamer.name, () => 456)
         stub(LessonRuntime, LessonRuntime.removeAllMaterial.name, () => 0)
 
-        const { lessonRemoved, unitRemoved, runtimeDocsRemoved, beamerRemoved } = removeLesson.call({
+        const result = removeLesson.call({
           userId,
           log
         }, { _id: lessonDoc._id })
-        expect(lessonRemoved).to.equal(1)
-        expect(unitRemoved).to.equal(0)
-        expect(runtimeDocsRemoved).to.equal(123)
-        expect(beamerRemoved).to.equal(456)
+        expect(result).to.deep.equal({
+          lessonRemoved: 1,
+          unitRemoved: 0,
+          phasesRemoved: 0,
+          materialRemoved: 0,
+          runtimeDocsRemoved: 123,
+          beamerRemoved: 456,
+          groupsRemoved: 0
+        })
         expect(LessonCollection.find(lessonDoc._id).count()).to.equal(0)
         expect(UnitCollection.find(unitId).count()).to.equal(0)
       })
@@ -541,7 +572,22 @@ describe(Lesson.name, function () {
       })
 
       it('removes custom material only if it\'s not used by other lessons')
-      it('removes groups, associated with this lesson')
+      it('removes groups, associated with this lesson', function () {
+        const userId = Random.id()
+        const unitDoc = mockUnitDoc({ createdBy: userId }, UnitCollection)
+        const unitId = unitDoc._id
+        const { lessonDoc } = stubTeacherDocs({}, { userId, unit: unitId })
+        LessonCollection.insert(lessonDoc)
+
+        stub(LessonRuntime, LessonRuntime.removeDocuments.name, () => 0)
+        stub(LessonRuntime, LessonRuntime.resetBeamer.name, () => 0)
+
+        getCollection(Group.name).insert(createGroupDoc({ title: 'to remove', unitId }))
+        getCollection(Group.name).insert(createGroupDoc({ title: 'to remove', unitId, isAdhoc: true }))
+
+        const { groupsRemoved } = removeLesson.call({ userId, log }, { _id: lessonDoc._id })
+        expect(groupsRemoved).to.equal(2)
+      })
     })
 
     // ======================================================================
