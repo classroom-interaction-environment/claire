@@ -61,19 +61,15 @@ class GroupBuilder {
       materialAutoShuffle: Match.Maybe(Boolean)
     })
 
-    this.maxGroups = options.maxGroups || this.maxGroups
-    this.maxUsers = options.maxUsers || this.maxUsers
-    this.materialForAllGroups = options.materialForAllGroups || this.materialForAllGroups
-    this.materialAutoShuffle = options.materialAutoShuffle || this.materialAutoShuffle
+    this.maxGroups = options.maxGroups ?? this.maxGroups
+    this.maxUsers = options.maxUsers ?? this.maxUsers
+    this.materialForAllGroups = options.materialForAllGroups ?? this.materialForAllGroups
+    this.materialAutoShuffle = options.materialAutoShuffle ?? this.materialAutoShuffle
 
     if (options.users) {
       // sanity check
       const maxSize = this.maxGroups * this.maxUsers
-      if (maxSize > 0 && options.users.length > maxSize) {
-        throw new Meteor.Error('groupBuilder.error', 'groupBuilder.maxUsersExceeded')
-      }
-
-      this.oddDistribution = options.users.length % this.maxUsers !== 0
+      checkUsers(options.users, maxSize)
       this.users = options.users
     }
 
@@ -93,13 +89,14 @@ class GroupBuilder {
   }
 
   createGroups ({ shuffle = false }) {
-    checkUsers(this.users, this.maxUsers * this.maxGroups)
-
     if (this.users.length === 0) {
-      throw new Error('groupBuilder.error', 'groupBuilder.atLeastOneUserRequired')
+      throw new Meteor.Error('groupBuilder.error', 'groupBuilder.atLeastOneUserRequired')
     }
 
-    const material = this.material || []
+    checkUsers(this.users, this.maxUsers * this.maxGroups)
+
+
+    const material = this.material ?? []
     const materialCount = material.length
 
     // no matter if we shuffle or not, we create a default set of groups
@@ -108,8 +105,9 @@ class GroupBuilder {
     for (let i = 0; i < groupLength; i++) {
       const group = {}
       group.title = `${this.groupTitleDefault} ${i + 1}`
+      group.material = []
 
-      if (this.materialAutoShuffle) {
+      if (this.materialAutoShuffle && material.length > 0) {
         // if we have more groups than material or equal
         // we simply rotate each material around the groups
         if (groupLength >= materialCount) {
@@ -121,10 +119,24 @@ class GroupBuilder {
         // and distribute multiple material per group
         else {
           const materialRatio = Math.round(materialCount / groupLength)
-          const offset = i * materialRatio
-          const groupMaterial = material.slice(offset, offset + materialRatio)
+          const from = i * materialRatio
+          const to = from + materialRatio
+          const groupMaterial = []
+
+          for (let j = from; j < to; j++) {
+            const index = j > material.length - 1
+              ? j - material.length
+              : j
+            const value = material[index]
+            groupMaterial.push(value)
+          }
+
           group.material = groupMaterial.filter(entry => !!entry)
         }
+      }
+
+      if (this.materialForAllGroups && material.length > 0) {
+        group.material = material
       }
 
       this.addGroup(group)
@@ -172,10 +184,10 @@ class GroupBuilder {
     checkUsers(options.users, this.maxUsers * this.maxGroups)
     const { title, users = [] } = options
     const groups = this.groups.get()
-    const phases = [].concat(this.phases)
+    const phases = [].concat(this.phases ?? [])
     const material = this.materialForAllGroups
-      ? [].concat(this.material)
-      : options.material
+      ? [].concat(this.material ?? [])
+      : options.material ?? []
 
     groups.push({ title, users, phases, material })
     this.groups.set(groups)
@@ -184,9 +196,7 @@ class GroupBuilder {
 
   removeGroup (index) {
     const groups = this.groups.get()
-    if (index < 0 || index > groups.length - 1) {
-      throw new Error('groupBuilder.error', 'groupBuilder.invalidIndex', { index })
-    }
+    checkGroupIndex(index, groups)
     groups.splice(index, 1)
     this.groups.set(groups)
 
@@ -195,9 +205,7 @@ class GroupBuilder {
 
   updateGroup ({ index, title }) {
     const groups = this.groups.get()
-    if (index < 0 || index > groups.length - 1) {
-      throw new Error('groupBuilder.error', 'groupBuilder.invalidIndex', { index })
-    }
+    checkGroupIndex(index, groups)
     groups[index].title = title
     this.groups.set(groups)
 
@@ -305,7 +313,7 @@ class GroupBuilder {
   }
 
   removeUser ({ index, userId, role }) {
-    const groups = this.groups.get() || []
+    const groups = this.groups.get()
     checkGroupIndex(index, groups)
     check(userId, String)
     check(role, Match.Maybe(String))
@@ -360,6 +368,13 @@ const checkUsers = (users = [], maxUsers) => {
   }
 }
 
+/**
+ * Creates a random shuffled version of a given array,
+ * independent of it's content
+ * @private
+ * @param input {*[]}
+ * @returns {*[]}
+ */
 const shuffleArray = input => {
   const array = [].concat(input)
   for (let i = array.length - 1; i > 0; i--) {
