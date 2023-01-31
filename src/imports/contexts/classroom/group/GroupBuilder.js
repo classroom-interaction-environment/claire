@@ -95,7 +95,6 @@ class GroupBuilder {
 
     checkUsers(this.users, this.maxUsers * this.maxGroups)
 
-
     const material = this.material ?? []
     const materialCount = material.length
 
@@ -275,7 +274,8 @@ class GroupBuilder {
   // Users
   // ---------------------------------------------------------------------------
   addUser ({ index, userId, role }) {
-    const groups = this.groups.get() || []
+    checkUserId(this.users, userId)
+    const groups = this.groups.get() ?? []
     checkGroupIndex(index, groups)
     check(userId, String)
     check(role, Match.Maybe(String))
@@ -294,6 +294,7 @@ class GroupBuilder {
   }
 
   updateUser ({ index, userId, role }) {
+    checkUserId(this.users, userId)
     const groups = this.groups.get() || []
     checkGroupIndex(index, groups)
     check(userId, String)
@@ -313,6 +314,7 @@ class GroupBuilder {
   }
 
   removeUser ({ index, userId, role }) {
+    checkUserId(this.users, userId)
     const groups = this.groups.get()
     checkGroupIndex(index, groups)
     check(userId, String)
@@ -332,9 +334,7 @@ class GroupBuilder {
   }
 
   userHasBeenAssigned (userId) {
-    if (!this.users.includes(userId)) {
-      throw new Meteor.Error('groupBuilder.error', 'groupBuilder.invalidUserId')
-    }
+    checkUserId(this.users, userId)
     const groups = this.groups.get()
     return userHasBeenAssigned(groups, userId)
   }
@@ -365,6 +365,12 @@ const checkGroupIndex = (index, groups) => {
 const checkUsers = (users = [], maxUsers) => {
   if (maxUsers && users.length > maxUsers) {
     throw new Meteor.Error('groupBuilder.error', 'groupBuilder.maxUsersExceeded')
+  }
+}
+
+const checkUserId = (users, userId) => {
+  if (!users.includes(userId)) {
+    throw new Meteor.Error('groupBuilder.error', 'groupBuilder.invalidUserId')
   }
 }
 

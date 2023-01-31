@@ -6,7 +6,7 @@ describe('GroupBuilder', function () {
   describe('constructor', function () {
     it('can be instatiated with optional defaults', function () {
       expect(new GroupBuilder().groupTitleDefault).to.equal('group.defaultTitle')
-      expect(new GroupBuilder({ groupTitleDefault: 'foo'}).groupTitleDefault).to.equal('foo')
+      expect(new GroupBuilder({ groupTitleDefault: 'foo' }).groupTitleDefault).to.equal('foo')
       GroupBuilder.defaultGroupTitle('bar')
       expect(new GroupBuilder().groupTitleDefault).to.equal('bar')
       GroupBuilder.defaultGroupTitle('group.defaultTitle')
@@ -167,7 +167,7 @@ describe('GroupBuilder', function () {
       groups.forEach((group, index) => {
         const { users, ...rest } = group
         expect(rest).to.deep.equal({
-          title: `group.defaultTitle ${index + 1 }`,
+          title: `group.defaultTitle ${index + 1}`,
           phases: options.phases,
           material: ['bar']
         })
@@ -180,7 +180,7 @@ describe('GroupBuilder', function () {
       })
     })
     it('throws if users length is zero', function () {
-      const builder  = new GroupBuilder()
+      const builder = new GroupBuilder()
       expect(() => builder.createGroups({ shuffle: false }))
         .to.throw('groupBuilder.error')
         .with.property('reason', 'groupBuilder.atLeastOneUserRequired')
@@ -275,7 +275,7 @@ describe('GroupBuilder', function () {
       }
       builder.setOptions(options)
       builder.createGroups({ shuffle: false })
-      builder.updateGroup({ index: 0, title: 'foo'})
+      builder.updateGroup({ index: 0, title: 'foo' })
       expect(builder.getGroup(0).title).to.equal('foo')
       expect(builder.getGroup(1).title).to.equal('group.defaultTitle 2')
     })
@@ -323,17 +323,115 @@ describe('GroupBuilder', function () {
   describe(GroupBuilder.prototype.removeMaterial.name, function () {
     it('is not implemented')
   })
+
+  const onInvalidUserId = (fn) => {
+    it('throws on invalid userId', function () {
+      const builder = new GroupBuilder()
+      builder.setOptions({
+        users: ['foo', 'bar'],
+        maxUsers: 3,
+        maxGroups: 1
+      })
+      builder.createGroups({ shuffle: false })
+      expect(() => fn(builder))
+        .to.throw('groupBuilder.error')
+        .with.property('reason', 'groupBuilder.invalidUserId')
+    })
+  }
+
+  const onInvalidGroupIndex = (fn) => {
+    it('throws on invalid group index', function () {
+      const builder = new GroupBuilder()
+      builder.setOptions({
+        users: ['foo', 'bar'],
+        maxUsers: 3,
+        maxGroups: 1
+      })
+      builder.createGroups({ shuffle: false })
+      expect(() => fn(builder))
+        .to.throw('groupBuilder.error')
+        .with.property('reason', 'groupBuilder.invalidIndex')
+    })
+  }
+
+  const onInvalidUser = ({ fn, shuffle, reason }) => {
+    const builder = new GroupBuilder()
+    builder.setOptions({
+      users: ['foo', 'bar'],
+      maxUsers: 2,
+      maxGroups: 1
+    })
+    builder.createGroups({ shuffle })
+    expect(() => fn(builder))
+      .to.throw('groupBuilder.error')
+      .with.property('reason', reason)
+  }
+
   describe(GroupBuilder.prototype.addUser.name, function () {
-    it('is not implemented')
-  })
-  describe(GroupBuilder.prototype.addUser.name, function () {
-    it('is not implemented')
-  })
-  describe(GroupBuilder.prototype.removeUser.name, function () {
-    it('is not implemented')
+    onInvalidUserId((builder) => builder.addUser({ index: 2, userId: 'moo' }))
+    onInvalidGroupIndex((builder) => builder.addUser({ index: 2, userId: 'foo' }))
+    it('throws if the user is already within that group', function () {
+      onInvalidUser({
+        fn: (builder) => builder.addUser({ index: 0, userId: 'foo' }),
+        reason: 'groupBuilder.expectedNoUser',
+        shuffle: true
+      })
+    })
+    it('adds a user to given group', function () {
+      const builder = new GroupBuilder()
+      builder.setOptions({
+        users: ['foo', 'bar'],
+        maxUsers: 2,
+        maxGroups: 1
+      })
+      builder.createGroups({ shuffle: false })
+      const userId = 'foo'
+      const role = 'moo'
+      builder.addUser({ index: 0, userId, role })
+      expect(builder.getGroup(0).users).to.deep.equal([{ userId, role }])
+    })
   })
   describe(GroupBuilder.prototype.updateUser.name, function () {
-    it('is not implemented')
+    onInvalidUserId((builder) => builder.addUser({ index: 2, userId: 'moo' }))
+    onInvalidGroupIndex((builder) => builder.updateUser({ index: 2, userId: 'foo' }))
+    it('throws if the user is NOT within that group', function () {
+      onInvalidUser({
+        fn: (builder) => {
+          builder.addUser({ index: 0, userId: 'bar' })
+          builder.updateUser({ index: 0, userId: 'foo' })
+        },
+        shuffle: false,
+        reason: 'groupBuilder.expectedUser'
+      })
+    })
+    it('updates the given user', function () {
+      const builder = new GroupBuilder()
+      builder.setOptions({
+        users: ['foo', 'bar'],
+        maxUsers: 2,
+        maxGroups: 1
+      })
+      builder.createGroups({ shuffle: false })
+      const userId = 'foo'
+      const role = 'moo'
+      builder.addUser({ index: 0, userId, role })
+      builder.updateUser({ index: 0, userId, role: 'oink' })
+      expect(builder.getGroup(0).users).to.deep.equal([{ userId, role: 'oink' }])
+    })
+  })
+  describe(GroupBuilder.prototype.removeUser.name, function () {
+    onInvalidUserId((builder) => builder.addUser({ index: 2, userId: 'moo' }))
+    onInvalidGroupIndex((builder) => builder.removeUser({ index: 2, userId: 'foo' }))
+    it('throws if the user is NOT within that group', function () {
+      onInvalidUser({
+        fn: (builder) => {
+          builder.addUser({ index: 0, userId: 'bar' })
+          builder.removeUser({ index: 0, userId: 'foo' })
+        },
+        shuffle: false,
+        reason: 'groupBuilder.expectedUser'
+      })
+    })
   })
   describe(GroupBuilder.prototype.userHasBeenAssigned.name, function () {
     it('throws if user is not defined in the users list', function () {

@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 import { expect } from 'chai'
-import {Meteor} from 'meteor/meteor'
+import { Meteor } from 'meteor/meteor'
 import { getEnrollmentExpiration } from '../getEnrollmentExpiration'
 
 const { passwordEnrollTokenExpirationInDays } = Meteor.settings.accounts.config
