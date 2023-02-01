@@ -148,7 +148,7 @@ Group.publications.my = {
       optional: true
     }
   },
-  run: onServer(function ({ classId, unitId }) {
+  run: onServer(function ({ classId, unitId } = {}) {
     const { userId } = this
     const query = { $or: [] }
 
@@ -169,6 +169,9 @@ Group.publications.my = {
   })
 }
 
+/**
+ * @role {student}
+ */
 Group.publications.single = {
   name: 'group.publications.single',
   schema: {
@@ -176,6 +179,7 @@ Group.publications.single = {
       type: String
     }
   },
+  role: [UserUtils.roles.student],
   run: onServer(function ({ groupId }) {
     const { userId } = this
     const query = { _id: groupId, users: { $elemMatch: { userId } } }

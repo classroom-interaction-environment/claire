@@ -8,6 +8,7 @@ import { createGroupDoc } from '../../../../../tests/testutils/doc/createGroupDo
 import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 import { Admin } from '../../../system/accounts/admin/Admin'
+import { collectPublication } from '../../../../../tests/testutils/collectPublication'
 
 describe(Group.name, function () {
   let GroupCollection
@@ -210,7 +211,11 @@ describe(Group.name, function () {
         const userId = Random.id()
         const materialId = Random.id()
         const contextName = 'foobar'
-        const groupProps = { createdBy: userId, material: [materialId], visible: [{ _id: materialId, context: contextName }] }
+        const groupProps = {
+          createdBy: userId,
+          material: [materialId],
+          visible: [{ _id: materialId, context: contextName }]
+        }
         const groupInput = createGroupDoc(groupProps)
         const env = { userId }
         const groupId = GroupCollection.insert(groupInput)
@@ -245,6 +250,74 @@ describe(Group.name, function () {
         const env = { userId }
         const groupId = GroupCollection.insert(createGroupDoc({ createdBy: userId }))
         expect(getGroups.call(env, { ids: [groupId] })).to.deep.equal([GroupCollection.findOne(groupId)])
+      })
+    })
+  })
+
+  describe('publications', function () {
+    const myGroupsPub = Group.publications.my.run
+    const singleGroupPub = Group.publications.single.run
+
+    describe(Group.publications.my.name, function () {
+      it('returns no docs if user is neither owner, nor member', function () {
+        const userId = Random.id()
+        GroupCollection.insert(createGroupDoc())
+        const pub = collectPublication(myGroupsPub.call({ userId }))
+        expect(pub.length).to.equal(0)
+      })
+      it('returns all group docs that user has created', function () {
+        const userId = Random.id()
+        const groupId = GroupCollection.insert(createGroupDoc({ createdBy: userId }))
+        const pub = collectPublication(myGroupsPub.call({ userId }))
+        expect(pub.length).to.equal(1)
+        expect(pub[0]._id).to.equal(groupId)
+      })
+      it('returns all group docs that user is member', function () {
+        const userId = Random.id()
+        const groupId = GroupCollection.insert(createGroupDoc({ users: [{ userId }] }))
+        const pub = collectPublication(myGroupsPub.call({ userId }))
+        expect(pub.length).to.equal(1)
+        expect(pub[0]._id).to.equal(groupId)
+      })
+      it('filters group docs by classId', function () {
+        const userId = Random.id()
+        const classId = Random.id()
+        GroupCollection.insert(createGroupDoc({ users: [{ userId }] }))
+        const groupId = GroupCollection.insert(createGroupDoc({ users: [{ userId }], classId }))
+        const pub = collectPublication(myGroupsPub.call({ userId }, { classId }))
+        expect(pub.length).to.equal(1)
+        expect(pub[0]._id).to.equal(groupId)
+      })
+      it('filters group docs by unitId', function () {
+        const userId = Random.id()
+        const unitId = Random.id()
+        GroupCollection.insert(createGroupDoc({ createdBy: userId }))
+        const groupId = GroupCollection.insert(createGroupDoc({ users: [{ userId }], unitId }))
+        const pub = collectPublication(myGroupsPub.call({ userId }, { unitId }))
+        expect(pub.length).to.equal(1)
+        expect(pub[0]._id).to.equal(groupId)
+      })
+    })
+    describe(Group.publications.single.name, function () {
+      it('returns no docs if no _id matches', function () {
+        const userId = Random.id()
+        const groupId = Random.id()
+        GroupCollection.insert(createGroupDoc({ users: [{ userId }] }))
+        const pub = collectPublication(singleGroupPub.call({ userId }, { groupId }))
+        expect(pub.length).to.equal(0)
+      })
+      it('returns no docs if user is not member', function () {
+        const userId = Random.id()
+        const groupId = GroupCollection.insert(createGroupDoc())
+        const pub = collectPublication(singleGroupPub.call({ userId }, { groupId }))
+        expect(pub.length).to.equal(0)
+      })
+      it('returns a group doc by _id if the student is member', function () {
+        const userId = Random.id()
+        const groupId = GroupCollection.insert(createGroupDoc({ users: [{ userId }] }))
+        const pub = collectPublication(singleGroupPub.call({ userId }, { groupId }))
+        expect(pub.length).to.equal(1)
+        expect(pub[0]._id).to.equal(groupId)
       })
     })
   })
