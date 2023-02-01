@@ -240,7 +240,7 @@ class GroupBuilder {
     group.material = group.material || []
 
     if (group.material.includes(materialId)) {
-      throw new Error('groupBuilder.error', 'groupBuilder.expectedNoMaterial')
+      throw new Meteor.Error('groupBuilder.error', 'groupBuilder.expectedNoMaterial')
     }
 
     group.material.push(materialId)
@@ -260,7 +260,7 @@ class GroupBuilder {
 
     const materialIndex = group.material.indexOf(materialId)
     if (materialIndex === -1) {
-      throw new Error('groupBuilder.error', 'groupBuilder.expectedMaterial')
+      throw new Meteor.Error('groupBuilder.error', 'groupBuilder.expectedMaterial')
     }
 
     group.material.splice(materialIndex, 1)

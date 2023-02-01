@@ -187,7 +187,34 @@ describe('GroupBuilder', function () {
     })
   })
   describe(GroupBuilder.prototype.addGroup.name, function () {
-    it('adds a new group to the groups list')
+    it('adds a new group to the groups list', function () {
+      const builder = new GroupBuilder()
+      const options = {
+        users: ['foo', 'bar', 'baz', 'moo'],
+        maxUsers: 2,
+        maxGroups: 2,
+        materialForAllGroups: false,
+        materialAutoShuffle: false,
+        phases: ['foo'],
+        material: ['bar', 'baz'],
+        roles: ['he', 'her', 'them', '*']
+      }
+      builder.setOptions(options)
+      builder.addGroup({
+        users: [{ userId: 'foo', role: 'a' }, { userId: 'moo', role: 'b' }],
+        material: ['baz'],
+        title: 'group x',
+        phases: ['foo']
+      })
+      expect(builder.groups.get()).to.deep.equal([
+        {
+          phases: ['foo'],
+          users: [{ userId: 'foo', role: 'a' }, { userId: 'moo', role: 'b' }],
+          material: ['baz'],
+          title: 'group x'
+        }
+      ])
+    })
   })
   describe(GroupBuilder.prototype.removeGroup.name, function () {
     it('throws if there is no group by given index', function () {
@@ -317,11 +344,64 @@ describe('GroupBuilder', function () {
       expect(builder.hasMaxGroups()).to.equal(true)
     })
   })
+
+  const onInvalidGroupIndex = (fn) => {
+    it('throws on invalid group index', function () {
+      const builder = new GroupBuilder()
+      builder.setOptions({
+        users: ['foo', 'bar'],
+        maxUsers: 3,
+        maxGroups: 1
+      })
+      builder.createGroups({ shuffle: false })
+      expect(() => fn(builder))
+        .to.throw('groupBuilder.error')
+        .with.property('reason', 'groupBuilder.invalidIndex')
+    })
+  }
+
   describe(GroupBuilder.prototype.addMaterial.name, function () {
-    it('is not implemented')
+    onInvalidGroupIndex((builder) => builder.addMaterial({ index: 5 }))
+    it('throws if material already exists', function () {
+      const builder = new GroupBuilder()
+      const options = {
+        users: ['foo', 'bar', 'baz', 'moo'],
+        maxUsers: 2,
+        maxGroups: 2,
+        materialForAllGroups: false,
+        materialAutoShuffle: false,
+        phases: ['foo'],
+        material: ['bar', 'baz'],
+        roles: ['he', 'her', 'them', '*']
+      }
+      builder.setOptions(options)
+      builder.createGroups({ shuffle: false })
+      builder.addMaterial({ index: 0, materialId: 'bar' })
+      expect(() => builder.addMaterial({ index: 0, materialId: 'bar' }))
+        .to.throw('groupBuilder.error')
+        .with.property('reason', 'groupBuilder.expectedNoMaterial')
+    })
   })
   describe(GroupBuilder.prototype.removeMaterial.name, function () {
-    it('is not implemented')
+    onInvalidGroupIndex((builder) => builder.removeMaterial({ index: 5 }))
+    const builder = new GroupBuilder()
+    const options = {
+      users: ['foo', 'bar', 'baz', 'moo'],
+      maxUsers: 2,
+      maxGroups: 2,
+      materialForAllGroups: false,
+      materialAutoShuffle: false,
+      phases: ['foo'],
+      material: ['bar', 'baz'],
+      roles: ['he', 'her', 'them', '*']
+    }
+    builder.setOptions(options)
+    builder.createGroups({ shuffle: false })
+    builder.addMaterial({ index: 0, materialId: 'bar' })
+    builder.removeMaterial({ index: 0, materialId: 'bar' })
+    expect(() => builder.removeMaterial({ index: 0, materialId: 'bar' }))
+      .to.throw('groupBuilder.error')
+      .with.property('reason', 'groupBuilder.expectedMaterial')
   })
 
   const onInvalidUserId = (fn) => {
@@ -336,21 +416,6 @@ describe('GroupBuilder', function () {
       expect(() => fn(builder))
         .to.throw('groupBuilder.error')
         .with.property('reason', 'groupBuilder.invalidUserId')
-    })
-  }
-
-  const onInvalidGroupIndex = (fn) => {
-    it('throws on invalid group index', function () {
-      const builder = new GroupBuilder()
-      builder.setOptions({
-        users: ['foo', 'bar'],
-        maxUsers: 3,
-        maxGroups: 1
-      })
-      builder.createGroups({ shuffle: false })
-      expect(() => fn(builder))
-        .to.throw('groupBuilder.error')
-        .with.property('reason', 'groupBuilder.invalidIndex')
     })
   }
 
