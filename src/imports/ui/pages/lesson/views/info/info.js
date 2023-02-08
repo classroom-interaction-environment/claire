@@ -53,7 +53,6 @@ Template.lessonInfo.helpers({
     const instance = Template.instance()
     const { lessonDoc, unitDoc, classDoc, unassociatedMaterial } = instance.data
     return {
-      isAdhoc: true,
       lessonDoc,
       unitDoc,
       classDoc,

@@ -1,5 +1,5 @@
 <template name="afUserGroupSelect">
-    <div class="user-pool user-dropzone p-3   border rounded border-{{#if isOver -1 "-1"}}secondary{{else}}white{{/if}}"
+    <div class="user-pool user-dropzone p-3 bg-light border rounded border-{{#if isOver -1 "-1"}}gray{{else}}light{{/if}}"
          data-index=-1 data-role="-1">
         {{#each user in allUsers}}
             <span class="btn btn-outline-{{#if isOnline
@@ -30,9 +30,11 @@
                                             buttonContent=(i18n "actions.update")}}
                                 {{else}}
                                     <span class="font-weight-bold">
-                                        {{group.title}}
+                                        <span class="edit-title-btn" data-target="{{groupIndex}}">
+                                            {{group.title}}
+                                        </span>
                                         {{> actionButton
-                                                type="outline-secondary"
+                                                type="outline-primary"
                                                 class="border-0 edit-title-btn"
                                                 data-target=groupIndex
                                                 icon="edit"}}
@@ -65,8 +67,7 @@
                             </div>
                             <div class="card-body">
                                 {{#each role in roles}}
-                                    <div class="mt-3 p-3 user-dropzone border rounded border-{{#if isOver groupIndex
-                                                                                                   role}}secondary{{else}}light{{/if}}"
+                                    <div class="mt-3 p-3 user-dropzone border bg-light rounded border-{{#if isOver groupIndex role}}gray{{else}}light{{/if}}"
                                          data-index="{{groupIndex}}"
                                          data-role="{{role}}">
                                         <span class="font-weight-bold">{{role}}</span>
@@ -87,13 +88,12 @@
                                     </div>
                                 {{else}}
                                     <div class="p-3 user-dropzone border rounded border-{{#if isOver groupIndex
-                                                                                              "none"}}secondary{{else}}light{{/if}}"
+                                                                                              "none"}}gray{{else}}light{{/if}}"
                                          data-index="{{groupIndex}}"
                                          data-role="none">
                                         {{#each user in group.users}}
                                             {{#let user=(toUser user.userId)}}
-                                                <span class="btn btn-outline-{{#if isOnline
-                                                                                   user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
+                                                <span class="btn btn-outline-{{#if isOnline user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
                                                       draggable="true"
                                                       data-index="{{groupIndex}}"
                                                       data-target="{{user._id}}">

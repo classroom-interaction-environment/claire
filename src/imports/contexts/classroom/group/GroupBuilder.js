@@ -33,6 +33,7 @@ class GroupBuilder {
     this.maxUsers = 0 // per group
     this.materialForAllGroups = false
     this.materialAutoShuffle = false
+    this.atLeastOneUserRequired = false
     this.roles = []
     this.groupTitleDefault = groupTitleDefault
   }
@@ -58,13 +59,15 @@ class GroupBuilder {
       maxGroups: Match.Maybe(Number),
       maxUsers: Match.Maybe(Number),
       materialForAllGroups: Match.Maybe(Boolean),
-      materialAutoShuffle: Match.Maybe(Boolean)
+      materialAutoShuffle: Match.Maybe(Boolean),
+      atLeastOneUserRequired: Match.Maybe(Boolean)
     })
 
     this.maxGroups = options.maxGroups ?? this.maxGroups
     this.maxUsers = options.maxUsers ?? this.maxUsers
     this.materialForAllGroups = options.materialForAllGroups ?? this.materialForAllGroups
     this.materialAutoShuffle = options.materialAutoShuffle ?? this.materialAutoShuffle
+    this.atLeastOneUserRequired = options.atLeastOneUserRequired ?? this.atLeastOneUserRequired
 
     if (options.users) {
       // sanity check
@@ -89,18 +92,21 @@ class GroupBuilder {
   }
 
   createGroups ({ shuffle = false }) {
-    if (this.users.length === 0) {
+    const usersCount = this.users.length
+
+    if (this.atLeastOneUserRequired && usersCount === 0) {
       throw new Meteor.Error('groupBuilder.error', 'groupBuilder.atLeastOneUserRequired')
     }
-
-    checkUsers(this.users, this.maxUsers * this.maxGroups)
 
     const material = this.material ?? []
     const materialCount = material.length
 
+    // If maxUsers is set, we use this value, otherwise,
     // no matter if we shuffle or not, we create a default set of groups
-    // that hypothetically allows to distribute all users
-    const groupLength = Math.ceil(this.users.length / (this.maxUsers || 1))
+    // that hypothetic ally allows to distribute all users
+    const groupLength = this.maxGroups > 0
+      ? this.maxGroups
+      : Math.ceil((usersCount || 1) / (this.maxUsers || 1))
     for (let i = 0; i < groupLength; i++) {
       const group = {}
       group.title = `${this.groupTitleDefault} ${i + 1}`

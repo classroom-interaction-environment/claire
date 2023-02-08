@@ -18,7 +18,7 @@ const groupForms = createGroupForms({ onError: API.notify, translate: API.transl
 
 Template.groupsEditor.onCreated(function () {
   const instance = this
-  const { isAdhoc, classDoc, unitDoc, phases } = instance.data
+  const { classDoc, unitDoc, phases } = instance.data
   const parent = getParentView({ view: instance.view, skipSame: true })
 
   /**
@@ -45,6 +45,7 @@ Template.groupsEditor.onCreated(function () {
       action,
       doc: doc,
       bind: { groupId, groupDoc, classDoc, material, phases },
+      hideLegend: true,
       ...definitions
     }
     return FormModal.show(options)
@@ -61,9 +62,7 @@ Template.groupsEditor.onCreated(function () {
   })
 
   /**
-   * Returns the respective group documents as cursor,
-   * depending on whether this is an adHoc mode (e.g. in lesson)
-   * or constant mode (before lesson)
+   * Returns the respective group documents as cursor.
    * @return {*}
    */
   instance.getGroups = () => {
@@ -83,7 +82,6 @@ Template.groupsEditor.onCreated(function () {
    */
   instance.onGroupCreated = async ({ groupSettings, groupsDoc }) => {
     const groups = groupsDoc.groups.map(group => {
-      group.isAdhoc = !!isAdhoc
       group.classId = classDoc?._id
       group.unitId = unitDoc?._id
       group.phases = groupSettings.phases
@@ -133,10 +131,6 @@ Template.groupsEditor.helpers({
   },
   phaseDocs (phaseIds) {
     return phaseIds && cursor(() => getLocalCollection(Phase.name).find({ _id: { $in: phaseIds } }))
-  },
-  actionDisabled (group) {
-    // in adhoc mode we can't update or remove non-adhoc groups
-    return !group.isAdhoc && Template.currentData().isAdhoc
   },
   groupBuilderAtts () {
     const instance = Template.instance()

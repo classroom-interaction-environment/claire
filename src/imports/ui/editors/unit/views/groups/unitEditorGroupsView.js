@@ -87,7 +87,6 @@ Template.unitEditorGroupsView.helpers({
     const unassociatedMaterial = Template.getState('unassociatedMaterial')
 
     return {
-      isAdhoc: false,
       lessonDoc: null,
       classDoc,
       unitDoc,

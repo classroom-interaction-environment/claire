@@ -10,11 +10,7 @@ import { translateReactive } from '../../../../utils/translateReactive'
  * @return {object} schema definition object
  */
 export const editGroupSchema = (groupBuilderInstance, options = {}) => {
-  const {
-    users = [],
-    maxUsers,
-    maxGroups /*, materialForAllGroups, roles = [], material = [] */
-  } = groupBuilderInstance
+  const { users = [], maxUsers, maxGroups } = groupBuilderInstance
   const minCount = maxUsers
     ? Math.floor(users.length / maxUsers)
     : 1
@@ -40,6 +36,7 @@ export const editGroupSchema = (groupBuilderInstance, options = {}) => {
     'groups.$.title': String,
     'groups.$.users': {
       type: Array,
+      optional: !groupBuilderInstance.atLeastOneUserRequired,
       label: translateReactive('group.users'),
       minCount: 1
     },

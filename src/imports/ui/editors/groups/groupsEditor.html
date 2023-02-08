@@ -1,25 +1,30 @@
 <template name="groupsEditor">
     <ul class="list-group my-4">
         {{#each group in groups}}
-            <li class="list-group-item d-flex justify-content-between">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
                 <div class="flex-fill">
                     {{! title and number of members }}
                     <div class="d-flex justify-content-between w-100">
                         <span>
                             {{> icon name="users" fw=true}}
                             {{group.title}}
-                            {{#if group.isAdhoc}}
-                                {{> tooltip label="*" title=(i18n "group.isAdhoc")}}
-                            {{/if}}
                         </span>
                         <span class="px-1 align-self-center">
-                            {{group.users.length}} {{i18n "group.users"}}
+                            {{#if group.users.length}}
+                                {{group.users.length}} {{i18n "group.users"}}
+                            {{else}}
+                                <span class="text-warning">
+                                    {{> icon name="exclamation-triangle"}} {{i18n "group.noUsers"}}
+                                </span>
+                            {{/if}}
                         </span>
                     </div>
 
                     {{! users }}
                     <div class="d-block text-secondary">
-                        <small>{{> icon name="user" fw=true}}</small>
+                        {{#if group.users.length}}
+                            <small>{{> icon name="user" fw=true}}</small>
+                        {{/if}}
                         {{#each user in group.users}}
                             {{#with toUser user.userId}}
                                 <small class="p-1 {{#unless isOnline this.presence}}text-muted{{/unless}}">
@@ -52,14 +57,12 @@
                     {{> actionButton class="groups-action-btn"
                             type="outline-primary"
                             icon="edit"
-                            disabled=(actionDisabled group)
                             data-action="update"
                             title=(i18n "actions.edit")
                             data-id=group._id}}
                     {{> actionButton class="groups-action-btn"
                             type="outline-danger"
                             icon="trash"
-                            disabled=(actionDisabled group)
                             data-action="remove"
                             title=(i18n "actions.delete")
                             data-id=group._id}}

@@ -8,6 +8,7 @@ import { callMethod } from '../../../../controllers/document/callMethod'
 import { GroupBuilder } from '../../../../../contexts/classroom/group/GroupBuilder'
 import { editGroupSchema } from '../../../../forms/groupbuilder/api/editGroupSchema'
 import { getUser } from '../../../../../contexts/system/accounts/users/getUser'
+import { phaseGroupSchema } from '../../../../forms/groupbuilder/api/phaseGroupSchema'
 
 export const createGroupForms = ({ translate, onError }) => {
   const groupForms = {}
@@ -53,14 +54,17 @@ export const createGroupForms = ({ translate, onError }) => {
 
   const toGroupViewDoc = ({ groupDoc, material }) => {
     const finalDoc = { ...groupDoc }
-    finalDoc.users = groupDoc.users
-      .map(({ userId, role }) => {
-        const userDoc = getUser(userId)
-        const name = userDoc && getFullName(userDoc)
-        const title = role ? `${role}: ${name || userId}` : `${name || userId}`
-        return { title }
-      })
-      .sort((a, b) => a.title.localeCompare(b.title))
+
+    if (groupDoc.users) {
+      finalDoc.users = groupDoc.users
+        .map(({ userId, role }) => {
+          const userDoc = getUser(userId)
+          const name = userDoc && getFullName(userDoc)
+          const title = role ? `${role}: ${name || userId}` : `${name || userId}`
+          return { title }
+        })
+        .sort((a, b) => a.title.localeCompare(b.title))
+    }
 
     if (groupDoc.phases) {
       const phaseDocs = getLocalCollection(Phase.name).find({ _id: $in(groupDoc.phases) })
@@ -75,7 +79,7 @@ export const createGroupForms = ({ translate, onError }) => {
           : { title: materialId }
       })
     }
-    finalDoc.isAdhoc = groupDoc.isAdhoc
+
     return finalDoc
   }
 
@@ -95,7 +99,7 @@ export const createGroupForms = ({ translate, onError }) => {
     custom: {},
     cancel: () => translate('actions.close'),
     doc: ({ groupDoc }) => groupDoc,
-    schema: ({ groupDoc, classDoc, material }) => {
+    schema: ({ groupDoc, classDoc, material, phases }) => {
       const groupBuilder = new GroupBuilder({ groupTitleDefault: groupDoc.title })
       groupBuilder.setOptions({
         users: classDoc?.students,
@@ -106,11 +110,15 @@ export const createGroupForms = ({ translate, onError }) => {
       groupBuilder.addGroup(groupDoc)
 
       const editSchemaOptions = { material }
-      return Schema.create(editGroupSchema(groupBuilder, editSchemaOptions))
+      const editSchema = editGroupSchema(groupBuilder, editSchemaOptions)
+      const phaseSchema = phaseGroupSchema({ phases, translate })
+      return Schema.create({ ...editSchema, ...phaseSchema })
     },
     validation: 'none',
     onSubmit ({ doc, groupDoc }) {
       const updateDoc = doc.$set.groups[0]
+      if (doc.$set.phases) updateDoc.phases = doc.$set.phases
+
       return callMethod({
         name: Group.methods.update,
         args: { _id: groupDoc._id, ...updateDoc },

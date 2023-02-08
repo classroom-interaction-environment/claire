@@ -12,7 +12,9 @@ Template.afUserGroupSelect.setDependencies()
 
 Template.afUserGroupSelect.onCreated(function () {
   const instance = this
+  const isUpdate = instance.data.value === ''
   instance.state.set('selectedUsers', [])
+  instance.state.set('isUpdate', isUpdate)
   // const { minCount, maxCount } = instance.data
   const { builder, allMaterial } = instance.data.atts
   const { users = [], roles = [], material = [], maxUsers, materialForAllGroups } = builder
@@ -45,7 +47,10 @@ const titleSchema = Schema.create({
   title: {
     ...Group.schema.title,
     autoform: {
-      label: false
+      label: false,
+      afFieldInput: {
+        autofocus: ''
+      }
     }
   }
 })
@@ -69,8 +74,7 @@ Template.afUserGroupSelect.helpers({
     return Template.getState('maxUsers')
   },
   canAddGroups () {
-    const { builder } = Template.instance()
-    return builder && !builder.hasMaxGroups()
+    return !Template.getState('isUpdate')
   },
   materialForAllGroups () {
     return Template.getState('materialForAllGroups')
@@ -81,6 +85,9 @@ Template.afUserGroupSelect.helpers({
   addedMaterials (groupIndex) {
     const { builder } = Template.instance()
     const group = builder.getGroup(groupIndex)
+    if (!group) {
+      return null
+    }
     const material = group.material ?? []
     const options = Template.getState('materialOptions') ?? []
     return options.filter(({ value }) => material.includes(value))

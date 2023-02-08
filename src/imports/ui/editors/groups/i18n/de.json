@@ -3,8 +3,12 @@
     "title": "Gruppe",
     "groups": "Gruppen",
     "users": "Mitglieder",
-    "phases": "Auf Phasen beschränkt",
+    "availableUsers": "Gesamtanzahl Schüler*innen",
+    "noUsers": "Die Gruppe hat noch keine Mitglieder!",
+    "phases": "Auf Unterrichtsphasen beschränkt",
     "material": "U. Material für Gruppen",
-    "createGroups": "Gruppen anlegen"
+    "createGroups": "Gruppen anlegen",
+    "numUsers": "Mitglieder pro Gruppe",
+    "maxGroups": "Anzahl Gruppen"
   }
 }

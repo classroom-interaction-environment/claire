@@ -70,6 +70,10 @@
                                 {{! group default info }}
                                 <div class="bg-primary text-white p-1 rounded w-25">
                                     {{group.title}}
+
+                                    {{#unless group.users.length}}
+                                        {{> tooltip icon="exclamation-triangle" title=(i18n "group.noUsers")}}
+                                    {{/unless}}
                                 </div>
 
                                 {{! group material }}
@@ -130,6 +134,10 @@
                                 {{! group default info }}
                                 <div class="bg-primary text-white p-1 rounded w-25">
                                     {{group.title}}
+
+                                    {{#unless group.users.length}}
+                                        {{> tooltip icon="exclamation-triangle" title=(i18n "group.noUsers") class="text-white bg-warning"}}
+                                    {{/unless}}
                                 </div>
 
                                 {{! group material }}

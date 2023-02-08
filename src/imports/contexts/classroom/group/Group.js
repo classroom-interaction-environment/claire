@@ -38,6 +38,7 @@ Group.schema = {
 
   users: {
     type: Array,
+    optional: true,
     label: 'group.users',
     min: 1
   },

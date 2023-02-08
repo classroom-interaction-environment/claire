@@ -1,10 +1,15 @@
 <template name="groupBuilder">
     {{#if view "defineSettings"}}
+        <div class="d-flex justify-content-end">
+            <span>{{i18n "group.availableUsers"}}: {{users.count}}</span>
+        </div>
+        <hr>
+
         {{> caroForm
                 id="createGroupsForm"
                 schema=createGroupsSchema
                 type="normal"
-                showLegend=false
+                hideLegend=true
                 collapse=false
                 doc=doc}}
         <hr>
@@ -27,6 +32,7 @@
                 schema=editGroupSchema
                 type="normal"
                 hideLegend=true
+                collapse=false
                 doc=groupsDoc}}
         <hr>
 
