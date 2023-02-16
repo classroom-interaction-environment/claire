@@ -1,5 +1,6 @@
 import { Random } from 'meteor/random'
 import { Features } from '../../../../api/config/Features'
+import { firstOption } from '../common/helpers'
 
 export const ItemBase = {
   name: 'itemBase',
@@ -45,14 +46,13 @@ export const ItemBase = {
         optional: true,
         label: translate('item.groupMode.title'),
         defaultValue: 'off',
-        allowedValues: ['off', 'split', 'override'],
+        allowedValues: ['off', 'override'],
         autoform: {
           defaultValue: 'off',
+          firstOption: firstOption,
           options: () => [
             { value: 'off', label: translate('item.groupMode.off') },
-            { value: 'split', label: translate('item.groupMode.split') },
-            { value: 'override', label: translate('item.groupMode.override') },
-            { value: 'merge', label: translate('item.groupMode.merge'), disabled: true }
+            { value: 'override', label: translate('item.groupMode.override') }
           ]
         }
       }
