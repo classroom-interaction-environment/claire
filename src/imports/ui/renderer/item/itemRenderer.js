@@ -6,9 +6,11 @@ import { ReactiveDict } from 'meteor/reactive-dict'
 import { Item } from '../../../contexts/tasks/definitions/items/Item'
 import { Form } from '../../components/forms/Form'
 import { Schema } from '../../../api/schema/Schema'
+import { GroupMode } from '../../../contexts/classroom/group/GroupMode'
 import './itemRenderer.scss'
 import './itemRenderer.html'
-import { GroupMode } from '../../../contexts/classroom/group/GroupMode'
+import { getUsersCollection } from '../../../api/utils/getUsersCollection'
+import { getFullName } from '../../../api/accounts/emailTemplates/common'
 
 export const itemRenderer = 'itemRenderer'
 
@@ -82,6 +84,7 @@ Template.itemRenderer.onCreated(function () {
         if (itemDoc) {
           states.set(itemId, ItemRendererState.saved)
         }
+
         values.set(itemId, itemDoc)
       }
 
@@ -144,6 +147,10 @@ Template.itemRenderer.helpers({
   },
   hasGroupMode (mode) {
     return mode && mode !== GroupMode.off.value
+  },
+  savedBy (userId) {
+    const user = getUsersCollection().findOne(userId)
+    return user && getFullName(user)
   },
   buttonClasses (itemId) {
     const status = states.get(itemId)

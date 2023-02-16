@@ -93,7 +93,7 @@ Template.groupBuilder.events({
     if (!groupSettings) {
       return
     }
-debugger
+
     const { builder } = templateInstance
     builder.setOptions(groupSettings)
 

@@ -155,4 +155,3 @@ SimpleSchema.ErrorTypes.GENERIC = 'genericError'
 export const RegEx = SimpleSchema.RegEx
 export const ErrorTypes = SimpleSchema.ErrorTypes
 export const Integer = SimpleSchema.Integer
-

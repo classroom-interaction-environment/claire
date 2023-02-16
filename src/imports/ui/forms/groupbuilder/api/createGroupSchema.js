@@ -68,7 +68,7 @@ export const createGroupsSchema = ({ phases, material, translate }) => ({
         if (materialAutoShuffle) return true
       },
       afFieldInput: {
-        'class': 'ml-3',
+        class: 'ml-3'
       }
     }
   },
@@ -87,7 +87,7 @@ export const createGroupsSchema = ({ phases, material, translate }) => ({
         if (materialForAllGroups) return true
       },
       afFieldInput: {
-        'class': 'ml-3',
+        class: 'ml-3'
       }
     }
   }

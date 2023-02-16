@@ -66,7 +66,11 @@ TaskResults.methods.saveTask = {
   },
   run: onServerExec(() => {
     import { saveTaskResult } from './methods/saveTaskResult'
-    return saveTaskResult
+
+    return function (taskResultDoc) {
+      const { userId } = this
+      return saveTaskResult({ userId, ...taskResultDoc })
+    }
   })
 }
 
@@ -112,6 +116,10 @@ TaskResults.publications.byTask = {
   schema: {
     lessonId: String,
     taskId: {
+      type: String,
+      optional: true
+    },
+    groupId: {
       type: String,
       optional: true
     }
