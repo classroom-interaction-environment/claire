@@ -50,6 +50,7 @@ describe('GroupBuilder', function () {
         users: ['foo', 'bar'],
         maxUsers: 2,
         maxGroups: 1,
+        atLeastOneUserRequired: false,
         materialForAllGroups: false,
         materialAutoShuffle: true,
         phases: ['foo'],
@@ -179,8 +180,9 @@ describe('GroupBuilder', function () {
         })
       })
     })
-    it('throws if users length is zero', function () {
+    it('throws if users length is zero and at least one user is required', function () {
       const builder = new GroupBuilder()
+      builder.setOptions({ atLeastOneUserRequired: true })
       expect(() => builder.createGroups({ shuffle: false }))
         .to.throw('groupBuilder.error')
         .with.property('reason', 'groupBuilder.atLeastOneUserRequired')
