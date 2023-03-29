@@ -28,10 +28,38 @@ H5P.categories.set('notCategorized', {
 
 const contexts = new Map()
 
-H5P.register = function (context) {
-  debug('register', context.machineName, context)
-  context.label = context.title
-  contexts.set(context.machineName, context)
+H5P.register = function (h5pContentType) {
+  debug('register', h5pContentType.machineName, h5pContentType)
+
+  const context = {
+    name: h5pContentType.machineName,
+    label: h5pContentType.title,
+    dataType: null,
+    iconUrl: h5pContentType.icon,
+    schema: {
+      contentId: String,
+      autoform: {
+        type: 'text',
+        h5p: h5pContentType
+      }
+    },
+    publicFields: {
+      contentId: 1
+    },
+    build: h5pDoc => ({
+      [h5pDoc.contentId]: {
+        type: String,
+        autoform: {
+          type: 'text'
+        }
+      }
+    }),
+    form: async () => {
+      // import autoform editor template
+    }
+  }
+
+  contexts.set(context.name, context)
 }
 
 H5P.options = () => Array.from(contexts.values()).map(el => option(el))
@@ -42,6 +70,7 @@ H5P.renderer = {
     return import('../../../../ui/h5p/player/h5pPlayer')
   }
 }
+
 const initialized = new ReactiveVar(false)
 
 H5P.isInitialized = function () {
