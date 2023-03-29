@@ -1,4 +1,3 @@
-import { Meteor } from 'meteor/meteor'
 import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
@@ -13,12 +12,18 @@ Group.publicFields = {
   title: 1,
   users: 1,
   maxUsers: 1,
-  lessonId: 1,
+  isAdhoc: 1,
+  classId: 1,
+  unitId: 1,
   phases: 1,
   material: 1,
   visible: 1
 }
 
+/**
+ * The group doc schema
+ * @type {object}
+ */
 Group.schema = {
 
   title: {
@@ -33,6 +38,7 @@ Group.schema = {
 
   users: {
     type: Array,
+    optional: true,
     label: 'group.users',
     min: 1
   },
@@ -60,19 +66,21 @@ Group.schema = {
   },
 
   /**
-   * Associate a class
+   * determines, whether a group has been created
+   * during a running lesson (ad-hoc).
+   * In such case it's a temporary group that
+   * is deleted, if the lesson is reset
    */
-
-  classId: {
-    type: String,
+  isAdhoc: {
+    type: Boolean,
     optional: true
   },
 
   /**
-   * Limit scope to a certain lesson, if desired.
+   * Associate a class
    */
 
-  lessonId: {
+  classId: {
     type: String,
     optional: true
   },
@@ -132,37 +140,39 @@ Group.publications = {}
 Group.publications.my = {
   name: 'group.publications.my',
   schema: {
-    lessonId: {
+    classId: {
       type: String,
       optional: true
     },
-    classId: {
+    unitId: {
       type: String,
       optional: true
     }
   },
-  run: onServer(function ({ lessonId, classId }) {
+  run: onServer(function ({ classId, unitId } = {}) {
     const { userId } = this
     const query = { $or: [] }
 
     // option 1: I am creator of these
     const myGroups = { createdBy: userId }
 
-    if (lessonId) myGroups.lessonId = lessonId
     if (classId) myGroups.classId = classId
+    if (unitId) myGroups.unitId = unitId
 
     // option 2: I am member of these groups
     const iamMember = { users: { $elemMatch: { userId } } }
 
-    if (lessonId) iamMember.lessonId = lessonId
     if (classId) iamMember.classId = classId
+    if (unitId) iamMember.unitId = unitId
 
     query.$or.push(myGroups, iamMember)
-
     return getCollection(Group.name).find(query, { fields: Group.publicFields })
   })
 }
 
+/**
+ * @role {student}
+ */
 Group.publications.single = {
   name: 'group.publications.single',
   schema: {
@@ -170,6 +180,7 @@ Group.publications.single = {
       type: String
     }
   },
+  role: [UserUtils.roles.student],
   run: onServer(function ({ groupId }) {
     const { userId } = this
     const query = { _id: groupId, users: { $elemMatch: { userId } } }
@@ -179,6 +190,42 @@ Group.publications.single = {
 
 Group.methods = {}
 
+/**
+ * Returns all groups that a teacher owns by given ids
+ * @param ids {[string]} a list of group ids
+ * @returns {[object]} a list of documents for the given ids
+ * @throws {PermissionDenied} if user has no permission for one of the groups
+ */
+Group.methods.get = {
+  name: 'group.methods.get',
+  schema: {
+    ids: Array,
+    'ids.$': String
+  },
+  roles: UserUtils.roles.teacher,
+  run: onServerExec(function () {
+    import { $in } from '../../../api/utils/query/inSelector'
+
+    return function ({ ids }) {
+      const { userId } = this
+      const query = { _id: $in(ids), createdBy: userId }
+      return getCollection(Group.name).find(query).fetch()
+    }
+  })
+}
+
+/**
+ * Saves a group document. Creates a new doc of it does not exist yet.
+ *
+ * @param _id {string=} only for updating a group doc required
+ * @param title {string} the title of the group
+ * @param users
+ * @param maxUsers
+ * @param classId
+ * @param phases
+ * @param material
+ * @param visible
+ */
 Group.methods.save = {
   name: 'group.methods.save',
   schema: Object.assign({
@@ -187,15 +234,20 @@ Group.methods.save = {
       optional: true
     }
   }, Group.schema),
+  roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
     import { checkEditPermission } from '../../../api/document/checkEditPermissions'
+    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
+
+    const getGroupDoc = createDocGetter({ name: Group.name })
 
     return function (groupDoc) {
       const { userId } = this
       const { _id, ...doc } = groupDoc
 
       if (_id) {
-        checkEditPermission({ doc: groupDoc, userId })
+        const originalDoc = getGroupDoc({ _id })
+        checkEditPermission({ doc: originalDoc, userId })
         return getCollection(Group.name).update(_id, { $set: doc })
       }
 
@@ -204,28 +256,58 @@ Group.methods.save = {
   })
 }
 
+Group.methods.update = {
+  name: 'group.methods.update',
+  schema: { _id: String, ...Group.schema },
+  roles: UserUtils.roles.teacher,
+  run: onServerExec(function () {
+    import { checkEditPermission } from '../../../api/document/checkEditPermissions'
+    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
+
+    const getGroupDoc = createDocGetter({ name: Group.name })
+
+    return function ({ _id, ...updateDoc }) {
+      const doc = getGroupDoc({ _id })
+      const { userId } = this
+      checkEditPermission({ doc, userId })
+      return getCollection(Group.name).update({ _id }, { $set: updateDoc })
+    }
+  })
+}
+
 Group.methods.delete = {
   name: 'group.methods.delete',
   schema: { _id: String },
-  run: onServer(function ({ _id }) {
-    return getCollection(Group.name).remove(_id)
+  roles: UserUtils.roles.teacher,
+  run: onServerExec(function () {
+    import { checkEditPermission } from '../../../api/document/checkEditPermissions'
+    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
+
+    const getGroupDoc = createDocGetter({ name: Group.name })
+
+    return function ({ _id }) {
+      const doc = getGroupDoc({ _id })
+      const { userId } = this
+      checkEditPermission({ doc, userId })
+      return getCollection(Group.name).remove(_id)
+    }
   })
 }
 
 Group.methods.toggleMaterial = {
   name: 'group.methods.toggleMaterial',
   schema: { _id: String, materialId: String, contextName: String },
+  roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
+    import { checkEditPermission } from '../../../api/document/checkEditPermissions'
+    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
+
+    const getGroupDoc = createDocGetter({ name: Group.name })
+
     return function ({ _id, materialId, contextName }) {
-      const GroupCollection = getCollection(Group.name)
-      const groupDoc = GroupCollection.findOne(_id)
-
-      // TODO use ensureDocument
-      if (!groupDoc) throw new Error('docNotFound')
-
-      // TODO ensureDocument
-      const materialExists = (groupDoc.material || []).includes(materialId)
-      if (!materialExists) throw new Error('noMaterial')
+      const groupDoc = getGroupDoc({ _id })
+      const { userId } = this
+      checkEditPermission({ doc: groupDoc, userId })
 
       const mutation = {}
       const visibleList = groupDoc.visible || []
@@ -239,8 +321,7 @@ Group.methods.toggleMaterial = {
         const visible = { _id: materialId, context: contextName }
         mutation.$addToSet = { visible }
       }
-      this.log({ _id, mutation })
-      return GroupCollection.update(_id, mutation)
+      return getCollection(Group.name).update(_id, mutation)
     }
   })
 }
@@ -254,27 +335,31 @@ Group.methods.users = {
     import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
     import { createDocGetter } from '../../../api/utils/document/createDocGetter'
     import { $in } from '../../../api/utils/query/inSelector'
+    import { getUsersCollection } from '../../../api/utils/getUsersCollection'
 
     const getGroupDoc = createDocGetter(Group)
 
     return function ({ groupId }) {
       const { userId } = this
       const groupDoc = getGroupDoc({ _id: groupId })
+      const { users, createdBy } = groupDoc
 
-      if (!groupDoc.users || !groupDoc.users.some(entry => entry.userId === userId)) {
+      if (createdBy !== userId && !users.some(entry => entry.userId === userId)) {
         throw new PermissionDeniedError('group.notAMember', {
           groupId, userId
         })
       }
 
       const allUserIds = []
-      groupDoc.users.forEach(entry => {
+      users.forEach(entry => {
         if (entry.userId !== userId) {
           allUserIds.push(entry.userId)
         }
       })
 
-      return Meteor.users.find({ _id: $in(allUserIds) }, { fields: Users.publicFields }).fetch()
+      return getUsersCollection()
+        .find({ _id: $in(allUserIds) }, { fields: Users.publicFields })
+        .fetch()
     }
   })
 }

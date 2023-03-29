@@ -61,6 +61,7 @@ export const ItemFileSchema = {
         return `${base} - ${details}`
       },
       autoform: {
+        label: false,
         afFieldInput: {
           type: FilesTemplates.upload.type,
           uploadTemplate: FilesTemplates.upload.template,

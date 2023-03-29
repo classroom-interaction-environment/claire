@@ -210,7 +210,7 @@ Template.dashboard.helpers({
   },
   lessons (classId) {
     const selector = { classId }
-    const options = { sort: { startedAt: -1, updatedAt: -1 } }
+    const options = { sort: { completedAt: 1, startedAt: -1, updatedAt: -1 } }
     const query = () => getCollection(Lesson.name).find(selector, options)
     return cursor(query)
   },

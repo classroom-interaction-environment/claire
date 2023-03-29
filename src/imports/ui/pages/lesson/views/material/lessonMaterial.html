@@ -43,7 +43,7 @@
         {{#each phase in lessonPhases}}
             <ul class="list-group my-2">
 
-                {{! general phase informatio (title, plot, period) }}
+                {{! general phase information (title, plot, period) }}
                 <li class="list-group-item d-flex justify-content-between mt-1">
                     <div class="flex-fill text-primary">
                         {{#if phase.plot}}
@@ -63,240 +63,46 @@
 
                 {{#if feature "groups"}}
                 {{! phase-related groups and their linked material }}
-                {{#if hasGroups phase._id}}
-                    {{#each group in (groups phase._id)}}
-                        <div class="d-flex bg-transparent border-0 mt-1">
+                    {{#if hasGroups phase._id}}
+                        {{#each group in (groups phase._id)}}
+                            <div class="d-flex bg-transparent border-0 mt-1">
 
-                            {{! group default info }}
-                            <div class="bg-primary text-white p-1 rounded">
-                                {{group.title}}
-                            </div>
+                                {{! group default info }}
+                                <div class="bg-primary text-white p-1 rounded w-25">
+                                    {{group.title}}
 
-                            {{! group material }}
-                            <ul class="list-group flex-fill ml-1">
-                                {{#each materialId in group.material}}
-                                    <li class="list-group-item d-flex">
-                                        {{#with resolvedReference materialId}}
-                                            {{! group material title }}
-                                            <span class="flex-fill">
-                                                {{#if this.isFilesCollection}}
-                                                    {{this.doc.name}}
-                                                {{else}}
-                                                    {{this.doc.title}}
-                                                {{/if}}
-                                            </span>
+                                    {{#unless group.users.length}}
+                                        {{> tooltip icon="exclamation-triangle" title=(i18n "group.noUsers")}}
+                                    {{/unless}}
+                                </div>
 
-                                            {{! group material actions }}
-                                            <span>
-                                                {{> actionButton
-                                                        class="preview-material-button"
-                                                        type="outline-primary"
-                                                        title=(i18n "common.preview")
-                                                        icon="eye"
-                                                        data-type=this.name
-                                                        data-phase=phase._id
-                                                        data-group=group._id
-                                                        data-reference=this.doc._id
-                                                        blocked=false}}
-                                                {{> actionButton
-                                                        type="outline-primary"
-                                                        class="material-download-button"
-                                                        title=(i18n "actions.download")
-                                                        icon="cloud-download-alt"
-                                                        data-phase=phase._id
-                                                        data-group=group._id
-                                                        data-type=this.name
-                                                        data-reference=this.doc._id
-                                                        disabled=(downloadButtonDisabled this.name)
-                                                        blocked=(downloading phase._id this.doc._id)}}
-                                                {{#if isActiveStudent this.doc._id group.visible}}
-                                                    {{> actionButton
-                                                            class="toggle-mobile-button"
-                                                            type="primary"
-                                                            title=(i18n "lesson.actions.makeMobileInactive")
-                                                            icon="mobile-alt"
-                                                            data-phase=phase._id
-                                                            data-group=group._id
-                                                            data-reference=this.doc._id
-                                                            data-type=this.name
-                                                            disabled=isIdle
-                                                            blocked=(updating phase._id this.doc._id)}}
-                                                {{else}}
-                                                    {{> actionButton
-                                                            class="toggle-mobile-button"
-                                                            type="outline-primary"
-                                                            title=(i18n "lesson.actions.makeMobileActive")
-                                                            icon="mobile-alt"
-                                                            data-phase=phase._id
-                                                            data-group=group._id
-                                                            data-reference=this.doc._id
-                                                            data-type=this.name
-                                                            disabled=isIdle
-                                                            blocked=(updating phase._id this.doc._id)}}
-                                                {{/if}}
-                                                {{#if showResults this.doc._id group._id}}
-                                                    {{> actionButton
-                                                            type="primary"
-                                                            class="lesson-show-results-button"
-                                                            title=(i18n "actions.showResults")
-                                                            icon="list"
-                                                            data-phase=phase._id
-                                                            data-group=group._id
-                                                            data-reference=this.doc._id
-                                                            disabled=(resultButtonDisabled this.name)
-                                                            blocked=false}}
-                                                {{else}}
-                                                    {{> actionButton
-                                                            type="outline-primary"
-                                                            class="lesson-show-results-button"
-                                                            title=(i18n "actions.showResults")
-                                                            icon="list"
-                                                            data-phase=phase._id
-                                                            data-group=group._id
-                                                            data-reference=this.doc._id
-                                                            disabled=(resultButtonDisabled this.name)
-                                                            blocked=false}}
-                                                {{/if}}
-                                                {{#if isOnBeamer this.doc._id}}
-                                                    {{> actionButton
-                                                            type="primary"
-                                                            class="toggle-beamer-material-button"
-                                                            title=(i18n "actions.presentResults")
-                                                            icon="video"
-                                                            data-context=this.name
-                                                            data-group=group._id
-                                                            data-reference=this.doc._id
-                                                            blocked=(sendingToBeamer this.doc._id)}}
-                                                {{else}}
-                                                    {{> actionButton
-                                                            type="outline-primary"
-                                                            class="toggle-beamer-material-button"
-                                                            title=(i18n "actions.presentResults")
-                                                            icon="video"
-                                                            data-context=this.name
-                                                            data-reference=this.doc._id
-                                                            data-group=group._id
-                                                            disabled=(presentButtonDisabled this.name)
-                                                            blocked=(sendingToBeamer this.doc._id)}}
-                                                {{/if}}
-                                         </span>
-                                        {{/with}}
-                                    </li>
-                                    {{! show task results if defined and activated by teacher }}
-                                    {{#with showResults materialId group._id}}
-                                        <li class="list-group-item">
-                                            {{> taskResultTable this}}
+                                {{! group material }}
+                                <ul class="list-group flex-fill ml-1">
+                                    {{#each materialId in group.material}}
+                                        <li class="list-group-item d-flex">
+                                            {{> lessonPhaseMaterial phaseMaterialAtts materialId phase group}}
                                         </li>
-                                    {{/with}}
-                                {{/each}}
-                            </ul>
-                        </div>
-                    {{/each}}
-                {{/if}}
+                                        {{! show task results if defined and activated by teacher }}
+                                        {{#with showResults materialId group._id}}
+                                            <li class="list-group-item">
+                                                {{> taskResultTable this}}
+                                            </li>
+                                        {{/with}}
+                                    {{else}}
+                                        <li class="list-group-item">
+                                            {{group.material.length}}
+                                        </li>
+                                    {{/each}}
+                                </ul>
+                            </div>
+                        {{/each}}
+                    {{/if}}
                 {{/if}}{{! end if feature "group"}}
 
                 {{! phase referenced material }}
                 {{#each reference in phase.references}}
                     <li class="list-group-item d-flex flex-wrap align-items-center">
-                        {{#with resolvedReference reference.document}}
-                            <span class="d-flex mr-2 align-items-start flex-fill">
-							{{>tooltip title=(i18n this.label) icon=this.icon}}
-                                <span class="text-wrap ml-2 d-none d-md-inline-flex">
-                                    {{#if this.isFilesCollection}}
-                                        {{this.doc.name}}
-                                    {{else}}
-                                        {{this.doc.title}}
-                                    {{/if}}
-                                </span>
-						    </span>
-
-                            {{! material actions }}
-                            <span class="ml-auto">
-                        {{> actionButton
-                                class="preview-material-button"
-                                type="outline-primary"
-                                title=(i18n "common.preview")
-                                icon="eye"
-                                data-type=this.name
-                                data-phase=phase._id
-                                data-reference=this.doc._id
-                                blocked=false}}
-                                {{> actionButton
-                                        type="outline-primary"
-                                        class="material-download-button"
-                                        title=(i18n "actions.download")
-                                        icon="cloud-download-alt"
-                                        data-phase=phase._id
-                                        data-type=this.name
-                                        data-reference=this.doc._id
-                                        disabled=(downloadButtonDisabled this.name)
-                                        blocked=(downloading phase._id this.doc._id)}}
-                                {{#if isActiveStudent this.doc._id false}}
-                                    {{> actionButton
-                                            class="toggle-mobile-button"
-                                            type="primary"
-                                            title=(i18n "lesson.actions.makeMobileInactive")
-                                            icon="mobile-alt"
-                                            data-phase=phase._id
-                                            data-reference=this.doc._id
-                                            data-type=this.name
-                                            disabled=isIdle
-                                            blocked=(updating phase._id this.doc._id)}}
-                                {{else}}
-                                    {{> actionButton
-                                            class="toggle-mobile-button"
-                                            type="outline-primary"
-                                            title=(i18n "lesson.actions.makeMobileActive")
-                                            icon="mobile-alt"
-                                            data-phase=phase._id
-                                            data-reference=this.doc._id
-                                            data-type=this.name
-                                            disabled=isIdle
-                                            blocked=(updating phase._id this.doc._id)}}
-                                {{/if}}
-                                {{#if showResults this.doc._id}}
-                                    {{> actionButton
-                                            type="primary"
-                                            class="lesson-show-results-button"
-                                            title=(i18n "actions.showResults")
-                                            icon="list"
-                                            data-phase=phase._id
-                                            data-reference=this.doc._id
-                                            disabled=(resultButtonDisabled this.name)
-                                            blocked=false}}
-                                {{else}}
-                                    {{> actionButton
-                                            type="outline-primary"
-                                            class="lesson-show-results-button"
-                                            title=(i18n "actions.showResults")
-                                            icon="list"
-                                            data-phase=phase._id
-                                            data-reference=this.doc._id
-                                            disabled=(resultButtonDisabled this.name)
-                                            blocked=false}}
-                                {{/if}}
-                                {{#if isOnBeamer this.doc._id}}
-                                    {{> actionButton
-                                            type="primary"
-                                            class="toggle-beamer-material-button"
-                                            title=(i18n "actions.presentResults")
-                                            icon="video"
-                                            data-context=this.name
-                                            data-reference=this.doc._id
-                                            blocked=(sendingToBeamer this.doc._id)}}
-                                {{else}}
-                                    {{> actionButton
-                                            type="outline-primary"
-                                            class="toggle-beamer-material-button"
-                                            title=(i18n "actions.presentResults")
-                                            icon="video"
-                                            data-context=this.name
-                                            data-reference=this.doc._id
-                                            disabled=(presentButtonDisabled this.name)
-                                            blocked=(sendingToBeamer this.doc._id)}}
-                                {{/if}}
-                        </span>
-                        {{/with}}
+                        {{> lessonPhaseMaterial phaseMaterialAtts reference.document phase}}
                     </li>
 
                     {{! show task results if defined and activated by teacher }}
@@ -312,103 +118,66 @@
 
 
         {{#with unassociatedMaterial}}
-            {{#nonPhaseMaterial material=this inline=false
-                                liclass="mt-1"
-                                phaseclass="text-white mt-4"}}
-                <span class="float-right no-wrap">
-					{{> actionButton
-                            class="preview-material-button"
-                            type="outline-primary"
-                            title=(i18n "common.preview")
-                            icon="eye"
-                            data-type=this.type
-                            data-phase=this.phaseId
-                            data-reference=this.refId
-                            blocked=false}}
-                    {{> actionButton
-                            type="outline-primary"
-                            class="material-download-button"
-                            title=(i18n "actions.download")
-                            icon="cloud-download-alt"
-                            data-phase=this.phaseId
-                            data-type=this.type
-                            data-reference=this.refId
-                            disabled=(downloadButtonDisabled this.type)
-                            blocked=(downloading this.phaseId this.refId)}}
-                    {{#if isActiveStudent this.refId false}}
-                        {{> actionButton
-                                class="toggle-mobile-button"
-                                type="primary"
-                                title=(i18n "lesson.actions.makeMobileInactive")
-                                icon="mobile-alt"
-                                data-phase=this.phaseId
-                                data-reference=this.refId
-                                data-type=this.type
-                                disabled=isIdle
-                                blocked=(updating this.phaseId this.refId)}}
-                    {{else}}
-                        {{> actionButton
-                                class="toggle-mobile-button"
-                                type="outline-primary"
-                                title=(i18n "lesson.actions.makeMobileActive")
-                                icon="mobile-alt"
-                                data-phase=this.phaseId
-                                data-reference=this.refId
-                                data-type=this.type
-                                disabled=isIdle
-                                blocked=(updating this.phaseId this.refId)}}
-                    {{/if}}
-                    {{#if showResults this.refId}}
-                        {{> actionButton
-                                type="primary"
-                                class="lesson-show-results-button"
-                                title=(i18n "actions.showResults")
-                                icon="list"
-                                data-phase=this.phaseId
-                                data-reference=this.refId
-                                disabled=(resultButtonDisabled this.type)
-                                blocked=false}}
-                    {{else}}
-                        {{> actionButton
-                                type="outline-primary"
-                                class="lesson-show-results-button"
-                                title=(i18n "actions.showResults")
-                                icon="list"
-                                data-phase=this.phaseId
-                                data-reference=this.refId
-                                disabled=(resultButtonDisabled this.type)
-                                blocked=false}}
-                    {{/if}}
+            <ul class="list-group my-5">
 
-                    {{#if isOnBeamer this.refId}}
-                        {{> actionButton
-                                type="primary"
-                                class="toggle-beamer-material-button"
-                                title=(i18n "actions.presentResults")
-                                icon="video"
-                                data-context=this.type
-                                data-reference=this.refId
-                                blocked=(sendingToBeamer this.refId)}}
-                    {{else}}
-                        {{> actionButton
-                                type="outline-primary"
-                                class="toggle-beamer-material-button"
-                                title=(i18n "actions.presentResults")
-                                icon="video"
-                                data-phase=this.phaseId
-                                data-context=this.type
-                                data-reference=this.refId
-                                disabled=(presentButtonDisabled this.type)
-                                blocked=(sendingToBeamer this.refId)}}
+                {{! general phase information (title, plot, period) }}
+                <li class="list-group-item bg-secondary text-white">
+                    {{i18n "phase.nonPhaseMaterial"}}
+                </li>
+
+                {{#if feature "groups"}}
+                {{! phase-related groups and their linked material }}
+                    {{#if hasGroups "global"}}
+                        {{#each group in (groups "global")}}
+                            <div class="d-flex bg-transparent border-0 mt-1">
+
+                                {{! group default info }}
+                                <div class="bg-primary text-white p-1 rounded w-25">
+                                    {{group.title}}
+
+                                    {{#unless group.users.length}}
+                                        {{> tooltip icon="exclamation-triangle" title=(i18n "group.noUsers") class="text-white bg-warning"}}
+                                    {{/unless}}
+                                </div>
+
+                                {{! group material }}
+                                <ul class="list-group flex-fill ml-1">
+                                    {{#each materialId in group.material}}
+                                        <li class="list-group-item d-flex">
+                                            {{> lessonPhaseMaterial phaseMaterialAtts materialId phase group}}
+                                        </li>
+                                        {{! show task results if defined and activated by teacher }}
+                                        {{#with showResults materialId group._id}}
+                                            <li class="list-group-item">
+                                                {{> taskResultTable this}}
+                                            </li>
+                                        {{/with}}
+                                    {{else}}
+                                        <li class="list-group-item">
+                                            {{group.material.length}}
+                                        </li>
+                                    {{/each}}
+                                </ul>
+                            </div>
+                        {{/each}}
                     {{/if}}
-				</span>
-            <div class="d-block w-100"></div>
-            <div class="global-phase-results d-block w-100 mt-4">
-                {{#with showResults this.refId}}
-                    {{> taskResultTable this}}
-                {{/with}}
-            </div>
-            {{/nonPhaseMaterial}}
+                {{/if}}{{! end if feature "group"}}
+
+                {{! phase referenced material }}
+                {{#each reference in this}}
+                    <li class="list-group-item d-flex flex-wrap align-items-center">
+                        {{> lessonPhaseMaterial phaseMaterialAtts reference.document phase}}
+                    </li>
+
+                    {{! show task results if defined and activated by teacher }}
+                    {{#with showResults reference.document}}
+                        <li class="list-group-item">
+                            {{> taskResultTable this}}
+                        </li>
+                    {{/with}}
+                {{/each}}
+
+            </ul>
         {{/with}}
     </div>
 
@@ -429,38 +198,38 @@
                 </div>
             </div>
         {{else}}
-        <div class="col-xs-12 col-sm-6">
-            {{#if isIdle}}
-                {{>actionButton
-                        type="outline-primary btn-block"
-                        class="start-lesson-button h-100 mb-4"
-                        icon="rocket"
-                        label=(i18n "lesson.actions.start")
-                        blocked=isStarting}}
-            {{else if isRunning}}
-                {{>actionButton
-                        type="outline-secondary btn-block passive"
-                        class="h-100 mb-4"
-                        icon="play"
-                        label=(i18n "lesson.states.running")}}
-            {{/if}}
-        </div>
-        <div class="col-xs-12 col-sm-6">
-            {{#if isRunning}}
-                {{>actionButton
-                        type="success btn-block"
-                        class="complete-lesson-button h-100 mb-4"
-                        icon="flag"
-                        label=(i18n "lesson.actions.complete")
-                        blocked=isStarting}}
-            {{else if isIdle}}
-                {{>actionButton
-                        type="outline-secondary btn-block passive"
-                        class="h-100 mb-4"
-                        icon="flag"
-                        label=(i18n "lesson.actions.complete")}}
-            {{/if}}
-        </div>
+            <div class="col-xs-12 col-sm-6">
+                {{#if isIdle}}
+                    {{>actionButton
+                            type="outline-primary btn-block"
+                            class="start-lesson-button h-100 mb-4"
+                            icon="rocket"
+                            label=(i18n "lesson.actions.start")
+                            blocked=isStarting}}
+                {{else if isRunning}}
+                    {{>actionButton
+                            type="outline-secondary btn-block passive"
+                            class="h-100 mb-4"
+                            icon="play"
+                            label=(i18n "lesson.states.running")}}
+                {{/if}}
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                {{#if isRunning}}
+                    {{>actionButton
+                            type="success btn-block"
+                            class="complete-lesson-button h-100 mb-4"
+                            icon="flag"
+                            label=(i18n "lesson.actions.complete")
+                            blocked=isStarting}}
+                {{else if isIdle}}
+                    {{>actionButton
+                            type="outline-secondary btn-block passive"
+                            class="h-100 mb-4"
+                            icon="flag"
+                            label=(i18n "lesson.actions.complete")}}
+                {{/if}}
+            </div>
         {{/if}}
     </div>
 

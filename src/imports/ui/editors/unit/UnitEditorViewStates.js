@@ -1,4 +1,5 @@
 import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
+import { Features } from '../../../api/config/Features'
 
 export const UnitEditorViewStates = {
   summary: {
@@ -40,8 +41,20 @@ export const UnitEditorViewStates = {
     load: async function () {
       return import('./views/phases/phases')
     }
-  },
-  codeView: {
+  }
+}
+
+if (Features.get('groups')) {
+  UnitEditorViewStates.groups = {
+    name: 'groups',
+    label: 'editor.unit.groups.title',
+    template: 'unitEditorGroupsView',
+    load: () => import('./views/groups/unitEditorGroupsView')
+  }
+}
+
+if (UserUtils.isAdmin()) {
+  UnitEditorViewStates.codeView = {
     name: 'codeView',
     label: 'editor.unit.codeView',
     template: 'uecodeView',

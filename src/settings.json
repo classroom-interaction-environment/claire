@@ -1,6 +1,6 @@
 {
   "public": {
-    "logLevel": 3,
+    "logLevel": 2,
     "features": {
       "groups": true
     },

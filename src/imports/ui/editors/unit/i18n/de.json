@@ -68,6 +68,9 @@
         "deletePhase": "Unterrichtsphase löschen",
         "confirmRemove": "Möchten Sie wirklich diese Unterrichtsphase entfernen und löschen?"
       },
+      "groups": {
+        "title": "Gruppen"
+      },
       "allDocsAdded": "Alle bestehenden Dokumente wurden bereits hinzugefügt",
       "codeView": "Quellcode"
     }

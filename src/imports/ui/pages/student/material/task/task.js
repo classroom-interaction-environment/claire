@@ -22,6 +22,7 @@ import { LessonStates } from '../../../../../contexts/classroom/lessons/LessonSt
 import '../../../../../contexts/curriculum/curriculum/task/renderer/main/taskRenderer'
 import '../../../../components/lesson/status/lessonStatus'
 import './task.html'
+import { Users } from '../../../../../contexts/system/accounts/users/User'
 
 /* This is the student task template where students will work on the task
  * Material.
@@ -291,6 +292,29 @@ Template.task.onCreated(function () {
     })
   })
 
+  // if this task is part of a group situation then we need
+  // to subscribe to the group members in order to get their
+  // names etc.
+  instance.autorun(() => {
+    const groupDoc = instance.state.get('groupDoc')
+
+    if (!groupDoc) {
+      return
+    }
+
+    API.subscribe({
+      name: Users.publications.byGroup,
+      args: { groupId: groupDoc._id },
+      key: 'studentGroupSub',
+      callbacks: {
+        onError: API.fatal,
+        onReady () {
+          instance.state.set('userSubReady', true)
+        }
+      }
+    })
+  })
+
   // finally load any existing result documents
   // that matches the current lesson and the current task
   // so we can load them into the items when reloading
@@ -298,14 +322,22 @@ Template.task.onCreated(function () {
   instance.autorun(() => {
     const taskDoc = instance.state.get('taskDoc')
     const lessonDoc = instance.state.get('lessonDoc')
+    const groupDoc = instance.state.get('groupDoc')
+
     if (!taskDoc || !lessonDoc) return
 
     const lessonId = lessonDoc._id
     const taskId = taskDoc._id
 
+    const args = { lessonId, taskId }
+
+    if (groupDoc) {
+      args.groupId = groupDoc._id
+    }
+
     API.subscribe({
       name: TaskResults.publications.byTask,
-      args: { lessonId, taskId },
+      args,
       key: taskSubKey,
       callbacks: {
         onReady () {

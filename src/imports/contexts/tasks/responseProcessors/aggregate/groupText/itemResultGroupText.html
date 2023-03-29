@@ -1,0 +1,29 @@
+<template name="itemResultGroupText">
+    <ul class="list-group">
+        {{#onLoaded complete=loadComplete}}
+            {{#unless hasGroups}}
+                <li class="list-group-item alert alert-warning">
+                    {{i18n "responseProcessor.groupsExpected"}}
+                </li>
+            {{/unless}}
+
+            {{#each entry in groupResults}}
+                <li class="list-group-item group-entry">
+                    <div class="d-block font-weight-bold">
+                        {{#with groupDoc entry.groupId}}
+                            {{this.title}}
+                        {{else}}
+                            entry.groupId
+                        {{/with}}
+                    </div>
+                    <hr>
+                    <div class="row">
+                        {{#each doc in entry.docs}}
+                            <div class="col text-justify white-space-normal">{{doc.response}}</div>
+                        {{/each}}
+                    </div>
+                </li>
+            {{/each}}
+        {{/onLoaded}}
+    </ul>
+</template>

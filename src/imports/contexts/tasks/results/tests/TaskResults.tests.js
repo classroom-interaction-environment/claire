@@ -16,14 +16,19 @@ import { expect } from 'chai'
 import { Task } from '../../../curriculum/curriculum/task/Task'
 import { LessonErrors } from '../../../classroom/lessons/LessonErrors'
 import { LessonHelpers } from '../../../classroom/lessons/LessonHelpers'
+import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
+import { Group } from '../../../classroom/group/Group'
+import { createGroupDoc } from '../../../../../tests/testutils/doc/createGroupDoc'
+import { collectPublication } from '../../../../../tests/testutils/collectPublication'
 
 describe(TaskResults.name, function () {
   let LessonCollection
   let TaskCollection
   let TaskResultCollection
+  let GroupCollection
 
   before(function () {
-    [LessonCollection, TaskCollection, TaskResultCollection] = mockCollections(Lesson, [Task, { noSchema: true }], TaskResults)
+    [LessonCollection, TaskCollection, TaskResultCollection, GroupCollection] = mockCollections(Lesson, [Task, { noSchema: true }], TaskResults, Group)
   })
 
   afterEach(function () {
@@ -120,6 +125,75 @@ describe(TaskResults.name, function () {
         expect(resultDoc.response).to.not.deep.equal(createDoc.response)
         expect(resultDoc.response).to.deep.equal(updateDoc.response)
       })
+    })
+  })
+
+  describe('publications', function () {
+    const byGroupPub = TaskResults.publications.byGroup.run
+
+    describe(TaskResults.publications.allByItem.name, function () {
+      it('is not implemented')
+    })
+    describe(TaskResults.publications.byGroup.name, function () {
+      it('throws if there is no group doc by group id', function () {
+        ;[
+          {
+            env: {},
+            args: {}
+          },
+          {
+            env: {},
+            args: { groupId: Random.id() }
+          }
+        ].forEach(({ env, args }) => {
+          const { groupId } = args
+          const err = expect(() => byGroupPub.call(env, args))
+            .to.throw(DocNotFoundError.name)
+          err.with.deep.property('details', { name: Group.name, query: groupId })
+        })
+      })
+      it('throws if user has no permission to access the group', function () {
+        const groupId = GroupCollection.insert(createGroupDoc())
+        ;[
+          {
+            env: {},
+            args: { groupId }
+          },
+          {
+            env: { userId: Random.id() },
+            args: { groupId }
+          }
+        ].forEach(({ env, args }) => {
+          const { userId } = env
+          const { groupId } = args
+          const err = expect(() => byGroupPub.call(env, args))
+            .to.throw(PermissionDeniedError.name)
+          err.with.property('reason', 'group.notAMember')
+          err.with.deep.property('details', { userId, groupId })
+        })
+      })
+      it('returns all task result docs for that given group and item', function () {
+        const userId = Random.id()
+        const groupId = GroupCollection.insert(createGroupDoc({ users: [{ userId }] }))
+        const itemId = Random.id()
+        const createDoc = { lessonId: Random.id(), taskId: Random.id(), itemId, response: [Random.id()], groupId }
+        TaskResultCollection.insert({
+          lessonId: Random.id(),
+          taskId: Random.id(),
+          itemId: Random.id(),
+          response: [Random.id()],
+          groupId: Random.id()
+        })
+        const taskResultId = TaskResultCollection.insert(createDoc)
+        const env = { userId }
+        const args = { groupId, itemId }
+        const pub = collectPublication(byGroupPub.call(env, args))
+        expect(pub.length).to.equal(1)
+        expect(pub[0]._id).to.equal(taskResultId)
+      })
+    })
+    describe(TaskResults.publications.byTask.name, function () {
+      it('is not implemented')
     })
   })
 })

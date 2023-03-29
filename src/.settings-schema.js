@@ -55,7 +55,22 @@ const accountsFixtureSchema = schema({
 })
 
 const patchSchema = schema({
-  removeDeadReferences: Boolean
+  removeDeadReferences: {
+    type: Boolean,
+    optional: true
+  },
+  imageFiles: {
+    type: Boolean,
+    optional: true
+  },
+  admin: {
+    type: Boolean,
+    optional: true
+  },
+  roles: {
+    type: Boolean,
+    optional: true
+  }
 })
 
 module.exports = schema({

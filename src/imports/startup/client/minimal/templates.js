@@ -29,6 +29,18 @@ TemplateLoader.enable()
   .register('short', async () => import('../../../ui/generic/short/short'))
   .register('fail', async () => import('../../../ui/generic/fail/fail'))
 
+/**
+ * @param options
+ * @param options.contexts
+ * @param options.loaders
+ * @param options.language
+ * @param options.debug
+ * @param options.useForms
+ * @param options.onError
+ * @param options.onComplete
+ * @return {TemplateInstance.api}
+ * @return {TemplateInstance.api}
+ */
 Template.prototype.setDependencies = function (options = {}) {
   const template = this
   const { viewName } = template

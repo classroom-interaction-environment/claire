@@ -1,11 +1,28 @@
 /* global AutoForm */
+import { Integer } from '../../../../api/schema/Schema'
+import { phaseGroupSchema } from './phaseGroupSchema'
+
 export const createGroupsSchema = ({ phases, material, translate }) => ({
   maxUsers: {
-    label: translate('group.maxUsers'),
-    type: Number,
-    min: 2,
+    label: translate('group.numUsers'),
+    type: Integer,
+    min: 1,
     autoform: {
-      defaultValue: 2
+      defaultValue: 1,
+      min: 1,
+      group: 'nums',
+      'formgroup-class': 'col-12 col-md-6 float-left'
+    }
+  },
+  maxGroups: {
+    label: translate('group.maxGroups'),
+    type: Integer,
+    min: 1,
+    autoform: {
+      min: 1,
+      defaultValue: 1,
+      group: 'nums',
+      'formgroup-class': 'col-12 col-md-6 float-right'
     }
   },
 
@@ -17,28 +34,8 @@ export const createGroupsSchema = ({ phases, material, translate }) => ({
 
   'roles.$': String,
 
-  phases: {
-    label: translate('lesson.phases.title'),
-    type: Array,
-    optional: true,
-    autoform: {
-      type: () => {
-        if (phases?.length === 0) {
-          return 'hidden'
-        }
-      }
-    }
-  },
-  'phases.$': {
-    type: String,
-    autoform: {
-      firstOption: translate('form.selectOne'),
-      options: () => (phases || []).map(doc => doc && ({
-        value: doc._id,
-        label: doc.title
-      }))
-    }
-  },
+  ...phaseGroupSchema({ phases, translate }),
+
   material: {
     label: translate('group.material'),
     type: Array,
@@ -69,6 +66,9 @@ export const createGroupsSchema = ({ phases, material, translate }) => ({
       disabled: () => {
         const materialAutoShuffle = AutoForm.getFieldValue('materialAutoShuffle')
         if (materialAutoShuffle) return true
+      },
+      afFieldInput: {
+        class: 'ml-3'
       }
     }
   },
@@ -85,6 +85,9 @@ export const createGroupsSchema = ({ phases, material, translate }) => ({
       disabled: () => {
         const materialForAllGroups = AutoForm.getFieldValue('materialForAllGroups')
         if (materialForAllGroups) return true
+      },
+      afFieldInput: {
+        class: 'ml-3'
       }
     }
   }

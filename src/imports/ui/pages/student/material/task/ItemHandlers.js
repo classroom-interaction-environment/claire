@@ -56,7 +56,8 @@ ItemHandlers.onItemLoad = ({ instance, TaskResultCollection }) =>
     const value = fromResponse({ response, page, itemId, taskId, taskDoc })
     const itemDoc = {
       [itemId]: value,
-      updatedAt: taskResultDoc.updatedAt
+      updatedAt: taskResultDoc.updatedAt,
+      updatedBy: taskResultDoc.updatedBy
     }
 
     setTimeout(() => callback(null, itemDoc), 300)

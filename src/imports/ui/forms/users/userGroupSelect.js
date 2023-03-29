@@ -1,9 +1,9 @@
-import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { Group } from '../../../contexts/classroom/group/Group'
 import { Schema } from '../../../api/schema/Schema'
 import { dataTarget } from '../../utils/dataTarget'
 import { formIsValid } from '../../components/forms/formUtils'
+import { getUser } from '../../../contexts/system/accounts/users/getUser'
 import './autoform'
 import './userGroupSelect.scss'
 import './userGroupSelect.html'
@@ -12,19 +12,14 @@ Template.afUserGroupSelect.setDependencies()
 
 Template.afUserGroupSelect.onCreated(function () {
   const instance = this
+  const isUpdate = instance.data.value === ''
   instance.state.set('selectedUsers', [])
-
+  instance.state.set('isUpdate', isUpdate)
   // const { minCount, maxCount } = instance.data
   const { builder, allMaterial } = instance.data.atts
   const { users = [], roles = [], material = [], maxUsers, materialForAllGroups } = builder
-  const materialOptions = (allMaterial || []).filter(opt => material.includes(opt.value))
+  const materialOptions = (allMaterial || []).filter(({ value }) => material.includes(value))
   instance.builder = builder
-
-  const query = { _id: { $in: users } }
-  const transform = {
-    sort: { lastName: 1, firstName: 1 }
-  }
-
   instance.state.set({ roles, maxUsers, materialOptions, materialForAllGroups })
 
   // on internal changes
@@ -37,21 +32,25 @@ Template.afUserGroupSelect.onCreated(function () {
       (group.users || []).forEach(user => assignedUsers.add(user.userId))
     })
 
-    const users = Meteor.users
-      .find(query, transform)
-      .fetch()
-      .filter(userDoc => !assignedUsers.has(userDoc._id))
-      .sort((a, b) => (b.presence?.status === 'online' ? 1 : 0) - (a.presence?.status === 'online' ? 1 : 0))
-
-    instance.state.set({ users })
+    instance.state.set({ users: getUsers({ users, assignedUsers }) })
   })
 })
+
+const getUsers = ({ users, assignedUsers }) => {
+  return users
+    .map(getUser)
+    .filter(userDoc => userDoc && !assignedUsers.has(userDoc._id))
+    .sort((a, b) => (b.presence?.status === 'online' ? 1 : 0) - (a.presence?.status === 'online' ? 1 : 0))
+}
 
 const titleSchema = Schema.create({
   title: {
     ...Group.schema.title,
     autoform: {
-      label: false
+      label: false,
+      afFieldInput: {
+        autofocus: ''
+      }
     }
   }
 })
@@ -74,14 +73,31 @@ Template.afUserGroupSelect.helpers({
   maxUsers () {
     return Template.getState('maxUsers')
   },
+  canAddGroups () {
+    return !Template.getState('isUpdate')
+  },
   materialForAllGroups () {
     return Template.getState('materialForAllGroups')
   },
   materialOptions () {
     return Template.getState('materialOptions')
   },
-  hasMaterial (list = [], id) {
-    return list.includes(id)
+  addedMaterials (groupIndex) {
+    const { builder } = Template.instance()
+    const group = builder.getGroup(groupIndex)
+    if (!group) {
+      return null
+    }
+    const material = group.material ?? []
+    const options = Template.getState('materialOptions') ?? []
+    return options.filter(({ value }) => material.includes(value))
+  },
+  materialsToAdd (groupIndex) {
+    const { builder } = Template.instance()
+    const group = builder.getGroup(groupIndex)
+    const material = group.material ?? []
+    const options = Template.getState('materialOptions') ?? []
+    return options.filter(({ value }) => !material.includes(value))
   },
   inputAtts () {
     const { builder, allMaterial, ...atts } = Template.currentData().atts
@@ -124,6 +140,7 @@ Template.afUserGroupSelect.events({
   },
   'click .material-toggle' (event, templateInstance) {
     event.preventDefault()
+
     const materialId = dataTarget(event, templateInstance)
     const index = Number.parseInt(dataTarget(event, templateInstance, 'index'), 10)
     const action = dataTarget(event, templateInstance, 'action')
@@ -151,11 +168,13 @@ Template.afUserGroupSelect.events({
     }
     const { title } = insertDoc
     templateInstance.builder.updateGroup({ index, title })
+    updateInput(templateInstance)
   },
   'click .remove-group-btn' (event, templateInstance) {
     event.preventDefault()
     const index = Number.parseInt(dataTarget(event, templateInstance), 10)
     templateInstance.builder.removeGroup({ index })
+    updateInput(templateInstance)
   },
   'dragstart .user-element' (event, templateInstance) {
     const userId = dataTarget(event, templateInstance)
@@ -167,9 +186,22 @@ Template.afUserGroupSelect.events({
   'dragenter .user-dropzone' (event, templateInstance) {
     const index = Number.parseInt(dataTarget(event, templateInstance, 'index'), 10)
     const role = dataTarget(event, templateInstance, 'role') || undefined
+    const isDraggable = event.relatedTarget && event.relatedTarget.getAttribute('draggable')
+
+    if (isDraggable) {
+      overDraggable = true
+    }
+
     templateInstance.state.set('dragOverIndex', { index, role })
   },
   'dragleave .user-dropzone' (event, templateInstance) {
+    if (overDraggable) {
+      event.preventDefault()
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+      overDraggable = false
+      return false
+    }
     templateInstance.state.set('dragOverIndex', null)
   },
   'drop .user-dropzone' (event, templateInstance) {
@@ -185,12 +217,21 @@ Template.afUserGroupSelect.events({
     // index of the group, where the user is dropped
     const index = Number.parseInt(dataTarget(event, templateInstance, 'index'), 10)
 
+    if (index === groupIndex) {
+      return templateInstance.state.set('dragOverIndex', null) // skip here as there is nothing to update
+    }
+
     // role is only defined if roles exist and user is dropped on a role' dropzone
     const roleStr = dataTarget(event, templateInstance, 'role')
     const role = roleStr === 'none' ? undefined : roleStr
 
+    // if target index is -1 then we remove the users back to the user-pool
+    if (index === -1) {
+      templateInstance.builder.removeUser({ index: groupIndex, userId, role })
+    }
+
     // if this is an unselected user
-    if (groupIndex === -1) {
+    else if (groupIndex === -1) {
       templateInstance.builder.addUser({ index, userId, role })
     }
 
@@ -204,10 +245,13 @@ Template.afUserGroupSelect.events({
       templateInstance.builder.addUser({ index, userId, role })
       templateInstance.builder.removeUser({ index: groupIndex, userId, role })
     }
+
     templateInstance.state.set('dragOverIndex', null)
     updateInput(templateInstance)
   }
 })
+
+let overDraggable = false
 
 function updateInput (templateInstance) {
   const groups = templateInstance.builder.groups.get()

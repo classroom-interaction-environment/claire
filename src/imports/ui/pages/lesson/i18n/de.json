@@ -1,4 +1,9 @@
 {
+  "editor": {
+    "unit": {
+      "editInUnitEditor": "Im Sequenz-Editor bearbeiten"
+    }
+  },
   "lesson": {
     "title": "Unterricht",
     "groups": "Unterrichtsgruppen",
@@ -65,18 +70,10 @@
       "artifacts": "Artefakte"
     },
     "info": {
-      "title": "Teilnehmer/innen",
-      "createGroups": "Gruppen anlegen"
+      "title": "Teilnehmer/innen"
     },
     "student": {
       "docNotVisible": "Das Material wurde vermutlich durch die Lehrkraft deaktiviert."
     }
-  },
-  "group": {
-    "title": "Gruppe",
-    "groups": "Gruppen",
-    "users": "Mitglieder",
-    "phases": "Auf Phasen beschränkt",
-    "material": "U. Material für Gruppen"
   }
 }
