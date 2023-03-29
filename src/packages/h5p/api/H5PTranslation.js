@@ -15,12 +15,16 @@ const internal = {
  * @param translate
  */
 H5PTranslation.config = ({ addl10n, getLocale, translate }) => {
-  internal.translate = translate
+  console.warn('set translation')
+  internal.translate = (label, key) => {
+    console.debug({ label, key })
+    return translate(label, key)
+  }
   internal.getLocale = getLocale
 
   onServerExec(async function () {
-    const serverLang = await import('../api/i18n/getServerLanguage')
-    return addl10n(serverLang)
+    const { de, en } = await import('../api/i18n/getServerLanguage')
+    return addl10n({ de, en })
   })
 }
 

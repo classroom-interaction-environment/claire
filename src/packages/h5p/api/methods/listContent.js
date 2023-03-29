@@ -10,7 +10,7 @@ import { H5PFactory } from '../H5PFactory'
 export const listContent = async function () {
   // TODO Check the user's permission here
 
-  const contentIds = await h5pEditor.contentManager.listContent()
+  const contentIds = await H5PFactory.editor().contentManager.listContent()
   const contentObjects = await Promise.all(
     contentIds.map(async (id) => ({
       content: await H5PFactory.editor().contentManager.getContentMetadata(

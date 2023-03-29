@@ -2,14 +2,14 @@ import { ResponseDataTypes } from '../../../../api/plugins/ResponseDataTypes'
 import { getItemBase } from '../items/getItemBase'
 import { option } from '../common/helpers'
 import { ITaskDefinition } from '../ITaskDefinition'
-import {createLog} from '../../../../api/log/createLog'
-import {ReactiveVar} from 'meteor/reactive-var'
+import { createLog } from '../../../../api/log/createLog'
+import { ReactiveVar } from 'meteor/reactive-var'
 import { H5PMeteor } from 'meteor/claire:h5p'
-import {callMethod} from '../../../../ui/controllers/document/callMethod'
+import { callMethod } from '../../../../ui/controllers/document/callMethod'
 
 export const H5P = {}
 
-const debug = createLog({ name: 'H5PItems', type: 'debug'})
+const debug = createLog({ name: 'H5PItems', type: 'debug' })
 
 H5P.name = 'h5p'
 H5P.label = 'h5p.title'
@@ -29,8 +29,9 @@ H5P.categories.set('notCategorized', {
 const contexts = new Map()
 
 H5P.register = function (context) {
-  debug('register', context.name)
-  contexts.set(context.name, context)
+  debug('register', context.machineName, context)
+  context.label = context.title
+  contexts.set(context.machineName, context)
 }
 
 H5P.options = () => Array.from(contexts.values()).map(el => option(el))
@@ -48,6 +49,7 @@ H5P.isInitialized = function () {
 }
 
 H5P.initialize = async () => {
+  debug('initialize')
   if (initialized.get()) {
     return true
   }
@@ -55,6 +57,10 @@ H5P.initialize = async () => {
   const response = await callMethod({
     name: H5PMeteor.methods.listItems.name,
     args: {}
+  })
+
+  response.libraries.forEach(lib => {
+    H5P.register(lib)
   })
 }
 

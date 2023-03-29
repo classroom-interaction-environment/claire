@@ -60,6 +60,4 @@ const de = {
   ...serverDe // default namespace, so we also add these values without namespace prefix
 }
 
-export const getServerLanguage = () => {
-  return { en, de }
-}
+export { en, de }

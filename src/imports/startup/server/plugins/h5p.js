@@ -1,10 +1,10 @@
-import {config, methods, collections, i18n, routesHandler} from 'meteor/claire:h5p'
-import {createMethod} from '../../../infrastructure/factories/createMethod'
-import {rateLimitMethod} from '../../../infrastructure/factories/rateLimit'
-import {createCollection} from '../../../infrastructure/factories/createCollection'
-import {WebApp} from 'meteor/webapp'
+import { config, methods, collections, i18n, routesHandler } from 'meteor/claire:h5p'
+import { createMethod } from '../../../infrastructure/factories/createMethod'
+import { rateLimitMethod } from '../../../infrastructure/factories/rateLimit'
+import { createCollection } from '../../../infrastructure/factories/createCollection'
+import { WebApp } from 'meteor/webapp'
 import bodyParser from 'body-parser'
-import {Meteor} from 'meteor/meteor'
+import { Meteor } from 'meteor/meteor'
 import { i18n as i18nProvider } from '../../../api/language/language'
 import h5pConfig from './h5pConfig.json'
 
@@ -18,7 +18,7 @@ methods(definition => {
 i18n({
   addl10n: i18nProvider.addl10n,
   translate: (key, language) => i18nProvider.get(language, key),
-  getLocale: i18nProvider.getLocale,
+  getLocale: i18nProvider.getLocale
 })
 
 config(h5pConfig)

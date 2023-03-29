@@ -1,5 +1,4 @@
-import { onServer } from '../utils/onServer'
-import {loadContentForEditing} from './methods/loadContentForEditing'
+import { onServerExec } from '../utils/onServerExec'
 
 /**
  * This combines the API for H5P with the Meteor domain and provides
@@ -30,7 +29,7 @@ H5PMeteor.routes.getAjax = {
   permissions: {
     canEditContent: true
   },
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { getAjax } from './routes/getAjax'
     return getAjax
   })
@@ -42,16 +41,18 @@ H5PMeteor.routes.postAjax = {
   permissions: {
     canCreateContent: true
   },
-  middleware: onServer(function () {
+  middleware: onServerExec(function () {
     import multer from 'multer'
-    const upload = multer({ dest: 'uploads/' })
 
-    return upload.fields([
-      { name: 'file', maxCount: 1 },
-      { name: 'h5p', maxCount: 1 }
-    ])
+    return function () {
+      const upload = multer({ dest: 'uploads/' })
+      return upload.fields([
+        { name: 'file', maxCount: 1 },
+        { name: 'h5p', maxCount: 1 }
+      ])
+    }
   }),
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { postAjax } from './routes/postAjax'
     return postAjax
   })
@@ -67,7 +68,7 @@ H5PMeteor.routes.getContentFile = {
   permissions: {
     canPlayContent: true
   },
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { getContentFile } from './routes/getContentFile'
     return getContentFile
   })
@@ -87,7 +88,7 @@ H5PMeteor.routes.downloadContent = {
   permissions: {
     canPlayContent: true
   },
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { downloadContent } from './routes/downloadContent'
     return downloadContent
   })
@@ -102,7 +103,7 @@ H5PMeteor.routes.getTempFiles = {
   permissions: {
     canPlayContent: true
   },
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { getTempFiles } from './routes/getTempFiles'
     return getTempFiles
   })
@@ -116,7 +117,7 @@ H5PMeteor.routes.getLibraryFile = {
   permissions: {
     canPlayContent: true
   },
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { getLibraryFile } from './routes/getLibraryFile'
     return getLibraryFile
   })
@@ -131,7 +132,7 @@ H5PMeteor.routes.getTheme = {
   permissions: {
     canPlayContent: true
   },
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { getTheme } from './routes/getTheme'
     return getTheme
   })
@@ -143,7 +144,7 @@ H5PMeteor.routes.getTheme = {
 H5PMeteor.routes.getUserContent = {
   name: '/contentUserData/:contentId/:dataType/:subContentId',
   method: 'get',
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { getUserContent } from './routes/getUserContent'
     return getUserContent
   })
@@ -155,7 +156,7 @@ H5PMeteor.routes.getUserContent = {
 H5PMeteor.routes.postUserContent = {
   name: '/contentUserData/:contentId/:dataType/:subContentId',
   method: 'post',
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { postUserContent } from './routes/postUserContent'
     return postUserContent
   })
@@ -170,7 +171,7 @@ H5PMeteor.routes.postFinishedData = {
   permissions: {
     canPlayContent: true
   },
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { postFinishedData } from './routes/postFinishedData'
     return postFinishedData
   })
@@ -190,7 +191,7 @@ H5PMeteor.methods.listItems = {
     canEditContent: true
   },
   schema: {},
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { listItems } from './methods/listItems'
     return listItems
   })
@@ -215,7 +216,7 @@ H5PMeteor.methods.loadContentForEditing = {
       optional: true
     }
   },
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { loadContentForEditing } from './methods/loadContentForEditing'
     return loadContentForEditing
   })
@@ -233,7 +234,7 @@ H5PMeteor.methods.loadContentForPlaying = {
   permissions: {
     canPlayContent: true
   },
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { loadContentForPlaying } from './methods/loadContentForPlaying'
     return loadContentForPlaying
   })
@@ -265,7 +266,7 @@ H5PMeteor.methods.saveContent = {
   permissions: {
     canCreateContent: true
   },
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { saveContent } from './methods/saveContent'
     return saveContent
   })
@@ -283,7 +284,7 @@ H5PMeteor.methods.deleteContent = {
   permissions: {
     canDeleteContent: true
   },
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { deleteContent } from './methods/deleteContent'
     return deleteContent
   })
@@ -299,7 +300,7 @@ H5PMeteor.methods.listContent = {
   permissions: {
     canPlayContent: true
   },
-  run: onServer(function () {
+  run: onServerExec(function () {
     import { listContent } from './methods/listContent'
     return listContent
   })

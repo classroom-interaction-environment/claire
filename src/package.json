@@ -49,6 +49,7 @@
     "meteor-node-stubs": "^1.2.1",
     "mime-types": "^2.1.35",
     "minimist": "^1.2.6",
+    "multer": "1.4.5-lts.1",
     "pdfjs-dist": "^2.14.305",
     "pdfobject": "^2.2.7",
     "plotly.js-dist": "^2.11.1",
