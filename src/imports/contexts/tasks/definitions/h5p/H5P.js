@@ -2,13 +2,19 @@ import { ResponseDataTypes } from '../../../../api/plugins/ResponseDataTypes'
 import { getItemBase } from '../items/getItemBase'
 import { option } from '../common/helpers'
 import { ITaskDefinition } from '../ITaskDefinition'
+import {createLog} from '../../../../api/log/createLog'
+import {ReactiveVar} from 'meteor/reactive-var'
+import { H5PMeteor } from 'meteor/claire:h5p'
+import {callMethod} from '../../../../ui/controllers/document/callMethod'
 
 export const H5P = {}
+
+const debug = createLog({ name: 'H5PItems', type: 'debug'})
 
 H5P.name = 'h5p'
 H5P.label = 'h5p.title'
 H5P.types = {}
-H5P.icon = 'square-5'
+H5P.icon = 'edit'
 H5P.options = {}
 H5P.dataTypes = Object.assign({}, ResponseDataTypes)
 H5P.categories = new Map()
@@ -23,17 +29,33 @@ H5P.categories.set('notCategorized', {
 const contexts = new Map()
 
 H5P.register = function (context) {
+  debug('register', context.name)
   contexts.set(context.name, context)
 }
+
 H5P.options = () => Array.from(contexts.values()).map(el => option(el))
 
 H5P.renderer = {
-  template: 'h5pPRenderer',
+  template: 'h5pPlayer',
   load: async function () {
-    // return import('../../../../ui/renderer/item/itemRenderer')
+    return import('../../../../ui/h5p/player/h5pPlayer')
   }
 }
+const initialized = new ReactiveVar(false)
 
-H5P.initialize = async () => {}
+H5P.isInitialized = function () {
+  return initialized.get()
+}
+
+H5P.initialize = async () => {
+  if (initialized.get()) {
+    return true
+  }
+
+  const response = await callMethod({
+    name: H5PMeteor.methods.listItems.name,
+    args: {}
+  })
+}
 
 ITaskDefinition(H5P, contexts)

@@ -107,6 +107,7 @@ communitypackages:autoform-bootstrap4@1.0.6
 claire:plugin-registry
 claire:item-textarea
 claire:item-range
+claire:h5p
 
 #========================================
 # TESTING

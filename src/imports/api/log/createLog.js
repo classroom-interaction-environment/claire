@@ -53,10 +53,10 @@ const internal = {
 /**
  * Creates a log for a given name and type.
  * Returns a no-op function if devOnly is true but app is in prod mode
- * @param name {
- * @param type
- * @param devOnly
- * @return {*}
+ * @param name {string}
+ * @param type {log|debug|info|warn|error}
+ * @param devOnly {boolean}
+ * @return {function}
  */
 export const createLog = ({ name, type = 'log', devOnly }) => {
   if (!Object.prototype.hasOwnProperty.call(internal, type)) {
