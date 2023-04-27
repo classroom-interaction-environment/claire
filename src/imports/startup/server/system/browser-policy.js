@@ -1,4 +1,5 @@
 import { cspOptions } from '../../../api/csp/cspOptions'
+import { WebApp } from 'meteor/webapp'
 import helmet from 'helmet'
 
 /*

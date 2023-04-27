@@ -32,4 +32,3 @@ Meteor.startup(async () => {
   )
   WebApp.connectHandlers.use('/h5p', routesHandler())
 })
-

@@ -105,6 +105,10 @@
     }
   },
   "eslintConfig": {
+    "ignorePatterns": [
+      "**/public/h5p/**/*",
+      "**/private/h5p/**/*"
+    ],
     "parser": "@babel/eslint-parser",
     "parserOptions": {
       "sourceType": "module",

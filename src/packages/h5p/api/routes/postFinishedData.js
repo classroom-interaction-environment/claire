@@ -36,7 +36,8 @@ export const postFinishedData = () => async (req, res) => {
       time,
       new H5PUser(user)
     )
-  } catch (e) {
+  }
+  catch (e) {
     return fail(res)
   }
 

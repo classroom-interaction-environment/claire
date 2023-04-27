@@ -2,15 +2,14 @@ import { Meteor } from 'meteor/meteor'
 import { ReactiveVar } from 'meteor/reactive-var'
 import { Template } from 'meteor/templating'
 import { H5PMeteor } from 'meteor/claire:h5p'
-import { i18n  } from '../../../api/language/language'
+import { i18n } from '../../../api/language/language'
 import { defineElements } from '@lumieducation/h5p-webcomponents' // This will register the <h5p-player/>
 import './h5pPlayer.html'
 
 defineElements('h5p-player')
 
-const API = Template.h5pPlayer.setDependencies({
-  // TOOD add lang
-})
+// TODO add lang
+Template.h5pPlayer.setDependencies({})
 
 Template.h5pPlayer.onCreated(function () {
   const instance = this
@@ -21,7 +20,6 @@ Template.h5pPlayer.onRendered(function () {
   const instance = this
   const player = instance.$('.player')[0]
   player.addEventListener('initialized', function () {
-    console.debug('[H5PPlayerComponent]: initialized')
     const H5Pns = player.h5pObject
     H5Pns.externalDispatcher.on('xAPI', function (event) {
       const { statement } = event.data
@@ -37,7 +35,6 @@ Template.h5pPlayer.onRendered(function () {
       statement.context.platform = 'h5p-Meteor'
       statement.context.language = i18n.currentLocale.get()
       statement.timestamp = new Date().toISOString()
-      console.debug('xApi', statement)
       const log = instance.xApiOutput.get()
       log.push({
         name: statement.actor.name,
@@ -54,7 +51,6 @@ Template.h5pPlayer.onRendered(function () {
   // We set the callback on the player webcomponent. When the contentId is set
   // through the template binding, the player will render.
   player.loadContentCallback = async (contentId) => {
-    console.debug('H5PPlayer load', contentId)
     return new Promise((resolve, reject) => {
       Meteor.call(H5PMeteor.methods.loadContentForPlaying.name, { contentId }, (err, result) => {
         if (err) {

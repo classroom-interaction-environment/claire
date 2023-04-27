@@ -57,7 +57,8 @@ Template.h5pEditor.onRendered(function () {
         library: requestBody.library,
         contentId: contentId
       }
-      console.debug(H5PMeteor.methods.saveContent.name, 'call', args)
+
+      // TODO use callMethod
       Meteor.call(H5PMeteor.methods.saveContent.name, args, (err, result) => {
         if (err) {
           API.notify(err)
@@ -68,4 +69,3 @@ Template.h5pEditor.onRendered(function () {
       })
     })
 })
-
