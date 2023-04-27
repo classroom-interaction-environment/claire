@@ -8,7 +8,7 @@ import { LessonMaterial } from '../../controllers/LessonMaterial'
 import { Users } from '../../../contexts/system/accounts/users/User'
 import { TimeUnit } from '../../../contexts/curriculum/curriculum/types/TimeUnit'
 import { Group } from '../../../contexts/classroom/group/Group'
-import { TaskWorkingState } from '../../../contexts/tasks/results/TaskWorkingState'
+import { TaskWorkingState } from '../../../contexts/tasks/state/TaskWorkingState'
 import { LessonStates } from '../../../contexts/classroom/lessons/LessonStates'
 import { ProfileImages } from '../../../contexts/files/image/ProfileImages'
 import { Unit } from '../../../contexts/curriculum/curriculum/unit/Unit'
@@ -108,7 +108,6 @@ Template.lesson.onCreated(function () {
     })
   })
 
-
   // classDoc
 
   instance.autorun(() => {
@@ -137,7 +136,6 @@ Template.lesson.onCreated(function () {
   // - material
   //
   // ============================================================================
-
 
   // users
 

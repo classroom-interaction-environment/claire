@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { createResearchConfirmToken } from './createResearchConfirmToken'
 import { createResearchConfirmUrl } from './createResearchConfirmUrl'
 import { sendResearchConfirmationEmail } from './sendResearchConfirmationEmail'
@@ -18,7 +19,6 @@ export const setResearch = function setResearch ({ participate }) {
 
   if (participate) {
     const user = Meteor.users.findOne(userId)
-    console.debug(user)
     const { firstName, lastName } = user
     const token = createResearchConfirmToken({ userId })
     const email = user.emails[0].address

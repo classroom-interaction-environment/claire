@@ -1,4 +1,4 @@
-import { Meteor } from "meteor/meteor"
+import { Meteor } from 'meteor/meteor'
 import { getCollection } from '../../api/utils/getCollection'
 import { DefaultCurriculumSchema, DefaultCurriculumFields } from './curriculum/defaultSchema'
 import { createContextRegistry } from '../../infrastructure/datastructures/createContextRegistry'

@@ -1,3 +1,4 @@
+import { Template } from 'meteor/templating'
 import { Dimension } from '../../../contexts/curriculum/curriculum/dimension/Dimension'
 import { DimensionType } from '../../../contexts/curriculum/curriculum/types/DimensionType'
 import { getCollection } from '../../../api/utils/getCollection'
@@ -6,7 +7,7 @@ import './objective.scss'
 import './objective.html'
 
 Template.objective.setDependencies({
-    contexts: [Dimension]
+  contexts: [Dimension]
 })
 
 Template.objective.helpers({

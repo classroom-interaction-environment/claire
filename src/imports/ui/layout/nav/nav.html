@@ -61,9 +61,12 @@
 					{{!-- user related --}}
                     {{#onLoaded complete=templateLoaded showLoading=false}}
 					<ul id="mainNavbarMenu" class="navbar-nav ml-auto">
+                        {{!-- commented out until fully clear how to implement
 						<li class="nav-item">
-							{{>link id="globalShareButton" title=(i18n "common.share") icon="share-alt" class="nav-link font-weight-light"}}
+							{{>link id="globalShareButton" title=(i18n "common.share")
+							icon="share-alt" class="nav-link font-weight-light"}}
 						</li>
+						--}}
 						<li class="nav-item">
 							{{> beamer nav=true}}
 						</li>

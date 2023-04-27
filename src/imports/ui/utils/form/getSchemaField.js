@@ -1,8 +1,9 @@
 /* global AutoForm */
+import { Meteor } from 'meteor/meteor'
 
 export const getSchemaField = (function () {
   if (Meteor.isClient) {
-    return name => name &&  AutoForm && AutoForm.getFieldValue(name)
+    return name => name && AutoForm && AutoForm.getFieldValue(name)
   }
 
   if (Meteor.isServer) {

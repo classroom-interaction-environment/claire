@@ -10,14 +10,14 @@ import { cursor } from '../../../../api/utils/cursor'
 import { loggedIn } from '../../../../api/accounts/user/loggedIn'
 import { insertUpdate } from '../../../../api/utils/insertUpdate'
 import { getLocalCollection } from '../../../../infrastructure/collection/getLocalCollection'
-import { createDebugLog } from '../../../../api/log/createLog'
+import { createLog } from '../../../../api/log/createLog'
 import { $nin } from '../../../../api/utils/query/notInSelector'
 import { getCollection } from '../../../../api/utils/getCollection'
 import lessonStudentLanguage from '../i18n/lessonStudentLanguage'
 import '../../../components/lesson/status/lessonStatus'
 import './lessons.html'
 
-const warn = createDebugLog('Lessons', 'warn')
+const warn = createLog({ name: 'Lessons', type: 'warn' })
 const API = Template.lessons.setDependencies({
   contexts: [SchoolClass, Lesson, Unit],
   language: lessonStudentLanguage
@@ -52,14 +52,14 @@ Template.lessons.onCreated(function () {
             // search for any class doc
             // and set if we have found anything
             classDoc = SchoolClassCollection.findOne({ students: userId })
-
-            if (classDoc) {
-              CurrentClass.set(classDoc._id)
-              updateClassId({ user, classId })
-            }
-            else {
-            }
           }
+
+          if (!classDoc) {
+            return API.fatal(new Error('errors.docNotFound'))
+          }
+
+          CurrentClass.set(classDoc._id)
+          updateClassId({ user, classId })
 
           const classCount = SchoolClassCollection.find().count()
           instance.state.set('classDoc', classDoc)
@@ -227,7 +227,8 @@ function loadUnits (lessonIds, templateInstance, errors = []) {
 
           // reattempt to load units with filtered lessons
           return loadUnits(lessonIds, templateInstance, errors)
-        } else {
+        }
+        else {
           return loadUnits([], templateInstance, errors)
         }
       }
@@ -236,7 +237,8 @@ function loadUnits (lessonIds, templateInstance, errors = []) {
       templateInstance.state.set('unitsReady', true)
       unitDocs.forEach(doc => insertUpdate(UnitLocalCollection, doc))
     })
-  } else if (templateInstance.state.get('lessonReady')) {
+  }
+  else if (templateInstance.state.get('lessonReady')) {
     templateInstance.state.set('loadErrors', errors)
     templateInstance.state.set('unitsReady', true)
   }

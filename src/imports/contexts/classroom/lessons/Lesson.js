@@ -2,9 +2,8 @@ import { Meteor } from 'meteor/meteor'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
 import { i18n } from '../../../api/language/language'
 import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
-import { auto, onServer, onServerExec } from '../../../api/utils/archUtils'
+import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
-import { SchoolClass } from '../schoolclass/SchoolClass'
 
 /**
  * The Lesson is a fundamental part of this application.
@@ -20,17 +19,6 @@ export const Lesson = {
   icon: 'book',
   isClassroom: true
 }
-
-/**************************************************************
- *
- *  STATES
- *
- **************************************************************/
-
-/**
- * The states are reflecting the three main states of a real world lesson.
- * @deprecated TODO extract into own module
- */
 
 /**************************************************************
  *
@@ -194,151 +182,6 @@ Lesson.publicFields = {
 
 /**************************************************************
  *
- *  HELPERS
- *
- **************************************************************/
-
-/**
- * use external helpers
- * @deprecated
- */
-Lesson.helpers = {}
-
-auto(function () {
-  import { SchoolClass } from '../schoolclass/SchoolClass'
-  import { createGetDoc } from '../../../api/utils/documentUtils'
-
-  const getLessonDoc = createGetDoc(Lesson, { checkOwner: false })
-  const getClassDoc = createGetDoc(SchoolClass, { checkOwner: false })
-  const checkUser = userId => {
-    if (!userId || !Meteor.users.findOne(userId)) {
-      throw new Meteor.Error('errors.docNotFound', 'user.notFound')
-    }
-  }
-
-  /**
-   * @deprecated extract
-   * @param lessonDoc
-   * @param taskId
-   * @return {*|boolean}
-   */
-  Lesson.helpers.taskIsEditable = function taskIsEditable ({ lessonDoc = {}, taskId, groupDoc = {} }) {
-    const isEditable = ref => ref._id === taskId
-    return (lessonDoc.visibleStudent || []).some(isEditable) || (groupDoc.visible || []).some(isEditable)
-  }
-
-  /**
-   * Gets a classDoc, if given user is student
-   * @deprecated extract method
-   * @param classId The _id of classDoc, where the user should be member of
-   * @param userId the id of the user
-   * @returns {classDoc}
-   */
-
-  Lesson.helpers.getClassDocIfStudent = function getClassDocIfMember ({ userId, classId }) {
-    checkUser(userId)
-    const classDoc = getClassDoc(classId)
-    if (!classDoc.students || classDoc.students.indexOf(userId) === -1) {
-      throw new Meteor.Error('errors.permissionDenied', SchoolClass.errors.notMember)
-    }
-    return classDoc
-  }
-
-  /**
-   * Checks if the given user is member of a given lesson
-   * use isMemberOfClass
-   * @deprecated
-   * @param userId
-   * @param lessonId
-   * @param returnDocs
-   * @return {boolean}
-   */
-  Lesson.helpers.isMemberOfLesson = function isMemberOfLesson ({ userId, lessonId } = {}, { returnDocs = false } = {}) {
-    checkUser(userId)
-    const lessonDoc = getLessonDoc(lessonId)
-    const { classId } = lessonDoc
-    const classDoc = getClassDoc(classId)
-    const isMember = !!(classDoc.createdBy === userId ||
-      (classDoc.teachers && classDoc.teachers.indexOf(userId) > -1) ||
-      (classDoc.students && classDoc.students.indexOf(userId) > -1))
-    return returnDocs
-      ? isMember && { lessonDoc, classDoc }
-      : isMember
-  }
-
-  /**
-   * Checks if the given user is teacher of the lesson, or if not, being teacher of the class.
-   * @deprecated
-   * @param userId The user to be checked
-   * @param lessonId the id of the lesson document
-   * @return {boolean} true if creator of lesson or class or member of class teachers
-   */
-  Lesson.helpers.isTeacher = function isTeacher ({ userId, lessonId }, { returnDocs = false } = {}) {
-    const lessonDoc = getLessonDoc(lessonId)
-    if (lessonDoc.createdBy === userId) return true
-
-    const { classId } = lessonDoc
-    const classDoc = getClassDoc(classId)
-    const isTeacher = SchoolClass.helpers.isTeacher({ classDoc, userId })
-    return returnDocs
-      ? isTeacher && { lessonDoc, classDoc }
-      : isTeacher
-  }
-
-  /**
-   * @deprecated extract
-   * @param userId
-   * @param lessonId
-   * @param returnDocs
-   * @return {*}
-   */
-  Lesson.helpers.isStudentOfLesson = function isStudentOfLesson ({ userId, lessonId }, { returnDocs = false } = {}) {
-    const lessonDoc = getLessonDoc(lessonId)
-    const { classId } = lessonDoc
-    const classDoc = getClassDoc(classId)
-    const isStudent = !!(userId && classDoc.students && classDoc.students.indexOf(userId) > -1)
-    return returnDocs
-      ? isStudent && { lessonDoc, classDoc }
-      : isStudent
-  }
-
-  /**
-   * Gets lessonDoc and classDoc if the userId is a teacher
-   * @deprecated extract
-   * @param userId
-   * @param lessonId
-   * @return {{lessonDoc: *, classDoc: *}}
-   */
-
-  Lesson.helpers.docsForTeacher = function docsForTeacher ({ userId, lessonId }) {
-    const lessonDoc = getLessonDoc(lessonId)
-    const classDoc = getClassDoc(lessonDoc.classId)
-    if (!SchoolClass.helpers.isTeacher({ classDoc, userId })) {
-      throw new PermissionDeniedError(SchoolClass.errors.notTeacher)
-    }
-    return { lessonDoc, classDoc }
-  }
-
-  /**
-   * Returns lessonDoc and classDoc if user is a student of the class
-   * @deprecated extract
-   * @param userId
-   * @param lessonId
-   * @return {{lessonDoc: *, classDoc: *}}
-   */
-
-  Lesson.helpers.docsForStudent = function docsForStudent ({ userId, lessonId }) {
-    const lessonDoc = getLessonDoc(lessonId)
-    const classDoc = getClassDoc(lessonDoc.classId)
-    if (!SchoolClass.helpers.isStudent({ classDoc, userId })) {
-      throw new PermissionDeniedError(SchoolClass.errors.notMember)
-    }
-    return { lessonDoc, classDoc }
-  }
-})
-
-/**************************************************************
- *
  *  PUBLICATIONS
  *
  **************************************************************/
@@ -353,15 +196,13 @@ Lesson.publications.my = {
     const { userId } = this
     const query = {
       $or: [
-        { createdBy: userId},
+        { createdBy: userId },
         { teachers: userId }
       ]
     }
     return getCollection(Lesson.name).find(query)
   })
 }
-
-
 
 /**
  * Publishes all Lessons, associated with a unit and which I have created
@@ -395,11 +236,11 @@ Lesson.publications.single = {
   },
   run: onServerExec(function () {
     import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
-    import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
+    import { LessonHelpers } from './LessonHelpers'
 
     return function ({ _id }) {
       const { userId } = this
-      const isMember = Lesson.helpers.isMemberOfLesson({
+      const isMember = LessonHelpers.isMemberOfLesson({
         userId,
         lessonId: _id
       })
@@ -427,14 +268,18 @@ Lesson.publications.byClass = {
   schema: {
     classId: String
   },
-  run: onServer(function ({ classId }) {
-    const userId = this.userId
-    const classDoc = getCollection(SchoolClass.name).findOne({ _id: classId })
-    const isTeacher = SchoolClass.helpers.isTeacher({ userId, classDoc })
-    this.log({ isTeacher })
-    return isTeacher
-      ? getCollection(Lesson.name).find({ classId })
-      : null
+  run: onServerExec(function () {
+    import { SchoolClass } from '../schoolclass/SchoolClass'
+
+    return function ({ classId }) {
+      const userId = this.userId
+      const classDoc = getCollection(SchoolClass.name).findOne({ _id: classId })
+      const isTeacher = SchoolClass.helpers.isTeacher({ userId, classDoc })
+      this.log({ isTeacher })
+      return isTeacher
+        ? getCollection(Lesson.name).find({ classId })
+        : null
+    }
   })
 }
 
@@ -450,10 +295,14 @@ Lesson.publications.byClassStudent = {
   schema: {
     classId: String
   },
-  run: onServer(function ({ classId }) {
-    const userId = this.userId
-    const classDoc = Lesson.helpers.getClassDocIfStudent({ userId, classId })
-    return getCollection(Lesson.name).find({ classId: classDoc && classDoc._id })
+  run: onServerExec(function () {
+    import { LessonHelpers } from './LessonHelpers'
+
+    return function ({ classId }) {
+      const userId = this.userId
+      const classDoc = LessonHelpers.getClassDocIfStudent({ userId, classId })
+      return getCollection(Lesson.name).find({ classId: classDoc && classDoc._id })
+    }
   })
 }
 
@@ -498,7 +347,7 @@ Lesson.methods.my = {
     'units.$': String
   },
   role: UserUtils.roles.teacher,
-  run: onServer(function ({ classId, ids = [], skip = [], completed, custom,  units = [] }) {
+  run: onServer(function ({ classId, ids = [], skip = [], completed, custom, units = [] }) {
     const query = { createdBy: this.userId }
 
     if (classId) {
@@ -591,6 +440,7 @@ Lesson.methods.start = {
   run: onServerExec(function () {
     import { LessonStates } from './LessonStates'
     import { LessonErrors } from './LessonErrors'
+    import { LessonHelpers } from './LessonHelpers'
     import { createUpdateDoc } from '../../../api/utils/documentUtils'
 
     const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
@@ -605,7 +455,7 @@ Lesson.methods.start = {
      */
     function startLesson ({ _id }) {
       const userId = this.userId
-      const { lessonDoc } = Lesson.helpers.docsForTeacher({
+      const { lessonDoc } = LessonHelpers.docsForTeacher({
         userId,
         lessonId: _id
       })
@@ -629,8 +479,9 @@ Lesson.methods.complete = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { LessonStates } from './LessonStates'
     import { createUpdateDoc } from '../../../api/utils/documentUtils'
+    import { LessonStates } from './LessonStates'
+    import { LessonHelpers } from './LessonHelpers'
 
     const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
 
@@ -643,7 +494,7 @@ Lesson.methods.complete = {
 
     function completeLesson ({ _id }) {
       const userId = this.userId
-      const { lessonDoc } = Lesson.helpers.docsForTeacher({
+      const { lessonDoc } = LessonHelpers.docsForTeacher({
         userId,
         lessonId: _id
       })
@@ -674,8 +525,9 @@ Lesson.methods.stop = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { LessonStates } from './LessonStates'
     import { LessonErrors } from './LessonErrors'
+    import { LessonStates } from './LessonStates'
+    import { LessonHelpers } from './LessonHelpers'
     import { createUpdateDoc } from '../../../api/utils/documentUtils'
 
     const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
@@ -689,11 +541,15 @@ Lesson.methods.stop = {
 
     function stopLesson ({ _id }) {
       const userId = this.userId
-      const { lessonDoc } = Lesson.helpers.docsForTeacher({
+      const { lessonDoc } = LessonHelpers.docsForTeacher({
         userId,
         lessonId: _id
       })
-      if (!LessonStates.isRunning(lessonDoc)) throw new Meteor.Error(LessonErrors.unexpectedState)
+
+      if (!LessonStates.isRunning(lessonDoc)) {
+        throw new Meteor.Error(LessonErrors.unexpectedState)
+      }
+
       return updateLesson.call(this, lessonDoc._id, { $unset: { startedAt: 1 } })
     }
 
@@ -710,6 +566,7 @@ Lesson.methods.resume = {
   run: onServerExec(function () {
     import { LessonStates } from './LessonStates'
     import { LessonErrors } from './LessonErrors'
+    import { LessonHelpers } from './LessonHelpers'
     import { createUpdateDoc } from '../../../api/utils/documentUtils'
 
     const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
@@ -723,7 +580,7 @@ Lesson.methods.resume = {
 
     function resumeLesson ({ _id }) {
       const userId = this.userId
-      const { lessonDoc } = Lesson.helpers.docsForTeacher({
+      const { lessonDoc } = LessonHelpers.docsForTeacher({
         userId,
         lessonId: _id
       })
@@ -744,9 +601,10 @@ Lesson.methods.restart = {
   run: onServerExec(function () {
     import { LessonRuntime } from './runtime/LessonRuntime'
     import { LessonStates } from './LessonStates'
+    import { LessonHelpers } from './LessonHelpers'
     import { createUpdateDoc } from '../../../api/utils/documentUtils'
 
-    const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
+    const updateLesson = createUpdateDoc(Lesson)
 
     /**
      * Restartes a lesson by _id and removes all data that has been generated during the lesson run
@@ -757,21 +615,24 @@ Lesson.methods.restart = {
      * @return {object} A boolean value, whether the operation has been successful
      */
     function restartLesson ({ _id }) {
-      const {userId, log } = this
-      const { lessonDoc } = Lesson.helpers.docsForTeacher({
+      const { userId, log } = this
+      const { lessonDoc } = LessonHelpers.docsForTeacher({
         userId,
         lessonId: _id
       })
 
       if (!LessonStates.canRestart(lessonDoc)) {
-        throw new Meteor.Error('lesson.errors.unexpectedState', 'lesson.errors.expectedRestartable')
+        throw new Meteor.Error(
+          'lesson.errors.unexpectedState',
+          'lesson.errors.expectedRestartable',
+          { lessonId: _id, userId }
+        )
       }
 
-      const runtimeOptions = { lessonId: _id, userId }
-
-      const runtimeDocs = LessonRuntime.removeDocuments(runtimeOptions)
-      const groupDocs = LessonRuntime.resetGroups(runtimeOptions)
-      const beamerReset = LessonRuntime.resetBeamer(runtimeOptions)
+      const options = { lessonId: _id, userId }
+      const runtimeDocs = LessonRuntime.removeDocuments(options)
+      const groupDocs = LessonRuntime.resetGroups(options)
+      const beamerReset = LessonRuntime.resetBeamer(options)
       const lessonReset = !!updateLesson.call(this, _id, {
         $unset: {
           phase: 1,
@@ -804,13 +665,15 @@ Lesson.methods.toggle = {
   run: onServerExec(function () {
     import { LessonStates } from './LessonStates'
     import { LessonErrors } from './LessonErrors'
-    import { createGetDoc, createUpdateDoc } from '../../../api/utils/documentUtils'
+    import { LessonHelpers } from './LessonHelpers'
+    import { createUpdateDoc } from '../../../api/utils/documentUtils'
+    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
 
     const updateLesson = createUpdateDoc(Lesson)
 
     function toggleLessonMaterial ({ _id, referenceId, context }) {
-      const userId = this.userId
-      const { lessonDoc } = Lesson.helpers.docsForTeacher({
+      const { userId } = this
+      const { lessonDoc } = LessonHelpers.docsForTeacher({
         userId,
         lessonId: _id
       })
@@ -819,8 +682,8 @@ Lesson.methods.toggle = {
         throw new Meteor.Error('lesson.errors.unexpectedState', 'lesson.errors.expectedToggleAble')
       }
 
-      const checkRef = createGetDoc({ name: context }, { checkOwner: false })
-      checkRef(referenceId)
+      // use doc getter to ensure reference doc exists
+      createDocGetter({ name: context })(referenceId)
 
       const index = (lessonDoc.visibleStudent || []).findIndex(reference => reference._id === referenceId)
       const transform = {}
@@ -840,7 +703,7 @@ Lesson.methods.toggle = {
       else {
         throw new Meteor.Error(LessonErrors.unexpectedMaterialIndex, index)
       }
-      console.debug('UPDATE LESSON DOC', _id, transform)
+
       return !!updateLesson.call(this, _id, transform)
     }
 
@@ -863,7 +726,7 @@ Lesson.methods.units = {
     import { SchoolClass } from '../schoolclass/SchoolClass'
     import { Unit } from '../../curriculum/curriculum/unit/Unit'
     import { $in } from '../../../api/utils/query/inSelector'
-    import { isMemberOfClass } from '../schoolclass/helpers/isMemberOfClass'
+    import { LessonHelpers } from './LessonHelpers'
 
     /**
      * Getss all associated units by a given set of lessons (via lesson ids)
@@ -877,17 +740,30 @@ Lesson.methods.units = {
       const classIds = new Set()
       const unitsIds = new Set()
       const lessonDocs = getCollection(Lesson.name).find({ _id: $in(lessonIds) })
+
       lessonDocs.forEach(doc => {
         classIds.add(doc.classId)
-        unitsIds.add(doc.unit)
       })
 
-      const classDocs = getCollection(SchoolClass.name).find({ _id: $in(classIds) })
-      const validQuery = classDocs.fetch().every(classDoc => isMemberOfClass({ classDoc, userId }))
+      const classDocs = getCollection(SchoolClass.name).find({ _id: $in(classIds) }).fetch()
+      const validQuery = lessonDocs.fetch().every(lessonDoc => {
+        const { classId } = lessonDoc
+        const classDoc = classDocs.find(({ _id }) => _id === classId)
+
+        if (!classDoc) {
+          return false
+        }
+
+        return LessonHelpers.isMemberOfClass({ classDoc, userId })
+      })
 
       if (!validQuery) {
-        throw new Meteor.Error('errors.permissionDenied', SchoolClass.errors.notMember)
+        throw new Meteor.Error('errors.permissionDenied', SchoolClass.errors.notMember, { userId })
       }
+
+      lessonDocs.forEach(doc => {
+        unitsIds.add(doc.unit)
+      })
 
       return getCollection(Unit.name).find({ _id: $in(unitsIds) }).fetch()
     }
@@ -905,7 +781,7 @@ Lesson.methods.material = {
     _id: String,
     groupId: {
       type: String,
-      optional: true,
+      optional: true
     },
     skip: {
       type: Array,
@@ -918,12 +794,13 @@ Lesson.methods.material = {
     import { SchoolClass } from '../schoolclass/SchoolClass'
     import { LessonStates } from './LessonStates'
     import { LessonErrors } from './LessonErrors'
-    import { createGetDoc } from '../../../api/utils/documentUtils'
-    import { loadMaterial } from '../../material/loadMaterial'
+    import { LessonHelpers } from './LessonHelpers'
     import { createDocGetter } from '../../../api/utils/document/createDocGetter'
+    import { loadMaterial } from '../../material/loadMaterial'
 
-    const getClassDoc = createGetDoc(SchoolClass, { checkOwner: false })
+    const getClassDoc = createDocGetter(SchoolClass)
     const getGroupDoc = createDocGetter({ name: Group.name })
+
     /**
      * Loads material relevant for a lesson.
      * Allows to skip already loaded material
@@ -942,7 +819,7 @@ Lesson.methods.material = {
       const { userId, log } = this
 
       // first we need the lesson doc for any further steps
-      const { lessonDoc } = Lesson.helpers.docsForStudent({
+      const { lessonDoc } = LessonHelpers.docsForStudent({
         userId,
         lessonId: _id
       })

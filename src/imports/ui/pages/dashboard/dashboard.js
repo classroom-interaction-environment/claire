@@ -8,8 +8,6 @@ import { getLocalCollection } from '../../../infrastructure/collection/getLocalC
 import { cursor } from '../../../api/utils/cursor'
 import { dataTarget } from '../../utils/dataTarget'
 import { createDashboardFormActions } from './forms/dashboardForms'
-import { asyncTimeout } from '../../../api/utils/asyncTimeout'
-import { loadLessonsForClass } from './common/loadLessonsForClass'
 import { callMethod } from '../../controllers/document/callMethod'
 import { getCollection } from '../../../api/utils/getCollection'
 import { FormModal } from '../../components/forms/modal/formModal'
@@ -63,7 +61,7 @@ Template.dashboard.onCreated(function () {
           collection: DimensionCollection
         })
       }
-    },
+    }
   })
 
   instance.updateLessonCounts = () => {
@@ -108,8 +106,11 @@ Template.dashboard.onCreated(function () {
           // and several static definitions of the lessons, such as dimensions, objectives etc.
           const UnitCollection = getLocalCollection(Unit.name)
           const ids = getCollection(Lesson.name).find({ classId }).map(lessonDoc => lessonDoc.unit)
-          const skip = UnitCollection.find({ _id: { $in: ids }}).map(toDocId)
+          const skip = UnitCollection.find({ _id: { $in: ids } }).map(toDocId)
 
+          if (ids.length === 0) {
+            return
+          }
           loadIntoCollection({
             name: Unit.methods.all,
             args: { ids, skip },
@@ -196,6 +197,9 @@ Template.dashboard.onCreated(function () {
 })
 
 Template.dashboard.helpers({
+  loadComplete () {
+    return API.initComplete()
+  },
   classes () {
     const selector = { createdBy: Meteor.userId() }
     const options = { sort: byTitle }
@@ -315,7 +319,7 @@ Template.dashboard.events({
 
     if (currentClassId && !isCurrent) {
       const target = templateInstance.$(`.collapse[data-class="${currentClassId}"]`)
-      const openCollapse = new Collapse(target.get(0),  { toggle: false })
+      const openCollapse = new Collapse(target.get(0), { toggle: false })
       openCollapse.hide()
     }
 
@@ -356,7 +360,9 @@ Template.dashboard.events({
       onSubmit: definitions.onSubmit,
       onClosed: (options, ...args) => {
         templateInstance.updateLessonCounts()
-        return definitions.onClosed(options, ...args)
+        if (typeof definitions.onClosed === 'function') {
+          return definitions.onClosed(options, ...args)
+        }
       }
     })
   }

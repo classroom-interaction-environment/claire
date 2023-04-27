@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { PermissionDeniedError } from '../../../errors/types/PermissionDeniedError'
 import { DocNotFoundError } from '../../../errors/types/DocNotFoundError'
 import { getFilesCollection } from '../../../utils/getFilesCollection'

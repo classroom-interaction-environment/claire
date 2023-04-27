@@ -9,6 +9,7 @@ import { WebResources } from '../../../contexts/resources/web/WebResources'
 import { getCollection } from '../../../api/utils/getCollection'
 import { insertUpdate } from '../../../api/utils/insertUpdate'
 import { SyncPipeline } from '../../../contexts/sync/SyncPipeline'
+import { createLog } from '../../../api/log/createLog'
 
 let remoteConnection
 
@@ -22,8 +23,10 @@ const synced = {
   'fs.chunks': false
 }
 
+const log = createLog({ name: 'Sync' })
+
 function updateSyncStatus (contextName, count = 0) {
-  console.log(`[Synced]: ${contextName} (${count})`)
+  log(`${contextName} (${count})`)
   synced[contextName] = true
   if (Object.values(synced).every(value => value === true)) {
     remoteConnection.disconnect()
@@ -76,10 +79,12 @@ async function loadChunks (filesToLoad) {
       if (err) {
         console.error(err)
         resolve([])
-      } else if (chunks.length === 0 || filesToLoad.length > chunks.length) {
-        console.error(new Error(`Expected ${filesToLoad.length} to be grater than ${chunks.length}`))
+      }
+      else if (chunks.length === 0 || filesToLoad.length > chunks.length) {
+        console.error(new Error(`[Sync]: Expected ${filesToLoad.length} to be grater than ${chunks.length}`))
         resolve([])
-      } else {
+      }
+      else {
         resolve(chunks)
       }
     })
@@ -111,7 +116,8 @@ function setupSyncPipeline () {
       if (err) {
         console.error(err)
         throw err
-      } else {
+      }
+      else {
         let filesCount = 0
         let chunksCount = 0
         files.forEach(fsFile => {
@@ -151,19 +157,19 @@ function setupSyncPipeline () {
   }))
 
   SyncPipeline.on(SyncPipeline.events.files, Meteor.bindEnvironment(() => {
-    console.info('=================== SYNC COMPLETE =================')
+    log('=================== SYNC COMPLETE =================')
     SyncPipeline.complete(SyncPipeline.events.synced)
   }))
 }
 
 Meteor.startup(() => {
-  console.info('=================== SYNC =================')
+  log('=================== SYNC =================')
   SyncPipeline.debug(debug)
   setupSyncPipeline()
 
   const syncSettings = Meteor.settings.curriculum.sync
   if (syncSettings.enabled === false) {
-    console.info('SKIP SYNC BY CONFIG')
+    log('SKIP SYNC BY CONFIG')
     return
   }
 
@@ -176,14 +182,16 @@ Meteor.startup(() => {
         if (error) {
           console.error(error)
           throw error
-        } else {
+        }
+        else {
           SyncPipeline.complete(SyncPipeline.events.loggedin)
           trackerComputation.stop()
         }
       })
-    } else if (status.retryCount > 2) {
-      console.info('=> NO CONNECTION ,ABORT SYNC AFTER 3 RETRIES')
-      console.log('==========================================')
+    }
+    else if (status.retryCount > 2) {
+      log('=> NO CONNECTION ,ABORT SYNC AFTER 3 RETRIES')
+      log('==========================================')
       trackerComputation.stop()
       remoteConnection.disconnect()
     }

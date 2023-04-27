@@ -65,7 +65,6 @@ export const createGroupsSchema = ({ phases, material, translate }) => ({
       group: 'booleans',
       type: () => {
         if (!material?.length) return 'hidden'
-
       },
       disabled: () => {
         const materialAutoShuffle = AutoForm.getFieldValue('materialAutoShuffle')

@@ -16,10 +16,6 @@ Template.actionButton.helpers({
       }
     })
     return dataAtts
-  },
-  useToolip () {
-    const data = Template.instance().data
-    return data.title && data.tooltip !== false
   }
 })
 

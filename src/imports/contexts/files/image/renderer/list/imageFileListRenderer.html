@@ -6,4 +6,7 @@
     </td>
     <td class="w-100"><h6 class="wrap-text">{{this.name}}</h6></td>
     <td class="no-wrap">{{b2mb this.size}} {{i18n 'fileSize.mb'}}</td>
+    <td>
+        {{> downloadButton file=this collection=collectionName}}
+    </td>
 </template>

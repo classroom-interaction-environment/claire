@@ -1,6 +1,6 @@
+import { Meteor } from 'meteor/meteor'
 import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
-import { checkEditPermission } from '../../../api/document/checkEditPermissions'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
 
 export const Group = {}
@@ -159,9 +159,7 @@ Group.publications.my = {
 
     query.$or.push(myGroups, iamMember)
 
-    const cursor = getCollection(Group.name).find(query, { fields: Group.publicFields })
-    console.log(this.userId, JSON.stringify(query), cursor.count())
-    return cursor
+    return getCollection(Group.name).find(query, { fields: Group.publicFields })
   })
 }
 
@@ -169,15 +167,13 @@ Group.publications.single = {
   name: 'group.publications.single',
   schema: {
     groupId: {
-      type: String,
+      type: String
     }
   },
   run: onServer(function ({ groupId }) {
     const { userId } = this
     const query = { _id: groupId, users: { $elemMatch: { userId } } }
-    const cursor = getCollection(Group.name).find(query, { fields: Group.publicFields })
-    console.log(this.userId, JSON.stringify(query), cursor.count())
-    return cursor
+    return getCollection(Group.name).find(query, { fields: Group.publicFields })
   })
 }
 
@@ -192,6 +188,8 @@ Group.methods.save = {
     }
   }, Group.schema),
   run: onServerExec(function () {
+    import { checkEditPermission } from '../../../api/document/checkEditPermissions'
+
     return function (groupDoc) {
       const { userId } = this
       const { _id, ...doc } = groupDoc
@@ -251,7 +249,7 @@ Group.methods.users = {
   name: 'group.methods.users',
   schema: { groupId: String },
   role: UserUtils.roles.student,
-  run: onServerExec(function (){
+  run: onServerExec(function () {
     import { Users } from '../../system/accounts/users/User'
     import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
     import { createDocGetter } from '../../../api/utils/document/createDocGetter'

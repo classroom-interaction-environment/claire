@@ -1,6 +1,6 @@
 import { Mongo } from 'meteor/mongo'
 import { insertHook, updateHook } from '../../infrastructure/collection/collectionHooks'
-import { createDebugLog } from '../../api/log/createLog'
+import { createLog } from '../../api/log/createLog'
 
 export class FactoryCollection extends Mongo.Collection {
   constructor (...args) {
@@ -10,7 +10,7 @@ export class FactoryCollection extends Mongo.Collection {
 
   setDebug (value) {
     this.debug = value
-      ? createDebugLog(`${this._name} (debug)`, 'debug', { devOnly: true })
+      ? createLog({ name: this._name, type: 'debug', devOnly: true })
       : () => {}
   }
 

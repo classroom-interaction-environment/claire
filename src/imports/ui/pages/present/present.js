@@ -293,42 +293,46 @@ Template.present.onCreated(function () {
       }
 
       // TaskDoc = ref.document
-      // search in the task doc for the current item and skip where possible
+      // search in the task doc for the current item and skip, if possible
       const { itemId } = ref
       ref.document.pages.some(page => {
-        if (!page.content) return
+        if (!page.content) return false
 
         const entry = page.content.find(entry => entry.itemId === itemId)
+
         if (entry) {
-          return referenceQueue.push({ ref, entry })
+          referenceQueue.push({ ref, entry })
+          return true
         }
+
+        return false
       })
     })
 
     Promise.all(referenceQueue.map(async obj => {
-        const { entry: item, ref } = obj
-        const { lessonId, referenceId: taskId, itemId, responseProcessor } = ref
+      const { entry: item, ref } = obj
+      const { lessonId, referenceId: taskId, itemId, responseProcessor } = ref
 
-        // we can define a responseProcessor on a reference, for example, if
-        // teacher wishes to display the result in a specific way.
-        // Otherwise we will use whatever fallback fits the current situation most
-        item.responseProcessor = responseProcessor
+      // we can define a responseProcessor on a reference, for example, if
+      // teacher wishes to display the result in a specific way.
+      // Otherwise we will use whatever fallback fits the current situation most
+      item.responseProcessor = responseProcessor
 
-        const responseProcessorData = await ResponseProcessorLoader.loadAll({
-          item,
-          lessonId,
-          taskId,
-          itemId
-        })
+      const responseProcessorData = await ResponseProcessorLoader.loadAll({
+        item,
+        lessonId,
+        taskId,
+        itemId
+      })
 
-        // extract user ids from responses and add them to the reactive set
-        // in order to subscribe to their usernames
-        responseProcessorData.data.results.forEach(doc => instance.allUsers.add(doc.createdBy))
-        instance.state.set(itemId, responseProcessorData)
+      // extract user ids from responses and add them to the reactive set
+      // in order to subscribe to their usernames
+      responseProcessorData.data.results.forEach(doc => instance.allUsers.add(doc.createdBy))
+      instance.state.set(itemId, responseProcessorData)
 
-        // return itemId for caching
-        return { itemId, responseProcessor }
-      }))
+      // return itemId for caching
+      return { itemId, responseProcessor }
+    }))
       .catch(e => API.notify(e))
       .then(resolvedRefs => {
         resolvedRefs.forEach(({ itemId, responseProcessor }) => cachedRefs.set(itemId, { responseProcessor }))
@@ -420,6 +424,9 @@ Template.present.helpers({
     if (!itemId) return
     const itemDoc = Template.getState(itemId)
     return itemDoc && Item.get(itemDoc.meta)
+  },
+  canHaveResponseProcessors (doc) {
+    return doc.context === Task.name
   },
   responseProcessorLoaded (itemId) {
     return itemId && Template.getState(itemId)

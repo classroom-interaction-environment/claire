@@ -8,6 +8,7 @@ import { Form } from '../../components/forms/Form'
 import { Schema } from '../../../api/schema/Schema'
 import './itemRenderer.scss'
 import './itemRenderer.html'
+import { GroupMode } from '../../../contexts/classroom/group/GroupMode'
 
 export const itemRenderer = 'itemRenderer'
 
@@ -140,6 +141,9 @@ Template.itemRenderer.helpers({
   },
   itemSchema (itemId) {
     return rendererSchemas.get(itemId)
+  },
+  hasGroupMode (mode) {
+    return mode && mode !== GroupMode.off.value
   },
   buttonClasses (itemId) {
     const status = states.get(itemId)

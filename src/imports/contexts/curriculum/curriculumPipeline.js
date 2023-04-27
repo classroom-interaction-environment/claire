@@ -21,7 +21,7 @@ const assignSchema = (expected, fallback = {}) => Object.assign({}, Schema.getDe
 const curriclumSchema = {
   _master: {
     type: Boolean,
-    optional: true,
+    optional: true
   }
 }
 
@@ -30,7 +30,7 @@ export const curriculumPipeline = createPipeline(Curriculum.name, function (cont
 
   // CREATING SCHEMA
   const defaultSchema = Curriculum.getDefaultSchema(isFilesContext(context))
-  context.schema =  Object.assign({}, defaultSchema, context.schema)
+  context.schema = Object.assign({}, defaultSchema, context.schema)
   context.publicFields = Object.assign({}, Defaults.fields(), Curriculum.getDefaultPublicFields(), context.publicFields) // TODO why not curriculum.getDefaultFields() ?
 
   // CREATING METHODS

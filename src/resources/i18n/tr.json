@@ -1,0 +1,1194 @@
+{
+  "Match failed": "Sunucu hatası. Yanlış istek.",
+  "errors": {
+    "Error": "Hata!",
+    "errorId": "Hata kodu",
+    "source": "Hata kaynağı",
+    "message": "Hata mesajı",
+    "reason": "Hatanın nedeni / sebebi",
+    "details": "Hata ayrıntıları",
+    "too-many-requests": "İstek sınırı aşıldı",
+    "slowDown": "Fonksiyon tekrar kullanılabilir hale gelene kadar lütfen birkaç saniye bekleyin.",
+    "unexpectedCodeReach": "Beklenmedik uygulama",
+    "collectionNotFoundByName": "Veri kümesi adına göre bulunamadı",
+    "noPermission": "Erişim reddedildi",
+    "permissionDenied": "Erişim reddedildi",
+    "forbiddenRole": "Yetkisiz rol",
+    "notInRole": "Yetersiz rol",
+    "docNotFoundById": "{{value}} bulunamadı",
+    "docNotFound": "Belge bulunamadı",
+    "expectServer": "Sunucu ortamı bekleniyor",
+    "expectClient": "Beklenen müşteri ortamı",
+    "invalidParameters": "Geçersiz parametreler",
+    "error": "Hata",
+    "400": "Yanlış istek",
+    "401": "Kimliği doğrulanmamış istek",
+    "403": "Erişim reddedildi",
+    "404": "Sayfa veya içerik bulunamadı (404)",
+    "405": "Yönteme izin verilmiyor",
+    "410": "Kaynak artık mevcut değil",
+    "500": "Sunucu hatası",
+    "fatal": {
+      "title": "Ciddi hata",
+      "description": "Uygulama içinde daha fazla işlem yapılmasını engelleyen bir hata oluştu. Lütfen sayfayı yeniden yükleyin. Hata devam ederse, lütfen {{siteName}} ekibiyle iletişime geçin."
+    }
+  },
+  "accounts": {
+    "enroll": {
+      "subject": "Hoşgeldiniz {{siteName}}",
+      "text": "Merhaba {{name}},\n\nEkibimiz tarafından davet edildiniz ve {{siteName}} ile çalışmaya başlamak için sadece bir adım uzaktasınız.\n\nLütfen aşağıdaki bağlantıya tıklayarak kayıt işlemini tamamlayın:\n{{url}}\n\nBağlantı {{expires}} gün içinde sona erecektir.\n\nSaygılarımla, {{siteName}} Takım"
+    },
+    "resetPassword": {
+      "subject": "{{siteName}} şifrenizi sıfırlayın",
+      "text": "Merhaba {{name}},\n\nŞifrenizi sıfırlamak için {{siteName}} bölümünde talepte bulundunuz. Şifrenizi sıfırlamak için lütfen aşağıdaki bağlantıyı takip edin: {{url}}.\n\nBağlantı {{expires}} gün içinde sona erecektir.\n\n!!!Önemli!!! Parola sıfırlama işlevi yalnızca önceden talep ettiyseniz e-posta gönderecektir! Bu tür e-postalar almaya devam ederseniz, bağlantıları açmayın ve {{supportEmail}} ile iletişime geçin."
+    },
+    "verifyEmail": {
+      "subject": "{{siteName}} hesabınızı onaylayın",
+      "text": "{{siteName}}'na hoş geldiniz!\n\nMerhaba {{name}},\n\nsiteadı}}'nı tam olarak kullanabilmek için aşağıdaki bağlantıya tıklayarak kimliğinizi doğrulamanızı rica ediyoruz: {{url}}\n\nDikkat: {{siteName}} e-posta yoluyla şifrenizi (şifrenizi sıfırlamadığınız sürece) veya diğer hassas bilgilerinizi istemez. Şüpheniz varsa, lütfen {{supportEmail}} ile iletişime geçin\n\nBu e-posta otomatik olarak oluşturulmuştur ve gönderen içermez."
+    },
+    "inform": {
+      "passwordReset": {
+        "subject": "{{siteName}} Bilgi: Şifreyi sıfırla",
+        "text": "Merhaba,\n\naşağıdaki kullanıcı şifreyi sıfırladı: {{name}} ({{institution}}). Bu, {{siteName}} sisteminden gelen otomatik bir postadır."
+      }
+    }
+  },
+  "codeRegister": {
+    "title": "Kod ile kayıt olun"
+  },
+  "common": {
+    "deprecated": "Eski / artık kullanılmıyor",
+    "startedAt": "Başladı:",
+    "completedAt": "Tamamlandı:",
+    "lastUpdated": "Son güncelleme:",
+    "ok": "Anlaşıldı",
+    "from": "İtibaren",
+    "to": "İle",
+    "linked": "Bağlı",
+    "or": "veya",
+    "copy": "Kopya",
+    "subCategories": "Alt kategori(ler)",
+    "target": "Hedef belge",
+    "info": "Bilgi",
+    "filter": "Filtre",
+    "color": "Renk",
+    "active": "Aktif",
+    "inactive": "Etkin değil",
+    "complete": "Bitmiş",
+    "simpleView": "Basit görünüm",
+    "extendedView": "Gelişmiş görünüm",
+    "colorCode": "Renk kodu",
+    "resources": "Kaynaklar",
+    "embedCode": "Gömülü öğe",
+    "saving": "Kurtarıldı",
+    "saved": "Kaydedildi",
+    "untitled": "(isim yok)",
+    "on": "Açık",
+    "off": "Kapalı",
+    "page": "Sayfa",
+    "expectedResult": "Bir sonuç bekleniyordu ancak hiçbir sonuç alınamadı",
+    "successful": "Eylem başarılı",
+    "success": "Başarılı",
+    "overview": "Genel bakış",
+    "join": "Katılın",
+    "noEntry": "Henüz kayıt yok",
+    "noDescription": "Henüz bir açıklama yok",
+    "address": "Adres",
+    "url": "Bağlantı / URL",
+    "noCount": "Çok sayıda belge almayın",
+    "copyToClipboard": "Kopyala (pano)",
+    "dependencies": "Bağımlılıklar",
+    "register": "Kayıt olun",
+    "username": "Kullanıcı ismi",
+    "email": "E-posta",
+    "password": "Şifre",
+    "confirmPassword": "Şifreyi onayla",
+    "language": "Dil",
+    "status": "Durum",
+    "title": "Başlık",
+    "entry": "Kayıt",
+    "entries": "Kayıtler",
+    "document": "Belge",
+    "requirements": "Gereksinimler",
+    "value": "Değer",
+    "domain": "Alan adı",
+    "description": "Açıklama",
+    "code": "Kısa form",
+    "type": "Tip",
+    "showMore": "Daha fazla yükle",
+    "newEntry": "Yeni kayıt",
+    "actions": "Hareketler",
+    "yes": "Evet",
+    "no": "Hayır",
+    "notYet": "Henüz değil",
+    "timeunit": "Zaman birimi",
+    "search": "Arama...",
+    "priority": "Öncelik",
+    "low": "Düşük",
+    "medium": "Orta",
+    "high": "Yüksek",
+    "parent": "Ana öğe",
+    "index": "Sıra numarası",
+    "notes": "Notlar",
+    "async": "Asenkron",
+    "editor": "Editör",
+    "noentries": "Henüz {{title}} yok.",
+    "updateOrder": "Sırayı kaydet",
+    "loading": "Yüklenecek",
+    "loadData": "Veri yükleniyor",
+    "loadTemplate": "Görünüm yükleniyor",
+    "none": "Yok",
+    "start": "Başlangıç",
+    "end": "Bitiş",
+    "version": "Versiyon",
+    "context": "Bağlam",
+    "contextDoc": "Belge bağlamı",
+    "wizard": "Sihirbaz",
+    "model": "Veri modeli",
+    "source": "Veri kaynağı",
+    "preview": "Ön izleme",
+    "upload": "Yükle",
+    "nothingSelected": "Hiçbir şey seçilmedi",
+    "reportError": "Bir hata bildirin",
+    "terms": "Hata raporları için kullanım koşullarını kabul ediyorum.",
+    "sendError": "Hata bildir",
+    "category": "Kategori",
+    "fileName": "Dosya adı",
+    "files": "Dosyalar",
+    "file": "Dosya",
+    "asset": "Dosya",
+    "assets": "Dosyalar",
+    "assetLinks": "Dosya referansları",
+    "sourceUrl": "Hedef URL",
+    "sourceFile": "Hedef dosya",
+    "createdAt": "Oluşturulma tarihi",
+    "createdBy": "Tarafından oluşturuldu",
+    "updatedAt": "Üzerinde düzenlendi",
+    "updatedBy": "Tarafından düzenlendi",
+    "collection": "Kayıt",
+    "details": "Detaylar",
+    "link": "Bağlantı",
+    "share": "Paylaş",
+    "more": "Daha fazla",
+    "clone": "Kopyalamak",
+    "users": "Kullanıcı",
+    "roles": "Rulo",
+    "role": "Rol",
+    "notAssociated": "Görevlendirilmedi",
+    "uploads": "Ekler",
+    "dropZone": "Buraya bırak"
+  },
+  "confirm":{
+    "codeRequired": "Devam etmek için lütfen aşağıdaki kodu girin:",
+    "delete": "Lütfen \"{{title}}\" öğesini gerçekten silmek istediğinizi onaylayın.."
+  },
+  "legal": {
+    "title": "Yasal",
+    "privacy": "Veri koruma",
+    "imprint": "Künye",
+    "terms": "Kullanım Koşulları",
+    "termsStudent": "Kullanım Koşulları SuS",
+    "contact": "İletişim"
+  },
+  "share": {
+    "whatsapp": "WhatsApp üzerinden paylaşın",
+    "email": "E-posta ile paylaş",
+    "link": "Link üzerinden paylaş"
+  },
+  "codeInvitation": {
+    "title": "Kayıt (kod ile)",
+    "code": "Kod",
+    "createClass": "Sınıf oluştur",
+    "confirmDelete":"Davetiyeyi gerçekten silmek istiyor musunuz??",
+    "addedToClass": "Kursa başarıyla eklendi",
+    "setCurrentClass": "Yeni kursu mevcut kursunuz olarak ayarlamak istiyor musunuz??",
+    "pending": "Bekleyen davetiyeler",
+    "expired": "Süresi doldu",
+    "activeCodes": "Bekleyen davetler",
+    "expiredCodes": "Süresi dolmuş / tamamlanmış davetiyeler",
+    "complete": "Tamamlandı",
+    "expiresAt": "Geçerlilik tarihi",
+    "qrCode": "QR ve davetiye kodu",
+    "expiredDetails": "Davetiyenin süresi doldu. Lütfen yeni bir davetiye oluşturun.",
+    "expirationDays": "Davetiyenin sona ermesine kadar geçen günler",
+    "maxUsers": "Bu kod ile maksimum kayıt sayısı",
+    "count": "Tamamlandı / Toplam",
+    "role": "Davet edilen kullanıcıların rolü",
+    "institution": "Kurum / Şirket",
+    "joinClass": "\"{{className}}\" kursuna davet edildiniz. Katıldıktan sonra eski kurslarınıza devam edeceksiniz. Kursa katılmak istiyor musunuz?",
+    "invite": "Kullanıcı davet et",
+    "create": "Davetiye oluşturun",
+    "createLink": "Kayıt bağlantısı oluşturun",
+    "createQr": "QR kodu oluşturun",
+    "registerFailed": "Kayıt başarısız oldu",
+    "invalidLink": "Geçersiz kayıt bağlantısı",
+    "invalidLinkReason": "Kayıt için kullanılan bağlantı veya kod geçersiz ya da süresi dolmuş. Lütfen kodu yeniden girin veya size bağlantıyı veren kişiyle iletişime geçin.",
+    "emailSubject": "Hoşgeldiniz {{siteName}}",
+    "emailBody": "{{siteName}}'na hoş geldiniz!\n\nMerhaba {{to}},\n{{siteName}} adresindeki derslere katılmaya davet edildiniz. Kayıt olmak için bu bağlantıya tıklamanız ve talimatları takip etmeniz yeterlidir:\n{{link}}\n\nHerhangi bir sorun yaşarsanız, lütfen benimle iletişime geçmekten çekinmeyin.\n\nSaygılarımla\n{{from}}\n\n\nBu e-posta otomatik olarak oluşturulmuştur.",
+    "insufficientRoles": "Davetiyeler yalnızca daha düşük rollere sahip kullanıcılar için oluşturulabilir",
+    "errors": {
+      "invalidCode": "Kod geçersiz veya süresi dolmuş"
+    }
+  },
+  "safeConfirm": {
+    "code": "Lütfen aşağıdaki kodu girerek işlemi onaylayın",
+    "failed": "Onay iptal edildi veya başarısız oldu"
+  },
+  "beamer": {
+    "title": "Projektör",
+    "controlBeamer": {
+      "title": "Kontrol projektörü",
+      "end": "Projektörden çıkın"
+    },
+    "initBeamer": {
+      "title": "Projektörü başlat",
+      "choiceA": "Bu cihaz bir projektör haline gelir ve başka bir cihaz (PC, tablet) tarafından uzaktan kontrol edilir.",
+      "choiceB": "Projektörü yeni bir pencerede açabilir ve genişletilmiş ekranınıza sürükleyebilirsiniz.",
+      "local": "Uzaktan kontrol",
+      "external": "İkinci ekranda"
+    },
+    "errors": {
+      "expectedWindowClose": "Projektör bitirilemedi. Lütfen pencereyi manuel olarak kapatın.",
+      "expectedColor": "Projektör rengi geçerli bir renk değeri değil.",
+      "expectedGrid": "Projektör düzeni geçerli bir düzen değil."
+    }
+  },
+  "gridLayout": {
+    "rows": "Satır başına 1",
+    "cols2": "Satır başına 2",
+    "cols3": "Satır başına 3",
+    "cols4": "Satır başına 4"
+  },
+  "actions": {
+    "preview": "Ön izleme",
+    "showMore": "Daha fazla göster",
+    "showLess": "Daha az göster",
+    "resend": "E-postayı yeniden gönder",
+    "complete": "Tamamlamak",
+    "deny": "Reddetmek",
+    "confirm": "Eylem onayla",
+    "openInNewTab": "Kendi penceresinde aç",
+    "refresh": "Yeniden Yükle",
+    "continue": "Devam et",
+    "toggleMobile": "Öğrenciler için göster/gizle",
+    "showResults": "Sonuçları göster",
+    "presentResults": "Mevcut",
+    "print": "Bastırmak",
+    "reportError": "Hata bildir",
+    "login": "Giriş yap",
+    "sendViaMail": "E-posta ile gönder",
+    "copyToClipboard": "Kopyala",
+    "fixNow": "Şimdi düzeltin",
+    "toDashboard": "Genel bakışa geri dönün",
+    "create": "Oluştur",
+    "restart": "Yeniden başlat",
+    "startAgain": "Sıfırdan başlayın",
+    "createNow": "Şimdi oluştur",
+    "update": "Güncelleme",
+    "select": "Seçim yapın",
+    "edit": "Düzenle",
+    "view": "Göster",
+    "delete": "Sil",
+    "remove": "Kaldır",
+    "open": "İçini aç",
+    "close": "Kapat",
+    "reset": "Sıfırla",
+    "back": "Geri",
+    "apply": "Başvur",
+    "forward": "Daha ileri",
+    "add": "Ekle",
+    "cancel": "İptal et",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor",
+    "export": "İhracat",
+    "download": "İndir",
+    "sort": "Sırala",
+    "upload": "Yükle",
+    "confirmDelete": "Gerçekten silmek mi?",
+    "confirmCancel": "Gerçekten iptal mi?",
+    "confirmClone": "Yeni bir belge oluşturulur. Devam edelim mi?",
+    "copied": "Başarıyla kopyalandı.",
+    "addCategory": "+ kategori",
+    "selectAndUpload": "Bir dosya seçin ve yükleyin",
+    "selectFile": "Yüklenecek bir dosya seçin",
+    "submit": "Gönder",
+    "skip": "Atlamak",
+    "confirmLeave": "Sayfadan ayrıldığınızda, kaydedilmemiş form verileri atılır. Sayfadan ayrılmak mı?",
+    "toBeamer": "Projektörde göster",
+    "removeFromBeamer": "Projektörden çıkarın"
+  },
+  "upload": {
+    "title": "Yükle",
+    "successfull": "Yükleme başarılı",
+    "maxSizeExceeded": "Bu türdeki dosyalar {{maxSize}} MB'den büyük olmamalıdır.",
+    "unsupportedExtension": "'{{extension}}' türündeki dosyalar desteklenmez. İzin verilen biçimler şunlardır {{allowedFormats}}"
+  },
+  "time": {
+    "milliseconds": "milisaniye",
+    "seconds": "saniye",
+    "sec": "sn",
+    "minutes": "dakika",
+    "min": "dk",
+    "hours": "saat",
+    "hrs": "saat",
+    "days": "gün",
+    "months": "ay",
+    "years": "yıl",
+    "justNow": "Hemen şimdi",
+    "someMinutesAgo": "Birkaç dakika önce",
+    "today": "Bugün",
+    "yesterady": "Dün",
+    "beforeYesterday": "Dünden önceki gün"
+  },
+  "viewMode": {
+    "all": "Hepsi",
+    "others": "Sadece başkalarından",
+    "mine": "Sadece benim"
+  },
+  "progress": {
+    "title": "Öğrenme ilerlemesi",
+    "showAll": "Genel bakış",
+    "showCurrent": "Güncel",
+    "setCurrent": "Mevcut ilerleme olarak ayarlansın mı?",
+    "restart": "Dikkat! Yeniden başlatıldığında, tüm sonuçlar sıfırlanacaktır. Bu dersi yeniden başlatalım mı?",
+    "notFoundById": "Kimlik temelinde öğrenme ilerlemesi bulunamadı",
+    "docAlreadyExists": "Bu ortamda öğrenme ilerlemesi zaten mevcuttur",
+    "schoolClassHasProgress": "Kurs zaten bu ayarlarda ilerleme kaydetti"
+  },
+  "users": {
+    "title": "Kullanıcılar",
+    "teachers": "Öğretmenler",
+    "teacher": "Öğretmenler",
+    "students": "Öğrenenler",
+    "student": "Öğrenenler",
+    "admins": "Yöneticiler",
+    "admin": "Yönetici"
+  },
+  "curriculum": {
+    "unknownState": "Bilinmeyen durum",
+    "mastersEditedByMe": "Son düzenlenen örnek şablonlar",
+    "title": "Müfredat",
+    "master": "Müfredat örnek şablonu",
+    "customFork": "Örnek şablondan çalışma kopyası",
+    "global": "Kendi malzemeniz",
+    "custom": "Kendi malzemeniz",
+    "customUnits": "Kendi sekanslarım",
+    "cloneMaster": "Örnek şablonu düzenleme sürecindesiniz. Bu amaçla görevin bir kopyası oluşturulur. Devam etmek ister misiniz?",
+    "externalResources": "Dış kaynaklar",
+    "collections": "Müfredat bilgileri",
+    "metaCollections": "Meta veri",
+    "timeUnit": "Zaman birimi",
+    "objective": "Yetkinlik",
+    "objectives": "Yetkinlikler",
+    "period": "Dakika cinsinden süre",
+    "dimension": "Eğitim boyutu",
+    "dimensions": "Eğitim boyutları",
+    "layer": "Hedef seviye",
+    "actor": "Aktör",
+    "heuristics": "Buluşsal yöntemler",
+    "method": "Yöntem",
+    "methods": "Yöntemler",
+    "tool": "Alet",
+    "tools": "Aletler",
+    "socialState": "Sosyal form",
+    "plenum": "Plenum",
+    "single": "Bireysel çalışma",
+    "group": "Grup çalışması",
+    "project": "Proje çalışması",
+    "unit": "Sekans",
+    "units": "Sekanslar",
+    "sequence": "Öğrenme sekansı",
+    "sequences": "Öğrenme sekansları",
+    "pocket": "Öğrenme durumu",
+    "process": "Prosedür",
+    "phase": "Öğretim aşaması",
+    "phases": "Öğretim aşamaları",
+    "literature": "Edebiyat",
+    "intention": "Eylem niyeti",
+    "minStudents": "En az öğrenci",
+    "maxStudents": "Max. öğrenciler",
+    "minTeachers": "En az öğretmen",
+    "maxTeachers": "Max. öğretmenler",
+    "communicationType": "İletişim şekli",
+    "workflow": "İş akışı",
+    "task": "Görev",
+    "leaveUnitForGlobal": "Sekansı global görev oluşturmak için serbest bırakın",
+    "asset": "Dosyalar/Materyal",
+    "noHeuristicYet": "Henüz tam bir höristik oluşturulmadı.",
+    "noPocketYet": "Henüz bir öğrenme durumu mevcut değil."
+  },
+  "fileTypes": {
+    "image": "Resim",
+    "audio": "Ses",
+    "video": "Video",
+    "pdf": "PDF",
+    "document": "Belge",
+    "binary": "Arşiv veya program",
+    "json": "JSON",
+    "text": "Metin",
+    "binaryWarn": "Dikkat! Dosya yürütülebilir bir format veya arşivdir."
+  },
+  "fileList": {
+    "title": "Yüklemeler",
+    "preview": "Dosya önizleme",
+    "upload": "Bir dosya yükleyin"
+  },
+  "dimension": {
+    "layer": "Hedef seviye",
+    "actor": "Aktör / Kurum"
+  },
+  "task": {
+    "title": "Görev",
+    "previewMode": "Ön izleme modu",
+    "unsavedItems": "Bu sayfada hala kaydedilmemiş girişler var!",
+    "saveHint": "Lütfen girişlerin yalnızca 'Kaydet' düğmesine tıklanarak gönderildiğini unutmayın.",
+    "loadFailed": "Görev yüklenirken hata oluştu",
+    "notVisible": "Bu görev (artık) görünür veya düzenlenebilir değildir..",
+    "noUnitLinked": "Bu görev henüz bir sekansa bağlı değil",
+    "noPageContent": "Bu sayfada henüz içerik yok!",
+    "createInfo": "Göreve kendini tanımlayan bir başlık verin. Kötü başlıklar örneğin 'Görev 1' veya 'Yazma Görevi'dir. Açıklamadaki ek bilgiler, görevin diğer dizilere entegre edilmesini kolaylaştırır.",
+    "confirmDeleteElement": "Öğeyi gerçekten görevden kaldırmak ve kalıcı olarak silmek istiyor musunuz?",
+    "header": {
+      "title": "Başlık",
+      "align": "Hizalama",
+      "content": "İçindekiler",
+      "contentEntry": "İçerik"
+    },
+    "footer": {
+      "title": "Altbilgi",
+      "align": "Hizalama",
+      "content": "İçindekiler",
+      "contentEntry": "İçerik"
+    },
+    "pages": {
+      "title": "Sayfalar",
+      "page": "Sayfa",
+      "pageTitle": "Sayfa başlığı",
+      "content": "Sayfa içeriği"
+    },
+    "staticContent": "Her zaman görünür içerikler",
+    "previousResults": "Önceki cevaplar",
+    "noResponse": "Cevap verilmedi"
+  },
+  "taskContent": {
+    "title": "Görev içeriği",
+    "items": "Öğrenici eylemleri",
+    "webResources": "İnternet kaynakları",
+    "text": "Metin öğeleri",
+    "files": "Dosyalar"
+  },
+  "webResources": {
+    "title": "İnternet öğeleri",
+    "embed": "Nesne",
+    "embeds": "Nesneler",
+    "embedCode": "Yerleştirme kodu",
+    "link": "Link",
+    "links": "Linkler",
+    "literature": "Edebiyat",
+    "carefulNote": "Harici web sitesine yönlendirme"
+  },
+  "taskResults": {
+    "workInProgress": "İşlemde",
+    "title": "İş sonuçları",
+    "skipped": "İşlenmemiş veya atlanmış",
+    "isActive": "İşlemde",
+    "results": "Sonuçlar",
+    "online": "Mevcut (çevrimiçi)",
+    "complete": "Tamamlandı",
+    "saved": "Kaydedildi",
+    "previewChart": {
+      "chartOptions": "Grafik seçenekleri",
+      "title": "Diyagramlar için ön izleme",
+      "select": "Lütfen bir diyagram seçin.",
+      "switchAxis": "Eksenleri değiştirin"
+    }
+  },
+  "license": {
+    "title": "Lisans",
+    "owner": "Telif Hakkı",
+    "pd": "Lisanssız (PD)",
+    "ccby": "Atıf (CC-BY)",
+    "ccbysa": "Atıf, aynı lisans altında paylaşım (CC-BY-SA)",
+    "ccbync": "Atıf, ticari kullanım yok (CC-BY-NC)",
+    "ccbyncsa": "Atıf, ticari kullanım yok, aynı lisans altında paylaşım (CC-BY-NC-SA)",
+    "ccbynd": "Atıf, Değişiklik yapılamaz (CC-BY-ND)",
+    "ccbyncnd": "Atıf yapılabilir, ticari kullanım yok, değişiklik yapılamaz (CC-BY-NC-ND)",
+    "ccOer": "Creative Commons / OER",
+    "ccNonOer": "Creative Commons / OER Dışı",
+    "nonFreeOthers": "Ücretsiz değil / Diğer",
+    "copyright": "Telif hakkı korumalı; ücretsiz değil"
+  },
+  "charts": {
+    "title": "Diyagramlar",
+    "simple": "Basit diyagramlar",
+    "bar": "Çubuk grafik",
+    "pie": "Pasta grafiği",
+    "scatter": "Nokta çizimi",
+    "line": "Çizgi diyagramı",
+    "histogram": "Histogram"
+  },
+  "unit": {
+    "material": "Harici kaynaklar ve bağlantılar",
+    "taskUnwantedComplete": "Görev istemeden sonlandırıldıysa buraya tıklayın",
+    "furtherReadings": "Daha fazla okuma",
+    "taskComplete": "Çalışma sayfası başarıyla tamamlandı.",
+    "tasks": "Görevler",
+    "references": "Malzeme(ler)",
+    "task": "Görev",
+    "phases": "Öğretim aşamaları"
+  },
+  "phase": {
+    "nonPhaseMaterial": "Global malzemeler",
+    "plot": "Hikaye",
+    "intention": "Harekete geçme niyeti",
+    "references": "Malzeme referansları",
+    "notes": "Notlar"
+  },
+  "method": {
+    "presentationTeacher": "Öğretmen sunumu",
+    "presentationStudent": "Öğrenici sunumu",
+    "discussion": "Sınıf tartışması",
+    "task": "Görev"
+  },
+  "socialState": {
+    "plenum": "Plenum",
+    "single": "Bireysel çalışma",
+    "partner": "Ortak çalışma",
+    "group": "Grup çalışması",
+    "project": "Proje çalışması",
+    "stations": "Koğuş çalışması"
+  },
+  "communication": {
+    "single": "Monolog",
+    "one2one": "1'e 1",
+    "one2many": "1'den N'ye",
+    "many2one": "N'den 1'e",
+    "many2many": "N'den N'ye"
+  },
+  "orientation": {
+    "title": "Hizalama",
+    "h": "Yatay",
+    "v": "Dikey",
+    "left": "Solda",
+    "center": "Orta",
+    "right": "Sağa",
+    "justify": "Hizalanabilir"
+  },
+  "form": {
+    "title": "Form",
+    "history": "Tarih",
+    "placeholder": "Yer tutucu",
+    "entry": "Giriş",
+    "value": "Değer",
+    "label": "Etiketleme",
+    "range": "Aralık",
+    "valueAlreadyExists": "Belirtilen değere sahip bir giriş zaten var",
+    "choices": "Cevap seçenekleri",
+    "minChars": "Minimum karakterler",
+    "maxChars": "Maksimum karakter",
+    "minCount": "Minimum sayı",
+    "maxCount": "Maksimum sayı",
+    "minValue": "Minimum değer",
+    "maxValue": "Maksimum değer",
+    "minLabel": "Tanımlama minimum değer",
+    "maxLabel": "Tanımlama maksimum değer",
+    "defaultValue": "Çıktı değeri",
+    "startValue": "Çıktı değeri",
+    "step": "Adımlar",
+    "pipCount": "Ölçek değerlerinin sayısı",
+    "pipTypes": "Ölçek tipi",
+    "forbiddenChars": "İzin verilmeyen karakterler",
+    "mandatoryField": "Zorunlu alan",
+    "mandatoryFields": "Zorunlu bilgiler",
+    "rows": "Satır sayısı",
+    "onlyOptions": "Sadece seçenekler mevcut",
+    "options": "Seçenekler",
+    "header": "Belge görünümü",
+    "allFields": "Hepsini göster",
+    "onlyMandatoryFields": "Yalnızca zorunlu alanları göster",
+    "noWhitespace": "Boşluk yok",
+    "enterText": "Lütfen metninizi buraya girin....",
+    "allowedChars": "İzin verilen karakterler",
+    "insert": "Yeni bir giriş",
+    "update": "Girişi düzenle",
+    "required": "Zorunlu alan",
+    "read": "Girişi görüntüle",
+    "userNameOrEmail": "Kullanıcı adı veya e-posta girebilirsiniz",
+    "charsLeft": "Karakter kaldı",
+    "requiredFields": "Zorunlu bilgiler",
+    "optionalField": "İsteğe bağlı alan",
+    "optionalFields": "Optionale Angaben",
+    "selectOne": "(Lütfen seçiniz)",
+    "insertComplete": "Belge oluşturma başarılı.",
+    "updateComplete": "Belgenin başarılı bir şekilde güncellenmesi.",
+    "resetComplete": "Belge(ler) başarıyla sıfırlandı",
+    "updatedDocsComplete": "{{count}} belge başarıyla güncellendi",
+    "removeComplete": "Belgeyi başarıyla kaldırma.",
+    "insertFailed": "Belge oluşturma başarısız oldu.",
+    "updateFailed": "Güncelleme başarısız.",
+    "removeFailed": "Belge kaldırma işlemi başarısız oldu.",
+    "targetMissing": "Düzenlenecek belge mevcut değil",
+    "incomplete": "Girişler eksik veya geçersiz. Lütfen girişlerinizi kontrol edin.",
+    "password": {
+      "notEqualConfirm": "Girdi parola ile eşleşmiyor.",
+      "hint": "En az 8 karakter, 1 büyük harf, 1 sayı ve bir özel karakter gerektirir.",
+      "atLeastOneLowerCase": "Şifrenin en az {{chars}} harfli olması gerekir (küçük)",
+      "atLeastOneUpperCase": "Şifrenin en az {{chars}} harfli olması gerekir (BÜYÜK)",
+      "atLeastOneDigit": "Şifre en az {{chars}} rakamdan oluşmalıdır",
+      "atLeastoneSpecialChar": "Parola aşağıdaki karakterlerden en az {{chars}} tanesini gerektirir: {{{examples}}}"
+    },
+    "validation": {
+      "required": "{{label}} zorunlu bir alandır.",
+      "minString": "{{label}} en az {{min}} karakter gerektirir",
+      "maxString": "{{label}}, {{max}} karakteri aşmamalıdır.",
+      "minNumber": "{{label}} en az {{min}} olmalıdır.",
+      "maxNumber": "{{label}} en fazla {{min}} olabilir..",
+      "minNumberExclusive": "{{label}}, {{min}} değerinden büyük olmalıdır.",
+      "maxNumberExclusive": "{{label}}, {{max}} değerinden küçük olmalıdır.",
+      "minDate": "{{label}}, {{min}} öğesinden sonra olmalıdır.",
+      "maxDate": "{{label}}, {{max}} öğesinden sonra olmamalıdır.",
+      "badDate": "{{label}} geçerli bir tarih değildir.",
+      "minCount": "En az {{minCount}} girdisi olmalıdır.",
+      "maxCount": "En fazla {{maxCount}} girdisi olabilir.",
+      "noDecimal": "'{{label}}' bir tam sayı olmalıdır.",
+      "notAllowed": "'{{value}}' ifadesine izin verilmez.",
+      "expectedType": "{{label}} beklenen veri türü {{dataType}}'a karşılık gelmiyor.",
+      "keyNotInSchema": "{{name}} veri şeması tarafından desteklenmiyor.",
+      "notEqualConfirm": "Her iki parola da eşleşmiyor",
+      "regExFail": "Giriş izin verilen spesifikasyonlara uymuyor",
+      "userNotUnique": "Kullanıcı adı zaten alınmış",
+      "uploadError": "Hatalı dosya"
+    }
+  },
+  "userProfile": {
+    "title": "Kullanıcı profili",
+    "summary": "Özet",
+    "rawData": "Ham veri",
+    "username": "Kullanıcı Adı",
+    "userName": "Kullanıcı Adı",
+    "createdAt": "O zamandan beri kayıtlı:",
+    "firstName": "İlk isim",
+    "lastName": "Soy isim",
+    "fullName": "İsim",
+    "password": "Şifre",
+    "changePassword": "Şifre değiştirme",
+    "role": "Rulo",
+    "roles": "Rulo",
+    "group": "Grup",
+    "groups": "Gruplar",
+    "institution": "Kurum",
+    "email": "E-posta",
+    "image": "Profil resmi",
+    "noImage": "Profil resmi yok",
+    "settings": {
+      "title": "Ayarlar",
+      "language": "Dil",
+      "currentLanguage": "Seçilen dil",
+      "ui": "Kullanıcı arayüzü",
+      "fluid": "Tam ekran genişliğini kullanın",
+      "privacy": "Veri koruma"
+    }
+  },
+  "profile": {
+    "title": "Kullanıcı profili"
+  },
+  "logout": {
+    "loggingOut": "Çıkış yapacaksınız",
+    "loggedOut": "Şimdi çıkış yaptınız"
+  },
+  "language": {
+    "de": "Almanca",
+    "en": "İngilizce",
+    "tr": "Türkçe",
+    "switchSuccessfull": "Dil değiştirildi"
+  },
+  "literature": {
+    "title": "Edebiyat",
+    "subTitle": "Altyazı",
+    "authors": "Yazar(lar)",
+    "year": "Yayın yılı",
+    "issue": "Çıktı",
+    "volume": "Bağbozumu",
+    "city": "Yer/Şehir",
+    "publisher": "Yayıncı",
+    "url": "URL"
+  },
+  "user": {
+    "data": "Bilgi",
+    "adminArea": "Yönetici alanı",
+    "title": "Kullanıcı",
+    "firstName": "İlk isim",
+    "lastName": "Soyadı",
+    "birthday": "Doğum tarihi",
+    "adress": "Adres",
+    "city": "Konut",
+    "language": "Dil",
+    "online": "Çevrimiçi",
+    "offline": "Çevrimdışı",
+    "verified": "Kayıtlı",
+    "invited": "Davetli",
+    "tokenInvalid": "Bağlantınız geçersiz veya süresi dolmuş.",
+    "profile": {
+      "guide": "Kullanıcı profiliniz",
+      "overview": "Bu senin profilin. Bilgilerinizi istediğiniz zaman ayarlayabilirsiniz.",
+      "image": "Profil resmi isteğe bağlıdır, ancak aynı zamanda daha arkadaş canlısıdır.",
+      "fixed": "Bazı detaylar değiştirilemez. Ancak, acil bir durum söz konusuysa, lütfen {{siteName}} ile iletişime geçmekten çekinmeyin. Takım.",
+      "research": "Sürekli olarak {{siteName}}'nı geliştirmek ve {{siteName}} ile kullanımını araştırmak için çabalıyoruz. Ancak bu sadece sizin izninizle mümkündür. Araştırmaya katılım gönüllülük esasına dayanır ve uygulamanın işlevselliğini etkilemez. Yine de, bize kısaca izin verirseniz ve {{siteName}}'nın geliştirilmesinde bize destek olursanız memnun oluruz."
+    },
+    "research": {
+      "title": "Araştırma verileri",
+      "optIn": "Katılımı etkinleştirin",
+      "optInComplete": "Araştırmaya katılımınızı başarıyla onayladınız. Profil ayarlarınızdan istediğiniz zaman katılımınızı iptal edebilirsiniz.",
+      "optOut": "Katılımı sonlandırın",
+      "optInMail": "Merhaba {{fullName}},\n\nAraştırmaya katılmak için lütfen aşağıdaki linke tıklayınız: {{url}}\n\nSaygılarımla\nSizin {{siteName}} Takım",
+      "participate": "Araştırmaya katılım",
+      "confirmed": "Katılım e-posta ile onaylandı"
+    },
+    "enrollAccount": {
+      "title": "Sizin {{siteName}} kaydınız",
+      "complete": "Kaydı tamamlayın",
+      "password": "Lütfen {{siteName}} için yeni şifrenizi buradan belirleyin. Şifre aşağıdaki minimum standartları karşılamalı ve tekrar girilerek onaylanmalıdır.",
+      "success": "Kayıt işlemini başarıyla tamamladınız. Şimdi profilinize yönlendirileceksiniz.",
+      "description": "{{siteName}}'na hoş geldiniz! Başlamak için sadece birkaç adım uzaktasınız. Lütfen aşağıdaki formu doldurun ve gitmeye hazırsınız..",
+      "acceptTerms": {
+        "show": "Kullanım koşullarını göster",
+        "check": "{{siteName}} kullanım koşullarını okudum ve kabul ediyorum"
+      },
+      "acceptPrivacy": {
+        "show": "Gizlilik politikasını göster",
+        "check": "{{siteName}} gizlilik politikasını okudum ve kabul ediyorum"
+      }
+    },
+    "verifyEmail": {
+      "title": "E-postayı onayla",
+      "description": "E-postadaki bir bağlantı aracılığıyla kimliğinizi onaylayın",
+      "inProgress": "Onay kodunu kontrol edin",
+      "expired": "Onay bağlantısının süresi doldu",
+      "resendComplete": "Onay bağlantısı tekrar gönderildi",
+      "resend": "Yeni onay bağlantısı iste",
+      "success": "Hesabınız başarıyla onaylandı",
+      "alreadyVerified": "Hesap çoktan onaylandı"
+    }
+  },
+  "passwordStrength": {
+    "title": "Parola gücü",
+    "forbidden": "İzin verilmeyen karakterler kullanıldı! İzin verilenler harfler (äöüß hariç), sayılar ve aşağıdaki karakterlerdir: $_!#*%&.-@",
+    "none": "Çok zayıf şifre",
+    "weak": "Zayıf şifre",
+    "average": "Vasat şifre",
+    "strong": "Güçlü şifre",
+    "veryStrong": "Çok güçlü şifre",
+    "confirmed": "Şifreler eşleşir",
+    "confirmFailed": "Parolalar eşleşmiyor"
+  },
+  "userCheck": {
+    "title": "Kullanıcı adı doğrulama",
+    "forbidden": "Geçersiz kullanıcı adı. İzin verilenler min. 4 ila maks. 12 harf, rakam ve - _ $ @",
+    "getUser": "Kullanıcı adı zaten kullanılıyor.",
+    "userNotExist": "Kullanıcı adı kullanılabilir.",
+    "userValid": "Kullanıcı adı geçerli",
+    "loading": "Kullanıcı adını kontrol et"
+  },
+  "definitions": {
+    "title": "Temel yapılandırma",
+    "alreadyExists": "Temel bir yapılandırma zaten mevcut",
+    "missing": "Uygulamanın hatasız çalışması için temel yapılandırmalar yapılmalıdır."
+  },
+  "emailCheck": {
+    "title": "E-posta doğrulama",
+    "emailExists": "E-posta adresi zaten kullanımda.",
+    "valid": "Geçerli e-posta adresi",
+    "invalid": "Geçersiz e-posta adresi"
+  },
+  "sequence": {
+    "learning": "Öğrenme sırası",
+    "start": "Başlangıç sırası",
+    "end": "Yansıma"
+  },
+  "wizard": {
+    "step": "Adım",
+    "next": "Devam et",
+    "back": "Geri",
+    "finish": "Bitiş",
+    "finished": "İş akışı sihirbazı başarıyla tamamlandı.",
+    "couldNotCompleteStep": "Adım tamamlanamıyor",
+    "noWorkflowDataReceived": "İş akışı için veri mevcut değil",
+    "newOrExisting": "Lütfen bir seçenek seçin.",
+    "createWorkflowDoc": "Yeni bir iş akışı oluşturma.",
+    "connectWorkflow": "Bağlantı iş akışı.",
+    "continueToEdit": "Editöre devam edin",
+    "pleaseSelect": "Lütfen aşağıdaki adımlardan birini seçin",
+    "summary": "Bitirmek",
+    "optionA": "Seçenek A - Mevcut bir iş akışını düzenleme",
+    "optionB": "Seçenek B - Yeni bir iş akışı oluşturun (devam et düğmesine tıklayın)",
+    "createNewEntry": "Henüz giriş yok mu?",
+    "task": {
+      "title": "Görev yönetimi"
+    },
+    "unit": {
+      "title": "Kendi derslerinizi planlayın"
+    }
+  },
+  "help": {
+    "title": "Bu girişin başlığını girin",
+    "period": "Süre için tamsayı veya ondalık sayı belirtin. Geçerli olması için bir zaman birimi gerektirir",
+    "code": "Kısaltma veya dahili kimlik girin",
+    "description": "Girişin genişletilmiş açıklamasını girin",
+    "sourceUrl": "Tam URL aracılığıyla harici bir dosyaya bağlantı verme",
+    "sourceFile": "Yerel bilgisayardan bir dosya yükleyin",
+    "type": "Girişi kategorize etmek için bir tür seçin",
+    "notes": "Notlar ve referanslar ekleyin",
+    "plot": "Hikayeyi yorumlayın",
+    "intention": "Harekete geçme niyetini yorumlayın",
+    "filterText": "Filtre terimini buraya girin",
+    "comment": "Lütfen yorumunuzu buraya girin"
+  },
+  "history": {
+    "title": "Düzenleme geçmişi"
+  },
+  "historyEvents": {
+    "insert": "Oluşturuldu",
+    "update": "Güncellenmiş",
+    "remove": "Kaldırılır"
+  },
+  "invitation": {
+    "expirationExceeded": "Davet kodunun süresi doldu",
+    "removeNoPermission": "Bu kodu silme yetkisi yok"
+  },
+  "revision": {
+    "title": "Revizyon",
+    "unrevised": "İşlemde",
+    "inRevision": "Revizyon altında",
+    "flagged": "İşaretli / Dikkat",
+    "complete": "Sınıf için hazır",
+    "allFlagged": "İşaretli tüm belgeler"
+  },
+  "asset": {
+    "images": {
+      "title": "Resim"
+    },
+    "videos": {
+      "title": "Video"
+    },
+    "documents": {
+      "title": "Belge"
+    },
+    "binaries": {
+      "title": "İkili dosya"
+    }
+  },
+  "roles": {
+    "title": "Roller",
+    "role": "Rulo",
+    "admin": "Yönetici",
+    "adminDescription": "Uygulama ve yönetimi üzerinde tam kontrole sahiptir.",
+    "editor": "Editör",
+    "editorDescription": "Tüm veritabanı içeriğini düzenleyebilir",
+    "reader": "Gözlemci",
+    "readerDescription": "Tüm veritabanı içeriğini görüntüleyebilir.",
+    "schoolAdmin": "Okul Yöneticisi",
+    "curriculum": "Öğretmenler + Müfredat",
+    "schoolAdminDescription": "Birkaç teknik istisna dışında idari kontrole sahiptir.",
+    "teacher": "Öğretmenler",
+    "teacherDescription": "Kursları ve dersleri yönetebilir.",
+    "student": "Öğrenciler",
+    "studentDescription": "Kurslarda derslere katılabilir"
+  },
+  "editor": {
+    "summary": "Özet",
+    "pocket": {
+      "title": "Öğrenme durumu editörü"
+    },
+    "unit": {
+      "title": "Sekans editörü"
+    },
+    "task": {
+      "title": "Görev editörü"
+    },
+    "heuristics": {
+      "title": "Sezgisel editör"
+    }
+  },
+  "school": {
+    "title": "Öğretim kurumu",
+    "schoolYear": "Bağbozumu",
+    "schoolYears": "Bağbozumu"
+  },
+  "schoolClass": {
+    "title": "Kurs",
+    "teachers": "Öğretmenler",
+    "students": "Öğrenciler",
+    "members": "Tüm kurs üyeleri",
+    "createNew": "Yeni bir kurs oluşturun",
+    "toAftermath": "İşlem sonrası",
+    "className": "Kurs adı",
+    "notFoundById": "Kimliğe göre kurs bulunamadı",
+    "invalidSchoolYear": "Geçersiz bağbozumu",
+    "noMember": "Henüz üye değilsiniz ve bu nedenle derslere katılamıyorsunuz.",
+    "progresses": "Bağbozumu süreklidir",
+    "inLesson": "Sınıfta",
+    "cannotStartTeaching": "Dersler ancak tüm alanlar tamamlandığında başlatılabilir.",
+    "createLesson": "Dersler oluşturun",
+    "progressIncomplete": "Tamamlanmamış kurs için ilerleme",
+    "lessonConnected": "Oluşturulan dersler",
+    "invite": "Katılımcıları davet edin",
+    "addStudents": "Öğrenici ekleyin",
+    "addStudentsDescription": "Listeden eklenecek katılımcıları seçin.",
+    "requestJoin": "Katılım talep edin",
+    "waitForTeacher": "Şu anda kilidi açılmış hiçbir malzeme yok. Lütfen öğretmenin talimatlarını bekleyin.",
+    "waitForTeacherToStartLesson": "Öğretmen derse başlayana kadar bekleyin",
+    "waitForTeacherToSetProgress": "Öğretmen bir sonraki dersi ayarlayana kadar bekleyin",
+    "enterLesson": "Dersler devam ediyor. Doğrudan sınıfa yönlendirilmek ister misiniz?",
+    "currentLessonCompleted": "Şu anda seçili olan ders tamamlanmıştır.",
+    "confirmRemove": "Bu kursla birlikte tüm dersleri, materyalleri ve sonuçları silmek üzeresiniz."
+  },
+  "lesson": {
+    "title": "Dersler"
+  },
+  "lessons": {
+    "title": "Benim derslerim",
+    "ongoing": "Güncel",
+    "completed": "Tamamlandı",
+    "running": "Başlatıldı",
+    "upcoming": "Yaklaşan",
+    "studentRunning": "Devam eden dersler",
+    "studentCompleted": "Tamamlanan dersler"
+  },
+  "settings": {
+    "title": "Ayarlar"
+  },
+  "file": {
+    "title": "Dosya"
+  },
+  "fileSize": {
+    "bit": "Bit",
+    "byte": "Bayt",
+    "kilobyte": "Kilobayt",
+    "megabyte": "Megabayt",
+    "gigabyte": "Gigabayt",
+    "kb": "KB",
+    "mb": "MB",
+    "gb": "GB",
+    "title": "Dosya boyutu"
+  },
+  "agreements": {
+    "termsOfService": {
+      "title": "{{siteName}} Kullanım Koşulları",
+      "read": "'{{siteName}} Kullanım Koşullarını' okudum ve kabul ediyorum."
+    },
+    "privacyPolicy": {
+      "title": "{{siteName}} Gizlilik Politikası",
+      "read": "'{{siteName}} Gizlilik Politikası'nı okudum ve kabul ediyorum."
+    }
+  },
+  "classes": {
+    "title": "Kurslar",
+    "myClasses": "Kurslarım",
+    "createClass": "Kurs oluşturun"
+  },
+  "lmsConnection": {
+    "title": "Öğrenme Yönetim Sistemi Bağlantısı",
+    "appTitle": "Başvuru başlığı",
+    "authUrl": "Kullanıcının kimliğini doğrulamak için web hizmeti URL'si"
+  },
+  "rolesCheck": {
+    "title": "Rol doğrulama",
+    "rolesEmpty": "Geçersiz: rol belirtilmelidir",
+    "adminRequired": "Geçersiz: önce yönetici rolüne sahip bir kullanıcı oluşturulmalıdır",
+    "valid": "Geçerli rol."
+  },
+  "comments": {
+    "added": "Yorum eklendi",
+    "title": "Yorumlar",
+    "addComment": "Yorum ekle",
+    "comment": "Yorum",
+    "noCommentsYet": "Henüz yorum yok"
+  },
+  "admin": {
+    "title": "Yönetici"
+  },
+  "theme": {
+    "bsDefault": "Standart Tema",
+    "custom": "Kendi Teması"
+  },
+  "createUser": {
+    "complete": "Kullanıcı başarıyla oluşturuldu."
+  },
+  "inviteUsers": {
+    "title": "Kullanıcı davet et",
+    "description": "Yeni kullanıcıları sisteme kaydetmek için bir kayıt kodu oluşturma",
+    "timeLeft": "Kalan süre",
+    "expirationMinutes": "Geçerlilik süresi (şu an itibariyle)",
+    "code": "Kayıt kodu",
+    "addCode": "Yeni kod oluşturun",
+    "createCode": "Kod oluşturun"
+  },
+  "tableView": {
+    "title": "Veri tablosu",
+    "all": "Hepsi",
+    "reduced": "Azaltılmış",
+    "onlyDefaults": "Yalnızca varsayılan değerler",
+    "onlyContext": "Yalnızca nesne bağlamı",
+    "quickFilter": "Hızlı arama",
+    "documentsPerPage": "Girişler/sayfa",
+    "loadMore": "Daha fazla belge indirin"
+  },
+  "connection": {
+    "title": "Bağlantı",
+    "status": "Durum",
+    "reason": "Neden(ler)",
+    "retryCount": "Bağlantı denemeleri",
+    "retryTime": "Sonraki deneme",
+    "connected": "Bağlandı",
+    "connecting": "Bağlanıyor",
+    "failed": "Bağlantı başarısız",
+    "reconnected": "Bağlantı yeniden sağlandı",
+    "waiting": "Bekleyin",
+    "offline": "Çevrimdışı",
+    "reloadPage": "Uygulamayı yeniden yükle"
+  },
+  "appinfo": {
+    "title": "Uygulama bilgisi",
+    "version": "Versiyon",
+    "userId": "Kullanıcı Kimliği"
+  },
+  "prepare": {
+    "title": "Örnek şablonlar",
+    "createClass": "Kurs oluşturun",
+    "myClasses": "Kurslarım"
+  },
+  "routes": {
+    "backToEdit": "Düzenlemeye geri dön",
+    "backToLesson":"Derslere geri dönelim",
+    "notFound": "Sayfa bulunamadı",
+    "notFoundExplained": "İstenen sayfa mevcut değil veya bulunamadı..",
+    "home": "Anasayfa",
+    "dashboard": "Kurslarım",
+    "profile": "Kullanıcı profili",
+    "group": "Benim grubum",
+    "login": "Giriş",
+    "logout": "Çıkış",
+    "collection": "Veri seti",
+    "workflow": "İş akışı",
+    "lessons": "Tüm dersler",
+    "redirect": "Sayfa yükle"
+  },
+  "textRenderer": {
+    "item": "Önceki cevaplarınızdan biri"
+  },
+  "text": {
+    "text": "Metin",
+    "simpleText": "Basit metin",
+    "hyphenActive": "Tireleme aktif",
+    "newlineActive": "Satır sonu etkin",
+    "size": "Yazı boyutu",
+    "paragraph": "Paragraf",
+    "textArea": "Metin alanı",
+    "plain": "Biçimlendirilmemiş",
+    "blockQuote": "Alıntı",
+    "source": "Kaynak",
+    "richtext": "Biçimlendirilebilir metin",
+    "headline": {
+      "title": "Başlık",
+      "h1": "1 - Ekstra büyük",
+      "h2": "2 - Çok büyük",
+      "h3": "3 - Büyük",
+      "h4": "4 - Normal",
+      "h5": "5 - Küçük",
+      "h6": "6 - Çok küçük"
+    },
+    "list": "Liste",
+    "listIcon": "Listen simgesi",
+    "enum": "Numaralandırma",
+    "itemReference": {
+      "title": "Öğrenci yanıtını göster",
+      "hint": "Görev / öğrenen eylemleri hakkında not",
+      "taskId": "Görev",
+      "refId": "Öğrenci eylemi"
+    }
+  },
+  "item": {
+    "label": "Soru / İş ödevi",
+    "title": "Öğrenci eylemi",
+    "text": "Metin satırı",
+    "textArea": "Metin alanı",
+    "savedAt": "Son kaydedilen",
+    "tags": "Etiketler (anahtar kelimeler)",
+    "singleChoice": "Tek seçenekli",
+    "singleSelect": "Tek seçenekli (açılır menü)",
+    "multipleChoice": "Çoktan seçmeli",
+    "multipleSelect": "Çoktan seçmeli (liste)",
+    "number": "Sayısal giriş",
+    "range": "Kaydırıcı",
+    "fileUpload": "Dosya yükleme",
+    "fileType": "Veri tipi",
+    "hint": {
+      "title": "Öğrenciye sınıfta eylem atamanız için başlıklar",
+      "label": "Düzenleme sırasında öğrencilere gösterilen başlık",
+      "required": "Girdi doğrulanır",
+      "fileType": "Yüklemeyi belirli bir veri türüyle sınırlar",
+      "select": "",
+      "defaultChoice": "Bu değer otomatik olarak önceden seçilir"
+    },
+    "groupMode": {
+      "title": "Grup modu",
+      "off": "Aktif değil",
+      "merge": "Yanıtlar birleştirildi",
+      "override": "Grup için bir cevap",
+      "split": "Her kişi kendi adına cevap verir"
+    },
+    "groupText": "Ortak metin"
+  },
+  "itemTypes": {
+    "text": "Metin girişi",
+    "numerical": "Sayısal giriş",
+    "choices": "Seçim",
+    "group": "Grup öğeleri",
+    "media": "Dosya yükleme",
+    "other": "Diğer öğeler",
+    "notCategorized": "Kategorisi olmayan öğeler"
+  },
+  "taskEditor": {
+    "edit": "Düzenle",
+    "preview": "Ön izleme",
+    "codeView": "Kaynak kodu",
+    "pleaseSelectTask": "Bir görev seçin",
+    "createPage": "Yeni sayfa",
+    "addContent": "Öğe ekle",
+    "editAttributes": "Öğeyi düzenle",
+    "moveToPage": "Bu sayfaya git",
+    "noAttributesYet": "Bu öğenin henüz herhangi bir özelliği yok."
+  },
+  "files": {
+    "title": "Dosyalar",
+    "image": "Resim",
+    "audio": "Ses",
+    "multiple": "Birden fazla dosya yükleme",
+    "document": "Belge",
+    "documents": "Belgeler",
+    "noPDF": "PDF görüntülenmiyorsa buraya tıklayın",
+    "images": "Resimler",
+    "video": "Video",
+    "videos": "Videolar",
+    "upload": "Bir dosya yükleyin",
+    "uploadingFile": "Dosya yükleniyor",
+    "uploadSuccess": "Dosya başarıyla yüklendi",
+    "uploadMultiple": "Bir veya daha fazla dosya yükleme",
+    "mimeError": "Biçim hatası! Beklenen biçim: [{{expected}}], geçerli biçim: [{{got}}/{ending}}].",
+    "converting": "Dosyayı işleyin/dönüştürün. Bu işlem birkaç dakika sürebilir.",
+    "videoNotSupported": "Tarayıcınız gömülü videoları desteklemiyor."
+  },
+  "responseProcessors": {
+    "raw": "Ham veriler",
+    "cluster": {
+      "title": "Cluster"
+    },
+    "barChart": "Çubuk grafiği",
+    "pieChart": "Pasta grafiği",
+    "imageGallery": "Resim galerisi",
+    "videoGallery": "Video galerisi",
+    "audioList": "Ses listesi",
+    "documentList": "Veri listesi",
+    "text": "Metin"
+  }
+}

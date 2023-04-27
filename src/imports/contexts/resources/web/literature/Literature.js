@@ -112,8 +112,8 @@ Literature.material = {
       previewData (targetId) {
         console.warn(this.name, 'previewData is deprecated!')
         return targetId && this.collection.findOne(targetId)
-      },
+      }
     }
   },
-  schema: Literature.schema,
+  schema: Literature.schema
 }

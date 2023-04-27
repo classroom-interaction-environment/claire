@@ -1,3 +1,4 @@
+/* global DDP */
 const exists = function (value) {
   return value !== null && typeof value !== 'undefined'
 }
@@ -30,7 +31,8 @@ export const updateHook = function (query, modifier, options, callback) {
 
   if (exists(modifier.$set)) {
     modifier.$set = Object.assign(modifier.$set, tmpMod)
-  } else {
+  }
+  else {
     modifier.$set = tmpMod
   }
 

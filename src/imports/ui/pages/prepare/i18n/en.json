@@ -1,11 +1,12 @@
 {
   "wizard": {
-    "pleaseSelect": "Please selevt",
+    "pleaseSelect": "Please select",
     "prepare": {
       "selectClass": "Please select a class for which you will create the unit",
       "selectUnit": "Select a unit to edit as your personal copy or create a custom one from scratch.",
       "filterByDimension": "Filter by dimension",
       "phases": {
+        "title": "Teaching Phases of the Learning Sequence",
         "description": "You can decide, whether you want to use this unit as it is, or if you want to edit it to your personal preferences.",
         "missing": "No phases found for this unit."
       },

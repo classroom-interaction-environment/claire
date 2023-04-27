@@ -1,5 +1,4 @@
 import { Template } from 'meteor/templating'
-import { ReactiveDict } from 'meteor/reactive-dict'
 import { dataTarget } from '../../utils/dataTarget'
 import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
 import './submenu.html'
@@ -65,7 +64,6 @@ Template.submenu.helpers({
   },
   navAtts () {
     const { data } = Template.instance()
-    console.debug('navAtts', data)
     const justified = data.justified || data?.nav?.justified
       ? 'nav-justified'
       : ''

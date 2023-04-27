@@ -3,7 +3,7 @@ import { RawResponse } from './aggregate/raw/RawResponse'
 import { isResponseDataType } from '../../../api/utils/check/isResponseDataType'
 import { isMaybeObject } from '../../../api/utils/check/isMaybeObject'
 import { isResponseProcessorType } from './isResponseProcessorType'
-import { createDebugLog } from '../../../api/log/createLog'
+import { createLog } from '../../../api/log/createLog'
 
 /**
  * Registers and manages all available response processors for various data
@@ -13,7 +13,7 @@ import { createDebugLog } from '../../../api/log/createLog'
  */
 export const ResponseProcessorRegistry = {}
 
-const log = createDebugLog('ResponseProcessorRegistry')
+const debugLog = createLog({ name: 'ResponseProcessorRegistry', type: 'debug' })
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -49,8 +49,8 @@ const checkResponseProcessorContext = ({ name, label, icon, isResponseProcessor,
  * @return {any}
  */
 ResponseProcessorRegistry.register = function (context) {
-  const { name, type, dataTypes, fileType, csp, renderer } = context
-  log('register', { context })
+  const { name, type, dataTypes, fileType /*, csp, renderer  */ } = context
+  debugLog('register', { context })
 
   check(name, String)
   check(type, Match.Where(isResponseProcessorType))
@@ -89,7 +89,8 @@ ResponseProcessorRegistry.register = function (context) {
       dataType.default = name
       dataType.defaultIndex = index
       dataType.values.unshift(name)
-    } else {
+    }
+    else {
       dataType.values.push(name)
     }
 
@@ -97,7 +98,7 @@ ResponseProcessorRegistry.register = function (context) {
   })
 
   contextsMap.set(name, context)
-  log(`registered "${name}" for type "${type}"`)
+  debugLog(`registered "${name}" for type "${type}"`)
 
   return contextsMap.get(name)
 }
@@ -137,7 +138,6 @@ ResponseProcessorRegistry.allForDataType = dataType => {
     : dataType
 
   const typeMap = dataTypeMap.get(dataTypeName) || { values: [] }
-  console.debug({dataTypeMap, typeMap})
   const contexts = new Set(typeMap.values.map(toContext))
   contexts.add(RawResponse)
 
@@ -200,4 +200,3 @@ ResponseProcessorRegistry.byType = type => {
   })
   return out
 }
-

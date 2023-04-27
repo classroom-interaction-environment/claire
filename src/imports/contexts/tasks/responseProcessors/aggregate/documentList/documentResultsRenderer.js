@@ -2,7 +2,9 @@ import { Template } from 'meteor/templating'
 import { DocumentFiles } from '../../../../files/document/DocumentFiles'
 import { getResponseFiles } from '../../getResponseFiles'
 import { getFilesCollection } from '../../../../../api/utils/getFilesCollection'
+import '../../../../../ui/components/download/downloadButton'
 import './documentResultsRenderer.html'
+import { getFilesLink } from '../../../../files/getFilesLink'
 
 const API = Template.documentResultsRenderer.setDependencies({
   contexts: [DocumentFiles]
@@ -52,10 +54,43 @@ Template.documentResultsRenderer.helpers({
     return Template.getState('hasDocs')
   },
   link (doc, version = 'original') {
-    console.debug(doc)
     return doc.versions?.[version]?.link
   },
   loadComplete () {
     return API.initComplete()
+  },
+  collectionName () {
+    return DocumentFiles.name
+  },
+  hasThumbnail (fileObj = {}) {
+    return fileObj.isPDF && fileObj.versions?.thumbnail
+  },
+  getThumbnail (fileObj) {
+    return getFilesLink({
+      file: fileObj,
+      name: DocumentFiles.name,
+      version: 'thumbnail'
+    })
+  },
+  getIcon (extension) {
+    switch (extension) {
+      case 'pdf':
+        return 'file-pdf'
+      case 'doc':
+      case 'docx':
+      case 'odt':
+      case 'odf':
+        return 'file-alt'
+      case 'ppt':
+      case 'pptx':
+      case 'odp':
+        return 'file-powerpoint'
+      case 'xls':
+      case 'xlsx':
+      case 'ods':
+        return 'file-excel'
+      default:
+        return 'file-alt'
+    }
   }
 })

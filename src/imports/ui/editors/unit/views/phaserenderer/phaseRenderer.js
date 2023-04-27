@@ -43,7 +43,8 @@ Template.uephaseRenderer.onCreated(function onuePhaseRendererCreated () {
           }
         })
       instance.state.set('references', references)
-    } else {
+    }
+    else {
       instance.state.set('references', null)
     }
   })

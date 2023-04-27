@@ -1,3 +1,5 @@
+import { Meteor } from 'meteor/meteor'
+
 export const SubscriptionRegistry = {}
 
 const allSubs = new Map()

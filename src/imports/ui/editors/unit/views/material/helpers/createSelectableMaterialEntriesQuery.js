@@ -1,5 +1,5 @@
 import { $in } from '../../../../../../api/utils/query/inSelector'
-import { Meteor } from "meteor/meteor"
+import { Meteor } from 'meteor/meteor'
 import { Unit } from '../../../../../../contexts/curriculum/curriculum/unit/Unit'
 import { $nin } from '../../../../../../api/utils/query/notInSelector'
 import { getCollection } from '../../../../../../api/utils/getCollection'
@@ -7,7 +7,17 @@ import { getLocalCollection } from '../../../../../../infrastructure/collection/
 
 const selectedEntriesSort = { sort: { title: 1 } }
 
-export const selectEntries = function (viewState, unitDoc, unitDocOriginal, userId = Meteor.userId()) {
+/**
+ * Creates a query for material that can be added from a list but is not currently
+ * added as part of the unit.
+ *
+ * @param viewState
+ * @param unitDoc
+ * @param unitDocOriginal
+ * @param userId
+ * @return {*|null}
+ */
+export const createSelectableMaterialEntriesQuery = function (viewState, unitDoc, unitDocOriginal, userId = Meteor.userId()) {
   const { collection, field } = viewState
 
   let originalUnit = unitDocOriginal || getCollection(Unit.name).findOne(unitDoc._original) || getLocalCollection(Unit.name).findOne(unitDoc._original)
@@ -29,11 +39,13 @@ export const selectEntries = function (viewState, unitDoc, unitDocOriginal, user
     // select entries are defined by the following selection:
 
     // - my global material (non-clones)
-    const myGlobals = {
-      createdBy: userId,
-      _original: { $exists: false },
-      _id: $nin(target)
-    }
+    // TODO include, once we have a working concept of how to
+    // TODO handle global custom material
+    //  const myGlobals = {
+    //    createdBy: userId,
+    //    _original: { $exists: false },
+    //    _id: $nin(target)
+    //  }
 
     // - master material for this unit, that is not in the list but in the original unit
     const masterDocs = {
@@ -48,7 +60,7 @@ export const selectEntries = function (viewState, unitDoc, unitDocOriginal, user
       _original: $in(originalTarget)
     }
 
-    const finalQuery = { $or: [myClones, masterDocs, myGlobals] }
+    const finalQuery = { $or: [myClones, masterDocs] }
     cursor = collection.find(finalQuery, selectedEntriesSort)
   }
 

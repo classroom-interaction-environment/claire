@@ -1,11 +1,11 @@
 import { DocNotFoundError } from '../../errors/types/DocNotFoundError'
 import { checkOwnership } from '../../utils/permission/checkOnwership'
-import { createInfoLog } from '../../log/createLog'
+import { createLog } from '../../log/createLog'
 import { isCurriculumDoc } from './isCurriculumDoc'
 import { checkCurriculum } from './checkCurriculum'
 
 export const createClone = (collectionName, { owner, isCurriculum } = {}) => {
-  const info = createInfoLog(collectionName)
+  const info = createLog({ name: collectionName })
   let collection
 
   return function ({ _id }) {

@@ -32,7 +32,7 @@ export const ItemBase = {
       required: {
         type: Boolean,
         label: translate('form.required'),
-        defaultValue: true,
+        defaultValue: false,
         optional: true,
         autoform: {
           hint: translate('item.hint.required')
@@ -42,13 +42,13 @@ export const ItemBase = {
     if (Features.get('groups')) {
       baseSchema.groupMode = {
         type: String,
-          optional: true,
-          label: translate('item.groupMode.title'),
+        optional: true,
+        label: translate('item.groupMode.title'),
+        defaultValue: 'off',
+        allowedValues: ['off', 'split', 'override'],
+        autoform: {
           defaultValue: 'off',
-          allowedValues: ['off', 'split', 'override'],
-          autoform: {
-          defaultValue: 'off',
-            options: () => [
+          options: () => [
             { value: 'off', label: translate('item.groupMode.off') },
             { value: 'split', label: translate('item.groupMode.split') },
             { value: 'override', label: translate('item.groupMode.override') },
@@ -64,7 +64,7 @@ export const ItemBase = {
       [itemId]: {
         type: String,
         label: label,
-        optional: !required
+        optional: true // !required // TODO run patch after all required were true by default
       }
     }
   }

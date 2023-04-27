@@ -7,8 +7,5 @@ Meteor.startup(() => {
 
   window.navigator.serviceWorker
     .register('/sw.js')
-    .then(() => console.info('[ServiceWorker]: registered'))
-    .catch(error => {
-      console.error('[ServiceWorker]: registration failed: ', error)
-    })
+    .catch(error => console.error('[ServiceWorker]: registration failed: ', error))
 })

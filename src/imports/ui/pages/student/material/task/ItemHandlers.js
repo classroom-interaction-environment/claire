@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { TaskResults } from '../../../../../contexts/tasks/results/TaskResults'
-import { TaskWorkingState } from '../../../../../contexts/tasks/results/TaskWorkingState'
+import { TaskWorkingState } from '../../../../../contexts/tasks/state/TaskWorkingState'
 import {
   fromResponse,
   toResponse
@@ -30,7 +30,7 @@ export const ItemHandlers = {}
  * @return {function}
  */
 ItemHandlers.onItemLoad = ({ instance, TaskResultCollection }) =>
-  /**
+/**
    * loads the data for the given item by itemId and restores, if already given,
    * the previously made response from the user.
    *

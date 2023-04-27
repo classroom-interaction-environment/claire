@@ -1,4 +1,3 @@
-import { Literature } from '../resources/web/literature/Literature'
 
 export const getTaskContexts = () => {
   import { Task } from '../curriculum/curriculum/task/Task'

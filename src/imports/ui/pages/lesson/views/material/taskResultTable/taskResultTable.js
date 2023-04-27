@@ -9,6 +9,7 @@ import { $in } from '../../../../../../api/utils/query/inSelector'
 import { getCollection } from '../../../../../../api/utils/getCollection'
 import { getAllItemsInTask } from '../../../../../../contexts/tasks/getAllItemsInTask'
 import { dataTarget } from '../../../../../utils/dataTarget'
+import { GroupMode } from '../../../../../../contexts/classroom/group/GroupMode'
 import './taskResulTable.html'
 
 const API = Template.taskResultTable.setDependencies({})
@@ -43,6 +44,13 @@ Template.taskResultTable.helpers({
   },
   showItems (userId) {
     return Template.getState('showItems')[userId]
+  },
+  groupModeLabel (mode) {
+    const groupMode = GroupMode[mode]
+    if (!groupMode || groupMode === GroupMode.off) {
+      return ''
+    }
+    return API.translate(groupMode.label)
   },
   users () {
     const userIds = Template.getState('userIds') || []

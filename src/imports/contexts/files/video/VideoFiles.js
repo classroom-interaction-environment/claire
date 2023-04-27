@@ -1,8 +1,9 @@
 import { FileTypes } from '../shared/FileTypes'
-import { onClient, onServerExec } from '../../../api/utils/archUtils'
+import { onServerExec } from '../../../api/utils/archUtils'
 import { FilesTemplates } from '../FilesTemplates'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
 import { translateReactive } from '../../../utils/translateReactive'
+import { getCollection } from '../../../api/utils/getCollection'
 
 /**
  * VideoFiles are a material type that is used universally to upload videos,
@@ -113,17 +114,19 @@ VideoFiles.material = {
         return import('./renderer/main/videoFileRenderer')
       },
       previewData (targetId) {
-        console.warn(this.name, 'previewData is deprecated!')
-        return targetId && getLocalCollection(VideoFiles.name).findOne(targetId)
+        console.warn(VideoFiles.name, 'previewData is deprecated!')
+        if (!targetId) { return targetId }
+        const subDoc = getCollection(VideoFiles.name).findOne(targetId)
+        return subDoc || getLocalCollection(VideoFiles.name).findOne(targetId)
       },
       data ({ materialDoc, document, options }) {
         const { preview = true, print = false, student = true } = options
         return Object.assign({}, {
           title: document.name,
-          meta: name,
+          meta: materialDoc.name,
           preview: preview,
           print: print,
-          student: student,
+          student: student
         }, document)
       }
     },

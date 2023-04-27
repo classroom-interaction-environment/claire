@@ -7,19 +7,19 @@
             {{#each image in images}}
             <a id="{{image._id}}" class="irr-thumbnail" href="#{{image._id}}" data-target="{{image._id}}">
                 {{#with link image "thumbnail"}}
-                    <img class="cssbox_thumb" src="{{this}}" />
+                    <img class="cssbox-thumb" src="{{this}}" />
                 {{/with}}
                 {{#with link image "original"}}
-                    <span class="cssbox_full">
+                    <span class="cssbox-full">
                         <img src="{{this}}" />
                         <caption>{{image.name}}</caption>
                     </span>
                 {{/with}}
             </a>
             {{/each}}
-            <a class="cssbox_close" href="#void"></a>
-            {{#with prev}}<a class="cssbox_prev" data-target={{this}} href="#{{this}}">&lt;</a>{{/with}}
-            {{#with next}}<a class="cssbox_next" data-target={{this}} href="#{{this}}">&gt;</a>{{/with}}
+            <a class="cssbox-close" href="#void"></a>
+            {{#with prev}}<a class="cssbox-prev" data-target={{this}} href="#{{this}}">&lt;</a>{{/with}}
+            {{#with next}}<a class="cssbox-next" data-target={{this}} href="#{{this}}">&gt;</a>{{/with}}
         </div>
         {{/unless}}
     {{/onLoaded}}

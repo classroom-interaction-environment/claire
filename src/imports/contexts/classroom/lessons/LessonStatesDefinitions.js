@@ -14,7 +14,7 @@ export const LessonStatesDefinitions = {
     icon: 'clock',
     timeMode: {
       label: 'common.lastUpdated',
-      field: 'updatedAt',
+      field: 'updatedAt'
     },
     color: 'secondary'
   },
@@ -29,7 +29,7 @@ export const LessonStatesDefinitions = {
     icon: 'play',
     timeMode: {
       label: 'common.startedAt',
-      field: 'startedAt',
+      field: 'startedAt'
     },
     color: 'warning'
   },
@@ -41,10 +41,10 @@ export const LessonStatesDefinitions = {
   completed: {
     name: 'completed',
     label: 'lesson.states.completed',
-    icon: 'check',
+    icon: 'flag',
     timeMode: {
       label: 'common.completedAt',
-      field: 'completedAt',
+      field: 'completedAt'
     },
     color: 'success'
   }

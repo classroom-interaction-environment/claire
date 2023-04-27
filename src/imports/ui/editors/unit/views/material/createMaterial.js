@@ -16,6 +16,7 @@ import { createFilesMaterial } from './createFilesMaterial'
 export const createMaterial = ({ unitDoc, insertDoc, removeId, viewState, templateInstance, onCreated, API }) => {
   const { context } = viewState
   const { field } = viewState
+  const title = insertDoc.title || insertDoc.name || i18n.get(context.label)
 
   if (context.filesCollection || context.isFilesCollection) {
     return createFilesMaterial({
@@ -26,6 +27,7 @@ export const createMaterial = ({ unitDoc, insertDoc, removeId, viewState, templa
       viewState: viewState,
       templateInstance: templateInstance,
       API: API,
+      title: title,
       onCreated: onCreated
     })
   }
@@ -63,7 +65,7 @@ export const createMaterial = ({ unitDoc, insertDoc, removeId, viewState, templa
         receive: () => templateInstance.state.set('processing', null),
         failure: er => API.notify(er),
         success: () => {
-          API.notify(i18n.get('editor.unit.documentCreated', { title: insertDoc.title }))
+          API.notify(i18n.get('editor.unit.documentCreated', { title }))
           templateInstance.$('#uematerial-create-modal').modal('hide')
           if (onCreated) onCreated(insertDocId, unitDoc, viewState)
         }

@@ -1,3 +1,4 @@
+/* eslint-env meteor */
 Package.describe({
   name: 'claire:item-range',
   version: '1.0.0',
@@ -15,7 +16,7 @@ Npm.depends({
 })
 
 Package.onUse(function (api) {
-  //api.versionsFrom('1.6')
+  // api.versionsFrom('1.6')
   api.use('ecmascript')
   api.use('claire:plugin-registry')
   api.use('muqube:autoform-nouislider')

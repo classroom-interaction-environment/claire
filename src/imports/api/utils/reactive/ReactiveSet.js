@@ -32,7 +32,6 @@ function ensure (value, deps) {
  * @locus Client
  */
 class ReactiveSet {
-
   /**
    *
    */

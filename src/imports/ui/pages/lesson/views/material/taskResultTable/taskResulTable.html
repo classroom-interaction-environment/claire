@@ -10,7 +10,7 @@
             {{#each userDoc in users}}
                 {{#let progressIndex=@index}}
                     <tr>
-                        {{> taskProgress userDoc=userDoc taskId=taskId lessonId=lessonId showUser=true }}
+                        {{> taskProgress userDoc=userDoc taskId=taskId lessonId=lessonId showUser=true items=currentItems }}
                         <td>
                             {{#unless showItems userDoc._id}}
                                 {{> actionButton type="outline-secondary" sm=true icon="caret-down" class="border-0 show-items-btn" data-target=userDoc._id}}
@@ -24,7 +24,7 @@
                             <tr>
                                 <td>{{> tooltip icon=item.context.icon label=icon.context.label}}</td>
                                 <td>{{item.title}}</td>
-                                <td>{{item.groupMode}}</td>
+                                <td>{{groupModeLabel item.groupMode}}</td>
                                 <td>{{item.label}}</td>
                                 <td>
                                     {{#with taskResultDoc item.itemId taskId userDoc._id}}

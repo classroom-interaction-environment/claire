@@ -29,7 +29,8 @@ const callHandler = function (name, ...args) {
     setTimeout(() => {
       callback(undefined, result)
     }, 25)
-  } catch (e) {
+  }
+  catch (e) {
     setTimeout(() => {
       callback(e)
     }, 25)

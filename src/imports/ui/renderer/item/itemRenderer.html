@@ -25,7 +25,7 @@
                                         label=false}}
                             </div>
                         {{/each}}
-                        {{#if neq ../groupMode "off"}}
+                        {{#if hasGroupMode ../groupMode}}
                             <small class="text-center d-block p-1">
                                 {{i18n (merge "groupMode." ../groupMode)}}
                             </small>

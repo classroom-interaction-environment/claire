@@ -1,3 +1,4 @@
+/* global atob */
 import { Template } from 'meteor/templating'
 import { Users } from '../../../../contexts/system/accounts/users/User'
 import { callMethod } from '../../../controllers/document/callMethod'
@@ -19,7 +20,8 @@ Template.confirmResearch.onCreated(function () {
       failure: error => instance.state.set({ error }),
       success: () => instance.state.set('successful', true)
     })
-  } catch (e) {
+  }
+  catch (e) {
     return instance.state.set({
       error: e,
       loadComplete: true

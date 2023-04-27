@@ -34,5 +34,3 @@ export const ItemPlugins = createGenericPluginRegistry({
     return internal.dataTypes()
   }
 })
-
-console.info(ItemPlugins)

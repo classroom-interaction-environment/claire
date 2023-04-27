@@ -4,7 +4,8 @@ AutoForm.addInputType('userGroupSelect', {
     try {
       const value = this.val() || '[]'
       return JSON.parse(value)
-    } catch (e) {
+    }
+    catch (e) {
       console.error(e)
       return []
     }

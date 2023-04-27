@@ -1,4 +1,7 @@
+/**
+ * @deprecated
+ */
 export const isMemberOfLesson = ({ userId, lessonId, lessonDoc }) => {
-  import { Lesson } from '../Lesson'
-  return Lesson.helpers.isMemberOfLesson({ userId, lessonId })
+  import { LessonHelpers } from '../LessonHelpers'
+  return LessonHelpers.isMemberOfLesson({ userId, lessonId })
 }

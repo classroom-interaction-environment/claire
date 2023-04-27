@@ -1,4 +1,4 @@
-import '../../../forms/users/users'
+import '../../../forms/users/userGroupSelect'
 import { translateReactive } from '../../../../utils/translateReactive'
 
 export const editGroupSchema = (groupBuilderInstance, options) => {

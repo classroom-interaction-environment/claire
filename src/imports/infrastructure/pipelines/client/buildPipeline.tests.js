@@ -30,6 +30,13 @@ describe(buildPipeline.name, function () {
     const context = {
       name: Random.id(6),
       isFilesCollection: true,
+      files: {
+        type: 'custom',
+        extensions: ['.abc'],
+        accept: 'custom/abc',
+        maxSize: 100000000,
+        converter: file => file
+      }
     }
 
     const products = buildPipeline(context, options)

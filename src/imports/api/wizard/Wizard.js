@@ -1,6 +1,6 @@
 import { check, Match } from 'meteor/check'
 import { ReactiveVar } from 'meteor/reactive-var'
-import { getEvents, } from './lib/getEvents'
+import { getEvents } from './lib/getEvents'
 import { create } from './lib/create'
 import { getHelpers } from './lib/getHelpers'
 import { config } from './lib/config'

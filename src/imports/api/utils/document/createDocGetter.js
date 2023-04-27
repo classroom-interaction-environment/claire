@@ -5,16 +5,18 @@ import { DocNotFoundError } from '../../errors/types/DocNotFoundError'
 /**
  * Factory function to create a document-getter that includes several safety-checks (collection exists,
  * document exists, ownership).
- * @param name The name of the context, used to obtain the collection
- * @param {boolean} optional use to skip doc not found errors
+ * @param options  {object}
+ * @param options.name {string} The name of the context, used to obtain the collection
+ * @param {boolean=false} options.optional use to skip doc not found errors
  * @returns {function} A function to retrieve documents by query
  */
 
-export const createDocGetter = function ({ name, optional = false }) {
-  check(name, String)
-  check(optional, Match.Maybe(Boolean))
-
-  let collection = null
+export const createDocGetter = function (options) {
+  check(options, Match.ObjectIncluding({
+    name: String,
+    optional: Match.Maybe(Boolean)
+  }))
+  const { name, optional = false } = options
 
   /**
    * Returns a document by a given _id.
@@ -30,9 +32,7 @@ export const createDocGetter = function ({ name, optional = false }) {
       throw new DocNotFoundError('getDocument.invalidQuery', { name, query })
     }
 
-    collection = collection || getCollection(name)
-
-    const document = collection.findOne(query)
+    const document = getCollection(name).findOne(query)
 
     if (!optional && !document) {
       throw new DocNotFoundError('getDocument.docUndefined', { name, query })

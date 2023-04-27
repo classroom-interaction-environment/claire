@@ -18,7 +18,8 @@ Template.verifyEmail.onCreated(function () {
     if (err) {
       if (err.reason.indexOf('Verify email link expired') > -1) {
         err.reason = i18n.get('user.verifyEmail.expired')
-      } else {
+      }
+      else {
         console.error(err)
       }
     }

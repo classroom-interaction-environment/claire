@@ -8,13 +8,12 @@ export const printHTMLElement = (target, onClose, onError) => {
     }
   }
 
-  console.info(cssUrls)
   printJS({
     printable: target,
     type: 'html',
-    css: ['/print.css?v1'],
+    css: cssUrls, // ['/print.css?v1'],
     onPrintDialogClose: onClose,
     onError: onError,
-    maxWidth: 2500,
+    maxWidth: 2500
   })
 }

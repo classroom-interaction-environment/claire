@@ -4,15 +4,18 @@ import { Files } from '../../../api/decorators/methods/files/Files'
 import { SyncPipeline } from '../../../contexts/sync/SyncPipeline'
 import { getCollection } from '../../../api/utils/getCollection'
 import Grid from 'gridfs-stream'
+import { createLog } from '../../../api/log/createLog'
 
 const gfs = Grid(MongoInternals.defaultRemoteCollectionDriver().mongo.db, MongoInternals.NpmModule)
+const log = createLog({ name: 'clean files' })
 
 const getRemoveFile = fileContext => Meteor.bindEnvironment(file => {
   const gridFile = Promise.await(gfs.files.findOne({ 'metadata.updatedFileId': file._id }))
   if (!gridFile) {
-    console.info(`delete [${fileContext.name}] file `, file._id)
+    log(`delete [${fileContext.name}] file `, file._id)
     return Promise.await(fileContext.filesCollection.remove(file._id))
-  } else {
+  }
+  else {
     return false
   }
 })
@@ -33,11 +36,11 @@ const removeChunksFor = Meteor.bindEnvironment(file => {
 })
 
 SyncPipeline.on(SyncPipeline.events.synced, Meteor.bindEnvironment(function () {
-  console.info('=================== CLEANUP DEAD FILES =================')
-  console.info('=> Part 1: check dead documents')
+  log('=================== CLEANUP DEAD FILES =================')
+  log('=> Part 1: check dead documents')
   const filesContexts = Object.values(Files.contexts)
   filesContexts.forEach(fileContext => {
-    console.info(`[${fileContext.name}]: run check`)
+    log(`[${fileContext.name}]: run check`)
     const contextFiles = fileContext.filesCollection.find()
     const removeFiles = getRemoveFile(fileContext)
     let removeCount = 0
@@ -45,16 +48,16 @@ SyncPipeline.on(SyncPipeline.events.synced, Meteor.bindEnvironment(function () {
       const removed = Promise.await(removeFiles(filesCursor))
       removeCount += removed ? 1 : 0
     })
-    console.log(`[${fileContext.name}]: removed (${removeCount})`)
+    log(`[${fileContext.name}]: removed (${removeCount})`)
   })
   SyncPipeline.complete(SyncPipeline.events.filesCollections)
 }))
 
 SyncPipeline.on(SyncPipeline.events.filesCollections, Meteor.bindEnvironment(function () {
-  console.info('=> Part 2: check dead GridFS files')
+  log('=> Part 2: check dead GridFS files')
   const gfsFilesCursor = Promise.await(gfs.files.find())
   const count = Promise.await(gfsFilesCursor.count())
-  console.info(`[GridFS]: files count (${count})`)
+  log(`[GridFS]: files count (${count})`)
   let done = 0
   let index = 0
   gfsFilesCursor.forEach(Meteor.bindEnvironment((file) => {
@@ -62,7 +65,7 @@ SyncPipeline.on(SyncPipeline.events.filesCollections, Meteor.bindEnvironment(fun
     done += removed ? 1 : 0
     index++
     if (index >= count) {
-      console.log(`[GridFS]: removed (${done})`)
+      log(`[GridFS]: removed (${done})`)
       SyncPipeline.done()
     }
   }))

@@ -1,8 +1,9 @@
 /* eslint.env mocha */
+import { Meteor } from 'meteor/meteor'
 import { loggedIn } from '../loggedIn'
 import { assert } from 'chai'
 import { Random } from 'meteor/random'
-import { stub, restoreAll, overrideStub } from '../../../../../tests/testutils/stub'
+import { stub, restoreAll } from '../../../../../tests/testutils/stub'
 
 describe('loggedIn', function () {
   let user
@@ -22,13 +23,13 @@ describe('loggedIn', function () {
   })
 
   it('returns true on a logged in user', function () {
-    stub(Meteor, 'userId', () =>  {})
+    stub(Meteor, 'userId', () => {})
     stub(Meteor, 'user', () => user)
     assert.isTrue(loggedIn())
   })
 
   it('returns true on  a logged in but maybe not yet subscribed user', function () {
-    stub(Meteor, 'userId', () =>  user._id)
+    stub(Meteor, 'userId', () => user._id)
     stub(Meteor, 'user', () => {})
     assert.isTrue(loggedIn())
   })

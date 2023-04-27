@@ -17,7 +17,7 @@
     "split": "Jede/r antwortet für sich"
   },
   "lesson": {
-    "unexpectedState": "Unterricht noch nicht bereit",
+    "unexpectedState": "Unterricht ist noch in Vorbereitung",
     "errors": {
       "expectedRunningOrComplete": "Laufender oder abgeschlossener Unterricht wird benötigt"
     }

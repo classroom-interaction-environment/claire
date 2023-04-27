@@ -1,5 +1,5 @@
 import { check, Match } from 'meteor/check'
-import { createInfoLog } from '../../api/log/createLog'
+import { createLog } from '../../api/log/createLog'
 import { isContext } from './isContext'
 
 /**
@@ -35,15 +35,14 @@ export const createContextRegistry = (options) => {
     ...props
   } = options
 
-  const info = createInfoLog(name)
-  const aliases = new Map()
+  const info = createLog({ name })
   const internalHooks = {
     afterAdd: hooks.afterAdd || (() => {})
   }
 
   return {
     name: name,
-    info: createInfoLog(name, { devOnly: false }),
+    info: createLog({ name, devOnly: false }),
     add: function (context) {
       check(context, Match.ObjectIncluding(isContext()))
 
@@ -54,21 +53,11 @@ export const createContextRegistry = (options) => {
       }
 
       map.set(context.name, context)
-
-      // XXX BACK-COMPAT with old context names
-      if (context.alias) {
-        console.warn('replace old alias', context.alias, 'with', context.name)
-        aliases.set(context.alias, context)
-      }
-
       internalHooks.afterAdd(context)
       return this
     },
     get (name) {
       return map.get(name)
-    },
-    alias (name) {
-      return aliases.get(name)
     },
     has (name) {
       return map.has(name)

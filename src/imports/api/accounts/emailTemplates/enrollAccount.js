@@ -1,6 +1,9 @@
 import { i18n } from '../../language/language'
 import { Meteor } from 'meteor/meteor'
 import { getCredentialsAsBuffer, getFullName } from './common'
+import { createLog } from '../../log/createLog'
+
+const debug = createLog({ name: 'enrollAccount', type: 'debug' })
 
 export const getEnrollAccountSubject = ({ siteName, defaultLocale }) => user => {
   const locale = user?.locale || defaultLocale
@@ -21,8 +24,8 @@ export const getEnrollAccountText = ({ expiration, defaultLocale, supportEmail }
   const text = i18n.get(locale, 'accounts.enroll.text', textOptions)
 
   if (Meteor.isDevelopment && !Meteor.isTest) {
-    console.debug(textOptions)
-    console.debug(text)
+    debug(textOptions)
+    debug(text)
   }
 
   return text

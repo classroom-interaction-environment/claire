@@ -16,10 +16,9 @@ import '../../components/forms/create/createForm'
 import '../../components/documentState/documentState'
 import './taskWizard.html'
 
-
 const API = Template.taskWizard.setDependencies({
   contexts: [Unit, Task],
-  language: taskWizardLanguage,
+  language: taskWizardLanguage
 })
 const sort = { sort: { updatedAt: -1 } }
 const defaultSchema = Defaults.schema()
@@ -40,15 +39,24 @@ Template.taskWizard.onCreated(function () {
     name: Task.methods.my,
     collection: TaskCollection,
     failure: API.fatal,
-    success:  () => instance.state.set('tasksReady', true)
+    success: () => instance.state.set('tasksReady', true)
   })
 
   loadIntoCollection({
     name: Unit.methods.my,
     collection: UnitCollection,
     failure: API.fatal,
-    success:  () => instance.state.set('unitsReady', true)
+    success: () => instance.state.set('unitsReady', true)
   })
+
+  instance.onCreated = taskId => {
+    loadIntoCollection({
+      name: Task.methods.get,
+      args: { _id: taskId },
+      collection: TaskCollection,
+      failure: API.notify
+    })
+  }
 })
 
 Template.taskWizard.helpers({
@@ -59,35 +67,38 @@ Template.taskWizard.helpers({
     const query = {
       createdBy: Meteor.userId(),
       _master: { $exists: false },
-      _custom: { $exists: false },
+      _custom: { $exists: false }
     }
     return cursor(() => TaskCollection.find(query, sort))
   },
   customTasks () {
     const query = {
       createdBy: Meteor.userId(),
-      _custom: { $exists: true },
+      _custom: { $exists: true }
     }
     return cursor(() => TaskCollection.find(query, sort))
   },
   masterTasks () {
     const query = {
       createdBy: Meteor.userId(),
-      _master: { $exists: true },
+      _master: { $exists: true }
     }
     return cursor(() => TaskCollection.find(query, sort))
   },
-  createTaskSchema () {
-    return createTaskSchema
-  },
-  createTaskMethod () {
-    return Task.methods.insert.name
-  },
-  createTaskDoc () {
-    return createTaskDoc
-  },
   previewMaterial () {
     return Template.getState('previewMaterial')
+  },
+  createFormAtts (label) {
+    const instance = Template.instance()
+    return {
+      id: 'createTaskForm',
+      title: API.translate(label),
+      doc: createTaskDoc,
+      schema: createTaskSchema,
+      hideLegend: true,
+      method: Task.methods.insert.name,
+      onCreated: instance.onCreated
+    }
   }
 })
 
@@ -95,19 +106,16 @@ Template.taskWizard.events({
   'click .view-task-button': async (event, templateInstance) => {
     event.preventDefault()
 
-    // TODO move into own function like "previewMaterial"
     const docId = dataTarget(event, templateInstance)
     const contextName = Task.name
+    const materialDoc = { docId, contextName, templateInstance }
 
     try {
-      const previewMaterial = await createMaterialPreview({
-        docId,
-        contextName,
-        templateInstance
-      })
+      const previewMaterial = await createMaterialPreview(materialDoc)
       templateInstance.state.set({ previewMaterial })
       setTimeout(() => API.showModal('material-preview-modal'), 100)
-    } catch (e) {
+    }
+    catch (e) {
       API.notify(e)
     }
   }
@@ -169,11 +177,12 @@ Template.twRenderer.events({
                 return API.notify(new Error('errors.deleteFailed'))
               }
 
+              TaskCollection.remove({ _id: taskId })
               API.notify(true)
             }))
           })
         })
-        .catch(e => notify(e))
+        .catch(e => API.notify(e))
     })
   }
 })

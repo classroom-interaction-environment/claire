@@ -99,7 +99,7 @@ StudentRoutes.lesson = {
 
 StudentRoutes.Files = {
   path: (lessonId = ':lessonId', type = ':type', fileId = ':fileId', groupId = ':groupId') => {
-      return `/lessons/${lessonId}/group/${groupId}/files/${type}/${fileId}`
+    return `/lessons/${lessonId}/group/${groupId}/files/${type}/${fileId}`
   },
   triggersEnter: () => [loginTrigger],
   async load () {

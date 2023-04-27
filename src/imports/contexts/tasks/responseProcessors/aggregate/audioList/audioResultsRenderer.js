@@ -5,8 +5,9 @@ import { getFilesCollection } from '../../../../../api/utils/getFilesCollection'
 import '../../../../../ui/generic/nodocs/nodocs'
 import './audioResultsRenderer.html'
 
-const TemplateAPI = Template.audioResultsRenderer.setDependencies({
-  contexts: [AudioFiles]
+const API = Template.audioResultsRenderer.setDependencies({
+  contexts: [AudioFiles],
+  debug: true
 })
 
 const AudioCollection = getFilesCollection(AudioFiles.name)
@@ -17,31 +18,42 @@ Template.audioResultsRenderer.onCreated(function () {
   const { taskId } = instance.data
   const { itemId } = instance.data
 
-  TemplateAPI.subscribe({
-    name: AudioFiles.publications.byItem,
-    args: { lessonId, taskId, itemId },
-    callbacks: {
-      onReady () {
-        const audioFiles = getResponseFiles({
-          filesCollection: AudioCollection,
-          versions: ['compressed', 'original'],
-          lessonId,
-          taskId,
-          itemId
-        })
-
-        instance.state.set('loadComplete', true)
-        instance.state.set('audioFiles', audioFiles)
-      },
-      onError (e) {
-        console.error(e)
-      }
+  instance.autorun(c => {
+    if (API.initComplete()) {
+      API.subscribe({
+        name: AudioFiles.publications.byItem,
+        key: 'audioResultsKey',
+        args: { lessonId, taskId, itemId },
+        callbacks: {
+          onError: error => {
+            API.notify(error)
+            instance.state.set('loadComplete', true)
+          },
+          onReady: () => {
+            API.debug('sub complete')
+          }
+        }
+      })
+      c.stop()
     }
+  })
+
+  instance.autorun(() => {
+    const audioFiles = getResponseFiles({
+      filesCollection: AudioCollection,
+      versions: ['compressed', 'original'],
+      lessonId,
+      taskId,
+      itemId
+    })
+
+    instance.state.set('loadComplete', true)
+    instance.state.set('audioFiles', audioFiles)
   })
 })
 
 Template.audioResultsRenderer.onDestroyed(function () {
-  TemplateAPI.dispose()
+  API.dispose('audioResultsKey')
 })
 
 Template.audioResultsRenderer.helpers({
@@ -53,9 +65,11 @@ Template.audioResultsRenderer.helpers({
   },
   link (audio, version) {
     return audio.versions[version].link
-  },
+  }
 })
 
+/*
+// dev-only, uncomment, if needed
 Template.audioResultsRenderer.events({
   '* audio' (event) {
     console.info(event)
@@ -67,3 +81,4 @@ Template.audioResultsRenderer.events({
     console.info(event)
   }
 })
+ */

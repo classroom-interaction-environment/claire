@@ -45,7 +45,8 @@ Template.joinClass.events({
       templateInstance.state.set('submitting', false)
       if (err) {
         API.notify(err)
-      } else {
+      }
+      else {
         API.notify(true)
         templateInstance.state.set('successful', true)
         Router.go(Routes.root.path())

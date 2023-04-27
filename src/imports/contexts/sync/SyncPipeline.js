@@ -1,4 +1,9 @@
-const _events = {
+import { createLog } from '../../api/log/createLog'
+
+export const SyncPipeline = {}
+
+const debug = createLog({ name: 'SyncPipeline', type: 'debug' })
+const events = {
   loggedin: 'loggedin',
   synced: 'synced',
   cleaned: 'cleaned',
@@ -7,32 +12,29 @@ const _events = {
   chunks: 'chunks',
   filesCollections: 'filesCollections'
 }
-const _eventKeys = Object.keys(_events)
 
-const _callbacks = {}
-_eventKeys.forEach(key => {
-  _callbacks[key] = []
+let debugActive = false
+const eventKeys = Object.keys(events)
+const callbacks = {}
+eventKeys.forEach(key => {
+  callbacks[key] = []
 })
 
-let debug = false
-
-function _debug (value) {
-  debug = !!value
+SyncPipeline.events = events
+SyncPipeline.on = (name, cb) => callbacks[name].push(cb)
+SyncPipeline.debug = value => {
+  debugActive = !!value
 }
 
-export const SyncPipeline = {}
-SyncPipeline.events = _events
-SyncPipeline.on = (name, cb) => _callbacks[name].push(cb)
-SyncPipeline.debug = value => _debug(value)
 SyncPipeline.complete = (key, optionalArgs) => {
-  if (debug) {
-    console.info(`[SyncPipeline]: complete [${key}]`)
+  if (debugActive) {
+    debug(`complete [${key}]`)
   }
-  _callbacks[key].forEach(cb => cb(optionalArgs))
-  _callbacks[key] = []
+  callbacks[key].forEach(cb => cb(optionalArgs))
+  callbacks[key] = []
 }
 SyncPipeline.done = () => {
-  if (debug) {
-    console.info('[SyncPipeline]: all complete')
+  if (debugActive) {
+    debug('all complete')
   }
 }

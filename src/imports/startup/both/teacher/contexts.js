@@ -8,7 +8,7 @@ import { SchoolClass } from '../../../contexts/classroom/schoolclass/SchoolClass
 import { Beamer } from '../../../contexts/beamer/Beamer'
 import { Settings } from '../../../contexts/system/settings/Settings'
 import { TaskResults } from '../../../contexts/tasks/results/TaskResults'
-import { TaskWorkingState } from '../../../contexts/tasks/results/TaskWorkingState'
+import { TaskWorkingState } from '../../../contexts/tasks/state/TaskWorkingState'
 import { Users } from '../../../contexts/system/accounts/users/User'
 
 [
@@ -22,7 +22,6 @@ import { Users } from '../../../contexts/system/accounts/users/User'
   TaskResults, // TODO defer loading to respective pages
   TaskWorkingState // TODO defer loading to respective pages
 ].forEach(context => {
-  console.info('register context', context.name)
   ContextRegistry.add(context)
 })
 

@@ -1,7 +1,10 @@
 <template name="taskRenderer">
     {{#if preview}}
-        <div class="alert alert-warning">
-            {{i18n "task.previewMode"}}
+        <div class="alert alert-warning d-flex justify-content-between d-print-none">
+            <span>{{i18n "task.previewMode"}}</span>
+            {{#if print}}
+                {{> print }}
+            {{/if}}
         </div>
     {{/if}}
 
@@ -25,13 +28,13 @@
 				{{/with}}
 			</div>
 
-			{{#if isPrintPreview}}
+            {{#if isPrintPreview}}
 			{{! on print preview we want to print all the pages so we}}
 			{{! can print / save the full document at one without further actions}}
 				{{#each all}}
 					<div id="task_container_content_{{currentPage}}" class="task-page-container">
 						{{#each element in this.content}}
-							<div class="task-content border border-secondary my-4" style="break-inside: avoid;">
+							<div class="task-content border border-secondary my-4 break-auto">
 								{{> TaskRendererFactory type=element.type attributes=(attributes element)}}
 							</div>
 						{{else}}
@@ -127,7 +130,7 @@
 </template>
 
 <template name="taskEditorNavButtons">
-	<div class="row">
+	<div class="row d-print-none">
 
 		{{! PREV BUTTON }}
 		{{#if hasPrev}}

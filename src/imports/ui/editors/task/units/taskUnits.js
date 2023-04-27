@@ -2,12 +2,10 @@ import { Template } from 'meteor/templating'
 import { Unit } from '../../../../contexts/curriculum/curriculum/unit/Unit'
 import { Pocket } from '../../../../contexts/curriculum/curriculum/pocket/Pocket'
 import { confirmDialog } from '../../../components/confirm/confirm'
-import { $in } from '../../../../api/utils/query/inSelector'
 import { updateContextDoc } from '../../../controllers/document/updateContextDoc'
 import { callMethod } from '../../../controllers/document/callMethod'
 import { getCollection } from '../../../../api/utils/getCollection'
 import './taskUnits.html'
-
 
 const API = Template.teunits.setDependencies({
   contexts: [Unit, Pocket]
@@ -116,7 +114,7 @@ Template.teunits.events({
           failure: er => API.notify(er)
         })
       })
-      .catch(e => notify(e))
+      .catch(e => API.notify(e))
   },
   'click .teunits-add-unit-button' (event, templateInstance) {
     event.preventDefault()

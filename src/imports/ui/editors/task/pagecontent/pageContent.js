@@ -4,10 +4,8 @@ import { ReactiveVar } from 'meteor/reactive-var'
 import { Random } from 'meteor/random'
 import { TaskDefinitions } from '../../../../contexts/tasks/definitions/TaskDefinitions'
 import { Schema } from '../../../../api/schema/Schema'
-import { ContextRegistry } from '../../../../infrastructure/context/ContextRegistry'
 import { Task } from '../../../../contexts/curriculum/curriculum/task/Task'
 import { Shared } from '../helpers/shared'
-import { taskEditorSubKey } from '../taskEditorSubKey'
 import { Files } from '../../../../contexts/files/Files'
 
 import { formIsValid, formReset } from '../../../components/forms/formUtils'
@@ -25,6 +23,7 @@ import { callMethod } from '../../../controllers/document/callMethod'
 import { getTaskContexts } from '../../../../contexts/tasks/getTaskContexts'
 import { getLocalCollection } from '../../../../infrastructure/collection/getLocalCollection'
 import { asyncTimeout } from '../../../../api/utils/asyncTimeout'
+import { getMaterialRenderer } from '../../../../api/material/getMaterialRenderer'
 
 import './pageContent.scss'
 import './pageContent.html'
@@ -61,10 +60,11 @@ const SchemaCache = {
 const getCurrentContent = ({ task, currentIndex, header, footer }) => {
   if (header) return task?.header?.content
   if (footer) return task?.footer?.content
+
   const content = task?.pages?.[currentIndex]?.content
   if (!content) { return content }
+
   return content.filter(element => {
-    console.debug({ element })
     return TaskDefinitions.helpers.isRegistered(element)
   })
 }
@@ -115,25 +115,6 @@ Template.taskPageContent.onCreated(function () {
     })
 
     setTimeout(() => instance.state.set('currentContent', currentContent))
-  })
-
-  instance.autorun(() => {
-    const selectExisting = instance.state.get('selectExistingElement')
-
-    if (selectExisting) {
-      throw new Error('find out what this does')
-      const subscriptionContext = ContextRegistry.get(selectExisting.context)
-
-      API.subscribe({
-        key: taskEditorSubKey,
-        name: subscriptionContext.publications.editor.name,
-        callbacks: {
-          onReady () {
-            instance.state.set('selectExistingValuesReady', true)
-          }
-        }
-      })
-    }
   })
 })
 
@@ -334,14 +315,6 @@ Template.taskPageContent.helpers({
     const contentTypes = TaskDefinitions.helpers.contentTypes()
     return contentTypes && contentTypes.find(entry => entry.value === category)
   },
-  selectExistingElement () {
-    const selectExistingElement = Template.getState('selectExistingElement')
-    const valuesReady = Template.getState('selectExistingValuesReady')
-    if (!selectExistingElement || !valuesReady) return
-    const collection = getCollection(selectExistingElement.context)
-    selectExistingElement.values = collection.find()
-    return selectExistingElement
-  },
   canBeMadePersistent (attributesDoc = {}) {
     const collection = getCollection(attributesDoc.meta)
     return collection && !collection.findOne(attributesDoc.itemId)
@@ -466,6 +439,12 @@ Template.taskPageContent.events({
       await elementDef.form()
     }
 
+    // TODO same for this one, we have no definite method for this case yet
+    if (elementDef.isFilesCollection) {
+      const renderer = getMaterialRenderer(elementDef.material)
+      await renderer.load()
+    }
+
     templateInstance.state.set({
       newElement: { content, meta },
       loadingElementForm: false
@@ -481,7 +460,7 @@ Template.taskPageContent.events({
     }
 
     if ($form) {
-      $form.scrollIntoView({ behavior: 'smooth'})
+      $form.scrollIntoView({ behavior: 'smooth' })
       const selector = $form.querySelector('*[autofocus]')
       if (selector) { selector.focus() }
     }
@@ -840,7 +819,7 @@ Template.taskPageContent.events({
 
     const header = templateInstance.state.get('header')
     const footer = templateInstance.state.get('footer')
-    const editPage = !header && !footer
+    // const editPage = !header && !footer
 
     ensureTaskPageContentIntegrity(task, currentPageIndex)
 

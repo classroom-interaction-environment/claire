@@ -1,7 +1,7 @@
 import { ResponseProcessorTypes } from '../../ResposeProcessorTypes'
 import { ResponseDataTypes } from '../../../../../api/plugins/ResponseDataTypes'
 
-//TODO rename to SimpleText
+// TODO rename to SimpleText
 
 export const Text = {
   name: 'responseText',

@@ -1,6 +1,8 @@
-import { createInfoLog } from '../../../../api/log/createLog'
+import { Meteor } from 'meteor/meteor'
+import { createLog } from '../../../../api/log/createLog'
+import fs from 'fs'
 
-const info = createInfoLog('audioConvert')
+const info = createLog({ name: 'audioConvert' })
 
 const disableVideo = '-vn'
 const samplingFreq = '-ar 44100'
@@ -104,7 +106,6 @@ function exists (path) {
 }
 
 function remove (path) {
-  import fs from 'fs'
   return new Promise((resolve, reject) => {
     fs.rm(path, (err) => {
       if (err) {

@@ -1,0 +1,61 @@
+{
+  "admin": {
+    "title": "Yönetici",
+    "definitions": "Tanımları yönet",
+    "create": {
+      "admin": "Yönetici oluştur",
+      "user": "Kullanıcı oluştur",
+      "now": "Şimdi oluştur",
+      "complete": "Hazır",
+      "userSuccessful": "Kullanıcı başarıyla oluşturuldu"
+    },
+    "users": {
+      "title": "Kullanıcı yönetimi",
+      "resendInvitation": "Daveti yeniden gönder",
+      "delete": "Kullanıcıyı kalıcı olarak silme",
+      "deleted": "Kullanıcı silindi",
+      "confirmDelete": "\"{{name}}\"'in hesabını kalıcı olarak silme sürecindesiniz.",
+      "view": "Kullanıcı görünümü",
+      "edit": "Kullanıcı düzenle"
+    },
+    "stats": {
+      "title": "Sunucu Monitörü"
+    },
+    "settings": {
+      "title": "Yönetici ayarlar",
+      "ui": "UI ayarları",
+      "logos": "Uygulama resimleri",
+      "themeSelect": "CSS teması",
+      "customTheme": "Kendi CSS teması",
+      "setCustomTheme": "Kendi CSS kodunuzu buraya ekleyin"
+    },
+    "logs": {
+      "title": "Günlük verileri"
+    },
+    "edit": {
+      "user": "Kullanıcı düzenle"
+    },
+    "methods": {
+      "createUser": {
+        "requiresUsername": "Kullanıcı oluşturmak için gereken kullanıcı adı",
+        "requiresPassword": "Kullanıcı oluşturmak için gerekli şifre",
+        "requiresRole": "Kullanıcı oluşturmak için gerekli rol"
+      },
+      "common": {
+        "notExist": "Kullanıcı yok.",
+        "userNotFound": "Kullanıcı bulunamadı"
+      },
+      "permission": {
+        "notAdmin": "Reddedildi. Siz bir yönetici değilsiniz.",
+        "notUser": "Reddedildi. Kayıtlı kullanıcı değilsiniz."
+      },
+      "error": {
+        "enforceAdmin": "Bir yönetici gereklidir. Önce bir yönetici oluşturun.",
+        "insufficientArgs": "Yanlış veya yetersiz argüman geçme",
+        "userNotCreated": "Kullanıcı oluşturulmadı",
+        "userNotAdded": "Kullanıcı eklenmedi",
+        "userNotLifted": "Kullanıcıya yeni roller verilmedi"
+      }
+    }
+  }
+}

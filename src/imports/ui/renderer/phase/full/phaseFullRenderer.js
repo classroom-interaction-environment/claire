@@ -6,9 +6,7 @@ import { getCollection } from '../../../../api/utils/getCollection'
 import './phasesFullRenderer.scss'
 import './phaseFullRenderer.html'
 
-
-
-const API = Template.phaseFullRenderer.setDependencies({
+Template.phaseFullRenderer.setDependencies({
   contexts: [Phase]
 })
 
@@ -46,7 +44,8 @@ Template.phaseFullRenderer.helpers({
     const cursor = PhaseCollection.find({ unit: { $exists: false } })
     if (cursor.count() > 0) {
       return cursor
-    } else {
+    }
+    else {
       return null
     }
   },

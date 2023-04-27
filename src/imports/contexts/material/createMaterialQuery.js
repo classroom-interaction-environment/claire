@@ -1,6 +1,6 @@
 /**
  * handle different queries for curriculum units and copy units
- * 
+ *
  * @param materialIds
  * @param userId
  * @param isCurriculum

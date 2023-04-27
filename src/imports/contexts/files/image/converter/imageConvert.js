@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
-import { createInfoLog } from '../../../../api/log/createLog'
+import { createLog } from '../../../../api/log/createLog'
 
-const info = createInfoLog('imageConvert', { devOnly: true })
+const info = createLog({ name: 'imageConvert', devOnly: true })
 let fs
 let gm
 
@@ -11,9 +11,11 @@ function exists (path) {
     fs.stat(path, (err, stats) => {
       if (err) {
         reject(err)
-      } else if (!stats) {
+      }
+      else if (!stats) {
         reject(new Error())
-      } else {
+      }
+      else {
         resolve(stats)
       }
     })
@@ -25,7 +27,8 @@ function gmexec (thisObj, fct, ...args) {
     args.push((err, res) => {
       if (err) {
         reject(err)
-      } else {
+      }
+      else {
         resolve(res)
       }
     })
@@ -51,7 +54,8 @@ export const imageConvert = function imageConvert (fileRef) {
 
     try {
       Promise.await(gmexec(image, image.size))
-    } catch (e) {
+    }
+    catch (e) {
       console.error(e)
       return resolve(fileRef)
     }
@@ -86,7 +90,8 @@ export const imageConvert = function imageConvert (fileRef) {
         .filter('Triangle')
         .resize(64)
         .interlace('Line')
-    } catch (gmError) {
+    }
+    catch (gmError) {
       return reject(gmError)
     }
 

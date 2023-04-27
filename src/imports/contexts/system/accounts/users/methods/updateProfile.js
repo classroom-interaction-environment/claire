@@ -1,5 +1,6 @@
-import { Meteor } from "meteor/meteor"
+import { Meteor } from 'meteor/meteor'
 import { userExists } from '../../../../../api/accounts/user/userExists'
+import { getUsersCollection } from '../../../../../api/utils/getUsersCollection'
 
 /**
  * Updates the user's profile. Picks only the defined arguments for the update call.
@@ -32,5 +33,5 @@ export const updateProfile = function updateProfile ({ userId, profileImage, fir
     updateDoc.locale = locale
   }
 
-  return Meteor.users.update(userId, { $set: updateDoc })
+  return getUsersCollection().update(userId, { $set: updateDoc })
 }

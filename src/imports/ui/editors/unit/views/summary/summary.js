@@ -146,7 +146,7 @@ Template.uesummary.helpers({
   },
   loadComplete () {
     const instance = Template.instance()
-    return API.initComplete()  &&
+    return API.initComplete() &&
       instance.state.get('dimensionsComplete') &&
       instance.state.get('objectivesComplete') &&
       instance.state.get('phasesComplete') &&

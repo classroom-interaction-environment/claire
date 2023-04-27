@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { ContextBuilder } from '../../../infrastructure/datastructures/ContextBuilder'
 import { buildPipeline } from '../../../infrastructure/pipelines/server/buildPipeline'
 

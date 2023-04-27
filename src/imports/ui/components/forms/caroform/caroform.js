@@ -21,7 +21,6 @@ Template.caroForm.onRendered(function () {
       target.focus()
     }
   }
-
 })
 
 Template.caroForm.helpers({
@@ -29,10 +28,10 @@ Template.caroForm.helpers({
     return forminitialized.get()
   },
   mandatoryFields (names, schema) {
-    return names.filter(entry => schema._schema[ entry.name ].optional !== true)
+    return names.filter(entry => schema._schema[entry.name].optional !== true)
   },
   optionalFields (names, schema) {
-    return names.filter(entry => schema._schema[ entry.name ].optional === true)
+    return names.filter(entry => schema._schema[entry.name].optional === true)
   },
   preventCollapse (collapse) {
     return collapse === false

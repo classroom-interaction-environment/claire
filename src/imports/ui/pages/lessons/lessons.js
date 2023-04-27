@@ -81,7 +81,6 @@ Template.lessons.onCreated(async function () {
       collection: UnitCollection,
       failure: API.fatal,
       success: unitDocs => {
-        console.debug(unitDocs)
         computation.stop()
         instance.state.set('unitsLoaded', true)
       }

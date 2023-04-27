@@ -4,10 +4,7 @@ import { Unit } from '../../contexts/curriculum/curriculum/unit/Unit'
 import { Phase } from '../../contexts/curriculum/curriculum/phase/Phase'
 import { Material } from '../../contexts/material/Material'
 import { $in } from '../../api/utils/query/inSelector'
-import {
-  createDebugLog,
-  LogTypes
-} from '../../api/log/createLog'
+import { createLog } from '../../api/log/createLog'
 import { callMethod } from './document/callMethod'
 import { getLocalCollection } from '../../infrastructure/collection/getLocalCollection'
 import { getCollection } from '../../api/utils/getCollection'
@@ -17,13 +14,13 @@ import { getMaterialRenderer } from '../../api/material/getMaterialRenderer'
 
 export const LessonMaterial = {}
 
-const debug = createDebugLog('LessonMaterial', LogTypes.debug, { devOnly: true })
+const debug = createLog({ name: 'LessonMaterial', type: 'debug', devOnly: true })
 
-//==============================================================================
+//= =============================================================================
 //
 //  SUBSCRIBE
 //
-//==============================================================================
+//= =============================================================================
 
 /**
  * @deprecated
@@ -89,11 +86,11 @@ function subscribe (unitDoc, callback) {
   })
 }
 
-//==============================================================================
+//= =============================================================================
 //
 //  LOAD (METHODS)
 //
-//==============================================================================
+//= =============================================================================
 
 /**
  * Loads all phases + all material for this current unit via Meteor method.
@@ -141,11 +138,11 @@ async function load (unitDoc) {
   return data
 }
 
-//==============================================================================
+//= =============================================================================
 //
 //  PREVIEW
 //
-//==============================================================================
+//= =============================================================================
 
 LessonMaterial.getPreviewRenderer = function (materialDoc) {
   const { name } = materialDoc
@@ -214,11 +211,11 @@ LessonMaterial.getPreviewTemplate = function (materialDoc) {
   return template
 }
 
-//==============================================================================
+//= =============================================================================
 //
 //  PRIVATE / INTERNAL
 //
-//==============================================================================
+//= =============================================================================
 
 const getContext = name => {
   const ctx = Material.get(name)

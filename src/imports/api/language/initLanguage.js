@@ -53,7 +53,7 @@ export const initLanguage = async (locale, defaultOptions = {}) => {
     [finalLocale]: localeData
   }
 
-  const i18nOptions = Object.assign(defaultOptions,  { siteName })
+  const i18nOptions = Object.assign(defaultOptions, { siteName })
   const i18nProvider = new I18NConstructor({
     i18n: config,
     returnKey: true,

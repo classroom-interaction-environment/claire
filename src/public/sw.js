@@ -12,7 +12,10 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then(cacheNames => Promise.all(cacheNames.map((cacheName) => {
-      if (version !== cacheName) return caches.delete(cacheName)
+      if (version !== cacheName) {
+        return caches.delete(cacheName)
+      }
+      return undefined
     }))).then(self.clients.claim())
   )
 })
@@ -52,7 +55,8 @@ self.addEventListener('fetch', (event) => {
 
         if (/html/.test(contentType)) {
           caches.open(version).then(cache => cache.put(HTMLToCache, clonedResponse))
-        } else {
+        }
+        else {
           // Delete old version of a file
           if (hasHash(event.request.url)) {
             caches.open(version).then(cache => cache.keys().then(keys => keys.forEach((asset) => {
@@ -98,4 +102,3 @@ function hasSameHash (firstUrl, secondUrl) {
 
 // Service worker created by Ilan Schemoul alias NitroBAY as a specific Service Worker for Meteor
 // Please see https://github.com/NitroBAY/meteor-service-worker for the official project source
-

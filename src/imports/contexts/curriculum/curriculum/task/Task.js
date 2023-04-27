@@ -13,6 +13,7 @@ export const Task = {
   isClassroom: true,
   fieldName: 'tasks',
   material: {
+    isPreviewable: true,
     resolveDependencies (taskDoc, deps = {}) {
       if (!taskDoc?.pages || !taskDoc?.header || !taskDoc.footer) {
         // TODO ????
@@ -21,10 +22,16 @@ export const Task = {
         const { content } = target
         ;(content || []).forEach(entry => {
           if (entry._id) {
-            if (!deps[entry.meta]) {
-              deps[entry.meta] = []
+            let meta = entry.meta
+
+            if (meta === 'imagefiles') {
+              meta = 'imageFiles'
             }
-            deps[entry.meta].push(entry._id)
+
+            if (!deps[meta]) {
+              deps[meta] = []
+            }
+            deps[meta].push(entry._id)
           }
         })
       }
@@ -36,7 +43,6 @@ export const Task = {
       return deps
     },
     onCreated (taskId, unitDoc /*, viewState */) {
-      import { applyRoute } from '../../../../api/routes/applyRoute'
       const options = this || {}
       const { redirect, isMasterMaterial, isMasterMode } = options
 
@@ -162,7 +168,7 @@ Task.helpers = {
   },
   pagesSchema (schemaCreator) {
     throw new Error('not implemented') // TODO implement to validate pagecontent
-  },
+  }
 
 }
 
@@ -195,8 +201,8 @@ onClientExec(function () {
     editable: false, // basically because we prove a cusom edit button here
     schema: {},
     beforeInsert: function (insertDoc) {
-     // all default data may be overridden by insertDoc
-     return Object.assign({}, Task.helpers.createData(), insertDoc)
+      // all default data may be overridden by insertDoc
+      return Object.assign({}, Task.helpers.createData(), insertDoc)
     },
     renderer: {
       list: {
@@ -211,7 +217,7 @@ onClientExec(function () {
           return import('./renderer/main/taskRenderer')
         },
         /** @deprecated use data **/
-        previewData: function  (targetId, instance) {
+        previewData: function (targetId, instance) {
           console.warn('previewData is deprecated')
           if (!targetId) return
 
@@ -225,17 +231,21 @@ onClientExec(function () {
             preview: true
           }
         },
-        data: ({ materialDoc, document, templateInstance, options = {} }) => {
+        /**
+         *
+         * @param materialDoc {object}
+         * @param document {object}
+         * @param options {object}
+         * @param options.print {boolean=false}
+         * @param options.preview {boolean=true}
+         * @param options.student {boolean=false}
+         * @return {{preview: boolean, print: boolean, data: *, student: boolean, title}}
+         */
+        data: ({ materialDoc, document, options }) => {
           const { print = false, preview = true, student = false } = options
           const data = Object.assign({}, materialDoc, document)
-
-          return {
-            title: document.title,
-            data: data,
-            preview: preview,
-            print: print,
-            student: student
-          }
+          const { title } = document
+          return { title, data, preview, print, student }
         }
       }
     }

@@ -84,8 +84,8 @@ class GroupBuilder {
           group.material = [material[i % materialCount]]
         }
 
-          // if we have more material files than groups
-          // we need to find the right split for material
+        // if we have more material files than groups
+        // we need to find the right split for material
         // and distribute multiple material per group
         else {
           const materialRatio = Math.round(materialCount / groupLength)
@@ -323,17 +323,6 @@ const shuffleArray = input => {
     [array[i], array[j]] = [array[j], array[i]]
   }
   return array
-}
-
-const getRandomElement = array => {
-  const index = getRandomIntInclusive(0, array.length - 1)
-  return array[index]
-}
-
-const getRandomIntInclusive = (min, max) => {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  return Math.floor(Math.random() * (max - min + 1) + min) //The maximum is inclusive and the minimum is inclusive
 }
 
 const userHasBeenAssigned = (groups, userId) => {

@@ -39,7 +39,7 @@
                         <p>{{file.name}} ({{b2mb file.size}} MB)</p>
                     </div>
                 {{else if previewData file}}
-                    <div class="card-body border border-light p-3 mt-2 d-flex">
+                    <div class="card-body border border-light p-3 mt-2">
                         {{> Template.dynamic template=previewTemplate data=file.doc}}
                     </div>
                 {{/if}}

@@ -29,8 +29,10 @@
       },
       "material": {
         "title": "Materialien",
-        "create": "{{title}} neu erstellen",
-        "select": "{{title}} auswählen und hinzufügen",
+        "create": "Material \"{{title}}\" neu erstellen",
+        "select": "Material \"{{title}}\" auswählen und hinzufügen",
+        "removed": "Material \"{{title}}\" aus Sequenz entfernt",
+        "deleted": "Material \"{{title}}\" gelöscht",
         "preview": "In Vorschau ansehen",
         "linkToPhase": "Mit Unterrichtsphase verknüpfen",
         "taskCreated": "Aufgabe erfolgreich erstellt",
@@ -41,7 +43,7 @@
         "taskRemoved": "Aufgabe erfolgreich entfernt",
         "deleteTask": "Möchten Sie wirklich die Aufgabe von der Sequenz entfernen und löschen?",
         "taskDeleted": "Aufgabe erfolgreich entfernt und gelöscht",
-        "unexpected": "Unerwarter fehler",
+        "unexpected": "Unerwarter Fehler",
         "editTaskInEditor": "Im Aufgaben-Editor bearbeiten",
         "confirmRemove": "Sie sind dabei, das Material \"{{title}}\" aus der Sequenz zu entfernen. Das Material wird nicht vollständig gelöscht und kann jederzeit erneut hinzugefügt werden.",
         "confirmDelete": "Achtung! Sie sind dabei dieses Material endgültig zu löschen. Danach ist es nicht mehr verfügbar."

@@ -1,8 +1,24 @@
 import { Template } from 'meteor/templating'
+import { DocumentFiles } from '../../DocumentFiles'
+import '../../../../../ui/components/download/downloadButton'
 import './documentFilesListRenderer.html'
+import { getFilesLink } from '../../../getFilesLink'
 
 Template.documentFilesListRenderer.helpers({
-  icon (extension) {
+  collectionName () {
+    return DocumentFiles.name
+  },
+  hasThumbnail (fileObj) {
+    return fileObj?.versions?.thumbnail
+  },
+  getThumbnail (fileObj) {
+    return getFilesLink({
+      file: fileObj,
+      name: DocumentFiles.name,
+      version: 'thumbnail'
+    })
+  },
+  getIcon (extension) {
     switch (extension) {
       case 'pdf':
         return 'file-pdf'
@@ -20,7 +36,7 @@ Template.documentFilesListRenderer.helpers({
       case 'ods':
         return 'file-excel'
       default:
-        throw new Error('unexpected extension')
+        return 'file-alt'
     }
   }
 })

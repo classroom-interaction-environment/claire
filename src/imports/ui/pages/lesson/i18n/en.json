@@ -1,1 +1,82 @@
-{}
+{
+  "lesson": {
+    "title": "Lesson",
+    "groups": "Teaching groups",
+    "forkedFrom": "Customized copy of",
+    "startedAt": "Lesson started",
+    "studentWait": "Please wait for next assignment(s)",
+    "overview": "Summary of sequence",
+    "noMaterial": "No material available",
+    "noFiles": "No files uploaded",
+    "noReadings": "No further reading available",
+    "showStudents": "Learner Displays",
+    "present": "Present",
+    "evalResults": "Evaluate",
+    "presentResults": "Present Results",
+    "results": "Results",
+    "progress": "Teaching progress",
+    "artifacts": "Results",
+    "uploads": "Uploads",
+    "noStudents": "There are no learners in this course yet",
+    "completedAt": "Class completed on/at",
+    "showMoreLabels": "Show labels",
+    "wrongLesson": "There are currently lessons in progress in another sequence",
+    "wrongLessonDescription": "Return to your course and enter the current sequence",
+    "confirmRemove": "You are about to delete all materials and results along with this lesson.",
+    "completeMessage": "To restart, click on the button \"Restart class\" under the \"Participants\" tab.",
+    "actions": {
+      "restart": "Restart class",
+      "restartConfirm": "Attention! If you restart the lesson all contents will be reset",
+      "complete": "Complete lesson",
+      "completeConfirm": "Complete lesson now?",
+      "start": "Start Lesson",
+      "startConfirm": "Start lessons now?",
+      "makeMobileInactive": "Disable for learners",
+      "makeMobileActive": "Activate for learners",
+      "removeStudent": "Remove learner from course",
+      "confirmRemoveStudent": "You are about to remove \"{{firstName}} {{lastName}}\" from the \"{{title}}\" course. Would you like to continue?"
+    },
+    "unexpectedState": "Unexpected Class Status",
+    "errors": {
+      "unexpectedState": "Unexpected Class Status",
+      "expectedIdle": "Expected was 'In Preparation'",
+      "expectedRunning": "Expected was 'In Preparation'",
+      "expectedRestartable": "Expected was a restartable state",
+      "expectedCompleted": "Expected was 'Completed'",
+      "expectedToggleAble": "Expected was 'Running' or 'Completed'"
+    },
+    "states": {
+      "idle": "In preparation",
+      "running": "Lesson in progress",
+      "completed": "Lesson completed"
+    },
+    "phases": {
+      "title": "Teaching phases",
+      "schema": "Articulation scheme"
+    },
+    "material": {
+      "title": "Teaching material",
+      "preview": "Preview teaching material",
+      "previewTemplate": "Preview",
+      "selectItemRp": "Select answers visualization"
+    },
+    "safeguard": {
+      "title": "Assurance of results",
+      "artifacts": "Artifacts"
+    },
+    "info": {
+      "title": "Participants",
+      "createGroups": "Create groups"
+    },
+    "student": {
+      "docNotVisible": "The material was probably disabled by the teacher."
+    }
+  },
+  "group": {
+    "title": "Group",
+    "groups": "Groups",
+    "users": "Members",
+    "phases": "Limited to phases",
+    "material": "L. Material for groups"
+  }
+}

@@ -1,0 +1,132 @@
+name: Test suite
+
+on:
+  push:
+    branches:
+      - master
+      - release-*
+  pull_request:
+
+jobs:
+  lintCode:
+    name: Javascript lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
+      - name: cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-14-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-14-
+
+      - run: |
+          cd src
+          npm ci --no-optional
+          npm run lint:code
+
+  lintStyle:
+    name: SCSS lint
+    runs-on: ubuntu-latest
+    needs: [ lintCode ]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
+      - name: cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-14-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-14-
+      - run: |
+          cd src
+          npm ci --no-optional
+          npm run lint:style
+
+  lintDocs:
+    name: documentation lint
+    runs-on: ubuntu-latest
+    needs: [ lintCode,lintStyle ]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
+      - name: cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-14-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-14-
+      - run: |
+          cd src
+          npm ci --no-optional
+          npm run lint:markdown
+
+  tests:
+    name: Meteor ${{ matrix.meteor }} tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: Install Meteor
+        id: cache-meteor-install
+        uses: actions/cache@v3
+        with:
+          path: ~/.meteor
+          key: v1-meteor-${{ hashFiles('.meteor/versions') }}
+          restore-keys: |
+            v1-meteor-
+      - name: Cache NPM dependencies
+        id: cache-meteor-npm
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-14-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-14-
+
+      - name: Cache Meteor build
+        id: cache-meteor-build
+        uses: actions/cache@v3
+        with:
+          path: |
+            .meteor/local/resolver-result-cache.json
+            .meteor/local/plugin-cache
+            .meteor/local/isopacks
+            .meteor/local/bundler-cache/scanner
+          key: v1-meteor_build_cache-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            v1-meteor_build_cache-
+      - name: Setup meteor
+        uses: meteorengineer/setup-meteor@v1
+        with:
+          meteor-release: '2.7.3'
+
+        # uses -o for running once -c for coverage
+      - name: Run Tests
+        run: |
+          cd src
+          meteor npm ci --no-optional
+          sh ./scripts/test.sh -c -o -p

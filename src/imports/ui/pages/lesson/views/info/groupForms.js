@@ -47,7 +47,6 @@ export const createGroupForms = ({ translate, onError }) => {
   })
 
   const toGroupViewDoc = ({ groupDoc, material }) => {
-    console.debug(groupDoc)
     const finalDoc = { ...groupDoc }
     finalDoc.users = groupDoc.users
       .map(({ userId, role }) => {

@@ -26,7 +26,8 @@ MyStudents.setClass = function (classId, cb) {
   if (_currentClass.get() !== classId) {
     _currentClass.set(classId)
     _callbacks[classId] = cb
-  } else {
+  }
+  else {
     return cb && cb()
   }
 }
