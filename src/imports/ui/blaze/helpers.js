@@ -8,10 +8,10 @@ import { Routes } from '../../api/routes/Routes'
 import { Router } from '../../api/routes/Router'
 import { resolveRoute } from '../../api/routes/resolveRoute'
 import { contrastColor } from '../utils/color/contrastColor'
-import { getLocalCollection } from '../../infrastructure/collection/getLocalCollection'
 import { Features } from '../../api/config/Features'
 import { isTodayOrYesterday } from '../../utils/isTodayOrYesterday'
 import { createLog } from '../../api/log/createLog'
+import { getUser } from '../../contexts/system/accounts/users/getUser'
 
 export const feature = function (name) {
   return Features.get(name)
@@ -252,4 +252,4 @@ export const getIndex = function (index) {
   return typeof index === 'number' ? index + 1 : undefined
 }
 
-const getUser = query => (Meteor.users.findOne(query) || getLocalCollection(Meteor.users).findOne(query))
+export { getUser }

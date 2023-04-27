@@ -49,7 +49,8 @@ export const removeLesson = (options) => {
     phasesRemoved: 0,
     materialRemoved: 0,
     runtimeDocsRemoved: 0,
-    beamerRemoved: 0
+    beamerRemoved: 0,
+    groupsRemoved: 0
   }
 
   log('remove runtime docs')
@@ -61,7 +62,7 @@ export const removeLesson = (options) => {
   // removed and we need to remove the lesson but omit the unit doc
   // which is why it's optional
   const unitDoc = getCollection(Unit.name).findOne({ _id: lessonDoc.unit })
-  log('has unitdoc?', unitDoc)
+  log('has unitDoc?', unitDoc ? unitDoc._id : false)
 
   if (unitDoc) {
     // removes all linked phases but not global phases
@@ -73,8 +74,11 @@ export const removeLesson = (options) => {
 
     log('remove phase query', phaseQuery)
     result.phasesRemoved = getCollection(Phase.name).remove(phaseQuery)
-    result.materialRemoved = LessonRuntime.removeAllMaterial({ unitDoc, userId })
     result.unitRemoved = getCollection(Unit.name).remove({ _id: unitDoc._id, _master: { $exists: false } })
+    result.materialRemoved = LessonRuntime.removeAllMaterial({ unitDoc, userId })
+
+    const unitId = unitDoc._id
+    result.groupsRemoved = LessonRuntime.removeGroups({ unitId })
   }
 
   // If the unit doc is not found we still try to remove phases and material.

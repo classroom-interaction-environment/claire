@@ -15,20 +15,13 @@ export const GroupMode = {
     value: 'override',
     label: 'groupMode.override'
   },
-  /**
-   * Each person answers for themselves
-   */
-  split: {
-    index: 2,
-    value: 'split',
-    label: 'groupMode.split'
-  },
+
   /**
    * All work on the same answer, individual values will be merged
    * into one final answer.
    */
   merge: {
-    index: 3,
+    index: 2,
     value: 'merge',
     label: 'groupMode.merge'
   }

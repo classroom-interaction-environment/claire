@@ -4,4 +4,5 @@ describe('registration', function () {
   import './UserFactory.tests'
   import './registerUserSchema'
   import './rollbackAccount.tests'
+  import './getEnrollmentExpiration.tests'
 })

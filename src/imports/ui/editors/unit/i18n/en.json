@@ -66,6 +66,9 @@
         "deletePhase": "Delete phase",
         "confirmRemove": "Do you really want to remove / delete this phase?"
       },
+      "groups": {
+        "title": "Groups"
+      },
       "allDocsAdded": "All docs have already been added",
       "codeView": "Raw data"
     }

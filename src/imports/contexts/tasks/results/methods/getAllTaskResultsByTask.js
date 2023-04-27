@@ -10,11 +10,12 @@ const getLessonDoc = createDocGetter(Lesson)
 
 /**
  * Returns all task results for a given task (presumed, that the user is teacher/member of the lesson).
- * @param lessonId
- * @param taskId
+ * @param lessonId {string}
+ * @param taskId {string}
+ * @param groupId {string=}
  * @returns {*}
  */
-export const getAllTaskResultsByTask = function ({ lessonId, taskId }) {
+export const getAllTaskResultsByTask = function ({ lessonId, taskId, groupId }) {
   const { userId } = this
   const lessonDoc = getLessonDoc({ _id: lessonId })
   const isTeacher = lessonDoc.createdBy === userId
@@ -26,7 +27,12 @@ export const getAllTaskResultsByTask = function ({ lessonId, taskId }) {
   const query = { lessonId }
 
   if (!isTeacher) {
-    query.createdBy = userId
+    if (groupId) {
+      query.groupId = groupId
+    }
+    else {
+      query.createdBy = userId
+    }
   }
 
   if (taskId) {

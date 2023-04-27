@@ -9,6 +9,7 @@ import { AudioList } from '../../../contexts/tasks/responseProcessors/aggregate/
 import { DocumentList } from '../../../contexts/tasks/responseProcessors/aggregate/documentList/DocumentList'
 import { Cluster } from '../../../contexts/tasks/responseProcessors/aggregate/cluster/Cluster'
 import { Text } from '../../../contexts/tasks/responseProcessors/aggregate/text/Text'
+import { GroupText } from '../../../contexts/tasks/responseProcessors/aggregate/groupText/GroupText'
 import { ContextRegistry } from '../../../infrastructure/context/ContextRegistry'
 import { responseProcessorPipeline } from '../../../contexts/tasks/responseProcessors/responseProcessorPipeline'
 
@@ -20,6 +21,7 @@ import { onClientExec, onServerExec } from '../../../api/utils/archUtils'
  */
 [
   Text,
+  GroupText,
   PieChart,
   BarChart,
   ImageGallery,

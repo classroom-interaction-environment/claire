@@ -1,4 +1,5 @@
 import { getCollection } from './getCollection'
+import { getLocalCollection } from '../../infrastructure/collection/getLocalCollection'
 
 /**
  * This is a special case, since in Meteor the users collection is
@@ -10,4 +11,6 @@ import { getCollection } from './getCollection'
  * it's value as convention.
  * @return {Mongo.Collection} the Meteor.users collection
  */
-export const getUsersCollection = () => getCollection('users')
+export const getUsersCollection = (local = false) => local
+  ? getLocalCollection('users')
+  : getCollection('users')

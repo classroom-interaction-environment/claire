@@ -1,9 +1,19 @@
-import '../../../forms/users/userGroupSelect'
+import '../../users/userGroupSelect'
 import { translateReactive } from '../../../../utils/translateReactive'
 
-export const editGroupSchema = (groupBuilderInstance, options) => {
-  const { users = [], maxUsers, maxGroups /*, materialForAllGroups, roles = [], material = [] */ } = groupBuilderInstance
-  const minCount = Math.floor(users.length / (maxUsers || 1))
+/**
+ * Creates a schema definition for editing groups
+ * @param groupBuilderInstance {GroupBuilder}
+ * @param options {object=} optional
+ * @param options.material {[{ label:string, value: string }]} object of material docs with value/label combination of
+ *  all available materials
+ * @return {object} schema definition object
+ */
+export const editGroupSchema = (groupBuilderInstance, options = {}) => {
+  const { users = [], maxUsers, maxGroups } = groupBuilderInstance
+  const minCount = maxUsers
+    ? Math.floor(users.length / maxUsers)
+    : 1
 
   return {
     groups: {
@@ -26,6 +36,7 @@ export const editGroupSchema = (groupBuilderInstance, options) => {
     'groups.$.title': String,
     'groups.$.users': {
       type: Array,
+      optional: !groupBuilderInstance.atLeastOneUserRequired,
       label: translateReactive('group.users'),
       minCount: 1
     },

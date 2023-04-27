@@ -191,19 +191,23 @@ Template.lesson.onCreated(function () {
   })
 
   instance.autorun(function () {
-    const data = Template.currentData()
-    const { lessonId } = data.params
-    if (!lessonId) {
+    const unitDoc = instance.state.get('unitDoc')
+    const lessonDoc = instance.state.get('lessonDoc')
+    const classId = lessonDoc?.classId
+
+    if (!classId || !unitDoc) {
       return
     }
 
     API.subscribe({
       name: Group.publications.my,
-      args: { lessonId },
+      args: { unitId: unitDoc._id, classId },
       key: lessonSubKey,
       callbacks: {
         onError: API.fatal,
-        onReady: () => instance.state.set({ groupSubscriptionComplete: true })
+        onReady: () => {
+          instance.state.set({ groupSubscriptionComplete: true })
+        }
       }
     })
   })

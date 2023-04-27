@@ -1,12 +1,12 @@
-import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { Tracker } from 'meteor/tracker'
 import { GroupBuilder } from '../../../contexts/classroom/group/GroupBuilder'
 import { Schema } from '../../../api/schema/Schema'
 import { Group } from '../../../contexts/classroom/group/Group'
-import { formIsValid } from '../forms/formUtils'
+import { formIsValid } from '../../components/forms/formUtils'
 import { editGroupSchema } from './api/editGroupSchema'
 import { createGroupsSchema } from './api/createGroupSchema'
+import { getUsersCollection } from '../../../api/utils/getUsersCollection'
 import groupBuilderLanguage from './i18n/groupBuilderLanguage'
 import './groupBuilder.html'
 
@@ -48,7 +48,11 @@ Template.groupBuilder.helpers({
     return groupsSchema
   },
   doc () {
-    return Template.instance().builder
+    return {
+      ...Template.instance().builder,
+      maxUsers: 1,
+      maxGroups: 1
+    }
   },
   groupsDoc () {
     const groups = Tracker.nonreactive(() => Template.instance().builder.getAllGroups())
@@ -65,11 +69,13 @@ Template.groupBuilder.helpers({
   },
   users () {
     const { classDoc } = Template.instance().data
-    if (!classDoc) { return }
-
-    const users = classDoc.students
-    if (!users?.length) return
-    return Meteor.users.find({ _id: { $in: users } }, { sort: { username: 1 } })
+    const users = classDoc?.students ?? []
+    return getUsersCollection().find({ _id: { $in: users } }, { sort: { username: 1 } })
+  },
+  suggestions (users) {
+    return [
+      { users: 2, groups: 1 }
+    ]
   },
   userHasBeenAssigned (userId) {
     return Template.instance().builder.userHasBeenAssigned(userId)
@@ -82,17 +88,21 @@ Template.groupBuilder.events({
   },
   'click .grp-init-btn' (event, templateInstance) {
     event.preventDefault()
-    const groupSettings = formIsValid(settingsSchema, 'createGroupsForm')
-    if (!groupSettings) { return }
 
-    templateInstance.builder.setOptions(groupSettings)
+    const groupSettings = formIsValid(settingsSchema, 'createGroupsForm')
+    if (!groupSettings) {
+      return
+    }
+
+    const { builder } = templateInstance
+    builder.setOptions(groupSettings)
 
     const type = event.currentTarget.getAttribute('data-target')
     const shuffle = type === 'auto'
 
-    templateInstance.builder.createGroups({ shuffle })
+    builder.createGroups({ shuffle })
 
-    groupsSchema = Schema.create(editGroupSchema(templateInstance.builder, templateInstance.data))
+    groupsSchema = Schema.create(editGroupSchema(builder, templateInstance.data))
     templateInstance.state.set({ view: views.editGroups, groupSettings })
   },
   'click .grp-back-btn' (event, templateInstance) {

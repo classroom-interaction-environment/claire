@@ -18,6 +18,8 @@ import { DocumentFiles } from '../../../files/document/DocumentFiles'
 import { Users } from '../../../system/accounts/users/User'
 import { VideoFiles } from '../../../files/video/VideoFiles'
 import { stub, restoreAll } from '../../../../../tests/testutils/stub'
+import { Group } from '../../group/Group'
+import { createGroupDoc } from '../../../../../tests/testutils/doc/createGroupDoc'
 
 const randomReferences = (beamerDoc, lessonId) => {
   const rand = Math.floor(Math.random() * 53)
@@ -67,9 +69,10 @@ describe(LessonRuntime.name, function () {
   let TaskWorkingStateCollection
   let ClusterCollection
   let BeamerCollection
+  let GroupCollection
 
   before(function () {
-    [TaskResultCollection, ImageFilesCollection, AudioFilesColection, DocumentFilesCollection, VideoFilesCollection, TaskWorkingStateCollection, ClusterCollection, BeamerCollection] = mockCollections(
+    [TaskResultCollection, ImageFilesCollection, AudioFilesColection, DocumentFilesCollection, VideoFilesCollection, TaskWorkingStateCollection, ClusterCollection, BeamerCollection, , GroupCollection] = mockCollections(
       [TaskResults, noSchema],
       [ImageFiles, forFiles],
       [AudioFiles, forFiles],
@@ -78,7 +81,8 @@ describe(LessonRuntime.name, function () {
       [TaskWorkingState, noSchema],
       [Cluster, noSchema],
       Beamer,
-      Users
+      Users,
+      Group
     )
   })
 
@@ -180,6 +184,56 @@ describe(LessonRuntime.name, function () {
         expect(removedCount).to.equal(1)
         expect(remainCount).to.equal(0)
       })
+    })
+  })
+
+  describe(LessonRuntime.resetGroups.name, function () {
+    it('throws on incomplete args', function () {
+      expect(() => LessonRuntime.resetGroups({})).to.throw('Match error: Missing key \'unitId\'')
+    })
+    it('removes all ad-hoc groups', function () {
+      const unitId = Random.id()
+      const removeGroupId = GroupCollection.insert(createGroupDoc({ unitId, title: 'to remove', isAdhoc: true }))
+      const otherGroupId = GroupCollection.insert(createGroupDoc({ unitId, title: 'other', isAdhoc: false }))
+      expect(GroupCollection.find().count()).to.equal(2)
+      const result = LessonRuntime.resetGroups({ unitId })
+      expect(result).to.deep.equal({ removed: 1, updated: 1 })
+      expect(GroupCollection.find(removeGroupId).count()).to.equal(0)
+      expect(GroupCollection.find(otherGroupId).count()).to.equal(1)
+      expect(GroupCollection.find().count()).to.equal(1)
+    })
+    it('resets groups that are defined on a unit-level', function () {
+      const lessonId = Random.id()
+      const unitId = Random.id()
+      const updateGroupId = GroupCollection.insert(createGroupDoc({
+        title: 'to update',
+        unitId,
+        visible: [{ _id: Random.id(), context: 'foo' }],
+        isAdhoc: false
+      }))
+      const groupDoc = GroupCollection.findOne(updateGroupId)
+      const otherGroupId = GroupCollection.insert(createGroupDoc({
+        title: 'other',
+        unitId: Random.id(),
+        isAdhoc: false
+      }))
+      const otherDoc = GroupCollection.findOne(otherGroupId)
+
+      expect(GroupCollection.find().count()).to.equal(2)
+      const result = LessonRuntime.resetGroups({ lessonId, unitId })
+      expect(result).to.deep.equal({ removed: 0, updated: 1 })
+      expect(GroupCollection.findOne(updateGroupId)).to.deep.equal({
+        _id: updateGroupId,
+        visible: [],
+        title: groupDoc.title,
+        isAdhoc: false,
+        unitId,
+        createdBy: groupDoc.createdBy,
+        users: groupDoc.users,
+        maxUsers: groupDoc.maxUsers
+      })
+      expect(GroupCollection.find().count()).to.equal(2)
+      expect(GroupCollection.findOne(otherGroupId)).to.deep.equal(otherDoc)
     })
   })
 })
