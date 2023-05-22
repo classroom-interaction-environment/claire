@@ -14,6 +14,21 @@ import { findUnassociatedMaterial } from '../../../../../api/utils/findUnassocia
 import '../../../groups/groupsEditor'
 import './unitEditorGroupsView.html'
 
+/* unit group view
+ * Allows to edit "global" units, which are valid for any lesson,
+ * related to this unit.
+ *
+ * Static data:
+ * - phases
+ * - profile images
+ * - users
+ * - lesson material
+ *
+ * Dynamic data:
+ * - groups
+ *
+ */
+
 const API = Template.unitEditorGroupsView.setDependencies({
   contexts: [...(new Set([Phase, Unit, ProfileImages, Users, Group].concat(getMaterialContexts()))).values()],
   debug: true
@@ -67,6 +82,9 @@ Template.unitEditorGroupsView.onCreated(function () {
         unassociatedMaterial
       })
     })
+
+    // subscriptions:
+    // - my groups
 
     API.subscribe({
       name: Group.publications.my,

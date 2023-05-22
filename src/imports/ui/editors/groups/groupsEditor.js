@@ -18,7 +18,7 @@ const groupForms = createGroupForms({ onError: API.notify, translate: API.transl
 
 Template.groupsEditor.onCreated(function () {
   const instance = this
-  const { classDoc, unitDoc, phases } = instance.data
+  const { classDoc, unitDoc } = instance.data
   const parent = getParentView({ view: instance.view, skipSame: true })
 
   /**
@@ -39,6 +39,7 @@ Template.groupsEditor.onCreated(function () {
     }
 
     const material = instance.state.get('materialOptions')
+    const phases = instance.state.get('phases')
     const definitions = groupForms[action]
     const doc = definitions.doc || groupDoc
     const options = {
@@ -105,14 +106,16 @@ Template.groupsEditor.onCreated(function () {
   // when the template is complete
   instance.autorun(() => {
     const data = Template.currentData()
+    const { phases = [], unassociatedMaterial } = data
     const phaseMaterial = []
-    ;(data.phases || []).forEach(phase => {
+
+    phases.forEach(phase => {
       if (phase.references) {
         phaseMaterial.push(...phase.references)
       }
     })
 
-    const materialOptions = (data.unassociatedMaterial || [])
+    const materialOptions = (unassociatedMaterial || [])
       .concat(phaseMaterial)
       .map(({ collection, document }) => {
         const value = document
@@ -121,7 +124,7 @@ Template.groupsEditor.onCreated(function () {
         return { value, label }
       })
 
-    instance.state.set({ materialOptions })
+    instance.state.set({ materialOptions, phases })
   })
 })
 
@@ -135,10 +138,10 @@ Template.groupsEditor.helpers({
   groupBuilderAtts () {
     const instance = Template.instance()
     const data = Template.currentData()
+
     if (!instance.state.get('groupBuilderActive')) {
       return // skip to prevent offscreen drawing
     }
-
     return {
       lessonDoc: data.lessonDoc,
       unitDoc: data.unitDoc,
