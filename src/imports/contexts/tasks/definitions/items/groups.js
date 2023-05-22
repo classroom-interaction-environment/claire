@@ -24,11 +24,12 @@ export const GroupText = {
         type: String,
         optional: false,
         label: translate('item.groupMode.title'),
-        allowedValues: ['override', 'merge'],
+        allowedValues: ['merge'],
+        defaultValue: 'merge',
         autoform: {
-          firstOption: firstOption,
+          defaultValue: 'merge',
+          firstOption: false,
           options: () => [
-            { value: 'override', label: translate('item.groupMode.override') },
             { value: 'merge', label: translate('item.groupMode.merge') }
           ]
         }
