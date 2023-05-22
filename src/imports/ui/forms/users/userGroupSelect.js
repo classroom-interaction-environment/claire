@@ -19,6 +19,10 @@ Template.afUserGroupSelect.onCreated(function () {
   const { builder, allMaterial } = instance.data.atts
   const { users = [], roles = [], material = [], maxUsers, materialForAllGroups } = builder
   const materialOptions = (allMaterial || []).filter(({ value }) => material.includes(value))
+
+  /**
+   * @type GroupBuilder
+   */
   instance.builder = builder
   instance.state.set({ roles, maxUsers, materialOptions, materialForAllGroups })
 
@@ -173,7 +177,7 @@ Template.afUserGroupSelect.events({
   'click .remove-group-btn' (event, templateInstance) {
     event.preventDefault()
     const index = Number.parseInt(dataTarget(event, templateInstance), 10)
-    templateInstance.builder.removeGroup({ index })
+    templateInstance.builder.removeGroup(index)
     updateInput(templateInstance)
   },
   'dragstart .user-element' (event, templateInstance) {

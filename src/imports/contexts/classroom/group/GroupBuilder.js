@@ -363,7 +363,11 @@ const checkGroupOptions = options => check(options, Match.ObjectIncluding({
 }))
 
 const checkGroupIndex = (index, groups) => {
-  if (index < 0 || index > groups.length - 1 || !groups[index]) {
+  const belowZero = index < 0
+  const greaterGroups = index > groups.length - 1
+  const notInGroups = !groups[index]
+
+  if (belowZero || greaterGroups || notInGroups) {
     throw new Meteor.Error('groupBuilder.error', 'groupBuilder.invalidIndex')
   }
 }
