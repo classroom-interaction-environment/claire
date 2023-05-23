@@ -16,6 +16,7 @@ import { getCollection } from '../../../../api/utils/getCollection'
 import lessonStudentLanguage from '../i18n/lessonStudentLanguage'
 import '../../../components/lesson/status/lessonStatus'
 import './lessons.html'
+import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 
 const warn = createLog({ name: 'Lessons', type: 'warn' })
 const API = Template.lessons.setDependencies({
@@ -54,14 +55,13 @@ Template.lessons.onCreated(function () {
             classDoc = SchoolClassCollection.findOne({ students: userId })
           }
 
-          if (!classDoc) {
-            return API.fatal(new Error('errors.docNotFound'))
+          const classCount = SchoolClassCollection.find().count()
+
+          if (classDoc) {
+            CurrentClass.set(classDoc._id)
+            updateClassId({ user, classId })
           }
 
-          CurrentClass.set(classDoc._id)
-          updateClassId({ user, classId })
-
-          const classCount = SchoolClassCollection.find().count()
           instance.state.set('classDoc', classDoc)
           instance.state.set('hasMoreClasses', classCount > 1)
           instance.state.set('hasNoClasses', !classDoc && classCount === 0)

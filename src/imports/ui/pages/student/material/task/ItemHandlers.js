@@ -88,7 +88,15 @@ ItemHandlers.onItemSubmit = ({ instance, onError }) =>
     const groupDoc = instance.state.get('groupDoc')
     const lessonId = lessonDoc._id
     const groupId = groupDoc && groupDoc._id
-    const value = insertDoc[itemId]
+    let value = insertDoc[itemId]
+
+    // if users "delete" their input, for example by
+    // removing all text from a text-input then
+    // we need to grab the unset value and store empty input
+    if (typeof value === 'undefined' && itemId in (updateDoc.$unset ?? {})) {
+      value = updateDoc.$unset[itemId]
+    }
+
     const response = toResponse({ value })
     const args = { lessonId, taskId, itemId, response }
     if (groupId) {

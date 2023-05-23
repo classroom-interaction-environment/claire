@@ -1,7 +1,7 @@
 <template name="itemRenderer">
     {{#onLoaded complete=loadComplete}}
         {{#with item this.itemId}}
-            <div class="item-form-container">
+            <div class="item-form-container {{#if isFocus this.itemId}}shadow-sm{{/if}}">
                 {{#autoForm  id=(itemFormName this.itemId)
                              validation="blur"
                              type="normal"
@@ -32,6 +32,7 @@
                             {{/if}}
                         </fieldset>
                     </div>
+                    {{!--
                     {{#if isEditable}}
                         <div class="d-block d-print-none">
                             {{#unless submitting this.itemId}}
@@ -64,6 +65,7 @@
                             {{/unless}}
                         </div>
                     {{/if}}
+                    --}}
                     {{#with value this.itemId}}
                         <div class="text-muted text-center">
                             <small>{{i18n 'item.savedAt'}} {{toLocaleDate this.updatedAt}}</small>

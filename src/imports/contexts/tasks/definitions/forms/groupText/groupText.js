@@ -8,10 +8,10 @@ import { getCollection } from '../../../../../api/utils/getCollection'
 import { debounce } from '../../../../../api/utils/debounce'
 import { callMethod } from '../../../../../ui/controllers/document/callMethod'
 import { withProperty } from '../../../../../api/utils/object/withProperty'
+import { dataTarget } from '../../../../../ui/utils/dataTarget'
 import groupTextLanguage from './i18n/groupTextLanguage'
 import './groupText.scss'
 import './groupText.html'
-import { dataTarget } from '../../../../../ui/utils/dataTarget'
 
 const subKey = 'groupTextSub'
 const ensureObject = (target, name) => withProperty(target, name, {})
