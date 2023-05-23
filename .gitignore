@@ -111,5 +111,6 @@ dist
 #macOS
 .DS_Store
 
-# external packages lib
+# external packages lib, blaze etc.
 lib/
+./blaze/
