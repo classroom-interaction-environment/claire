@@ -1,6 +1,6 @@
 import { Item } from './Item'
 import { ResponseDataTypes } from '../../../../api/plugins/ResponseDataTypes'
-import { editSchema, firstOption, itemSchema } from '../common/helpers'
+import { editSchema, itemSchema } from '../common/helpers'
 import { ItemBase } from './base'
 
 export const GroupItems = {
@@ -18,6 +18,7 @@ export const GroupText = {
   label: 'item.groupText',
   dataType: ResponseDataTypes.text.name,
   icon: 'layer-group',
+  save: 'auto',
   edit ({ translate }) {
     return {
       groupMode: {

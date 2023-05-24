@@ -1184,6 +1184,7 @@
     "cluster": {
       "title": "Cluster"
     },
+    "groupText": "Gruppen-Text",
     "barChart": "Balkendiagram",
     "pieChart": "Kreisdiagramm",
     "imageGallery": "Bild-Gallerie",

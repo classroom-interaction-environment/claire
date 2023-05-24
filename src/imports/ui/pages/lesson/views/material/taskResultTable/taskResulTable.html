@@ -9,7 +9,7 @@
             <tbody>
             {{#each userDoc in users}}
                 {{#let progressIndex=@index}}
-                    <tr>
+                    <tr class="font-weight-bold">
                         {{> taskProgress userDoc=userDoc taskId=taskId lessonId=lessonId showUser=true items=currentItems }}
                         <td>
                             {{#unless showItems userDoc._id}}
@@ -24,7 +24,11 @@
                             <tr>
                                 <td>{{> tooltip icon=item.context.icon label=icon.context.label}}</td>
                                 <td>{{item.title}}</td>
-                                <td>{{groupModeLabel item.groupMode}}</td>
+                                <td class="text-center">
+                                    {{#with (groupMode item.groupMode)}}
+                                        {{> icon name=this.icon fw=true title=(i18n this.label)}}
+                                    {{/with}}
+                                </td>
                                 <td>{{item.label}}</td>
                                 <td>
                                     {{#with taskResultDoc item.itemId taskId userDoc._id}}

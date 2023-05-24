@@ -45,12 +45,12 @@ Template.taskResultTable.helpers({
   showItems (userId) {
     return Template.getState('showItems')[userId]
   },
-  groupModeLabel (mode) {
+  groupMode (mode) {
     const groupMode = GroupMode[mode]
     if (!groupMode || groupMode === GroupMode.off) {
-      return ''
+      return null
     }
-    return API.translate(groupMode.label)
+    return groupMode
   },
   users () {
     const userIds = Template.getState('userIds') || []

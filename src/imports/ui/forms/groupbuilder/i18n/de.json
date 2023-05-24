@@ -7,8 +7,15 @@
     "defaultTitle": "Unterrichtsgruppe",
     "materialForAllGroups": "Gleiches Material für alle Gruppen",
     "materialAutoShuffle": "Material automatisch verteilen",
-    "shuffle": "Automatisch zuteilen",
-    "manual": "Manuell zuteilen",
+    "manageUsers": "Teilnehmer:innen verwalten",
+    "manageRoles": "Rollen verwalten / hinzufügen",
+    "manageMaterial": "Material verwalten / hinzufügen",
+    "dropUsers": "Teilnehmer:innen hinzufügen / entfernen",
+    "shuffle": "Gruppenmitglieder automatisch zuteilen",
+    "allInGroups": "Alle Teilnehmer:innen wurden zugeteilt",
+    "noUsers": "Es sind (noch) keine Teilnehmer:innen in diesem Kurs. Es können jedoch leere Gruppen bereits angelegt werden.",
+    "next": "Weiter",
+    "manual": "Gruppenmitglieder manuell zuteilen",
     "settings": "Gruppeneinstellungen",
     "addGroup": "Weitere Gruppe anlegen"
   }

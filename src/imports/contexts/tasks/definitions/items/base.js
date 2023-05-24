@@ -4,6 +4,7 @@ import { firstOption } from '../common/helpers'
 
 export const ItemBase = {
   name: 'itemBase',
+  save: 'manual',
   edit ({ translate }) {
     const baseSchema = {
       itemId: {

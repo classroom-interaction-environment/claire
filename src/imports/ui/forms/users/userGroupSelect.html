@@ -1,22 +1,33 @@
 <template name="afUserGroupSelect">
-    <div class="user-pool user-dropzone p-3 bg-light border rounded border-{{#if isOver -1 "-1"}}gray{{else}}light{{/if}}"
+    <div class="user-pool user-dropzone p-3 bg-light border rounded border-{{#if isOver -1 "-1"}}primary{{else}}light{{/if}}"
          data-index=-1 data-role="-1">
+        <small class="d-block p-1 text-center text-muted">
+            {{i18n "groupBuilder.manageUsers"}}
+        </small>
         {{#each user in allUsers}}
             <span class="btn btn-outline-{{#if isOnline
                                                user.presence}}success{{else}}secondary{{/if}} user-element text-center p-3 grabbable"
                   draggable="true"
+                  role="button"
                   data-target="{{user._id}}">
                     <span class="d-block text-center">
                         {{>profileImage user=user height=32}}
                     </span>
                 {{user.firstName}} {{user.lastName}}
             </span>
+        {{else}}
+            {{#unless hasUsers}}
+                <span class="text-secondary">{{i18n "groupBuilder.noUsers"}}</span>
+            {{else}}
+                <span class="text-secondary">{{i18n "groupBuilder.allInGroups"}}</span>
+            {{/unless}}
         {{/each}}
     </div>
 
     <div class="group-pool mt-4">
         <div class="row">
             {{#each group in allGroups}}
+
                 {{#let groupIndex=@index}}
                     <div class="col-12">
                         <div class="card">
@@ -66,8 +77,13 @@
                         </span>
                             </div>
                             <div class="card-body">
+                                {{#if roles.length}}
+                                    <small class="d-block p-1 text-center text-muted">
+                                        {{i18n "groupBuilder.manageRoles"}}
+                                    </small>
+                                {{/if}}
                                 {{#each role in roles}}
-                                    <div class="mt-3 p-3 user-dropzone border bg-light rounded border-{{#if isOver groupIndex role}}gray{{else}}light{{/if}}"
+                                    <div class="mt-3 p-3 user-dropzone border bg-light rounded border-{{#if isOver groupIndex role}}primary{{else}}light{{/if}}"
                                          data-index="{{groupIndex}}"
                                          data-role="{{role}}">
                                         <span class="font-weight-bold">{{role}}</span>
@@ -87,8 +103,11 @@
                                         {{/each}}
                                     </div>
                                 {{else}}
+                                    <small class="d-block p-1 text-center text-muted">
+                                        {{i18n "groupBuilder.dropUsers"}}
+                                    </small>
                                     <div class="p-3 user-dropzone border rounded border-{{#if isOver groupIndex
-                                                                                              "none"}}gray{{else}}light{{/if}}"
+                                                                                              "none"}}primary{{else}}light{{/if}}"
                                          data-index="{{groupIndex}}"
                                          data-role="none">
                                         {{#each user in group.users}}
@@ -109,6 +128,9 @@
                             </div>
                             {{#with materialOptions}}
                                 <div class="card-body border-top">
+                                    <small class="d-block p-1 text-center text-muted">
+                                        {{i18n "groupBuilder.manageMaterial"}}
+                                    </small>
                                     <ul class="list-group">
                                         {{#each material in (addedMaterials groupIndex)}}
                                             <li class="list-group-item d-flex justify-content-between">

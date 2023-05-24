@@ -7,7 +7,13 @@
     "defaultTitle": "Students Group",
     "materialForAllGroups": "Equal material for all groups",
     "materialAutoShuffle": "Distribute material automatically",
+    "manageUsers": "Manage users",
+    "manageRoles": "Manage roles",
+    "manageMaterial": "Manage material",
+    "dropUsers": "Add / remove users",
     "shuffle": "Automatically Assign",
+    "noUsers": "There are no users (yet) to select. You can, however, manage empty groups.",
+    "next": "Continue",
     "manual": "Assign Manually",
     "settings": "Group Settings",
     "addGroup": "Create another group"

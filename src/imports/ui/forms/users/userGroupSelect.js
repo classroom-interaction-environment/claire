@@ -36,7 +36,8 @@ Template.afUserGroupSelect.onCreated(function () {
       (group.users || []).forEach(user => assignedUsers.add(user.userId))
     })
 
-    instance.state.set({ users: getUsers({ users, assignedUsers }) })
+    const resolvedUsers = getUsers({ users, assignedUsers })
+    instance.state.set({ users: resolvedUsers, hasUsers: resolvedUsers.length > 0 })
   })
 })
 
@@ -73,6 +74,9 @@ Template.afUserGroupSelect.helpers({
   },
   allUsers () {
     return Template.getState('users')
+  },
+  hasUsers () {
+    return Template.getState('hasUsers')
   },
   maxUsers () {
     return Template.getState('maxUsers')
@@ -215,14 +219,16 @@ Template.afUserGroupSelect.events({
 
     // index of the group the user came from
     // if -1 the user is "new" and came from no group
-    const groupIndexStr = event.originalEvent.dataTransfer.getData('application/groupBuilder-groupIndex')
-    const groupIndex = groupIndexStr ? Number.parseInt(groupIndexStr, 10) : -1
+    const fromGroupIndexStr = event.originalEvent.dataTransfer.getData('application/groupBuilder-groupIndex')
+    const fromGroupIndex = fromGroupIndexStr ? Number.parseInt(fromGroupIndexStr, 10) : -1
 
     // index of the group, where the user is dropped
     const index = Number.parseInt(dataTarget(event, templateInstance, 'index'), 10)
 
-    if (index === groupIndex) {
-      return templateInstance.state.set('dragOverIndex', null) // skip here as there is nothing to update
+    // if the users is dropped on their current group
+    // skip here as there is nothing to update
+    if (index === fromGroupIndex) {
+      return templateInstance.state.set('dragOverIndex', null)
     }
 
     // role is only defined if roles exist and user is dropped on a role' dropzone
@@ -231,23 +237,23 @@ Template.afUserGroupSelect.events({
 
     // if target index is -1 then we remove the users back to the user-pool
     if (index === -1) {
-      templateInstance.builder.removeUser({ index: groupIndex, userId, role })
+      templateInstance.builder.removeUser({ index: fromGroupIndex, userId, role })
     }
 
     // if this is an unselected user
-    else if (groupIndex === -1) {
+    else if (fromGroupIndex === -1) {
       templateInstance.builder.addUser({ index, userId, role })
     }
 
     // if it's selected and it's just a new group
-    else if (groupIndex === index) {
+    else if (fromGroupIndex === index) {
       templateInstance.builder.updateUser({ index, userId, role })
     }
 
     // or it's a switch to another group
     else {
       templateInstance.builder.addUser({ index, userId, role })
-      templateInstance.builder.removeUser({ index: groupIndex, userId, role })
+      templateInstance.builder.removeUser({ index: fromGroupIndex, userId, role })
     }
 
     templateInstance.state.set('dragOverIndex', null)

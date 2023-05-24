@@ -5,7 +5,8 @@ export const GroupMode = {
   off: {
     index: 0,
     value: 'off',
-    label: 'groupMode.off'
+    label: 'groupMode.off',
+    icon: 'off'
   },
   /**
    * One answers for all, answers will override each other
@@ -13,7 +14,8 @@ export const GroupMode = {
   override: {
     index: 1,
     value: 'override',
-    label: 'groupMode.override'
+    label: 'groupMode.override',
+    icon: 'user'
   },
 
   /**
@@ -23,6 +25,7 @@ export const GroupMode = {
   merge: {
     index: 2,
     value: 'merge',
-    label: 'groupMode.merge'
+    label: 'groupMode.merge',
+    icon: 'users'
   }
 }

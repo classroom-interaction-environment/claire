@@ -1183,6 +1183,7 @@
     "cluster": {
       "title": "Cluster"
     },
+    "groupText": "Group-Text",
     "barChart": "Çubuk grafiği",
     "pieChart": "Pasta grafiği",
     "imageGallery": "Resim galerisi",

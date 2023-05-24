@@ -1183,6 +1183,7 @@
     "cluster": {
       "title": "Cluster"
     },
+    "groupText": "Group-Text",
     "barChart": "Bar chart",
     "pieChart": "Pie chart",
     "imageGallery": "Image gallery",

@@ -23,6 +23,9 @@ const states = new ReactiveDict()
 const rendererSchemas = new Map() // TODO make map
 const getFormId = (itemId) => `itemForm_${itemId}`
 
+/**
+ * All available states of this generic renderer.
+ */
 const ItemRendererState = {
   loading: 'loading',
   loadFailed: 'loadFailed',
@@ -54,16 +57,17 @@ Template.itemRenderer.onCreated(function () {
     }
 
     const { onItemLoad, hasUnsavedData, itemId, page } = data
+    const ctx = Item.get(data.meta)
+    instance.state.set({ autoSave: ctx.save === 'auto' })
 
+    // Create build-schema:
     // each item has a specific schema and sometimes even uses
     // a custom form component.
     // In order to pass down dynamic attributes to the schema
     // (like preview mode, lessonId, taskId, etc.)
     // we use the build() function that every item has
     // by definition.
-
     if (!rendererSchemas.has(itemId)) {
-      const ctx = Item.get(data.meta)
       const buildSchema = ctx.build(data)
 
       if (typeof ctx.load === 'function') {
@@ -106,6 +110,10 @@ Template.itemRenderer.onCreated(function () {
     }
   })
 
+  /**
+   * Saves the current scoped item unless validation fails.
+   * @param itemId {string}
+   */
   instance.saveItem = ({ itemId }) => {
     if (instance.data.preview) {
       return // skip submission on preview
@@ -134,13 +142,15 @@ Template.itemRenderer.onCreated(function () {
     if (onItemSubmit) {
       states.set(itemId, ItemRendererState.submit)
       onItemSubmit({ itemId, groupMode, insertDoc, updateDoc }, (err, itemDoc) => {
-        if (err) {
-          states.set(itemId, ItemRendererState.submissionFailed)
-        }
-        if (itemDoc) {
-          states.set(itemId, ItemRendererState.saved)
-          values.set(itemId, itemDoc)
-        }
+        setTimeout(() => {
+          if (err) {
+            states.set(itemId, ItemRendererState.submissionFailed)
+          }
+          if (itemDoc) {
+            states.set(itemId, ItemRendererState.saved)
+            values.set(itemId, itemDoc)
+          }
+        }, 500)
       })
     }
   }
@@ -228,8 +238,10 @@ Template.itemRenderer.helpers({
     return date && date.toLocaleString()
   },
   submitting (itemId) {
-    const status = states.get(itemId)
-    return (status === ItemRendererState.submit)
+    return states.get(itemId) === ItemRendererState.submit
+  },
+  status (itemId) {
+    return states.get(itemId)
   },
   saved (itemId) {
     const status = states.get(itemId)
@@ -237,6 +249,9 @@ Template.itemRenderer.helpers({
   },
   itemDisabled (isEditable) {
     return !isEditable
+  },
+  showSaveButton (item) {
+    return item.isEditable && !Template.getState('autoSave')
   },
   error () {
     return Template.getState('error')
@@ -252,16 +267,16 @@ Template.itemRenderer.events({
     const itemId = templateInstance.$(event.currentTarget).data('target')
     states.set(itemId, ItemRendererState.editing)
   },
-  'blur .item-form-container': throttle(function (event, templateInstance) {
+  'blur .item-form-container' (event, templateInstance) {
     templateInstance.state.set('focus', null)
     templateInstance.saveItem({
       formId: event.currentTarget.id,
       itemId: templateInstance.data.itemId
     })
-  }, 300),
-  'focus': throttle(function (event, templateInstance) {
+  },
+  'focus' (event, templateInstance) {
     templateInstance.state.set('focus', templateInstance.data.itemId)
-  }, 300),
+  },
   'submit form' (event, templateInstance) {
     event.preventDefault()
     templateInstance.saveItem({

@@ -15,14 +15,21 @@
         <hr>
 
         <div class="d-flex justify-content-between">
-            {{> actionButton type="warning"
-                    class="grp-init-btn"
-                    label=(i18n "groupBuilder.shuffle")
-                    data-target="auto"}}
-            {{> actionButton type="secondary"
-                    class="grp-init-btn"
-                    label=(i18n "groupBuilder.manual")
-                    data-target="manual"}}
+            {{#if hasUsers}}
+                {{> actionButton type="warning"
+                        class="grp-init-btn"
+                        label=(i18n "groupBuilder.shuffle")
+                        data-target="auto"}}
+                {{> actionButton type="secondary"
+                        class="grp-init-btn"
+                        label=(i18n "groupBuilder.manual")
+                        data-target="manual"}}
+            {{else}}
+                {{> actionButton type="secondary"
+                        class="grp-init-btn ml-auto"
+                        label=(i18n "groupBuilder.next")
+                        data-target="manual"}}
+            {{/if}}
         </div>
     {{/if}}
 

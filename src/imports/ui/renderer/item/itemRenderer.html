@@ -32,8 +32,7 @@
                             {{/if}}
                         </fieldset>
                     </div>
-                    {{!--
-                    {{#if isEditable}}
+                    {{#if showSaveButton this}}
                         <div class="d-block d-print-none">
                             {{#unless submitting this.itemId}}
                                 {{#if eq ../groupMode "merge"}}
@@ -65,7 +64,18 @@
                             {{/unless}}
                         </div>
                     {{/if}}
+                    {{!--
+                    {{#if isEditable}}
+
+                    {{/if}}
                     --}}
+                {{/autoForm}}
+                {{#if submitting this.itemId}}
+                    <div class="text-muted text-center">
+                        {{> icon name="cog" pulse=true}}
+                        {{i18n "actions.saving"}}
+                    </div>
+                {{else}}
                     {{#with value this.itemId}}
                         <div class="text-muted text-center">
                             <small>{{i18n 'item.savedAt'}} {{toLocaleDate this.updatedAt}}</small>
@@ -74,7 +84,7 @@
                             {{/if}}
                         </div>
                     {{/with}}
-                {{/autoForm}}
+                {{/if}}
             </div>
         {{else}}
         {{!--

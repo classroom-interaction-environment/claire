@@ -47,6 +47,10 @@ Template.groupBuilder.helpers({
   editGroupSchema () {
     return groupsSchema
   },
+  hasUsers () {
+    const { classDoc } = Template.currentData()
+    return !!classDoc?.students?.length
+  },
   doc () {
     return {
       ...Template.instance().builder,

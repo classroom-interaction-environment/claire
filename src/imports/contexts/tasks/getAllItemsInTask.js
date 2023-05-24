@@ -30,7 +30,8 @@ export const getAllItemsInTask = taskDoc => {
         entry.context = Item.get(entry.meta)
         entry.responseProcessors = getResponseProcessors({
           dataType: entry.context.dataType,
-          fileType: fileType
+          fileType: fileType,
+          groupMode: entry.groupMode
         })
 
         // files require an additional renderer or we will preview only ids of the files

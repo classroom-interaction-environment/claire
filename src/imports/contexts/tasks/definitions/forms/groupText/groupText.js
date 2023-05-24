@@ -43,16 +43,21 @@ Template.afGroupText.onCreated(function () {
     const groupMode = data.atts['data-group-mode']
     const itemId = data.atts['data-item']
 
-    // skip subs if no data is passed on
+    // if we have no groupId available then we likely are not
+    // in a group-mode task view but in a single-user task view.
+    // In this situation, we make display a default textarea with no
+    // further multi-user functionality.
     if (!groupId || !itemId) {
-      return instance.state.set({ subReady: true, subscribed: false })
+      return instance.state.set({ subReady: true, subscribed: false, groupMembers: [] })
     }
 
     callMethod({
       name: Group.methods.users,
       args: { groupId },
       failure: API.notify,
-      success: (groupMembers) => instance.state.set({ groupMembers })
+      success: (groupMembers = []) => {
+        instance.state.set({ groupMembers })
+      }
     })
 
     API.subscribe({
@@ -153,7 +158,11 @@ Template.afGroupText.onRendered(function () {
 
 Template.afGroupText.helpers({
   loadComplete () {
-    return API.initComplete() && Template.getState('subReady') && Template.getState('groupMembers')
+    return !!(
+      API.initComplete() &&
+      Template.getState('subReady') &&
+      Template.getState('groupMembers')
+    )
   },
   dataSchemaKey () {
     return Template.currentData().atts['data-schema-key']

@@ -17,6 +17,7 @@ export const ItemFileSchema = {
   label: 'item.fileUpload',
   category: MediaItems,
   dataType: ResponseDataTypes.file.name,
+  save: 'manual',
   edit ({ translate }) {
     return {
       fileType: {
