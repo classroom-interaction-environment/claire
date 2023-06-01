@@ -1,0 +1,11 @@
+<template name="afH5PEditor">
+    {{> h5pEditor editorAtts}}
+
+    <Button class="save-h5p-btn">save</Button>
+
+    {{!-- ERRORS, VALIDATION ETC, --}}
+    <small class="help-block text-danger col-12"></small>
+
+    {{! autoform extension internals }}
+    <input type="hidden" class="hidden-input" {{inputAtts}}>
+</template>

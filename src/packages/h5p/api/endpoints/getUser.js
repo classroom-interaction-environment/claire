@@ -27,7 +27,12 @@ export const getUser = (req, res, next) => {
           return user
         }
       })()
+    } else {
+      console.warn('[Routes]: could not get user from cookie')
     }
+  }
+  else {
+      console.warn('[Routes]: could not get cookie x_mtok')
   }
 
   next()

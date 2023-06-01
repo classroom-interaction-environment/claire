@@ -36,15 +36,17 @@ H5P.register = function (h5pContentType) {
     label: h5pContentType.title,
     dataType: null,
     iconUrl: h5pContentType.icon,
-    schema: {
-      contentId: String,
-      autoform: {
-        type: 'text',
-        h5p: h5pContentType
-      }
-    },
     publicFields: {
       contentId: 1
+    },
+    schema: {
+      contentId: {
+        type: String,
+        autoform: {
+          type: 'h5pEditor',
+          h5p: h5pContentType
+        }
+      }
     },
     build: h5pDoc => ({
       [h5pDoc.contentId]: {
@@ -56,6 +58,8 @@ H5P.register = function (h5pContentType) {
     }),
     form: async () => {
       // import autoform editor template
+      debugger
+      return import('../forms/h5pEditor/h5pEditor')
     }
   }
 
@@ -78,7 +82,8 @@ H5P.isInitialized = function () {
 }
 
 H5P.initialize = async () => {
-  debug('initialize')
+  await import('./accounts')
+
   if (initialized.get()) {
     return true
   }

@@ -52,7 +52,9 @@ export const h5pConnectHandler = (h5pEditor) => {
       }
       if (allPermissions?.length) {
         const user = req.user()
-        if (!user || !allPermissions.every(permission => !!user?.privileges?.[permission])) {
+
+        if (!user || !allPermissions.every(permission => userHasPrivilege({ user, permission}))) {
+          console.debug({ user })
           throw new Meteor.Error('permissionDenied', 'insufficientPrivileges')
         }
       }
@@ -82,4 +84,11 @@ export const h5pConnectHandler = (h5pEditor) => {
   router.use(errorHandler('auto'))
 
   return router
+}
+
+const userHasPrivilege = ({ user, permission}) => {
+  console.debug(user, permission)
+  // TODO we need an ioc implementation to allow
+  //  clients to implement their own privilege check
+  return true
 }

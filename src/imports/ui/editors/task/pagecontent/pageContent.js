@@ -448,7 +448,7 @@ Template.taskPageContent.events({
       newElement: null,
       loadingElementForm: true
     })
-
+debugger
     // let it render load indicator if we have
     // switched between element subtypes
     if (hasElement) {

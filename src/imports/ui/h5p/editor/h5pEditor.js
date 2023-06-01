@@ -2,9 +2,9 @@ import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { Cookies } from 'meteor/ostrio:cookies'
 import { H5PMeteor } from 'meteor/claire:h5p'
-import { i18n } from '../../../api/language/language'
 import { defineElements } from '@lumieducation/h5p-webcomponents'
 import './h5pEditor.html'
+import {currentLanguage} from '../../../api/language/currentLanguage'
 
 // This will register the <h5p-editor/> webcomponent (used in the template).
 defineElements('h5p-editor')
@@ -18,11 +18,12 @@ const API = Template.h5pEditor.setDependencies({
 })
 
 Template.h5pEditor.onCreated(function () {
+  const instance = this
   // We create the save callback in the data object,
-  // so that the parent can call the child.
-  this.data.save = async () => {
-    const result = await this.$('.editor')[0].save()
-    this.data.onSaved(result.contentId, result.metadata)
+  // so that the parent Template can call the child.
+  const save = async () => {
+    const result = await instance.$('.editor')[0].save()
+    instance.data.onSaved(result.contentId, result.metadata)
   }
 })
 
@@ -30,7 +31,9 @@ Template.h5pEditor.onRendered(function () {
   // We set the callback on the editor webcomponent. When the contentId is set
   // through the template binding, the editor will render.
   this.$('.editor')[0].loadContentCallback = async (contentId /*, requestBody */) => {
-    const language = i18n.currentLocale.get()
+    console.debug('load content in editor', {contentId})
+    const language = currentLanguage()
+    debugger
     // We set a (session) cookie to be able to find out what language the
     // user is using in connectErrorHandler.js.
     cookies.set('h5p-editor-lang', language)
