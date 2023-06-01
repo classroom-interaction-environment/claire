@@ -1,5 +1,5 @@
+import { H5PMeteor } from '../H5PMeteor'
 import { undefinedOrTrue } from '../../utils/undefinedOrTrue'
-import { createLog } from '../../../../imports/api/log/createLog'
 
 /**
  * Calls the function passed to it and catches errors it throws. These errors
@@ -10,7 +10,7 @@ import { createLog } from '../../../../imports/api/log/createLog'
  */
 export const catchAndPassOnErrors = ({ name, method, handler, handleErrors }) => {
   const fnName = `(${method})${name}`
-  const log = createLog({ name: fnName, type: 'debug' })
+  const log = H5PMeteor.createLog({ name: fnName, type: 'debug' })
   return async (req, res, next) => {
     log(`[${method}][${name}]: run`, JSON.stringify(req.params))
     if (undefinedOrTrue(handleErrors)) {

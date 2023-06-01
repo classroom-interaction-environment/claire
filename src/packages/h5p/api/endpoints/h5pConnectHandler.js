@@ -11,9 +11,8 @@ import { catchAndPassOnErrors } from './catchAndPassOnErrors'
 import { errorHandler } from './connectErrorHandler'
 import { H5PMeteor } from '../H5PMeteor'
 import { getUser } from './getUser'
-import { createLog } from '../../../../imports/api/log/createLog'
 
-const log = createLog({ name: 'H5P', type: 'debug' })
+const log = H5PMeteor.createLog({ name: 'H5P', type: 'debug' })
 
 // ////////////////////////////////////////////////////////////////////////////
 //

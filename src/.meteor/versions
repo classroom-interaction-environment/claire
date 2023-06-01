@@ -91,7 +91,7 @@ mongo@1.16.4
 mongo-decimal@0.1.3
 mongo-dev-server@1.1.0
 mongo-id@1.0.8
-muqube:autoform-nouislider@0.6.0
+muqube:autoform-nouislider@0.7.0
 npm-mongo@4.12.1
 observe-sequence@1.0.21
 ordered-dict@1.1.0
@@ -119,7 +119,7 @@ spacebars-compiler@1.3.1
 standard-minifier-js@2.8.1
 templating@1.4.2
 templating-compiler@1.4.1
-templating-runtime@1.6.2
+templating-runtime@1.6.3
 templating-tools@1.2.2
 tmeasday:check-npm-versions@1.0.2
 tracker@1.3.0
