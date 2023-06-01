@@ -7,7 +7,7 @@ describe(createContextRegistry.name, function () {
   it('throws if options is not correct', function () {
     [
       ['name', {}],
-      ['hasIdentity', { name: Random.id(6) }],
+      ['hasIdentity', { name: Random.id(6) }]
     ].forEach(([name, options]) => {
       expect(() => createContextRegistry(options))
         .to.throw(`Match error: Missing key '${name}'`)
@@ -60,7 +60,6 @@ describe(createContextRegistry.name, function () {
     expect(reg.get(ctxName)).to.equal(ctx)
     expect(reg.has(ctxName)).to.equal(true)
     expect(reg.hasIdentity(ctx)).to.equal(true)
-    expect(reg.alias('foo')).to.equal(ctx)
 
     // iteration / multiples
     reg.forEach((entry, n) => {

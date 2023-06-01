@@ -4,24 +4,20 @@ import { getCollection } from '../../utils/getCollection'
 import { matchNonEmptyString } from '../../utils/check/matchNonEmptyString'
 import { Admin } from '../../../contexts/system/accounts/admin/Admin'
 
-let AdminCollection
-
 /**
  * Adds a user by user id to the Admins collection.
- * @param userId
+ * @param newAdminId {string} the user _id of the user who will be new admin
  * @return {String} the doc id of the the user's entry in the admin collection
  */
 
-export const createAdmin = function (userId) {
-  check(userId, matchNonEmptyString)
+export const createAdmin = function (newAdminId) {
+  check(newAdminId, matchNonEmptyString)
 
-  if (!AdminCollection) {
-    AdminCollection = getCollection(Admin.name)
+  const AdminCollection = getCollection(Admin.name)
+
+  if (AdminCollection.find({ userId: newAdminId }).count() > 0) {
+    throw new Meteor.Error('createAdmin.failed', 'createAdmin.alreadyAdmin', { adminId: newAdminId })
   }
 
-  if (AdminCollection.find({ userId }).count() > 0) {
-    throw new Meteor.Error('createAdmin.failed', 'createAdmin.alreadyAdmin', userId)
-  }
-
-  return AdminCollection.insert({ userId })
+  return AdminCollection.insert({ userId: newAdminId })
 }

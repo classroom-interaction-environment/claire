@@ -1,4 +1,5 @@
 /* global describe it */
+import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
 import {
   firstNameSchema,
@@ -112,7 +113,12 @@ describe('registerUserSchema', function () {
     it('accepts a password, that matches the given rules', function () {
       for (let i = 0; i < 100; i++) {
         const value = Random.secret() + '3' // guarantee a number
-        password.validate({ value })
+        try {
+          password.validate({ value })
+        }
+        catch (e) {
+          expect.fail(`${value} did not pass validation`)
+        }
       }
     })
 

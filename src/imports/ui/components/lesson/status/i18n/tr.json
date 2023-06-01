@@ -1,0 +1,10 @@
+{
+  "lesson": {
+    "unexpectedState": "Beklenmedik ders durumu",
+    "states": {
+      "idle": "Hazırlanıyor",
+      "running": "Dersler sürüyor",
+      "completed": "Dersler tamamlandı"
+    }
+  }
+}

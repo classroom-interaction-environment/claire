@@ -6,7 +6,7 @@ import { Errors } from '../../../contexts/system/errors/Errors'
 import { Lesson } from '../../../contexts/classroom/lessons/Lesson'
 import { SchoolClass } from '../../../contexts/classroom/schoolclass/SchoolClass'
 import { TaskResults } from '../../../contexts/tasks/results/TaskResults'
-import { TaskWorkingState } from '../../../contexts/tasks/results/TaskWorkingState'
+import { TaskWorkingState } from '../../../contexts/tasks/state/TaskWorkingState'
 
 [
   CodeInvitation,

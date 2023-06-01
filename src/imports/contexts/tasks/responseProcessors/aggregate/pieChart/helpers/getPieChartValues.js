@@ -19,7 +19,7 @@ const {
  */
 export const getPieChartValues = ({ results, choices, dataType }) => {
   let sampleSize = 0
-  let values = undefined
+  let values
   let labels = []
 
   // single-dimension data types

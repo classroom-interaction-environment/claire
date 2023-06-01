@@ -1,5 +1,6 @@
 {
   "public": {
+    "logLevel": 2,
     "features": {
       "groups": true
     },
@@ -46,6 +47,9 @@
         "^.*yxcv.*$"
       ]
     }
+  },
+  "patch": {
+    "removeDeadReferences": true
   },
   "defaultLocale": "en",
   "files": {

@@ -78,7 +78,8 @@ Template.resetPassword.onCreated(function () {
         err.reason = i18n.get('login.resetPassword.expired')
       }
       instance.state.set('error', err)
-    } else {
+    }
+    else {
       setupForm()
     }
     // always

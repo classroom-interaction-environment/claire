@@ -11,34 +11,34 @@ import { Phase } from '../../../../../contexts/curriculum/curriculum/phase/Phase
  * @return {Function}
  */
 export const createRemoveReferences = PhaseCollection => ({ phases, field, targetId }, callback) => {
-    phases.forEach(phaseId => {
-      const phaseDoc = PhaseCollection.findOne(phaseId)
+  phases.forEach(phaseId => {
+    const phaseDoc = PhaseCollection.findOne(phaseId)
 
-      if (phaseDoc.references) {
-        const filteredReferences = phaseDoc.references.filter(ref => {
-          const { document } = ref
-          return (document !== targetId)
-        })
+    if (phaseDoc.references) {
+      const filteredReferences = phaseDoc.references.filter(ref => {
+        const { document } = ref
+        return (document !== targetId)
+      })
 
-        // if there were references found and filtered
-        // we update the phases doc, otherwise, we are good here
-        if (filteredReferences.length !== phaseDoc.references.length) {
-          phaseDoc.references = filteredReferences
+      // if there were references found and filtered
+      // we update the phases doc, otherwise, we are good here
+      if (filteredReferences.length !== phaseDoc.references.length) {
+        phaseDoc.references = filteredReferences
 
-          updateContextDoc({
-            context: Phase,
-            _id: phaseId,
-            doc: { references: filteredReferences },
-            failure: err => callback(err),
-            success: res => {
-              if (!res) {
-                return res
-                  ? callback(undefined, phaseDoc)
-                  : callback(new Meteor.Error('errors.updateFailed', Phase.name, { phaseId }))
-              }
+        updateContextDoc({
+          context: Phase,
+          _id: phaseId,
+          doc: { references: filteredReferences },
+          failure: err => callback(err),
+          success: res => {
+            if (!res) {
+              return res
+                ? callback(undefined, phaseDoc)
+                : callback(new Meteor.Error('errors.updateFailed', Phase.name, { phaseId }))
             }
-          })
-        }
+          }
+        })
       }
-    })
-  }
+    }
+  })
+}

@@ -34,7 +34,8 @@ Template.lessonStatus.helpers({
       const tooltipClass = getTooltipClass({ bg, color })
       const iconClass = getIconClass({ bg, color })
       return { label, icon, colorize, tooltipClass, iconClass }
-    } catch (e) {
+    }
+    catch (e) {
       console.error(e)
       return failedState({ bg })
     }

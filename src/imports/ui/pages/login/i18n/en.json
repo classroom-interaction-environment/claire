@@ -1,7 +1,7 @@
 {
   "login": {
-    "title": "Sign-in",
     "callToAction": "Welcome to {{siteName}}!",
+    "title": "Sign-in",
     "login": "Sign-in",
     "loggingIn": "Signing you in",
     "forgotPassword": "Forgot password?",
@@ -9,12 +9,12 @@
     "usernameOrEmail": "Username or email address",
     "registerWithCode": "Register with a code",
     "registerWithRequest": "Request an account",
-    "welcome": "Willkommen to {{siteName}}",
+    "welcome": "Welcome to {{siteName}}",
     "passwordHint": "Length: min. {{min}} / max. {{max}} characters. Allowed characters: {{allowed}}",
     "confirm": "Confirm password",
     "resetPassword": {
       "title": "Reset password",
-      "description": "Please enter your email adress. We will send you a password-reset link",
+      "description": "Please enter the email address by which you registered your user account at {{siteName}}. We will send you a link to recover your password.",
       "send": "Send link",
       "sent": "Link sent. Please check your email inbox.",
       "resetDescription": "Please enter the NEW PASSWORD and confirm the input",
@@ -34,6 +34,11 @@
       "uppercase": "Contains at least 1 uppercase character",
       "lowercase": "Contains at least 1 lowercase character",
       "number": "Contains at least 1 digit"
+    }
+  },
+  "form": {
+    "validation": {
+      "EmailWithTLD": "E-mail must be a valid e-mail address"
     }
   }
 }

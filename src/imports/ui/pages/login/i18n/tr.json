@@ -1,0 +1,44 @@
+{
+  "login": {
+    "callToAction": "{{siteName}}'a hoş geldiniz!",
+    "title": "Giriş",
+    "login": "Giriş yap",
+    "loggingIn": "Kayıt devam ediyor",
+    "forgotPassword": "Şifre unutuldu mu?",
+    "failed": "Kayıt başarısız oldu, lütfen bilgilerinizi kontrol edin",
+    "usernameOrEmail": "Kullanıcı adı veya e-posta adresi",
+    "registerWithCode": "Yeni kayıt olun",
+    "registerWithRequest": "Bir kayıt isteği gönderin",
+    "welcome": "\"{{firstName}} {{lastName}}\" için kayıt işlemi tamamlanmıştır.",
+    "passwordHint": "Uzunluk: min. {{min}} / maks. {{max}} karakterler. İzin verilen karakterler: {{allowed}}",
+    "confirm": "Şifreyi tekrar girin",
+    "resetPassword": {
+      "title": "Şifreyi sıfırla",
+      "description": "Lütfen {{siteName}}'ya kaydolurken kullandığınız e-posta adresini girin. Şifrenizi kurtarmanız için size bir bağlantı göndereceğiz.",
+      "send": "Link gönder",
+      "sent": "Link başarıyla gönderildi. Gerekirse e-posta gelen kutunuzu ve spam klasörünüzü kontrol edin. Hala bir e-posta almadıysanız, doğru e-posta adresini girip girmediğinizi kontrol edin.",
+      "resetDescription": "YENİ şifreyi buraya girin ve girişi onaylayın.",
+      "expired": "Üzgünüz, davetiye bağlantısının süresi doldu. Lütfen yeni bir link deneyin",
+      "resend": "Yeni davetiye linki gönder",
+      "resent": "<{email}}> adresine yeni bir davet link gönderildi.",
+      "success": "Şifre başarıyla yenilendi."
+    },
+    "newPassword": "Yeni şifre",
+    "password": {
+      "title": "Şifre",
+      "minimumChars": "En az {{min}} karakter uzunluğundadır",
+      "maximumChars": "Maksimum {{max}} karakter uzunluğundadır",
+      "allowedChars": "Yalnızca aşağıdakileri içerir: {{allowed}}",
+      "notEasyToGuess": "Tahmin etmek kolay değil",
+      "noPreviousCredentials": "Adınızın veya e-posta adresinizin bazı kısımlarını içermiyor",
+      "uppercase": "En az 1 büyük harf içerir",
+      "lowercase": "En az 1 küçük harf içerir",
+      "number": "En az 1 numara içerir"
+    }
+  },
+  "form": {
+    "validation": {
+      "EmailWithTLD": "E-posta geçerli bir e-posta adresi olmalıdır"
+    }
+  }
+}

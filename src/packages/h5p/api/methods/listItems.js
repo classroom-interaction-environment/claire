@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import H5PUser from '../implementations/H5PUser'
 import { H5PAjaxEndpoint } from '@lumieducation/h5p-server'
 import { H5PFactory } from '../H5PFactory'

@@ -1,4 +1,5 @@
 import { Template } from 'meteor/templating'
+import { Mongo } from 'meteor/mongo'
 import { ReactiveDict } from 'meteor/reactive-dict'
 import { Objective } from '../../../../../contexts/curriculum/curriculum/objective/Objective'
 import { curriculumEditorSubKey } from '../../curriculumEditorSubKey'
@@ -32,7 +33,7 @@ const getAllChildren = (parent) => {
 }
 
 const API = Template.curriculumObjectives.setDependencies({
-  contexts: [Objective],
+  contexts: [Objective]
 })
 
 const objectiveSchema = API.createSchema(Objective.schema, { withDefault: true })
@@ -179,7 +180,7 @@ Template.deObjective.helpers({
   },
   childCount (parentId) {
     return getCollection(Objective.name).find({ parent: parentId }).count()
-  },
+  }
 })
 
 Template.deObjective.events({

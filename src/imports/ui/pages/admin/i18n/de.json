@@ -6,7 +6,7 @@
       "admin": "Administrator anlegen",
       "user": "Benutzer anlegen",
       "now": "Jetzt anlegen",
-      "complete": "",
+      "complete": "Fertig",
       "userSuccessful": "Benutzer erfolgreich angelegt"
     },
     "users": {
@@ -47,7 +47,7 @@
       },
       "permission": {
         "notAdmin": "Verwehrt. Sie sind kein Administrator.",
-        "notUser": "Verwehrt. Sie sind kein registrierter nutzer."
+        "notUser": "Verwehrt. Sie sind kein registrierter Nutzer."
       },
       "error": {
         "enforceAdmin": "Es wird zwingend ein Administrator benötigt. Legen Sie zuerst einen Administrator an.",

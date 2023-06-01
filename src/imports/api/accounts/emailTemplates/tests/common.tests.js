@@ -1,13 +1,13 @@
 /* eslint-env mocha */
 import { expect } from 'chai'
-import { getFullName, getCredentialsAsBuffer  } from '../common'
+import { getFullName, getCredentialsAsBuffer } from '../common'
 
 describe('common', function () {
   describe(getFullName.name, function () {
     it('returns the full name', function () {
       const user = {
         firstName: 'John',
-        lastName: 'Doe',
+        lastName: 'Doe'
       }
       expect(getFullName(user)).to.equal('John Doe')
     })
@@ -19,7 +19,7 @@ describe('common', function () {
         firstName: 'John',
         lastName: 'Doe',
         emails: [
-          { address: 'jd@example.com'}
+          { address: 'jd@example.com' }
         ]
       }
 

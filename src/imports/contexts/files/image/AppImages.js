@@ -2,7 +2,7 @@ import { FileTypes } from '../shared/FileTypes'
 import {
   onClient,
   onClientExec,
-  onServer,
+  onServer
 } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
 import { Meteor } from 'meteor/meteor'
@@ -29,7 +29,6 @@ export const AppImages = {
       return import('./renderer/main/imageFileRenderer')
     }
   }),
-
 
   files: {
     type: FileTypes.image.value,

@@ -10,7 +10,8 @@ export const logError = function logError ({ error, createdBy, createdAt, isServ
       // add user and timestamp
       ErrorCollection.update(existingError._id, { $push: { history: { createdAt, createdBy } } })
       return existingError._id
-    } else {
+    }
+    else {
       const formattedError = formatError(error)
       formattedError.isServer = isServer || false
       formattedError.isClient = isClient || false
@@ -21,7 +22,8 @@ export const logError = function logError ({ error, createdBy, createdAt, isServ
 
       return ErrorCollection.insert(formattedError)
     }
-  } catch (e) {
+  }
+  catch (e) {
     console.warn('FATAL: Error while logging Error:')
     console.error(e)
     console.warn('original error:')

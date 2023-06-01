@@ -1,4 +1,3 @@
-import SimpleSchema from 'simpl-schema'
 import { Schema } from '../../../api/schema/Schema'
 import { Fields } from '../../../api/fields/Fields'
 import { Defaults } from '../../../api/defaults/Defaults'

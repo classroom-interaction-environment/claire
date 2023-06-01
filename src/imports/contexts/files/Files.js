@@ -3,8 +3,6 @@ import { FileSize } from './shared/SizeUnits'
 import { createContextRegistry } from '../../infrastructure/datastructures/createContextRegistry'
 import { auto, onClientExec, onServerExec } from '../../api/utils/archUtils'
 import { ReactiveVar } from 'meteor/reactive-var'
-import { isMaterial } from '../material/isMaterial'
-import { FilesTemplates } from './FilesTemplates'
 
 const filesMap = new Map()
 
@@ -34,18 +32,18 @@ Files.helpers = {}
 Files.getMaterialContexts = auto(function () {
   import { isMaterial } from '../material/isMaterial'
 
-  return function () {
+  return function getMaterialContexts () {
     const contexts = []
     filesMap.forEach(ctx => {
-      if (isMaterial(ctx)) contexts.push(ctx)
+      if (isMaterial(ctx)) {
+        contexts.push(ctx)
+      }
     })
     return contexts
   }
 })
 
-
 onClientExec(function () {
-  import { ReactiveVar } from 'meteor/reactive-var'
   import { ITaskDefinition } from '../tasks/definitions/ITaskDefinition'
   import { FilesTemplates } from './FilesTemplates'
 
@@ -173,4 +171,3 @@ onServerExec(function () {
       : nullConverter
   }
 })
-

@@ -221,8 +221,8 @@
         {{! preview material modal, loading preview renderer }}
         {{#if preview}}
             {{#modal id="uematerial-preview-modal" large=true scrollable=true}}
-                {{#mheader dismiss=true title=(label "preview") class="bg-secondary text-white"}}{{/mheader}}
-                {{#mbody}}
+                {{>mheader dismiss=true title=(label "preview") class="bg-secondary text-white"}}
+                {{#mbody id='uematerial-preview-modal-body'}}
                     {{#with previewTarget}}
                         {{#if this.title}}
                             <div class="card-body">

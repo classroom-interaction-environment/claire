@@ -13,7 +13,7 @@ const assignSchema = (expected, fallback = {}) => Object.assign({}, Schema.getDe
 const curriclumSchema = {
   _master: {
     type: Boolean,
-    optional: true,
+    optional: true
   }
 }
 

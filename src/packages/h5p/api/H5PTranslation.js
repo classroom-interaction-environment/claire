@@ -1,5 +1,4 @@
-import {onServerExec} from '../utils/onServerExec'
-import {onClientExec} from '../utils/onClientExec'
+import { onServerExec } from '../utils/onServerExec'
 
 export const H5PTranslation = {}
 
@@ -17,7 +16,6 @@ const internal = {
 H5PTranslation.config = ({ addl10n, getLocale, translate }) => {
   console.warn('set translation')
   internal.translate = (label, key) => {
-    console.debug({ label, key })
     return translate(label, key)
   }
   internal.getLocale = getLocale

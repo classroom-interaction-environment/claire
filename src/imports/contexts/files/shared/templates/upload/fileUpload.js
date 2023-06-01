@@ -20,7 +20,8 @@ AutoForm.addInputType('customFileUpload', {
 
     try {
       return JSON.parse(value)
-    } catch (e) {
+    }
+    catch (e) {
       console.error(e)
       return value
     }
@@ -190,7 +191,8 @@ Template.afCustomFileUpload.onCreated(function () {
         if (progress >= 100 || ['completed', 'aborted'].includes(state)) {
           computation.stop()
           instance.setFileProps(file.id, { complete: true })
-        } else {
+        }
+        else {
           instance.setFileProps(file.id, { progress })
         }
       })
@@ -227,7 +229,7 @@ Template.afCustomFileUpload.onCreated(function () {
         return onError(error)
       }
 
-      instance.setFileProps(file.id, { doc })
+      instance.setFileProps(file.id, { doc, progress: 100, complete: true })
       instance.updateField({
         id: instance.id,
         value: doc._id,
@@ -410,7 +412,7 @@ Template.afCustomFileUpload.helpers({
     return deleting && deleting[id]
   },
   previewData (file) {
-    return Template.getState('previewTemplate') && file && file.doc
+    return Template.getState('previewTemplate') && file?.doc
   },
   previewTemplate () {
     return Template.getState('previewTemplate')

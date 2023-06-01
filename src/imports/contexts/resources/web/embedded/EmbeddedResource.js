@@ -70,7 +70,7 @@ EmbeddedResource.material = {
         return import('./renderer/main/embeddedResourceRenderer')
       },
       data: ({ materialDoc, document, options = {} }) => {
-        const { print = false, preview = true, student = false, editable = true } = options
+        const { print = false, preview = true, student = false /*, editable = true */ } = options
         const { name } = materialDoc
         return Object.assign({}, document, {
           meta: name,
@@ -82,7 +82,7 @@ EmbeddedResource.material = {
       /**
        * @deprecated
        */
-      previewData(targetId) {
+      previewData (targetId) {
         console.warn(this.name, 'previewData is deprecated!')
         if (!targetId) return
         const { collection } = this

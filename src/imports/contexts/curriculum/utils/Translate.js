@@ -23,7 +23,6 @@ export const Lang = {
     return Lang.translateReactive(Lang._defaultSelectOne)
   },
 
-
   entry () {
     return Lang.translateReactive(Lang._defaultEntry)
   }

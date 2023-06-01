@@ -1,0 +1,15 @@
+{
+  "nav": {
+    "userProfile": "Profil",
+    "toggle": "Aç/Kapa",
+    "toggleFluid": "Genişliği ayarla",
+    "login": "Giriş",
+    "logout": "Oturumu kapat",
+    "forgotPassword": "Şifremi unuttum",
+    "placeholder": {
+      "title": "Hatayı birkaç kelimeyle özetleyin...",
+      "description": "Lütfen hata hakkında olabildiğince kesin konuşun..."
+    },
+    "tools": "Araçlar"
+  }
+}

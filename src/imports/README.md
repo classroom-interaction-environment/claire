@@ -14,7 +14,6 @@ Could also be named "system". Most general layer.
 Contains fundamental parts to build the system, which
 then can be used to provide an API.
 
-
 ## API
 
 Contains shared functions, classes and interfaces.
@@ -23,7 +22,7 @@ More concrete and application-specific implementations.
 ## Contexts
 
 Similar to "domain".
-Contains the static and descriptive definitions of contextual objects 
+Contains the static and descriptive definitions of contextual objects
 (think domain objects).
 
 ## Startup

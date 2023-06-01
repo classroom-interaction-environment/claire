@@ -1,0 +1,18 @@
+{
+  "editor": {
+    "unit": {
+      "editInUnitEditor": "Sekans düzenleyicide düzenleme"
+    }
+  },
+  "unit": {
+    "custom": "Kendi sekansı"
+  },
+  "pocket": {
+    "title": "Öğrenme durumu"
+  },
+  "lesson": {
+    "running": "Sürekli dersler",
+    "upcoming": "Planlanmış dersler",
+    "toLesson": "Dersleri yürütmek"
+  }
+}

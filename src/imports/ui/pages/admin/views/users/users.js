@@ -1,5 +1,4 @@
 import { Meteor } from 'meteor/meteor'
-import { Mongo } from 'meteor/mongo'
 import { Template } from 'meteor/templating'
 import { Tracker } from 'meteor/tracker'
 import { Admin } from '../../../../../contexts/system/accounts/admin/Admin'
@@ -18,14 +17,13 @@ const API = Template.adminUsers.setDependencies({})
 
 Template.adminUsers.onCreated(function () {
   const instance = this
-  instance.users = new Mongo.Collection(null)
-  instance.state.set('showInst', {
-    [undefined]: false
-  })
+  instance.state.set('showInst', undefined)
 
   instance.loadUsers = ({ ids } = {}) => {
     const args = {}
-    if (ids) { args.ids = ids }
+    if (ids) {
+      args.ids = ids
+    }
 
     callMethod({
       name: Admin.methods.users,
@@ -59,28 +57,53 @@ Template.adminUsers.onCreated(function () {
     })
   }
 
-  instance.autorun(function () {
-    const updated = instance.state.get('updatedUsers')
+  callMethod({
+    name: Admin.methods.getInstitutions,
+    failure: API.fatal,
+    success: names => {
+      const institutionNames = names.filter(name => !!name).sort((a, b) => a.localeCompare(b))
+      const institutions = {}
+      institutionNames.forEach(name => {
+        institutions[name] = {}
+      })
+      const loadComplete = true
+      instance.state.set({ institutions, institutionNames, loadComplete })
+    }
+  })
 
-    if (updated) {
-      return instance.state.set('updatedUsers', false)
+  instance.autorun(() => {
+    const institution = instance.state.get('showInst')
+    if (institution === undefined) { return }
+    if (institution === null) {
+      return instance.state.set('loadUsers', false)
     }
 
-    instance.loadUsers()
+    API.subscribe({
+      name: Admin.publications.usersByInstitution,
+      args: { institution },
+      key: 'adminUsers',
+      callbacks: {
+        onError: API.fatal,
+        onReady: () => {
+          setTimeout(() => instance.state.set('loadUsers', false), 300)
+        }
+      }
+    })
   })
 })
 
 Template.adminUsers.helpers({
   institutionNames () {
-    const institutions = Template.getState('institutions')
-    return Object.keys(institutions)
+    return Template.getState('institutionNames')
   },
   showInstitution (name) {
-    const showInst = Template.getState('showInst')
-    return showInst[name]
+    return Template.getState('showInst') === name
+  },
+  loadingUsers () {
+    return Template.getState('loadUsers')
   },
   getUsers (institution) {
-    return Template.instance().users.find({ institution }).fetch()
+    return Meteor.users.find({ institution })
   },
   getUserEmail (user) {
     return user && user.emails ? user.emails[0].address : ''
@@ -98,10 +121,10 @@ Template.adminUsers.helpers({
     return userId === Meteor.userId()
   },
   isOnline (presence) {
-    return presence && presence.status === 'online'
+    return presence?.status === 'online'
   },
-  loadUsersComplete () {
-    return Template.instance().state.get('loadUsersComplete')
+  loadComplete () {
+    return Template.instance().state.get('loadComplete')
   },
   showCreateUser () {
     return Template.instance().state.get('createUser')
@@ -130,7 +153,7 @@ Template.adminUsers.events({
   'click .admin-view-btn' (event, templateInstance) {
     event.preventDefault()
     const target = dataTarget(event, templateInstance)
-    const userDoc = templateInstance.users.findOne(target)
+    const userDoc = Meteor.users.findOne(target)
     const previewUser = JSON.stringify(userDoc || {}, null, 2)
     templateInstance.state.set({ previewUser })
     API.showModal('viewModal')
@@ -139,8 +162,12 @@ Template.adminUsers.events({
     event.preventDefault()
     const target = dataTarget(event, templateInstance)
     const showInst = templateInstance.state.get('showInst')
-    showInst[target] = !showInst[target]
-    templateInstance.state.set('showInst', showInst)
+    const isClosed = target === showInst
+    const newValue = isClosed ? null : target
+    templateInstance.state.set({
+      showInst: newValue,
+      loadUsers: !isClosed
+    })
   },
   'click #toggleCreateUserButton' (event, templateInstance) {
     event.preventDefault()
@@ -163,7 +190,7 @@ Template.adminUsers.events({
   'click .delete-user-button' (event, templateInstance) {
     event.preventDefault()
     const targetId = dataTarget(event, templateInstance)
-    const targetUser = templateInstance.users.findOne({ _id: targetId })
+    const targetUser = Meteor.users.findOne({ _id: targetId })
     const text = 'admin.users.confirmDelete'
     const textOptions = { name: `${targetUser.firstName} ${targetUser.lastName} (${targetUser.emails[0].address})` }
 
@@ -180,7 +207,6 @@ Template.adminUsers.events({
           }
           else {
             API.notify('admin.users.deleted')
-            templateInstance.users.remove(targetId)
           }
         })
       })
@@ -202,7 +228,7 @@ Template.adminUsers.events({
       }
       API.notify(true)
       API.hideModal('createUserModal')
-      templateInstance.loadUsers({ ids: [newUserId]})
+      templateInstance.loadUsers({ ids: [newUserId] })
     })
   },
   'hidden.bs.modal' () {
@@ -213,7 +239,7 @@ Template.adminUsers.events({
     const type = 'role'
     const method = Admin.methods.updateRole.name
     const userId = dataTarget(event, templateInstance)
-    const user = templateInstance.users.findOne(userId)
+    const user = Meteor.users.findOne(userId)
     const doc = { userId, role: user.role, group: user.institution }
     const updateUser = { type, method, doc }
 

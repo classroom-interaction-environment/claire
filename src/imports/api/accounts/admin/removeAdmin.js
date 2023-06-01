@@ -5,8 +5,6 @@ import { matchNonEmptyString } from '../../utils/check/matchNonEmptyString'
 import { Admin } from '../../../contexts/system/accounts/admin/Admin'
 import { userExists } from '../user/userExists'
 
-let AdminCollection
-
 /**
  * Removes a user by user id from the Admins collection.
  * @param userId
@@ -19,9 +17,7 @@ export const removeAdmin = function (userId) {
     throw new Meteor.Error('removeAdmin.failed', 'errors.userNotFound', userId)
   }
 
-  if (!AdminCollection) {
-    AdminCollection = getCollection(Admin.name)
-  }
+  const AdminCollection = getCollection(Admin.name)
 
   if (AdminCollection.find({ userId }).count() === 0) {
     throw new Meteor.Error('removeAdmin.failed', 'removeAdmin.notAdmin', userId)

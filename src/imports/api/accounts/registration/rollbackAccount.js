@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor'
 import { check } from 'meteor/check'
 import { Admin } from '../../../contexts/system/accounts/admin/Admin'
 import { getCollection } from '../../utils/getCollection'
+import { getUsersCollection } from '../../utils/getUsersCollection'
 
 export const rollbackAccount = userId => {
   check(userId, String)
@@ -10,7 +11,7 @@ export const rollbackAccount = userId => {
   const adminRemoved = AdminCollection.remove({ userId })
 
   const rolesRemoved = Meteor.roleAssignment.remove({ 'user._id': userId })
-  const userRemoved = Meteor.users.remove(userId)
+  const userRemoved = getUsersCollection().remove(userId)
 
   return { adminRemoved, rolesRemoved, userRemoved }
 }

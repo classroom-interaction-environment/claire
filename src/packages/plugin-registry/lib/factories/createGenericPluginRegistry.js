@@ -9,7 +9,7 @@ export const createGenericPluginRegistry = function (options = {}) {
   const { name, debug, ...additionalMethods } = options
   const ctx = {}
   const debugFn = debug
-    ? (...args) => console.debug(name, ...args)
+    ? (...args) => console.debug(name, ...args) // eslint-disable-line no-console
     : () => {}
   const internal = {
     categories: () => {},
@@ -17,7 +17,6 @@ export const createGenericPluginRegistry = function (options = {}) {
     translate: x => x,
     languageChangeHandlers: []
   }
-
 
   /**
    * Host: Registers a function that returns all available/registered categories

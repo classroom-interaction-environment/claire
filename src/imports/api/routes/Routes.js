@@ -17,11 +17,6 @@ export const Routes = {}
 //
 // ////////////////////////////////////////////////////////////////////////////////////////////////
 
-let loggedInTrigger
-let loginTrigger
-let toCodeRegisterRoute
-let toNotFoundRoute
-let toLoginRoute
 const baseUrl = Meteor.absoluteUrl().slice(0, -1)
 
 Routes.fallback = {
@@ -146,7 +141,8 @@ Routes.codeRegister = {
       Meteor.loginWithPassword(username, password, function (err) {
         if (err) {
           Router.go(Routes.login)
-        } else {
+        }
+        else {
           Router.go(Routes.root)
         }
       })
@@ -245,6 +241,21 @@ Routes.confirmResearch = {
   data: null
 }
 
+Routes.preview = {
+  path: (type = ':type', docId = ':docId', token = ':token') => {
+    return `/preview/${type}/${docId}/${token}`
+  },
+  async load () {
+    await import('../../ui/containers/preview/previewContainer')
+    return import('../../ui/pages/preview/preview')
+  },
+  target: 'previewContainer',
+  label: 'pages.preview.title',
+  template: 'preview',
+  roles: null,
+  data: null
+}
+
 // assign object keys as part
 // of the routes for translation
 Object.keys(Routes).forEach(routeKey => {
@@ -252,13 +263,14 @@ Object.keys(Routes).forEach(routeKey => {
 })
 
 // create default goto actions
-loginTrigger = function () {
+const loginTrigger = function () {
   if (!Meteor.userId()) {
     // set redirect URL and go to login
     return toLoginRoute()
   }
 }
-loggedInTrigger = createLoggedinTrigger(() => resolveRedirect() || Routes.root.path())
-toCodeRegisterRoute = createToRoute(Routes.codeRegister)
-toNotFoundRoute = createToRoute(Routes.notFound)
-toLoginRoute = createToRoute(Routes.login)
+
+const loggedInTrigger = createLoggedinTrigger(() => resolveRedirect() || Routes.root.path())
+const toCodeRegisterRoute = createToRoute(Routes.codeRegister)
+const toNotFoundRoute = createToRoute(Routes.notFound)
+const toLoginRoute = createToRoute(Routes.login)

@@ -1,0 +1,10 @@
+{
+  "group": {
+    "title": "Group",
+    "groups": "Groups",
+    "users": "Members",
+    "phases": "Limited to phases",
+    "material": "L. Material for groups",
+    "createGroups": "Create groups"
+  }
+}

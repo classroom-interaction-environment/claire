@@ -10,7 +10,8 @@ export const formatError = function logError (error) {
   formatted.stack = error.stack
   if (error.details && typeof error.details !== 'string') {
     formatted.details = JSON.stringify(error.details)
-  } else {
+  }
+  else {
     formatted.details = error.details
   }
   formatted.source = error.source

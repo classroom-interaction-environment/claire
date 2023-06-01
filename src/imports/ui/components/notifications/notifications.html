@@ -18,8 +18,8 @@
                 {{> icon name=icon}}
             {{/if}}
             <span>
-                <strong>{{i18n title}}</strong>
-                <small>{{i18n subtitle}}</small>
+                <strong>{{translateMaybe title}}</strong>
+                <small>{{translateMaybe subtitle}}</small>
             </span>
             {{#if dismiss}}
                 <button type="button" class="ml-2 mb-1 close"
@@ -30,7 +30,7 @@
         </div>
         {{#if message}}
             <div class="toast-body">
-                {{i18n message}}
+                {{translateMaybe message}}
             </div>
         {{/if}}
     </div>

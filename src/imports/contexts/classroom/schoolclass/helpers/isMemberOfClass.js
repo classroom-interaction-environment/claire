@@ -6,7 +6,18 @@
  * @param userId {string} the user's _id to use for the check
  * @return {boolean}
  */
-export const isMemberOfClass = ({ classDoc, userId }) => classDoc && userId &&
-  !!(classDoc.createdBy === userId ||
-    (classDoc.teachers && classDoc.teachers.indexOf(userId) > -1) ||
-    (classDoc.students && classDoc.students.indexOf(userId) > -1))
+export const isMemberOfClass = ({ classDoc, userId }) => {
+  if (typeof classDoc !== 'object' || typeof userId !== 'string') {
+    return false
+  }
+
+  if (classDoc.createdBy === userId) {
+    return true
+  }
+
+  if (classDoc.teachers && classDoc.teachers.includes(userId)) {
+    return true
+  }
+
+  return classDoc.students && classDoc.students.includes(userId)
+}

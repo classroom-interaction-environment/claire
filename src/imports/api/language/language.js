@@ -10,7 +10,7 @@ let _provider = {
   addl10n: () => {}
 }
 
-let defaultOptions = {}
+const defaultOptions = {}
 
 export const i18n = {}
 

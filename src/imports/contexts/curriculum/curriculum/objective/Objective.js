@@ -26,7 +26,7 @@ export const Objective = {
         firstOption: firstOption,
         options: iife(() => {
           const query = {}
-          const trans = { sort: { index: 1 }}
+          const trans = { sort: { index: 1 } }
           const toOption = doc => ({ value: doc._id, label: `${doc.index} - ${doc.title}` })
           return () => getCollection(Objective.name).find(query, trans).map(toOption)
         })

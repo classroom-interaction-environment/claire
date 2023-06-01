@@ -7,7 +7,6 @@ Template.documentState.helpers({
     return showLabel === false
   },
   isOriginal (_original, originalRef) {
-    console.debug('is original', !!_original, !!originalRef)
     return _original || originalRef
   }
 })

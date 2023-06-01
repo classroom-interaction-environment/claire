@@ -6,7 +6,7 @@
     "postinstall": "echo postinstall script",
     "start": "echo 'meteor run'; meteor run",
     "csslint": "csslint --quiet --ignore=node_modules ./imports",
-    "lint:code": "standardx . | snazzy",
+    "lint:code": "standardx . -v | snazzy",
     "lint:code-fix": "standardx --fix | snazzy",
     "lint:security": "standardx | snazzy",
     "lint:security-fix": "standardx --fix | snazzy",
@@ -17,34 +17,34 @@
     "build:docs": "jsdoc ./ -c ./jsdoc.json -r -d ../docs/api --readme ../README.md",
     "pretest-watch": "echo *****prestest*****",
     "visualize": "meteor --production --extra-packages bundle-visualizer,dynamic-import,zodern:profile-require --settings=settings.json",
-    "kill": "kill -9 `ps ax | grep node | grep meteor | awk '{print $1}'`"
+    "kill": "kill -9 `ps ax | grep node | grep meteor | awk '{print $1}'`",
+    "install:core": "meteor npm install --no-optional",
+    "install:peers": "meteor npm install bcrypt ffmpeg-cli --save-optional"
   },
   "browserslist": [
     "> 1%",
     "last 2 versions"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.17.8",
+    "@babel/runtime": "7.20.13",
     "@fortawesome/fontawesome-free": "^6.1.1",
     "@lumieducation/h5p-server": "9.2.0",
     "@lumieducation/h5p-webcomponents": "9.2.0",
     "ajv": "8.12.0",
     "bcrypt": "^5.0.1",
     "body-parser": "1.20.2",
-    "bootstrap": "^4.6.1",
+    "bootstrap": "4.6.2",
     "clipboard": "^2.0.10",
     "debounce": "^1.2.1",
     "deepmerge": "^4.2.2",
     "dely": "^1.0.2",
     "dragscroll": "0.0.8",
     "driver.js": "^0.9.8",
-    "ffmpeg-cli": "^2.7.5",
     "file-type": "^16.5.4",
     "gm": "^1.23.1",
-    "gridfs-stream": "^1.1.1",
-    "helmet": "^5.0.2",
+    "helmet": "6.0.0",
     "interactjs": "^1.10.11",
-    "jquery": "^3.6.0",
+    "jquery": "3.6.3",
     "lozad": "^1.16.0",
     "meteor-node-stubs": "^1.2.1",
     "mime-types": "^2.1.35",
@@ -60,13 +60,16 @@
     "router": "1.3.8",
     "simpl-schema": "^1.12.0",
     "sortablejs": "^1.15.0",
-    "trix": "^2.0.0-alpha.1",
+    "trix": "2.0.4",
     "validator": "^13.7.0"
+  },
+  "optionalDependencies": {
+    "ffmpeg-cli": "^2.7.5",
+    "bcrypt": "^5.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
     "@babel/eslint-parser": "^7.17.0",
-    "@meteorjs/eslint-config-meteor": "^1.0.5",
     "babel-eslint": "^10.1.0",
     "babel-plugin-istanbul": "^6.1.1",
     "chai": "^4.3.6",
@@ -102,15 +105,25 @@
     }
   },
   "eslintConfig": {
+    "ignorePatterns": [
+      "**/public/h5p/**/*",
+      "**/private/h5p/**/*"
+    ],
     "parser": "@babel/eslint-parser",
     "parserOptions": {
       "sourceType": "module",
       "allowImportExportEverywhere": true
     },
-    "extends": [
-      "@meteorjs/eslint-config-meteor"
-    ],
+    "env": {
+      "es6": true,
+      "mocha": true
+    },
+    "globals": {
+      "Promise": "readonly",
+      "AutoForm": "readonly"
+    },
     "rules": {
+      "import/no-duplicates": "off",
       "brace-style": [
         "error",
         "stroustrup",

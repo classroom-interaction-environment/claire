@@ -1,7 +1,7 @@
-import { Tracker } from "meteor/tracker"
-import { Template } from "meteor/templating"
+import { Tracker } from 'meteor/tracker'
+import { Template } from 'meteor/templating'
 import { Settings } from '../../../../contexts/system/settings/Settings'
-import { Meteor } from "meteor/meteor"
+import { Meteor } from 'meteor/meteor'
 import { Accounts } from 'meteor/accounts-base'
 import { Schema } from '../../../../api/schema/Schema'
 import { Users } from '../../../../contexts/system/accounts/users/User'

@@ -35,7 +35,7 @@ const filesSchema = {
   },
   _id: {
     type: String,
-    optional: true,
+    optional: true
   },
   userId: {
     type: String

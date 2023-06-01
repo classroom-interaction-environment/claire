@@ -13,7 +13,7 @@ import { SchoolClass } from '../../../contexts/classroom/schoolclass/SchoolClass
 import { FormModal } from '../../components/forms/modal/formModal'
 import { LessonStates } from '../../../contexts/classroom/lessons/LessonStates'
 import { callMethod } from '../../controllers/document/callMethod'
-import {getCollection} from '../../../api/utils/getCollection'
+import { getCollection } from '../../../api/utils/getCollection'
 import { firstOption } from '../../../contexts/tasks/definitions/common/helpers'
 import '../../components/lesson/status/lessonStatus'
 import '../../components/documentState/documentState'
@@ -25,7 +25,6 @@ const API = Template.unitWizard.setDependencies({
 })
 
 const sort = { sort: { updatedAt: -1 } }
-const LessonCollection = getLocalCollection(Lesson.name)
 const UnitCollection = getLocalCollection(Unit.name)
 const SchoolClassCollection = getLocalCollection(SchoolClass.name)
 const createUnitSchemaDefinitions = unitCreateSchema({ custom: true }, { withDefault: true })
@@ -60,9 +59,11 @@ Template.unitWizard.onCreated(async function () {
     getCollection(Lesson.name).find({}, { sort: { updatedAt: -1 } }).forEach(lessonDoc => {
       if (LessonStates.isCompleted(lessonDoc)) {
         lessons.completed.add(lessonDoc.unit)
-      } else if (LessonStates.isRunning(lessonDoc)) {
+      }
+      else if (LessonStates.isRunning(lessonDoc)) {
         lessons.running.add(lessonDoc.unit)
-      } else {
+      }
+      else {
         lessons.idle.add(lessonDoc.unit)
       }
 

@@ -1,17 +1,15 @@
-/* global Accounts */
 import { Meteor } from 'meteor/meteor'
 import { auto, onServer, onServerExec } from '../../../../api/utils/archUtils'
 import {
   firstNameSchema,
   lastNameSchema,
   emailSchema,
-  password2Schema,
+  password2Schema
 } from '../../../../api/accounts/registration/registerUserSchema'
 import { UserUtils } from './UserUtils'
 import { getCollection } from '../../../../api/utils/getCollection'
 import { profileImageSchema } from '../../../../api/accounts/schema/profileImageSchema'
 import { onServerExecLazy } from '../../../../infrastructure/loading/onServerExecLazy'
-import { usersByClass } from './usersByClass'
 
 export const Users = {
   name: 'users',
@@ -29,7 +27,51 @@ Users.publicFields = {
   'presence.status': 1
 }
 
-Users.schema = {}
+Users.schema = {
+  username: {
+    type: String,
+    optional: true
+  },
+  profileImage: profileImageSchema({ optional: true }),
+  emails: {
+    type: Array,
+    optional: true
+  },
+  'emails.$': {
+    type: Object,
+    blackbox: true,
+    optional: true
+  },
+  firstName: firstNameSchema({ optional: true }),
+  lastName: lastNameSchema({ optional: true }),
+  locale: {
+    type: String,
+    optional: true
+  },
+  institution: {
+    type: String,
+    optional: true
+  },
+  role: {
+    type: String,
+    optional: true
+  },
+  services: {
+    type: Object,
+    blackbox: true,
+    optional: true
+  },
+  ui: {
+    type: Object,
+    blackbox: true,
+    optional: true
+  },
+  presence: {
+    type: Object,
+    blackbox: true,
+    optional: true
+  }
+}
 
 /** @deprecated **/
 Users.roles = {
@@ -46,27 +88,6 @@ Users.roles = {
 Users.groups = {
   base: 'curriculum',
   core: 'core'
-}
-
-/****************************
- *
- * ERRORS
- *
- ***************************/
-
-/** @deprecated TODO move errors into own object */
-Users.errors = Users.errors || {}
-Users.errors.notFound = 'user.notFound'
-Users.errors.invalidUser = 'user.invalidUser'
-
-Users.errors.UserFactory = {
-  failed: 'createUser.failed'
-}
-
-Users.errors.codeRegister = {
-  codeInvalid: 'codeRegister.codeInvalid',
-  emailExists: 'codeRegister.emailExists',
-  failed: 'codeRegister.failed'
 }
 
 /****************************
@@ -320,13 +341,18 @@ Users.methods.registerWithCode = {
       firstName: firstNameSchema(),
       lastName: lastNameSchema(),
       email: emailSchema(),
-      password: password2Schema(passwordSchemaDef)
+      password: password2Schema(passwordSchemaDef),
+      locale: {
+        type: String,
+        optional: true
+      }
     }
   }),
   isPublic: true,
   run: onServerExec(function () {
+    import { registerWithCode } from './methods/registerWithCode'
+
     return function run (params) {
-      import { registerWithCode } from './methods/registerWithCode' // TODO move into scope of surrounding function
       return registerWithCode(params)
     }
   })
@@ -344,7 +370,7 @@ Users.methods.byClass = {
     'skip.$': String
   },
   run: onServerExec(function () {
-    import { usersByClass } from './usersByClass'
+    const { usersByClass } = require('./usersByClass')
 
     const run = usersByClass()
 
@@ -388,14 +414,14 @@ Users.publications.byClass = {
     classId: String
   },
   run: onServerExecLazy(function () {
-    import { usersByClass } from './usersByClass'
+    const { usersByClass } = require('./usersByClass')
     return usersByClass
   })
 }
 
 Users.publications.byGroup = {
   name: 'users.publications.byGroup',
-  role:  UserUtils.roles.student,
+  role: UserUtils.roles.student,
   schema: {
     groupId: String
   },
@@ -404,14 +430,14 @@ Users.publications.byGroup = {
 
     return function ({ groupId } = {}) {
       const { userId } = this
-      const groupDoc = getCollection(Group.name).findOne({ _id: groupId,  users: { $elemMatch: { userId } } })
+      const groupDoc = getCollection(Group.name).findOne({ _id: groupId, users: { $elemMatch: { userId } } })
 
       if (!groupDoc) {
         throw new Meteor.Error('error.docNotFound')
       }
 
       const userIds = groupDoc.users.map(doc => doc.userId)
-      return Meteor.users.find({ _id: { $in: userIds }}, {
+      return Meteor.users.find({ _id: { $in: userIds } }, {
         fields: Users.publicFields
       })
     }

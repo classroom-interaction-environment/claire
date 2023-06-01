@@ -41,7 +41,6 @@ WebResources.helpers = {
 //
 /// /////////////////////////////////////////////////////////////////////////////////////////////
 
-
 onClientExec(function () {
   import { ReactiveVar } from 'meteor/reactive-var'
   import { ITaskDefinition } from '../../tasks/definitions/ITaskDefinition'

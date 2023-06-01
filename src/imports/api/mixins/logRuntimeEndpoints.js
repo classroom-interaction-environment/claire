@@ -1,4 +1,3 @@
-import { logError } from '../errors/server/logerror'
 import { createLog } from '../log/createLog'
 import { Random } from 'meteor/random'
 
@@ -32,7 +31,8 @@ export const logRuntimeEndpoints = function (options) {
 
     try {
       return originalFct.apply(environment, args)
-    } catch (runtimeError) {
+    }
+    catch (runtimeError) {
       // logError({
       //   error: methodRuntimeError,
       //   createdBy: environment.userId,

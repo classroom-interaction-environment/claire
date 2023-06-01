@@ -14,6 +14,7 @@ export const ItemNumber = {
   name: 'itemNumber',
   label: 'item.number',
   icon: 'chart-line',
+  save: 'manual',
   category: NumericalItems,
   dataType: ResponseDataTypes.numerical.name,
   edit ({ translate }) {

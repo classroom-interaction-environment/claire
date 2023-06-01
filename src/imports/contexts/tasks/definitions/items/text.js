@@ -18,6 +18,7 @@ export const ItemText = {
   label: 'item.text',
   dataType: ResponseDataTypes.text.name,
   icon: 'align-left',
+  save: 'auto',
   edit ({ translate }) {
     return {
       placeholder: {
@@ -65,6 +66,7 @@ export const ItemTags = {
   label: 'item.tags',
   category: TextItems,
   icon: 'tags',
+  save: 'auto',
   dataType: ResponseDataTypes.textList.name,
   edit ({ translate }) {
     return {

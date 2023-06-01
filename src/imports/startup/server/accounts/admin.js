@@ -61,7 +61,8 @@ onServerExec(Meteor.bindEnvironment(function () {
       log('database successfully migrated')
       initAdmin()
     })
-  } else {
+  }
+  else {
     initAdmin()
   }
 }))

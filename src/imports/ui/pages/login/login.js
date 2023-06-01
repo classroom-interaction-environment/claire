@@ -17,7 +17,7 @@ const { siteName } = Meteor.settings.public
 const schemas = new Map()
 
 const API = Template.login.setDependencies({
-  language: loginLanguage,
+  language: loginLanguage
 })
 
 Template.login.onCreated(function () {
@@ -38,7 +38,7 @@ Template.login.onCreated(function () {
           autofocus: true,
           label: false,
           autocomplete: 'username',
-          placeholder: () => i18n.get('userProfile.email'),
+          placeholder: () => i18n.get('userProfile.email')
         }
       },
       password: passwordSchemaClassic({

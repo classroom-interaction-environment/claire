@@ -1,4 +1,3 @@
-import { Mongo } from 'meteor/mongo'
 import { createPipeline } from '../createPipeline'
 import {
   rateLimitMethod,
@@ -8,6 +7,7 @@ import { createPublication } from '../../factories/createPublication'
 import { createFilesCollection } from '../../factories/createFilesCollection'
 import { createMethod } from '../../factories/createMethod'
 import { i18n } from '../../../api/language/language'
+import { Mongo } from 'meteor/mongo'
 import { createCollection } from '../../factories/createCollection'
 import { isSupportedObject } from '../../../api/utils/isSupportedObject'
 import { getCheckMime } from '../../../api/files/getCheckMime'
@@ -19,6 +19,8 @@ const i18nFactory = (...args) => i18n.get(...args)
 /**
  * The default build pipeline for sever-contexts
  * @server
+ * @param context {object} the object to create
+ * @param options {object}  the build options for this pipeline
  */
 export const buildPipeline = createPipeline('build', function (context, api, options) {
   const { collection, filesCollection, methods, publications, debug } = options
@@ -31,15 +33,14 @@ export const buildPipeline = createPipeline('build', function (context, api, opt
 
   // CREATE COLLECTION
 
-  if (collection && isSupportedObject(context.schema)) {
+  if (collection && !context.collection && isSupportedObject(context.schema)) {
     api.info(`create collection [${context.name}]`)
     products.collection = createCollection(context)
   }
 
   // CREATE FILES COLLECTION
-
   if (filesCollection && isFilesContext(context)) {
-    const FilesMongoCollection = products.collection || new Mongo.Collection(context.name)
+    const FilesMongoCollection = products.collection ?? new Mongo.Collection(context.name)
     const { files } = context
 
     api.info('Files context detected, create files collection')
@@ -63,7 +64,6 @@ export const buildPipeline = createPipeline('build', function (context, api, opt
   // CREATE METHODS
 
   if (methods && isSupportedObject(context.methods)) {
-    api.info('create methods')
     products.methods = Object.values(context.methods).map(methodDef => {
       api.info(`> [${methodDef.name}]`)
       const method = createMethod(methodDef)
@@ -78,7 +78,6 @@ export const buildPipeline = createPipeline('build', function (context, api, opt
   // CREATE PUBLICATIONS
 
   if (publications && isSupportedObject(context.publications)) {
-    api.info('create publications')
     products.publications = Object.values(context.publications).map(pubDef => {
       api.info(`> [${pubDef.name}]`)
       const pub = createPublication(pubDef)

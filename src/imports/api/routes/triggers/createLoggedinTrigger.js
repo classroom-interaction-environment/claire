@@ -1,5 +1,5 @@
 import { loggedIn } from '../../accounts/user/loggedIn'
-import { check } from "meteor/check"
+import { check } from 'meteor/check'
 import { Router } from '../Router'
 
 export const createLoggedinTrigger = (resolveRouteFct) => {

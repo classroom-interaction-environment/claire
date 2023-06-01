@@ -1,3 +1,5 @@
+import { ReactiveVar } from 'meteor/reactive-var'
+
 export const dynamicImport = promises => {
   const promisesList = Array.isArray(promises)
     ? promises

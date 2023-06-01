@@ -1,9 +1,9 @@
 import { check } from 'meteor/check'
 import checkFileType from 'file-type'
 import mimeTypes from 'mime-types'
-import { createDebugLog } from '../log/createLog'
+import { createLog } from '../log/createLog'
 
-const debug = createDebugLog('checkMime')
+const debug = createLog({ name: 'checkMime', type: 'debug' })
 
 export const getCheckMime = (i18nFactory = x => x, filesDef) => {
   check(i18nFactory, Function)

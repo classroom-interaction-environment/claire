@@ -3,6 +3,7 @@
     "task": {
       "selectLastEdited": "Last edited tasks",
       "description": "These are your custom tasks, sorted by latest updated.",
+      "custom": "These are your specially created tasks",
       "createNew": "Create new task",
       "created": "Task created",
       "continueToEdit": "Continue and edit task",
@@ -29,7 +30,9 @@
         "title":"Please choose between the following",
         "description": "Done! Do you wish to continue?"
       },
-      "confirmDelete": "You are about to finally delete the task \"{{title}}\". Deletion will also remove it from the following units: {{units}}"
+      "confirmDeleteLinked": "You are about to finally delete the task \"{{title}}\". Deletion will also remove it from the following units: {{units}}",
+      "confirmDelete": "SYou are about to finally delete the task \"{{title}}\".",
+      "edit": "Edit in the task editor"
     }
   }
 }

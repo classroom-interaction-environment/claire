@@ -43,7 +43,7 @@ export const fromResponse = ({ taskId, itemId, taskDoc, page, response }) => {
     return dataType.from(response, item)
   }
 
-  if (!dataType in ResponseDataTypes) {
+  if (!(dataType in ResponseDataTypes)) {
     throw new Error(`Unexpected dataType "${dataType}".`)
   }
 

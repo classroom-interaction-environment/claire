@@ -1,26 +1,27 @@
 // credits to: https://stackoverflow.com/a/51230102/3098783
 
-.short-container .collapse, .short-container .collapsing {
+.short-container .collapse,
+.short-container .collapsing {
   height: 3rem;  /* [NUM_OF_LINES] x [LINE_HEIGHT] */
 }
 
 .short-container .collapse {
-  position: relative;  /* For ...'s content absolute positioning */
   display: block;
   overflow: hidden;
+  position: relative;  /* For ...'s content absolute positioning */
 }
 
-.short-container .collapse:before {
+.short-container .collapse::before {
+  bottom: 0;
   content: ' ...';
   position: absolute;
   right: 0;
-  bottom: 0;
 }
 
 .short-container .collapse.show {
   height: auto;  /* You need to reset the height when not collapsed */
 }
 
-.short-container .collapse.show:before {
+.short-container .collapse.show::before {
   display: none;  /* Of course you don't want to display ... */
 }

@@ -15,7 +15,6 @@ const studentTrigger = function () {}
 
 const loginTrigger = createLoginTrigger(Routes.login)
 
-
 const toDashboard = () => {
   if (!Meteor.userId()) return
   Router.go(TeacherRoutes.dashboard)

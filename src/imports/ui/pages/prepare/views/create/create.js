@@ -1,10 +1,8 @@
-/* global AutoForm */
 import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { Wizard } from '../../../../../api/wizard/Wizard'
 
 import { SchoolClass } from '../../../../../contexts/classroom/schoolclass/SchoolClass'
-import { Schema, ErrorTypes } from '../../../../../api/schema/Schema'
 import { Pocket } from '../../../../../contexts/curriculum/curriculum/pocket/Pocket'
 import { Unit } from '../../../../../contexts/curriculum/curriculum/unit/Unit'
 import { Dimension } from '../../../../../contexts/curriculum/curriculum/dimension/Dimension'
@@ -15,7 +13,6 @@ import { i18n } from '../../../../../api/language/language'
 import { Material } from '../../../../../contexts/material/Material'
 import { LessonStates } from '../../../../../contexts/classroom/lessons/LessonStates'
 
-import { formIsValid } from '../../../../components/forms/formUtils'
 import { cursor } from '../../../../../api/utils/cursor'
 import { dataTarget } from '../../../../utils/dataTarget'
 import { findUnassociatedMaterial } from '../../../../../api/utils/findUnassociatedMaterial'
@@ -220,7 +217,6 @@ Template.createClass.helpers({
     return LessonStates.isIdle(lessonDoc)
   },
   unitsForPocket (pocketId) {
-    const userId = Meteor.userId()
     const disabledDimensions = Template.getState('disabledDimensions')
     const selectedUnit = Template.getState('selectedUnit')
     const query = {
@@ -271,7 +267,6 @@ Template.createClass.helpers({
     return Template.getState('unassociatedMaterial')
   },
   reference (entry) {
-    console.debug({ entry })
     const ctx = Material.get(entry.collection || entry.type)
     return {
       ...ctx,
@@ -357,7 +352,8 @@ Template.createClass.events({
       })
       templateInstance.state.set({ previewMaterial })
       setTimeout(() => API.showModal('material-preview-modal'), 100)
-    } catch (e) {
+    }
+    catch (e) {
       API.notify(e)
     }
   },
@@ -389,7 +385,7 @@ function completeWizard (templateInstance, onComplete) {
   const classId = templateInstance.state.get('selectedClass')
   createLesson({ classId, unitId: originalUnitId }, ({ lessonId, unitId }) => {
     if (onComplete) {
-     setTimeout(() => onComplete({ lessonId, classId, originalUnitId, unitId }), 500)
+      setTimeout(() => onComplete({ lessonId, classId, originalUnitId, unitId }), 500)
     }
   })
 }

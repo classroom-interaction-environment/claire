@@ -20,7 +20,7 @@ import { $in } from '../../../../../api/utils/query/inSelector'
 import { unitEditorIsMasterMode } from '../../utils/unitEditorIsMasterMode'
 import { createMaterial } from './createMaterial'
 import { isCurriculumDoc } from '../../../../../api/decorators/methods/isCurriculumDoc'
-import { selectEntries } from './helpers/selectEntries'
+import { createSelectableMaterialEntriesQuery } from './helpers/createSelectableMaterialEntriesQuery'
 import { entries } from './helpers/entries'
 import { getMaterialContexts } from '../../../../../contexts/material/initMaterial'
 import { loadIntoCollection } from '../../../../../infrastructure/loading/loadIntoCollection'
@@ -110,12 +110,12 @@ Template.uematerial.onCreated(function onUeMaterialCreated () {
   })
 
   // ===========================================================================
-  //
+  // 4. load subview
   // ===========================================================================
 
   // Reactively retrieve the current view state and load the respective
   // templates, as well as subscribe to the data / documents (if necessary)
-  // This function gets triggered when the previous autorun updadates the parameter
+  // This function gets triggered when the previous autorun updates the parameter
   instance.autorun(() => {
     const currentView = instance.state.get('view')
 
@@ -147,6 +147,11 @@ Template.uematerial.onCreated(function onUeMaterialCreated () {
   //  LOAD MATERIAL
   // ===========================================================================
 
+  /**
+   * Loads material into a local collection
+   * @param ids
+   * @param onComplete
+   */
   instance.loadMaterial = ({ ids, onComplete }) => {
     const currentView = instance.state.get('view')
     const ctx = MaterialSubviews.getContext(currentView)
@@ -245,14 +250,14 @@ Template.uematerial.helpers({
     const unitDoc = instance.state.get('unitDoc')
     const viewState = instance.getViewState()
     const context = viewState.context
-    return Object.assign({}, entry, { unitDoc, context })
+    return Object.assign({}, entry, { unitDoc, context, parent: instance })
   },
   selectEntries () {
     const instance = Template.instance()
     const unitDoc = instance.state.get('unitDoc')
     const originalUnitDoc = instance.state.get('originalUnitDoc')
     const viewState = instance.getViewState()
-    return viewState && selectEntries(viewState, unitDoc, originalUnitDoc)
+    return viewState && createSelectableMaterialEntriesQuery(viewState, unitDoc, originalUnitDoc)
   },
   selectEntryModalData (entry) {
     return Object.assign({}, entry, { isModal: true })
@@ -305,8 +310,14 @@ Template.uematerial.helpers({
   previewTarget () {
     const instance = Template.instance()
     const targetId = instance.state.get('previewTarget')
-    const viewState = Template.instance().getViewState()
-    return viewState && viewState.previewRenderer.previewData.call(viewState, targetId, instance)
+    const viewState = instance.getViewState()
+    if (!viewState) { return null }
+
+    const previewCtx = viewState.previewRenderer.previewData.call(viewState, targetId, instance)
+    if (!previewCtx) { return null }
+
+    previewCtx.print = !!instance.state.get('isPrintPreview')
+    return previewCtx
   },
   phases () {
     return Template.getState('phases')
@@ -363,7 +374,8 @@ Template.uematerial.events({
 
     if (references.find(el => el.document === materialId)) {
       references = references.filter(el => el.document !== materialId)
-    } else {
+    }
+    else {
       references.push({ collection: context.name, document: materialId })
     }
 
@@ -499,7 +511,8 @@ Template.uematerial.events({
 
     const { context } = viewState
     const materialDoc = getLocalCollection(context.name).findOne(targetId)
-    const textOptions = { title: materialDoc.title || materialDoc.name }
+    const title = materialDoc.title || materialDoc.name || i18n.get(context.label)
+    const textOptions = { title }
 
     // material can be fully deleted if
     // - its own material or
@@ -516,17 +529,17 @@ Template.uematerial.events({
 
     const confirmOptions = deleteMaterial
       ? {
-        text: 'editor.unit.material.confirmDelete',
-        textOptions,
-        codeRequired: true,
-        type: 'danger'
-      }
+          text: 'editor.unit.material.confirmDelete',
+          textOptions,
+          codeRequired: true,
+          type: 'danger'
+        }
       : {
-        text: 'editor.unit.material.confirmRemove',
-        textOptions,
-        codeRequired: false,
-        type: 'secondary'
-      }
+          text: 'editor.unit.material.confirmRemove',
+          textOptions,
+          codeRequired: false,
+          type: 'secondary'
+        }
 
     confirmDialog(confirmOptions)
       .then(result => {
@@ -568,8 +581,9 @@ Template.uematerial.events({
               }, (err, phaseDoc) => {
                 if (err) {
                   return API.notify(err)
-                } else {
-                  return API.notify('editor.unit.material.unlinkedFromPhase',)
+                }
+                else {
+                  return API.notify('editor.unit.material.unlinkedFromPhase')
                 }
               })
             }
@@ -580,9 +594,10 @@ Template.uematerial.events({
               Meteor.call(context.methods.remove.name, { _id: targetId }, (err) => {
                 if (err) {
                   API.notify(err)
-                } else {
+                }
+                else {
                   getLocalCollection(context.name).remove({ _id: targetId })
-                  API.notify('editor.unit.material.taskRemoved')
+                  API.notify(i18n.get('editor.unit.material.deleted', { title }))
                 }
               })
             }

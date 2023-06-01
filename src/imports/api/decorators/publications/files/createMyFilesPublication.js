@@ -7,7 +7,7 @@ export const createMyFilesPublication = ({ name }) => ({
     schema: {
       meta: {
         type: Object,
-        optional: true,
+        optional: true
       },
       'meta.lessonId': { type: String, optional: true },
       'meta.taskId': { type: String, optional: true },

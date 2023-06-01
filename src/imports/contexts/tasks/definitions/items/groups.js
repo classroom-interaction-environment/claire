@@ -1,6 +1,6 @@
 import { Item } from './Item'
 import { ResponseDataTypes } from '../../../../api/plugins/ResponseDataTypes'
-import { editSchema, firstOption, itemSchema } from '../common/helpers'
+import { editSchema, itemSchema } from '../common/helpers'
 import { ItemBase } from './base'
 
 export const GroupItems = {
@@ -18,17 +18,19 @@ export const GroupText = {
   label: 'item.groupText',
   dataType: ResponseDataTypes.text.name,
   icon: 'layer-group',
+  save: 'auto',
   edit ({ translate }) {
     return {
       groupMode: {
         type: String,
         optional: false,
         label: translate('item.groupMode.title'),
-        allowedValues: ['override', 'merge'],
+        allowedValues: ['merge'],
+        defaultValue: 'merge',
         autoform: {
-          firstOption: firstOption,
+          defaultValue: 'merge',
+          firstOption: false,
           options: () => [
-            { value: 'override', label: translate('item.groupMode.override') },
             { value: 'merge', label: translate('item.groupMode.merge') }
           ]
         }

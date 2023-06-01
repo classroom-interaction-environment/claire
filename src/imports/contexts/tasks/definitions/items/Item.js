@@ -4,7 +4,7 @@ import { check, Match } from 'meteor/check'
 import { editSchema, itemLoad, itemSchema, option } from '../common/helpers'
 import { ResponseDataTypes } from '../../../../api/plugins/ResponseDataTypes'
 import { isResponseDataType } from '../../../../api/utils/check/isResponseDataType'
-import { createDebugLog, LogTypes } from '../../../../api/log/createLog'
+import { createLog } from '../../../../api/log/createLog'
 import { ITaskDefinition } from '../ITaskDefinition'
 import { ItemPlugins } from 'meteor/claire:plugin-registry'
 import { getItemBase } from './getItemBase'
@@ -34,7 +34,7 @@ Item.renderer = {
   }
 }
 
-const debug = createDebugLog(Item.name, LogTypes.debug)
+const debug = createLog({ name: Item.name, type: 'debug' })
 
 /// /////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -43,7 +43,6 @@ const debug = createDebugLog(Item.name, LogTypes.debug)
 /// /////////////////////////////////////////////////////////////////////////////////////////////
 
 const initialized = new ReactiveVar(false)
-let localeTracker
 
 /**
  * Allows to determine, whether this module has been initialized.
@@ -85,7 +84,7 @@ Item.initialize = async function () {
   plugins.forEach(({ name, plugin }) => processPlugin(name, plugin))
 
   // setup reactive language updates
-  localeTracker = Tracker.autorun(() => {
+  Tracker.autorun(() => {
     const currentLocale = i18n.getLocale()
     ItemPlugins.onLanguageChange(currentLocale)
       .catch(e => console.error(e))
@@ -172,7 +171,7 @@ const processPlugin = (name, plugin) => {
 }
 
 Item.register = function (context, schemaDefinitions) {
-  debug('(register item context)',context.name)
+  debug('(register item context)', context.name)
   check(context.name, String)
   check(context.label, String)
   check(context.dataType, Match.Where(isResponseDataType))
@@ -188,7 +187,7 @@ Item.register = function (context, schemaDefinitions) {
 
   // item add to the internal contexts map
   const name = context.name
-    contextMap.set(name, Object.assign({}, context, schemaDefinitions, {
+  contextMap.set(name, Object.assign({}, context, schemaDefinitions, {
     icon: context.icon || context.category.icon,
     publicFields: publicFields,
     dataType: context.dataType || ResponseDataTypes.string
@@ -233,7 +232,7 @@ Item.getDataTypeBy = function (name) {
 Item.extract = function (itemId, document) {
   if (!itemId || !document) return
 
-  let item = undefined
+  let item
 
   document.pages.some(page => {
     if (!page.content) return false
@@ -243,6 +242,8 @@ Item.extract = function (itemId, document) {
       item = found
       return true
     }
+
+    return false
   })
 
   return item

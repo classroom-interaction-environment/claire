@@ -1,4 +1,3 @@
-/* global Roles */
 import { Meteor } from 'meteor/meteor'
 import { check } from 'meteor/check'
 import { i18n } from '../../../api/language/language'
@@ -20,6 +19,10 @@ export const SchoolClass = {
     students: 1
   },
   dependencies: [],
+  /**
+   * Extract into own namespace
+   * @deprecated
+   */
   errors: {
     progressIncomplete: 'schoolClass.progressIncomplete',
     invalidSchoolYear: 'schoolClass.invalidSchoolYear',
@@ -390,7 +393,7 @@ SchoolClass.methods.update = {
         })
       }
 
-      return SchoolClassCollection.update(_id, { $set: { title } } )
+      return SchoolClassCollection.update(_id, { $set: { title } })
     }
   })
 }
@@ -408,6 +411,7 @@ SchoolClass.methods.remove = {
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
     import { removeClass } from './methods/removeClass'
+
     return function ({ _id }) {
       const { userId, log } = this
       const classId = _id
@@ -475,7 +479,6 @@ SchoolClass.publications.single = {
   timeInterval: 1000,
   numRequests: 10
 }
-
 
 SchoolClass.publications.my = {
   name: 'schoolClass.publications.my',

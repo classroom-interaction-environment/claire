@@ -122,7 +122,7 @@ export default class ContentUserDataStorage {
   }
 
   async saveContentUserData (contentId, dataType, subContentId, userState, invalidate, preload, user) {
-   throw new Error('not implemented')
+    throw new Error('not implemented')
   }
 
   async saveFinishedDataForUser (contentId, score, maxScore, opened, finished, time, user) {

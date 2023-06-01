@@ -114,7 +114,8 @@ export default class MongoGridFSContentStorage {
         {},
         500
       )
-    } catch (error) {
+    }
+    catch (error) {
       log.error(`Error when adding or updating content in MongoDB: ${error.message}`)
       throw new H5pError(
         'mongo-gridfs-content-storage:mongo-add-update-error',
@@ -175,7 +176,8 @@ export default class MongoGridFSContentStorage {
             resolve()
           })
       })
-    } catch (error) {
+    }
+    catch (error) {
       log.error(
         `Error while uploading file "${filename}" to GridFS storage: ${error.message}`
       )
@@ -230,16 +232,17 @@ export default class MongoGridFSContentStorage {
       const filesToDelete = await this.listFiles(contentId, user)
       log.debug(`${filesToDelete.length} files in GridFS storage must be deleted.`)
       const idsToDelete = (await this.bucket
-          .find({ 'metadata.contentId': contentId })
-          .project({ _id: 1 })
-          .toArray())
+        .find({ 'metadata.contentId': contentId })
+        .project({ _id: 1 })
+        .toArray())
         .map((o) => o._id)
 
       Promise.all(idsToDelete.map(async (id) => this.bucket.delete(id)))
       if (this.collection.remove({ _id: contentId }) !== 1) {
         throw new Error('GridFS item could not be deleted.')
       }
-    } catch (error) {
+    }
+    catch (error) {
       log.error(`There was an error while deleting the content object: ${error.message}`)
       throw new H5pError(
         'mongo-gridfs-content-storage:deleting-content-error',
@@ -273,7 +276,8 @@ export default class MongoGridFSContentStorage {
         .toArray()
 
       await this.bucket.delete(o[0]._id)
-    } catch (error) {
+    }
+    catch (error) {
       log.error(`Error while deleting a file from GridFS storage: ${error.message}`)
       throw new H5pError(
         'mongo-gridfs-content-storage:deleting-file-error',
@@ -319,7 +323,8 @@ export default class MongoGridFSContentStorage {
       }
 
       return result.length > 0
-    } catch (error) {
+    }
+    catch (error) {
       log.debug(`File ${filename} does not exist in ${contentId}.`)
       return false
     }
@@ -362,7 +367,8 @@ export default class MongoGridFSContentStorage {
         .toArray()
 
       return { size: info[0].length, birthtime: info[0].uploadDate }
-    } catch (error) {
+    }
+    catch (error) {
       log.error(error)
       throw new H5pError(
         'content-file-missing',
@@ -447,7 +453,8 @@ export default class MongoGridFSContentStorage {
         _id: contentId
       })
       return ret.metadata
-    } catch (error) {
+    }
+    catch (error) {
       log.error(`Content with id ${contentId} does not exist.`)
       throw new H5pError(
         'mongo-gridfs-content-storage:content-not-found',
@@ -475,7 +482,8 @@ export default class MongoGridFSContentStorage {
         _id: contentId
       })
       return ret.parameters
-    } catch (error) {
+    }
+    catch (error) {
       log.error(`ContentId ${contentId} does not exist.`)
       throw new H5pError(
         'mongo-gridfs-content-storage:content-not-found',
@@ -600,7 +608,8 @@ export default class MongoGridFSContentStorage {
       const cursor = this.collection.find({}, { projection: { _id: true } })
 
       return cursor.fetch().map((match) => match._id)
-    } catch (error) {
+    }
+    catch (error) {
       log.error(
         `Error while listing all ids of content objects: ${error.message}`
       )
@@ -644,11 +653,10 @@ export default class MongoGridFSContentStorage {
         .toArray()
       log.debug(`Found ${files.length} file(s) in GridFS.`)
       return files
-    } catch (error) {
-      console.log(error)
-      log.debug(
-        'There was an error while getting list of files from GridFS. This might not be a problem if no files were added to the content object.'
-      )
+    }
+    catch (error) {
+      console.error(error)
+      log.debug('There was an error while getting list of files from GridFS. This might not be a problem if no files were added to the content object.')
       return []
     }
   }

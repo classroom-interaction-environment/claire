@@ -1,3 +1,6 @@
+import { Meteor } from 'meteor/meteor'
+import { Mongo } from 'meteor/mongo'
+
 /*
  * due to unclean programming this collection has accidentally been named
  * 'imagefiles', violating the camelCase convention which introduced certain

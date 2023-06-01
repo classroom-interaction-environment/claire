@@ -172,7 +172,8 @@ Template.inviteUsers.events({
           templateInstance.state.set('deleting', null)
           if (err) {
             API.notify(err)
-          } else {
+          }
+          else {
             API.notify('form.removeComplete')
           }
         })
@@ -253,7 +254,8 @@ Template.inviteUsers.events({
       templateInstance.state.set('codeToBeamer', null)
       if (err) {
         API.notify(err)
-      } else {
+      }
+      else {
         API.notify()
       }
     }))

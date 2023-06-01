@@ -1,11 +1,11 @@
 import { loggedOut } from '../../accounts/user/loggedOut'
-import { Meteor } from "meteor/meteor"
+import { Meteor } from 'meteor/meteor'
 import { Router } from '../Router'
-import { check } from "meteor/check"
+import { check } from 'meteor/check'
 import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
-import { createDebugLog } from '../../log/createLog'
+import { createLog } from '../../log/createLog'
 
-const debug = createDebugLog('adminTrigger', 'debug', { devOnly: true })
+const debug = createLog({ name: 'adminTrigger', type: 'debug', devOnly: true })
 
 export const createAdminTrigger = ({ redirectRoute, forbiddenRoute }) => {
   check(redirectRoute.path, Function)

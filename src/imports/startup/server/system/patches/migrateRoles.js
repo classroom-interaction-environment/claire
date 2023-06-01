@@ -1,15 +1,15 @@
 import { Meteor } from 'meteor/meteor'
 import { Roles } from 'meteor/alanning:roles'
-import { createInfoLog } from '../../../../api/log/createLog'
+import { createLog } from '../../../../api/log/createLog'
 
 const shouldMigrate = Meteor.settings.patch?.roles
-const info = createInfoLog('Roles')
+const info = createLog({ name: 'Roles' })
 const migrateRoles = Meteor.bindEnvironment(function (count) {
   info('running database migration, count=', count)
   Roles._forwardMigrate()
   Roles._forwardMigrate2()
 
-// update users roles
+  // update users roles
   Meteor.users.find().forEach(user => {
     if (!user.roles || user.roles.length === 0) {
       const roles = Roles.getRolesForUser(user._id)
@@ -26,7 +26,8 @@ if (shouldMigrate) {
   for (let i = 0; i < 3; i++) {
     try {
       migrateRoles(i)
-    } catch (e) {
+    }
+    catch (e) {
       console.error(e)
     }
   }

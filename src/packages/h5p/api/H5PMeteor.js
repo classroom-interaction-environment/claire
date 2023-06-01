@@ -11,6 +11,12 @@ export const H5PMeteor = {
   baseRoute: '/h5p'
 }
 
+H5PMeteor.createLog = () => {
+  return () => {
+    console.warn('Inject createLog from host system!')
+  }
+}
+
 // ////////////////////////////////////////////////////////////////////////////
 //
 // Routes

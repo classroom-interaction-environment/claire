@@ -29,9 +29,10 @@ Template.nav.helpers({
 })
 
 Template.nav.events({
-  'click #globalShareButton' (event) {
-    global.$('#shareModal').modal('show')
-  },
+  // commented out until fully clear how to implement
+  // 'click #globalShareButton' (event) {
+  //  global.$('#shareModal').modal('show')
+  // },
   'click .main-navbar-link' (event, templateInstance) {
     const activeCategory = dataTarget(event, templateInstance, 'link')
     templateInstance.state.set('active', activeCategory)

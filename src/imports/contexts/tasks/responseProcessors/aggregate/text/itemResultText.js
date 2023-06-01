@@ -1,7 +1,7 @@
 import { Template } from 'meteor/templating'
 import '../../../../../ui/generic/nodocs/nodocs'
-import './itemResultText.html'
 import responseLanguage from '../../i18n/responseLanguage'
+import './itemResultText.html'
 
 const API = Template.itemResultText.setDependencies({
   language: responseLanguage
@@ -77,7 +77,8 @@ Template.itemResultText.events({
     const userIndex = visibleUsers.indexOf(userId)
     if (userIndex === -1) {
       visibleUsers.push(userId)
-    } else {
+    }
+    else {
       visibleUsers.splice(userIndex, 1)
     }
     templateInstance.data.api.save({
@@ -97,7 +98,8 @@ Template.itemResultText.events({
     const userIndex = hiddenAnswers.indexOf(userId)
     if (userIndex === -1) {
       hiddenAnswers.push(userId)
-    } else {
+    }
+    else {
       hiddenAnswers.splice(userIndex, 1)
     }
     templateInstance.data.api.save({

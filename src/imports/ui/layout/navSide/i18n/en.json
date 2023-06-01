@@ -1,15 +1,26 @@
 {
   "nav": {
-    "userProfile": "Profile",
+    "profile": "Profile",
+    "editProfile": "Edit Profile",
     "toggle": "Toggle",
     "toggleFluid": "Toggle width",
     "login": "Sign-in",
     "logout": "Sign-out",
     "forgotPassword": "Forgot password?",
     "placeholder": {
-      "title": "Fasse den Fehler in ein paar Worten zusammen...",
-      "description": "Mache bitte möglichst präzise Angaben zum fehler..."
+      "title": "Summarize the error in a few words...",
+      "description": "Please be as specific as possible about the error..."
     },
-    "tools": "Tools"
+    "tools": "Tools",
+    "customUnits": "Planning your own lessons"
+  },
+  "dashboard": {
+    "prepare": "Sample Templates",
+    "lesson": "Conducting Lessons"
+  },
+  "editor": {
+    "task":{
+      "title": "Task-Editor"
+    }
   }
 }

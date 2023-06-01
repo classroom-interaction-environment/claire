@@ -7,8 +7,8 @@ export const TaskEditorViewStates = {
     template: 'taskPages',
     inExtendedView: false,
     async load () {
-      await  import('../../../contexts/curriculum/curriculum/task/renderer/main/taskRendererFactory')
-      await  import('./helpers/sharedTemplateHelpers')
+      await import('../../../contexts/curriculum/curriculum/task/renderer/main/taskRendererFactory')
+      await import('./helpers/sharedTemplateHelpers')
       return import('./pages/taskPages')
     }
   },
@@ -18,8 +18,8 @@ export const TaskEditorViewStates = {
     template: 'taskHeader',
     inExtendedView: true,
     async load () {
-      await  import('../../../contexts/curriculum/curriculum/task/renderer/main/taskRendererFactory')
-      await  import('./helpers/sharedTemplateHelpers')
+      await import('../../../contexts/curriculum/curriculum/task/renderer/main/taskRendererFactory')
+      await import('./helpers/sharedTemplateHelpers')
       return import('./header/taskHeader')
     }
   },
@@ -29,8 +29,8 @@ export const TaskEditorViewStates = {
     template: 'taskFooter',
     inExtendedView: true,
     async load () {
-      await  import('../../../contexts/curriculum/curriculum/task/renderer/main/taskRendererFactory')
-      await  import('./helpers/sharedTemplateHelpers')
+      await import('../../../contexts/curriculum/curriculum/task/renderer/main/taskRendererFactory')
+      await import('./helpers/sharedTemplateHelpers')
       return import('./footer/taskFooter')
     }
   },
@@ -58,8 +58,8 @@ export const TaskEditorViewStates = {
     template: 'taskEditorSummary',
     inExtendedView: false,
     async load () {
-      await  import('../../../contexts/curriculum/curriculum/task/renderer/main/taskRendererFactory')
-      await  import('./helpers/sharedTemplateHelpers')
+      await import('../../../contexts/curriculum/curriculum/task/renderer/main/taskRendererFactory')
+      await import('./helpers/sharedTemplateHelpers')
       return import('./summary/taskSummary')
     }
   },

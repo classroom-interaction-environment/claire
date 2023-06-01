@@ -1,10 +1,10 @@
 import { Meteor } from 'meteor/meteor'
 import { check, Match } from 'meteor/check'
 import { ReactiveVar } from 'meteor/reactive-var'
-import { Random } from 'meteor/random'
 import { UserUtils } from '../system/accounts/users/UserUtils'
 import { getCollection } from '../../api/utils/getCollection'
 import { onClientExec, onServer } from '../../api/utils/archUtils'
+import { openWindow } from '../../ui/utils/browser/windowUtils'
 
 const backgroundColors = {
   secondary: {
@@ -184,14 +184,16 @@ Beamer.methods.insert = {
   timeInterval: 50000,
   run: onServer(function () {
     const BeamerCollection = getCollection(Beamer.name)
-    console.log(BeamerCollection.findOne({ createdBy: this.userId }))
+
     if (BeamerCollection.findOne({ createdBy: this.userId })) {
       throw new Meteor.Error('errors.docAlreadyExists')
     }
+
     const ui = {
       background: Beamer.defaultBackground,
       grid: Beamer.defaultGridlayout
     }
+
     return BeamerCollection.insert({ createdBy: this.userId, references: [], ui })
   })
 }
@@ -252,10 +254,6 @@ onClientExec(function () {
     _timerId = setInterval(checkChild, 500)
   }
 
-  function toWindowOptions ({ width = 100, height = 100, left = 50, top = 50, menubar = false, status = false, titlebar = false }) {
-    return `width=${width},height=${height},left=${left},top=${top},menubar=${menubar ? 1 : 0},status=${status ? 1 : 0},titlebar=${titlebar ? 1 : 0}`
-  }
-
   function getMaterialIndex ({ beamerDoc, lessonId, referenceId, context, itemId }) {
     const references = beamerDoc.references || []
     const byMaterialProps = el => {
@@ -278,7 +276,8 @@ onClientExec(function () {
   Beamer.doc.ready = (value) => {
     if (typeof value === 'undefined') {
       return _beamerReady.get()
-    } else {
+    }
+    else {
       return _beamerReady.set(Boolean(value))
     }
   }
@@ -381,7 +380,8 @@ onClientExec(function () {
     if (typeof invitationCode === 'undefined') {
       const doc = Beamer.doc.get()
       return doc && doc.invitationCode
-    } else {
+    }
+    else {
       Beamer.doc.update({ invitationCode }, callback)
     }
   }
@@ -399,7 +399,8 @@ onClientExec(function () {
 
     if (findIndex > -1) {
       references.splice(findIndex, 1)
-    } else {
+    }
+    else {
       references.push({ lessonId, referenceId, context, itemId, responseProcessor })
     }
     beamerDoc.references = references
@@ -413,7 +414,8 @@ onClientExec(function () {
 
     if (findIndex > -1) {
       return references[findIndex]
-    } else {
+    }
+    else {
       return null
     }
   }
@@ -467,20 +469,7 @@ onClientExec(function () {
 
       return Beamer.actions.init(windowUrl, { windowId })
     },
-    open (location, { windowId = Random.id(8), menubar = false, status = false, titlebar = false } = {}) {
-      const width = global.screen.width / 2
-      const height = global.screen.height / 2
-      const left = width / 2
-      const top = height / 2
-      const windowOptions = toWindowOptions({ width, height, left, top, menubar, status, titlebar })
-      try {
-        const windowRef = window.open(location, windowId, windowOptions)
-        return { ref: windowRef, id: windowId }
-      } catch (e) {
-        console.error(e)
-        return { ref: null, id: windowId }
-      }
-    },
+    open: openWindow,
     unload (callback = fallbackCallback) {
       if (_timerId) clearTimer()
       const existingWindow = _windowRef.get()
@@ -498,7 +487,8 @@ onClientExec(function () {
       _windowId.set(null)
       if (windowId && windowId !== global.window.name) {
         Beamer.doc.update({ window: { id: null, url: null } }, callback)
-      } else {
+      }
+      else {
         callback(null, true)
       }
     },

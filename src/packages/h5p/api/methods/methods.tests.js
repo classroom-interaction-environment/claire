@@ -64,7 +64,7 @@ describe('methods', function () {
     })
 
     it('throws if the contentId does not exist', async () => {
-      expect(loadContentForEditing({ contentId: 'abc', language: 'de'}))
+      expect(loadContentForEditing({ contentId: 'abc', language: 'de' }))
         .to.eventually.be.rejectedWith()
     })
 

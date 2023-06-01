@@ -1,5 +1,5 @@
 import { ReactiveVar } from 'meteor/reactive-var'
-import { createDebugLog, createInfoLog } from '../../../api/log/createLog'
+import { createLog } from '../../../api/log/createLog'
 import { setFatalError } from '../fatal/fatal'
 import 'meteor/aldeed:autoform/dynamic'
 import { AutoFormPassword2 } from 'meteor/jkuester:autoform-password2/dynamic'
@@ -7,7 +7,7 @@ import { AutoFormThemeBootstrap4 } from 'meteor/communitypackages:autoform-boots
 
 const initialized = new ReactiveVar()
 const formName = 'Form'
-const debug = createDebugLog(formName, 'debug', { devOnly: true })
+const debug = createLog({ name: formName, type: 'debug', devOnly: true })
 
 export const Form = {}
 Form.name = formName

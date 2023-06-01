@@ -1,59 +1,60 @@
 <template name="lesson">
     {{#onLoaded complete=loadComplete}}
-    {{#with error}}
-        {{> fail error=this}}
-    {{/with}}
+        {{#with error}}
+            {{> fail error=this}}
+        {{/with}}
 
-	{{#with lessonDoc}}
-        <div class="d-block text-center">
-            {{> lessonStatus lessonDoc=this showLabel=true}}
-        </div>
+        {{#with lessonDoc}}
+            <div class="d-block text-center">
+                <h4>{{lessonDoc.unit.title}}</h4>
+                {{> lessonStatus lessonDoc=this showLabel=true}}
+            </div>
 
-		{{#unless isIdle this}}
-            {{#if feature "groups"}}
-                {{#with (groups this)}}
-                    <div class="student-groups-container mt-5 text-center">
-                        <h5 class="text-center border-bottom py-1 px-5">{{i18n "lesson.groups"}}</h5>
-                        <div class="mt-4">
-                        {{#each group in this}}
-                            {{> routeButton type="secondary" label=group.title href=(route "group" ../_id group._id) class="btn-block mt-2"}}
-                        {{/each}}
+            {{#unless isIdle this}}
+                {{#if feature "groups"}}
+                    {{#with (groups this)}}
+                        <div class="student-groups-container mt-5 text-center">
+                            <h5 class="text-center border-bottom py-1 px-5">{{i18n "lesson.groups"}}</h5>
+                            <div class="mt-4">
+                                {{#each group in this}}
+                                    {{> routeButton type="secondary"
+                                            label=group.title href=(route "group" ../_id group._id)
+                                            class="btn-block mt-2"}}
+                                {{/each}}
+                            </div>
+                        </div>
+                    {{/with}}
+                {{/if}}
+
+                <div class="mt-5 text-center">
+                    <h5 class="text-center border-bottom py-1 px-5">{{i18n "lesson.material"}}</h5>
+                    <div class="mt-4">
+                        {{> lessonMaterial lessonId=this._id
+                                visible=this.visibleStudent
+                                loading=loadingMaterials
+                                scope="lesson"}}
+                    </div>
+                </div>
+
+                {{#if notMaterialActive}}
+                    <div class="jumbotron jumbotron-fluid mt-5">
+                        <div class="card-body">
+                            <p class="text-left text-md-center font-weight-normal">{{i18n
+                                    "schoolClass.waitForTeacher"}}</p>
                         </div>
                     </div>
-                {{/with}}
-            {{/if}}
+                {{/if}}
+            {{else}}
+                <div class="alert alert-info">{{i18n "lesson.student.notReady"}}</div>
+            {{/unless}}
+        {{else}}
+            {{#unless error}}
+                {{> loading title=(i18n "lesson.title") type="data"}}
+            {{/unless}}
+        {{/with}}
 
-            <div class="mt-5 text-center">
-                <h5 class="text-center border-bottom py-1 px-5">{{i18n "lesson.material"}}</h5>
-	    		<div class="mt-4">
-                    {{> lessonMaterial lessonId=this._id visible=this.visibleStudent loading=loadingMaterials scope="lesson"}}
-                </div>
-            </div>
-		{{/unless}}
-
-        {{#if notMaterialActive}}
-            <div class="jumbotron jumbotron-fluid mt-5">
-                <div class="card-body">
-                    <p class="text-left text-md-center font-weight-normal">{{i18n "schoolClass.waitForTeacher"}}</p>
-                </div>
-            </div>
+        {{#if docNotFound}}
+            <div class="alert alert-warning">{{i18n "lesson.student.docNotFound"}}</div>
         {{/if}}
-
-        <div class="student-groups-container mt-5 text-center">
-            <h5 class="text-center border-bottom py-1 px-5">{{i18n "lesson.about"}}</h5>
-            <div class="mt-4 text-center">
-                <p>{{this.unit.title}}</p>
-                <p>{{this.unit.description}}</p>
-            </div>
-        </div>
-	{{else}}
-        {{#unless error}}
-            {{> loading title=(i18n "lesson.title") type="data"}}
-        {{/unless}}
-	{{/with}}
-
-    {{#if docNotFound}}
-        <div class="alert alert-warning">{{i18n "student.lesson.docNotFound"}}</div>
-    {{/if}}
     {{/onLoaded}}
 </template>

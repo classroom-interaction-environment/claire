@@ -70,7 +70,6 @@ export class PDFViewerApplication {
       pdfViewer.currentScaleValue = defaults.DEFAULT_SCALE_VALUE
       self.page.set(pdfViewer.currentPageNumber)
       self.numPages.set(self.pdfDocument.numPages)
-      console.debug('pages init', self.page.get(), '/', self.numPages.get())
     })
 
     eventBus.on('pagechanging', function (evt) {
@@ -133,20 +132,23 @@ export class PDFViewerApplication {
             null,
             'Invalid or corrupted PDF file.'
           )
-        } else if (exception instanceof pdfjsLib.MissingPDFException) {
+        }
+        else if (exception instanceof pdfjsLib.MissingPDFException) {
           // special message for missing PDFs
           loadingErrorMessage = l10n.get(
             'missing_file_error',
             null,
             'Missing PDF file.'
           )
-        } else if (exception instanceof pdfjsLib.UnexpectedResponseException) {
+        }
+        else if (exception instanceof pdfjsLib.UnexpectedResponseException) {
           loadingErrorMessage = l10n.get(
             'unexpected_response_error',
             null,
             'Unexpected server response.'
           )
-        } else {
+        }
+        else {
           loadingErrorMessage = l10n.get(
             'loading_error',
             null,
@@ -196,7 +198,8 @@ export class PDFViewerApplication {
     let title = pdfjsLib.getFilenameFromUrl(url) || url
     try {
       title = decodeURIComponent(title)
-    } catch (e) {
+    }
+    catch (e) {
       // decodeURIComponent may throw URIError,
       // fall back to using the unprocessed url in that case
     }
@@ -273,7 +276,8 @@ export class PDFViewerApplication {
         moreInfoText.push(
           l10n.get('error_stack', { stack: moreInfo.stack }, 'Stack: {{stack}}')
         )
-      } else {
+      }
+      else {
         if (moreInfo.filename) {
           moreInfoText.push(
             l10n.get(
@@ -338,12 +342,10 @@ export class PDFViewerApplication {
   }
 
   isFirst () {
-    console.debug('is first', this.page.get())
     return this.page.get() === 1
   }
 
   isLast () {
-    console.debug('is last', this.page.get(), this.numPages.get())
     return this.page.get() === this.numPages.get()
   }
 

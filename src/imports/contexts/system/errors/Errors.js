@@ -112,7 +112,8 @@ Errors.publications = {
       let projectionLimit
       if (limit && limit <= 100) {
         projectionLimit = limit
-      } else {
+      }
+      else {
         projectionLimit = 1
       }
       // we return a limited amount of docs

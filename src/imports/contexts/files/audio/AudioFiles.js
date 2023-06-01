@@ -41,12 +41,12 @@ AudioFiles.material = {
         afFieldInput: {
           type: FilesTemplates.upload.type,
           uploadTemplate: FilesTemplates.upload.template,
-          previewTemplate: 'imageFileRenderer',
+          previewTemplate: 'audioFileRenderer',
           collection: AudioFiles.name,
           icon: AudioFiles.icon,
           accept: AudioFiles.files.accept,
           maxSize: AudioFiles.files.maxSize,
-          capture: AudioFiles.files.capture,
+          capture: AudioFiles.files.capture
         }
       }
     }
@@ -68,10 +68,10 @@ AudioFiles.material = {
         const { preview = true, print = false, student = true } = options
         return Object.assign({}, {
           title: document.name,
-          meta: name,
+          meta: materialDoc.name,
           preview: preview,
           print: print,
-          student: student,
+          student: student
         }, document)
       },
       previewData (targetId) {

@@ -24,6 +24,7 @@
 
 				<!-- user related -->
 				<ul id="mainNavbarMenu" class="navbar-nav ml-auto">
+                    {{!-- commented out until fully clear how to implement
                     <li class="nav-item py-2 py-md-0 no-wrap">
                         {{> link
                                 id="globalShareButton"
@@ -32,6 +33,7 @@
                                 label=(i18n "nav.share")
                                 class="nav-link navbar-navlink"}}
                     </li>
+                    --}}
 					<li class="nav-item py-2 py-md-0 no-wrap">
                         {{> link href=(route 'profile' currentUser._id)
                                 icon="cog"

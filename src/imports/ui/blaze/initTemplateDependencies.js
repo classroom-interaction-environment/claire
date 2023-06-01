@@ -19,14 +19,24 @@ import { detectUserLanguage } from '../../api/language/detectUserLanguage'
  * @param loaders
  * @param language
  * @param debug
+ * @param useForms
  * @param onError
  * @param onComplete
  * @return {TemplateInstance.api}
  */
-export const initTemplateDependencies = function initTemplate ({ contexts = [], loaders = [], useForms, language, debug, onError = () => {}, onComplete = () => {} }) {
+export const initTemplateDependencies = function initTemplate ({
+  contexts = [],
+  loaders = [],
+  useForms,
+  language,
+  debug,
+  onError = () => {},
+  onComplete = () => {}
+}) {
   // we wrap all the imports here to fasten-up the client-bundle interpreter
+  import { Template } from 'meteor/templating'
+  import { Tracker } from 'meteor/tracker'
   import { i18n } from '../../api/language/language'
-  import { DocNotFoundError } from '../../api/errors/types/DocNotFoundError'
   import { getCollection } from '../../api/utils/getCollection'
   import { getLocalCollection } from '../../infrastructure/collection/getLocalCollection'
   import { initContext } from '../../startup/client/contexts/initContext'
@@ -35,7 +45,6 @@ export const initTemplateDependencies = function initTemplate ({ contexts = [], 
   import { initOnce } from '../../infrastructure/loading/initOnce'
   import { initLanguage } from '../../api/language/initLanguage'
   import { initForms } from '../components/forms/Form'
-  import { Notify } from '../components/notifications/Notify'
 
   const template = this
   template.initComplete = new ReactiveVar(false)
@@ -51,7 +60,7 @@ export const initTemplateDependencies = function initTemplate ({ contexts = [], 
   const warn = createLog({ name: viewName, type: 'warn' })
   const debugLog = debug
     ? createLog({ name: viewName, type: 'debug' })
-    : (() => {})
+    : () => {}
   debugLog('init')
 
   const api = {}
@@ -65,9 +74,7 @@ export const initTemplateDependencies = function initTemplate ({ contexts = [], 
   const modal = (id, action) => {
     const modalId = id.includes('#') ? id : `#${id}`
     const instance = Template.instance()
-    const target = instance
-      ? instance
-      : window
+    const target = instance || window
     target.$(modalId).modal(action)
   }
 
@@ -91,7 +98,8 @@ export const initTemplateDependencies = function initTemplate ({ contexts = [], 
         clearSubs(key)
         onDestroy.forEach(fn => fn())
         onDestroy.length = 0
-      } catch (e) {
+      }
+      catch (e) {
         onError(e)
       }
     }
@@ -197,7 +205,8 @@ export const initTemplateDependencies = function initTemplate ({ contexts = [], 
         const component = instance.$(selector)
         if (!component) {
           warn('no component found for lookup:', selector)
-        } else {
+        }
+        else {
           instance._lookup.set(selector, component)
         }
       }
@@ -233,13 +242,11 @@ const subscribe = ({ key, name, args, callbacks, debug }) => {
     const pubName = typeof name === 'object'
       ? name.name
       : name
-    if (debug) {
-      console.debug('[API]: subscribe to', { pubName, key, args })
-    }
     SubscriptionRegistry.registerTemplate(key)
     SubscriptionRegistry.add(key, pubName)
     return SubsManager.subscribe(pubName, args, callbacks)
-  } catch (e) {
+  }
+  catch (e) {
     onError(e)
   }
 }
@@ -296,12 +303,7 @@ const createSchema = (schema, options = {}, deprecatedOpt) => {
  */
 const notify = value => {
   if (value instanceof Error) {
-    console.error(value)
-    return Notify.add({
-      type: 'danger',
-      message: value.reason || value.message,
-      icon: 'exclamation-triangle'
-    })
+    return Notify.error(value)
   }
 
   if (value === true) {

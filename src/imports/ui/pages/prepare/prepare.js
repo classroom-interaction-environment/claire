@@ -10,11 +10,11 @@ import { setQueryParams } from '../../../api/routes/params/setQueryParams'
 import { getQueryParam } from '../../../api/routes/params/getQueryParam'
 import { loadIntoCollection } from '../../../infrastructure/loading/loadIntoCollection'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
+import { loadSelectableUnits } from '../../../contexts/curriculum/loadSelectableUnits'
 import prepareLanguage from './i18n/prepareLanguage'
 import '../../layout/submenu/submenu'
 import '../../generic/templateLoader/TemplateLoader'
 import './prepare.html'
-import { loadSelectableUnits } from '../../../contexts/curriculum/loadSelectableUnits'
 
 const viewStates = Object.values(PrepareViewStates)
 const allContexts = [Pocket, Unit, Dimension]
@@ -79,7 +79,7 @@ Template.prepare.helpers({
   },
   submenuData () {
     const instance = Template.instance()
-    console.debug('submenu data')
+
     return {
       views: viewStates,
       queryParam: 'view',
@@ -110,12 +110,12 @@ Template.prepare.helpers({
           classId: classId
         })
       },
-      onCompleteEdit ({ /* lessonId, classId,*/  unitId }) {
+      onCompleteEdit ({ /* lessonId, classId, */ unitId }) {
         if (onCompleteEdit) onCompleteEdit({ unitId })
       }
     }, instance.data, view.templateData)
     return Object.assign({}, view, { templateData })
-  },
+  }
 })
 
 Template.prepare.events({

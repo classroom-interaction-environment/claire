@@ -1,0 +1,11 @@
+{
+  "unit": {
+    "title": "Ders şablonu"
+  },
+  "unitSelect": {
+    "search": "Arama terimini buraya girin",
+    "filter": "Filtre seçimi",
+    "withLessons": "Oluşturuldu / çalışıyor göster",
+    "hasLesson": "Çoktan oluşturuldu veya devam eden"
+  }
+}

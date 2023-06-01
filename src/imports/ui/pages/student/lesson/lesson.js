@@ -51,7 +51,6 @@ Template.lesson.onCreated(function () {
 
   instance.displayError = err => {
     const error = formatError(err)
-    console.debug(error)
     instance.state.set({ error })
   }
   // subscribe to the lesson doc, as this changes often
@@ -77,16 +76,18 @@ Template.lesson.onCreated(function () {
         }
       }
     })
+  })
 
+  instance.autorun(() => {
+    const unitDoc = instance.state.get('unitDoc')
+    if (!unitDoc) { return }
+    const unitId = unitDoc._id
     API.subscribe({
       name: Group.publications.my,
-      args: { lessonId },
+      args: { unitId },
       key: lessonSubKeyStudent,
       callbacks: {
-        onError: instance.displayError,
-        onReady () {
-          console.debug('groups loaded')
-        }
+        onError: instance.displayError
       }
     })
   })
@@ -97,7 +98,6 @@ Template.lesson.onCreated(function () {
     const lessonDoc = instance.state.get('lessonDoc')
     const visibleStudent = lessonDoc?.visibleStudent
 
-    // TODO use loadStudentMaterial function
     if (!visibleStudent || visibleStudent.length === 0) {
       instance.state.set('loadingMaterials', false)
       return
@@ -148,14 +148,18 @@ Template.lesson.onDestroyed(function () {
 })
 
 Template.lesson.helpers({
-  loadComplete() {
+  loadComplete () {
     return API.initComplete()
   },
   error () {
     return Template.getState('error')
   },
-  groups (lessonDoc) {
-    return cursor(() => getCollection(Group.name).find({ lessonId: lessonDoc._id }))
+  notReady () {
+    return Template.getState('notReady')
+  },
+  groups () {
+    const unitDoc = Template.getState('unitDoc')
+    return cursor(() => getCollection(Group.name).find({ unitId: unitDoc._id }))
   },
   docNotFound () {
     return Template.getState('docNotFound')

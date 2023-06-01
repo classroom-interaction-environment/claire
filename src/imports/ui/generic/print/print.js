@@ -11,8 +11,8 @@ Template.print.helpers({
 
 Template.print.events({
   'click .global-print-button' (event) {
-      event.preventDefault()
-      event.stopPropagation()
-      window.print()
+    event.preventDefault()
+    event.stopPropagation()
+    window.print()
   }
 })

@@ -1,7 +1,9 @@
 import { Lesson } from '../../contexts/classroom/lessons/Lesson'
 import { getLocalCollection } from '../../infrastructure/collection/getLocalCollection'
 import { callMethod } from '../controllers/document/callMethod'
+import { createLog } from '../../api/log/createLog'
 
+const debug = createLog({ name: 'loadStudentMaterial', type: 'debug' })
 /**
  * Students-only client side method to prapre a cache-intensive approach to load
  * students-materials, based on current visible material
@@ -12,7 +14,8 @@ import { callMethod } from '../controllers/document/callMethod'
  * @return {*}
  */
 export const loadStudentMaterial = async ({ _id, groupId, visibleStudent, prepare, receive, failure, success }) => {
-  console.debug('[loadStudentMaterial]:', _id, { visibleStudent })
+  debug(_id, { visibleStudent })
+
   // nothing to load, abort already
   if (!visibleStudent || visibleStudent.length === 0) {
     return success ? success(null, '') : ''
@@ -42,7 +45,7 @@ export const loadStudentMaterial = async ({ _id, groupId, visibleStudent, prepar
     args.groupId = groupId
   }
 
-  console.debug('[loadStudentMaterial]:', _id, { skip })
+  debug(_id, { skip })
   const material = await callMethod({
     name: Lesson.methods.material,
     args: args,
@@ -53,11 +56,11 @@ export const loadStudentMaterial = async ({ _id, groupId, visibleStudent, prepar
   let hash = ''
 
   if (!material) {
-    return console.debug('[loadStudentMaterial]: no material found')
+    return debug('no material found')
   }
 
   Object.entries(material).forEach(([ctxName, documents]) => {
-    console.debug('[loadStudentMaterial]: loaded', ctxName, documents)
+    debug('loaded', ctxName, documents)
     const collection = getLocalCollection(ctxName)
     ;(documents || []).forEach(doc => {
       hash += doc._id.substring(0, 2)

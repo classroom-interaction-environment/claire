@@ -34,7 +34,7 @@ Template.files.onCreated(function () {
     API.subscribe({
       name: Lesson.publications.single,
       args: { _id: lessonId },
-      key:'lessonMaterialStudent',
+      key: 'lessonMaterialStudent',
       callbacks: {
         onError: err => API.fatal(err),
         onReady: () => {
@@ -208,7 +208,6 @@ Template.files.helpers({
     }
   },
   fileTemplate (meta) {
-    console.info(Template.getState(meta))
     return Template.getState(meta)
   },
   fileResource (doc) {

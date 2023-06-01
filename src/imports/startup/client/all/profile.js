@@ -3,8 +3,6 @@ import { Tracker } from 'meteor/tracker'
 import { ProfileImages } from '../../../contexts/files/image/ProfileImages'
 import { i18n } from '../../../api/language/language'
 import { initContext } from '../contexts/initContext'
-import { loadIntoCollection } from '../../../infrastructure/loading/loadIntoCollection'
-import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
 import { loadProfileImage } from '../../../api/accounts/user/client/loadProfileImage'
 
 initContext(ProfileImages)

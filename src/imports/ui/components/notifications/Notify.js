@@ -52,6 +52,12 @@ Notify.add = (notification) => {
   })
 }
 
+Notify.error = (error) => Notify.add({
+  type: 'danger',
+  message: error.reason || error.message,
+  icon: 'exclamation-triangle'
+})
+
 Notify.get = () => {
   return queue.dequeue()
 }

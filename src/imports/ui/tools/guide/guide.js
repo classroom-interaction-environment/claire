@@ -1,6 +1,6 @@
 import { check, Match } from 'meteor/check'
 import Driver from 'driver.js'
-import 'driver.js/dist/driver.min.css';
+import 'driver.js/dist/driver.min.css'
 import { i18n } from '../../../api/language/language'
 
 export const Guide = {}
@@ -12,7 +12,7 @@ const createDriver = ({ allowClose, opacity }) => new Driver({
   closeBtnText: i18n.get('actions.close'),
   nextBtnText: i18n.get('wizard.next'),
   prevBtnText: i18n.get('wizard.back'),
-  animate: true,
+  animate: true
 })
 
 const createStep = ({ target, title, description, position = 'top', showButtons }) => {
@@ -50,12 +50,12 @@ const createStep = ({ target, title, description, position = 'top', showButtons 
 
 Guide.highlight = function highlight ({ target, title, description, position, showButtons, allowClose = true, opacity = 0.75 }) {
   const driver = createDriver({ allowClose, opacity })
-  const step = createStep({ target, title, description, position, showButtons})
+  const step = createStep({ target, title, description, position, showButtons })
   driver.highlight(step)
   return driver
 }
 
-Guide.buildTour = function  buildTour ({ allowClose = true, opacity = 0.75 }) {
+Guide.buildTour = function buildTour ({ allowClose = true, opacity = 0.75 }) {
   const driver = createDriver({ allowClose, opacity })
   const steps = []
   const builder = {

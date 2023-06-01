@@ -21,6 +21,7 @@
                                 {{schoolClass.title}}
                             </a>
                             {{#if schoolClass.timeFrame}}
+                                {{#onLoaded complete=loadComplete}}
                                 <small>
                                 {{#if schoolClass.timeFrame.from}}
                                     <span>{{i18n "common.from"}} {{toDate schoolClass.timeFrame.from "date"}}</span>
@@ -29,6 +30,7 @@
                                         <span>{{i18n "common.to"}} {{toDate schoolClass.timeFrame.to "date"}}</span>
                                     {{/if}}
                                 </small>
+                                {{/onLoaded}}
                             {{/if}}
                         </span>
 

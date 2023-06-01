@@ -1,7 +1,7 @@
 import { UserUtils } from '../../../imports/contexts/system/accounts/users/UserUtils'
 import { Random } from 'meteor/random'
 
-export const createCodeDoc = ({ maxUsers = 1, registeredUsers = [], institution = 'Super School', expires = 1, role = UserUtils.roles.student, firstName = 'John', lastName = 'Doe', email = `${Random.id()}@example.com`, classId = Random.id() } = {}) => ({
+export const createCodeDoc = ({ maxUsers = 1, registeredUsers = [], institution = 'Super School', expires = 1, role = UserUtils.roles.student, firstName = 'John', lastName = 'Doe', email = `${Random.id()}@example.com`, classId = Random.id(), invalid = false } = {}) => ({
   _id: Random.id(),
   createdAt: new Date(),
   code: Random.id(4),
@@ -13,5 +13,6 @@ export const createCodeDoc = ({ maxUsers = 1, registeredUsers = [], institution 
   institution: institution,
   registeredUsers: registeredUsers,
   maxUsers: maxUsers,
-  classId: classId
+  classId: classId,
+  invalid: invalid
 })

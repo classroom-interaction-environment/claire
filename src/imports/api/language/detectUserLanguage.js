@@ -7,7 +7,7 @@ import { isDefinedString } from '../utils/check/isDefinedString'
  * @return {string|undefined}
  */
 export const detectUserLanguage = (user) => {
-  const locale  = user && user.locale
+  const locale = user && user.locale
 
   if (isDefinedString(locale)) {
     return locale
@@ -24,4 +24,3 @@ export const detectUserLanguage = (user) => {
     return clientLocale
   }
 }
-

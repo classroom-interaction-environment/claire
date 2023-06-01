@@ -12,7 +12,7 @@ const baseLayout = {
   }
 }
 
-const TemplateAPI = Template.rpPieChart.setDependencies({})
+Template.rpPieChart.setDependencies({})
 
 Template.rpPieChart.onRendered(function () {
   const instance = this

@@ -37,6 +37,10 @@ Template.createForm.events({
       const enableSuccessNotification = templateInstance.data.notifySuccess !== false
       if (enableSuccessNotification) API.notify(true)
 
+      if (templateInstance.data.onCreated) {
+        templateInstance.data.onCreated(result)
+      }
+
       templateInstance.state.set('result', result)
       API.hideModal('createModal')
     }))

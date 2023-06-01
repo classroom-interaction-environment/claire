@@ -1,0 +1,35 @@
+{
+  "editor": {
+    "task": {
+      "title": "Görev düzenleyici",
+      "backToUnit": "Sekans düzenleyicisine geri dönün",
+      "addToUnit": "Sekans ile bağlantı",
+      "confirmUnlink": "Bu görevi '{{title}}' sekansdan gerçekten kaldırmak istiyor musunuz?",
+      "baseInfo": "Temel veriler",
+      "addPage": "Yeni sayfa",
+      "editPages": "Sayfa içeriği",
+      "editInUnitEditor": "Sekans düzenleyicide düzenleme",
+      "staticContent": "Küresel içerik",
+      "headerContent": "Başlık",
+      "footerContent": "Altbilgi",
+      "noStaticContent": "Küresel içerik eklenmedi",
+      "preview": "Önizleme",
+      "codeView": "Kaynak kodu",
+      "emptyPages": "Bu görev hala içeriksiz sayfalar içeriyor",
+      "emptyPage": "Bu sayfa henüz herhangi bir içerik içermiyor.",
+      "editAttributes": "Öğeyi düzenle",
+      "noAttributes": "Başka ayarlar olmadan bu öğe henüz doğru şekilde kullanılamaz.",
+      "addContent": "Öğe ekle",
+      "selectMeta": "İçeriği düzenlemek için görüntülenen öğe türlerinden birini seçin.",
+      "moveToPage": "Sayfaya kaydır",
+      "selectExistingElement": "Öğe seçin",
+      "makePersistent": "Kalıcı olarak kaydet",
+      "linkedUnits": "Sekanslar",
+      "linkUnit": "Sekanslari bağlantı",
+      "confirmDeletePage": "Sayfayı gerçekten silmek istiyor musunuz? Kaydedilmemiş tüm içerik kaybolacaktır. Devam et ve sil?",
+      "moveEntry": "Öğeyi taşı",
+      "create": "Yeni görev oluştur",
+      "editInTaskEditor": "Görev düzenleyicide düzenleme"
+    }
+  }
+}

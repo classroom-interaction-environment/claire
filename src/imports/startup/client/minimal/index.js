@@ -16,7 +16,6 @@ setTimeout(async () => {
 }, 50)
 
 const globalDragDropHandler = function (e) {
-  e = e || event
   e.preventDefault()
 }
 

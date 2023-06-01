@@ -14,6 +14,7 @@ export const ItemChoices = {
   name: 'itemSingleSelect',
   label: 'item.singleSelect',
   icon: 'chart-pie',
+  save: 'auto',
   category: ChoiceItems,
   dataType: ResponseDataTypes.singleChoice.name,
   edit ({ translate }) {
@@ -86,6 +87,7 @@ export const ItemRadio = {
   name: 'itemSingleChoice',
   label: 'item.singleChoice',
   icon: 'chart-pie',
+  save: 'auto',
   category: ChoiceItems,
   dataType: ResponseDataTypes.singleChoice.name,
   edit ({ translate }) {

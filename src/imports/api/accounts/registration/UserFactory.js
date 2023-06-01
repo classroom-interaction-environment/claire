@@ -5,14 +5,36 @@ import { Schema } from '../../schema/Schema'
 import { Roles } from 'meteor/alanning:roles'
 import { rollbackAccount } from './rollbackAccount'
 import { userExists } from '../user/userExists'
+import { createLog } from '../../log/createLog'
+import { getUsersCollection } from '../../utils/getUsersCollection'
 
-let createSchema
-
+/**
+ * Creates new user accounts
+ * @namespace
+ */
 export const UserFactory = {}
 
 UserFactory.name = 'UserFactory'
 
-UserFactory.create = function create ({ email, password, role, firstName, lastName, institution }) {
+const debug = createLog({ name: UserFactory.name, type: 'debug' })
+let createSchema
+
+/**
+ * Creates a new user account by given options. Args are validated.
+ * @param email {string}
+ * @param password {string}
+ * @param role {string}
+ * @param firstName {string}
+ * @param lastName {string}
+ * @param institution {string}
+ * @param locale {string=}
+ * @returns {string} the new user's document _id
+ * @throws {Meteor.Error} if user exists by given Email
+ * @throws {Meteor.Error} if user has not been created
+ * @throws {Meteor.Error} if user has not successfully been assigned to given roles
+ */
+UserFactory.create = function create ({ email, password, role, firstName, lastName, institution, locale }) {
+  debug('create new user', { email, institution, role })
   if (!createSchema) {
     createSchema = Schema.create(createUserSchema)
   }
@@ -40,21 +62,31 @@ UserFactory.create = function create ({ email, password, role, firstName, lastNa
 
   // updates the user profile with the minimal defaults
   // strips any unnecessary whitespace from firstName, lastName and institution
-  const profileUpdated = Meteor.users.update(userId, {
+  const profileDoc = {
     $set: {
       role,
-      firstName,
-      lastName,
-      institution
+      firstName: clean(firstName),
+      lastName: clean(lastName),
+      institution: clean(institution)
     }
-  })
+  }
+
+  // optionally we can assign a default locale
+  // already at this point, for example when the user
+  // has set a different locale than the default during
+  // registration
+  if (locale) {
+    profileDoc.$set.locale = locale
+  }
+
+  const profileUpdated = getUsersCollection().update(userId, profileDoc)
 
   if (!profileUpdated) {
     rollbackAccount(userId)
     throw new Meteor.Error('createUser.failed', 'createUser.profileNotUpdated', email)
   }
 
-  console.debug('add user to roles', userId, [role], institution)
+  debug('add user to roles', userId, [role], institution)
   // adds the user to the given roles and scope
   Roles.addUsersToRoles(userId, [role], institution)
   if (!Roles.userIsInRole(userId, [role], institution)) {
@@ -63,4 +95,11 @@ UserFactory.create = function create ({ email, password, role, firstName, lastNa
   }
 
   return userId
+}
+
+const clean = name => {
+  const cleaned = name.trim().replace(/\s+/g, ' ')
+  const first = cleaned.substring(0, 1).toUpperCase()
+  const rest = cleaned.substring(1, name.length)
+  return `${first}${rest}`
 }

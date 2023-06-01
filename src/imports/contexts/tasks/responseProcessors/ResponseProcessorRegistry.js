@@ -3,7 +3,8 @@ import { RawResponse } from './aggregate/raw/RawResponse'
 import { isResponseDataType } from '../../../api/utils/check/isResponseDataType'
 import { isMaybeObject } from '../../../api/utils/check/isMaybeObject'
 import { isResponseProcessorType } from './isResponseProcessorType'
-import { createDebugLog } from '../../../api/log/createLog'
+import { createLog } from '../../../api/log/createLog'
+import { GroupMode } from '../../classroom/group/GroupMode'
 
 /**
  * Registers and manages all available response processors for various data
@@ -13,7 +14,7 @@ import { createDebugLog } from '../../../api/log/createLog'
  */
 export const ResponseProcessorRegistry = {}
 
-const log = createDebugLog('ResponseProcessorRegistry')
+const debugLog = createLog({ name: 'ResponseProcessorRegistry', type: 'debug' })
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -49,8 +50,8 @@ const checkResponseProcessorContext = ({ name, label, icon, isResponseProcessor,
  * @return {any}
  */
 ResponseProcessorRegistry.register = function (context) {
-  const { name, type, dataTypes, fileType, csp, renderer } = context
-  log('register', { context })
+  const { name, type, dataTypes, fileType /*, csp, renderer  */ } = context
+  debugLog('register', { context })
 
   check(name, String)
   check(type, Match.Where(isResponseProcessorType))
@@ -89,7 +90,8 @@ ResponseProcessorRegistry.register = function (context) {
       dataType.default = name
       dataType.defaultIndex = index
       dataType.values.unshift(name)
-    } else {
+    }
+    else {
       dataType.values.push(name)
     }
 
@@ -97,7 +99,7 @@ ResponseProcessorRegistry.register = function (context) {
   })
 
   contextsMap.set(name, context)
-  log(`registered "${name}" for type "${type}"`)
+  debugLog(`registered "${name}" for type "${type}"`)
 
   return contextsMap.get(name)
 }
@@ -126,36 +128,56 @@ ResponseProcessorRegistry.forEach = fct => contextsMap.forEach(fct)
 
 /**
  * Returns all registered context for a given data type ({ResponseDataType})
- * @param dataType
+ * @param dataType {string}
+ * @param groupMode {string}
  * @return {Array}
  */
-ResponseProcessorRegistry.allForDataType = dataType => {
+ResponseProcessorRegistry.allForDataType = (dataType, groupMode) => {
   check(dataType, Match.Where(isResponseDataType))
+  check(groupMode, Match.Maybe(String))
 
   const dataTypeName = typeof dataType === 'object'
     ? dataType.name
     : dataType
 
   const typeMap = dataTypeMap.get(dataTypeName) || { values: [] }
-  console.debug({dataTypeMap, typeMap})
   const contexts = new Set(typeMap.values.map(toContext))
   contexts.add(RawResponse)
 
-  return Array.from(contexts)
+  const allContexts = Array.from(contexts)
+  return sortIfGroupMode({ allContexts, groupMode })
+}
+
+const sortIfGroupMode = ({ allContexts, groupMode }) => {
+  // on a given group mode we should prefer group mode
+  // processors before any other processor
+  if (groupMode && groupMode !== GroupMode.off.value) {
+    allContexts.sort(byGroupFlag)
+  }
+
+  return allContexts
+}
+
+const byGroupFlag = (a, b) => {
+  const valA = a.isGroupMode ? 1 : 0
+  const valB = b.isGroupMode ? 1 : 0
+  return valB - valA
 }
 
 /**
  *
  * @param fileType
+ * @param groupMode
  */
-ResponseProcessorRegistry.allForFileType = fileType => {
+ResponseProcessorRegistry.allForFileType = (fileType, groupMode) => {
   check(fileType, String) // fixme use common file type def
 
   const typeMap = fileTypeMap.get(fileType) || { values: [] }
   const contexts = new Set(typeMap.values.map(toContext))
   contexts.add(RawResponse)
 
-  return Array.from(contexts)
+  const allContexts = Array.from(contexts)
+  return sortIfGroupMode({ allContexts, groupMode })
 }
 
 /**
@@ -200,4 +222,3 @@ ResponseProcessorRegistry.byType = type => {
   })
   return out
 }
-

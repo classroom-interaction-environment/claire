@@ -1,58 +1,60 @@
 {
   "admin": {
     "title": "Administrator",
-    "definitions": "Definitionen verwalten",
+    "definitions": "Manage Definitions",
     "create": {
-      "admin": "Administrator anlegen",
-      "user": "Benutzer anlegen",
-      "now": "Jetzt anlegen",
-      "userSuccessful": "Benutzer erfolgreich angelegt"
+      "admin": "Create Administrator",
+      "user": "Create User",
+      "now": "Create Now",
+      "complete": "Complete",
+      "userSuccessful": "User successfully created"
     },
     "users": {
-      "title": "Benutzerverwaltung",
-      "resendInvitation": "Einladung erneut versenden",
-      "delete": "Benutzer/in endgültig löschen",
-      "confirmDelete": "Sie sind dabei den Account von \"{{name}}\" endgültig zu löschen.",
+      "title": "User Management",
+      "resendInvitation": "Resend invitation",
+      "delete": "Delete user permanently",
+      "deleted": "User has been deleted",
+      "confirmDelete": "You are in the process of permanently deleting the account of \"{{name}}\".",
       "view": "View user",
       "edit": "Edit user"
     },
     "stats": {
-      "title": "Server-Monitor"
+      "title": "Server Monitor"
     },
     "settings": {
-      "title": "Admin-Einstellungen",
-      "ui": "UI Einstellungen",
-      "logos": "App-Bilder",
+      "title": "Admin Settings",
+      "ui": "UI Settings",
+      "logos": "App images",
       "themeSelect": "CSS Theme",
-      "customTheme": "Eigener CSS Theme",
-      "setCustomTheme": "Den eigenen CSS Code hier einfügen"
+      "customTheme": "Custom CSS Theme",
+      "setCustomTheme": "Insert your own CSS code here"
     },
     "logs": {
-      "title": "Logdaten"
+      "title": "Log data"
     },
     "edit": {
-      "user": "Benutzer bearbeiten"
+      "user": "Edit user"
     },
     "methods": {
       "createUser": {
-        "requiresUsername": "Benutzername benötigt um Benutzer anzulegen",
-        "requiresPassword": "Passwort benötigt um Benutzer anzulegen",
-        "requiresRole": "Rolle benötigt um Benutzer anzulegen"
+        "requiresUsername": "Username needed to create user",
+        "requiresPassword": "Password required to create user",
+        "requiresRole": "Role needed to create user"
       },
       "common": {
-        "notExist": "Benutzer existiert nicht.",
-        "userNotFound": "Benutzer nicht gefunden"
+        "notExist": "User does not exist.",
+        "userNotFound": "User not found"
       },
       "permission": {
-        "notAdmin": "Verwehrt. Sie sind kein Administrator.",
-        "notUser": "Verwehrt. Sie sind kein registrierter nutzer."
+        "notAdmin": "Denied. You are not an administrator.",
+        "notUser": "Denied. You are not a registered user."
       },
       "error": {
-        "enforceAdmin": "Es wird zwingend ein Administrator benötigt. Legen Sie zuerst einen Administrator an.",
-        "insufficientArgs": "Falsche oder unzureichende Argumente übergeben",
-        "userNotCreated": "Benutzer wurde nicht erstellt",
-        "userNotAdded": "Benutzer wurde nicht hinzugefügt",
-        "userNotLifted": "Benutzer wurde nicht mit neuen Rollen ausgestattet"
+        "enforceAdmin": "It is mandatory to have an administrator. Create an administrator first.",
+        "insufficientArgs": "Passing false or insufficient arguments",
+        "userNotCreated": "User was not created",
+        "userNotAdded": "User has not been added",
+        "userNotLifted": "User was not provided with new roles"
       }
     }
   }

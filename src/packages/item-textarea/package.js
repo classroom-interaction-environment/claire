@@ -1,3 +1,4 @@
+/* eslint-env meteor */
 Package.describe({
   name: 'claire:item-textarea',
   version: '1.0.0',

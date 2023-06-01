@@ -5,7 +5,7 @@
  * @return {Renderer|undefined} a renderer definitions object, if found
  */
 export const getMaterialRenderer = (material, rendererName = 'main') => {
-  const allRenderer =  material?.renderer
+  const allRenderer = material?.renderer
   if (!allRenderer) return
 
   const renderer = allRenderer[rendererName]

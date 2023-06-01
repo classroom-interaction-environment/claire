@@ -5,6 +5,9 @@
     "material": "Material",
     "about": "About this lesson",
     "notAMember": "You are not (or not anymore) a member of this class.",
-    "studentNoClasses": "There is currently no class you are member of."
+    "studentNoClasses": "There is currently no class you are member of.",
+    "student": {
+      "docNotVisible": "The content is not visible to you (anymore)."
+    }
   }
 }

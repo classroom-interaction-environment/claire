@@ -1,0 +1,26 @@
+{
+  "nav": {
+    "profile": "Profil",
+    "editProfile": "Profili düzenle",
+    "toggle": "Aç/Kapa",
+    "toggleFluid": "Genişliği ayarlayın",
+    "login": "Giriş",
+    "logout": "Oturumu kapat",
+    "forgotPassword": "Şifremi unuttum",
+    "placeholder": {
+      "title": "Hatayı birkaç kelimeyle özetleyin....",
+      "description": "Lütfen hata hakkında olabildiğince kesin konuşun..."
+    },
+    "tools": "Araçlar",
+    "customUnits": "Kendi derslerinizi planlayın"
+  },
+  "dashboard": {
+    "prepare": "Örnek şablonlar",
+    "lesson": "Dersleri yürütmek"
+  },
+  "editor": {
+    "task":{
+      "title": "Görev düzenleyici"
+    }
+  }
+}

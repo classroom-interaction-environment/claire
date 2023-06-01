@@ -1,4 +1,5 @@
 /* eslint-env mocha */
+import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
 import { expect } from 'chai'
 import { getVerifyEmailSubject, getVeryFyEmailText } from '../verifyEmail'
@@ -41,8 +42,8 @@ describe('verify email', function () {
       })
 
       const subject = getVerifyEmailSubject({
-          siteName, defaultLocale
-        })
+        siteName, defaultLocale
+      })
 
       ;[{}, null, undefined].forEach(u => {
         expect(subject(u)).to.equal('accounts.verifyEmail.subject')

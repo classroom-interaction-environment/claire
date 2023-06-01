@@ -54,4 +54,13 @@
             {{/unless}}
         {{/unless}}
     </td>
+    <td>
+        {{> actionButton
+                sm=true
+                type="outline-secondary"
+                data-target=this._id
+                icon="download"
+                class="preview-btn"
+                title=(i18n "actions.download")}}
+    </td>
 </template>

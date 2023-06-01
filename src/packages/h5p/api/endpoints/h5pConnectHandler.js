@@ -11,6 +11,9 @@ import { catchAndPassOnErrors } from './catchAndPassOnErrors'
 import { errorHandler } from './connectErrorHandler'
 import { H5PMeteor } from '../H5PMeteor'
 import { getUser } from './getUser'
+
+const log = H5PMeteor.createLog({ name: 'H5P', type: 'debug' })
+
 // ////////////////////////////////////////////////////////////////////////////
 //
 // Upload handling
@@ -18,7 +21,7 @@ import { getUser } from './getUser'
 // ////////////////////////////////////////////////////////////////////////////
 
 // Deliberately left unused, so that cookies work in the request.
-(() => new Cookies())()
+;(() => new Cookies())()
 
 // ////////////////////////////////////////////////////////////////////////////
 //
@@ -39,7 +42,7 @@ export const h5pConnectHandler = (h5pEditor) => {
   // instead of creating one each time.
 
   Object.values(H5PMeteor.routes).forEach(({ name, method, permissions, middleware = [], run }) => {
-    console.debug('[Router]: create route for:', method, name)
+    log('create route for:', method, name)
     const allPermissions = permissions && Object.keys(permissions)
     const createHandler = router[method]
     if (!createHandler) {

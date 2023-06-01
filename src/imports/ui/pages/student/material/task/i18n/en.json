@@ -1,0 +1,25 @@
+{
+  "common": {
+    "reason": "Error cause"
+  },
+  "taskWorkingState": {
+    "taskNotEditable": "Task cannot be opened",
+    "notVisible": "Task is not unlocked for editing"
+  },
+  "group": {
+    "editing": "Group edited"
+  },
+  "groupMode": {
+    "title": "Group Mode",
+    "off": "Not active",
+    "merge": "Responses are merged",
+    "override": "One answers for the group",
+    "split": "Each one answers for himself/herself"
+  },
+  "lesson": {
+    "unexpectedState": "Lessons not yet ready",
+    "errors": {
+      "expectedRunningOrComplete": "Ongoing or completed classes are required."
+    }
+  }
+}

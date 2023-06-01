@@ -1,4 +1,4 @@
-import { ReactiveVar } from "meteor/reactive-var"
+import { ReactiveVar } from 'meteor/reactive-var'
 
 export const createReactiveInitialize = asyncInitFct => {
   const init = new ReactiveVar()

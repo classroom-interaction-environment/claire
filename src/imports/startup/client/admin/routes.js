@@ -12,7 +12,8 @@ Object.keys(AdminRoutes).forEach(key => {
   Routes[key] = route
   if (Router) {
     Router.register(route)
-  } else {
+  }
+  else {
     console.warn('could not register route', key)
   }
 })

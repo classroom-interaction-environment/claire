@@ -1,4 +1,5 @@
 /* eslint-env mocha */
+import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
 import { expect } from 'chai'
 import { getResetPasswordSubject, getResetPasswordText } from '../resetPassword'
@@ -41,8 +42,8 @@ describe('reset password', function () {
       })
 
       const subject = getResetPasswordSubject({
-          siteName, defaultLocale
-        })
+        siteName, defaultLocale
+      })
 
       ;[{}, null, undefined].forEach(u => {
         expect(subject(u)).to.equal('accounts.resetPassword.subject')
@@ -57,7 +58,7 @@ describe('reset password', function () {
       const user = {
         firstName: Random.id(6),
         lastName: Random.id(6),
-        emails: [{ address: `${Random.id()}@example.com`}],
+        emails: [{ address: `${Random.id()}@example.com` }],
         locale: Random.id(6)
       }
 
