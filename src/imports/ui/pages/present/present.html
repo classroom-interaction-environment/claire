@@ -74,31 +74,30 @@
                                         {{/each}}
 
                                         {{#if canHaveResponseProcessors reference}}
-                                        <div class="dropdown d-inline">
-                                            <button class="btn btn-outline-secondary dropdown-toggle border-0"
-                                                    type="button"
-                                                    id="dropdownMenuButton"
-                                                    data-toggle="dropdown"
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false">
-                                                {{#with responseProcessor reference}}
-                                                    {{log this}}
-                                                    {{> icon name=this.data.responseProcessor.icon}}
-                                                {{else}}
-                                                    {{> icon name="times"}}
-                                                {{/with}}
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                {{#each rp in (availableResponseProcessors reference)}}
-                                                    <a class="dropdown-item select-rp-button" href
-                                                       data-rp="{{rp.name}}"
-                                                       data-item="{{reference.itemId}}">
-                                                    {{> icon name=rp.icon}}
-                                                        <span>{{i18n rp.label}}</span>
-                                                </a>
-                                                {{/each}}
+                                            <div class="dropdown d-inline">
+                                                <button class="btn btn-outline-secondary dropdown-toggle border-0"
+                                                        type="button"
+                                                        id="dropdownMenuButton"
+                                                        data-toggle="dropdown"
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                    {{#with responseProcessor reference}}
+                                                        {{> icon name=this.data.responseProcessor.icon}}
+                                                    {{else}}
+                                                        {{> icon name="times"}}
+                                                    {{/with}}
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    {{#each rp in (availableResponseProcessors reference)}}
+                                                        <a class="dropdown-item select-rp-button" href
+                                                           data-rp="{{rp.name}}"
+                                                           data-item="{{reference.itemId}}">
+                                                            {{> icon name=rp.icon}}
+                                                            <span>{{i18n rp.label}}</span>
+                                                        </a>
+                                                    {{/each}}
+                                                </div>
                                             </div>
-                                        </div>
                                         {{/if}}
 
 
