@@ -33,29 +33,26 @@ Meteor.defer(async () => {
     const debug = createLog({ name: 'Theme' })
 
     const enable = ({ id, url }) => {
-      for (const style of document.styleSheets) {
-        if (style.href === url && style.disabled) {
-          style.disabled = false
-          return
-        }
-      }
+      // for (const style of document.styleSheets) {
+      //   if (style.href === url && style.disabled) {
+      //     style.disabled = false
+      //     return
+      //   }
+      // }
 
       debug('enable', id, url)
 
-      const link = document.createElement('link')
-      link.setAttribute('id', id)
-      link.setAttribute('rel', 'stylesheet')
+      const link = document.getElementById('theme-css')
       link.setAttribute('href', url)
-      document.head.appendChild(link)
     }
 
     const disable = ({ url }) => {
-      for (const style of document.styleSheets) {
-        if (style.href === url) {
-          style.disabled = true
-          return
-        }
-      }
+      // for (const style of document.styleSheets) {
+      //   if (style.href === url) {
+      //     style.disabled = true
+      //     return
+      //   }
+      // }
     }
 
     CurriculumSession.onStateChange(isCurriculum => {
