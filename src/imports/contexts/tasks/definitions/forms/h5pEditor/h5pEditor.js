@@ -14,10 +14,8 @@ import './h5pEditor.html'
 
 Template.afH5PEditor.onCreated(function () {
   const instance = this
-console.debug(instance.data)
   instance.updateField = async (result) => {
     console.debug(result)
-
   }
 })
 

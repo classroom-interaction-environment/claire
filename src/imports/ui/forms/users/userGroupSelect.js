@@ -8,6 +8,13 @@ import './autoform'
 import './userGroupSelect.scss'
 import './userGroupSelect.html'
 
+/*
+  user groups select provides a way to
+  drag and drop users between groups.
+
+  It builds on top of the GroupBuilder.
+ */
+
 Template.afUserGroupSelect.setDependencies()
 
 Template.afUserGroupSelect.onCreated(function () {
@@ -37,7 +44,7 @@ Template.afUserGroupSelect.onCreated(function () {
     })
 
     const resolvedUsers = getUsers({ users, assignedUsers })
-    instance.state.set({ users: resolvedUsers, hasUsers: resolvedUsers.length > 0 })
+    instance.state.set({ users: resolvedUsers, hasUsers: users.length > 0 })
   })
 })
 

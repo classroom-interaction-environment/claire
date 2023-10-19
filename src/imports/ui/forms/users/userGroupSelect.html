@@ -27,7 +27,6 @@
     <div class="group-pool mt-4">
         <div class="row">
             {{#each group in allGroups}}
-
                 {{#let groupIndex=@index}}
                     <div class="col-12">
                         <div class="card">
@@ -83,7 +82,7 @@
                                     </small>
                                 {{/if}}
                                 {{#each role in roles}}
-                                    <div class="mt-3 p-3 user-dropzone border bg-light rounded border-{{#if isOver groupIndex role}}primary{{else}}light{{/if}}"
+                                    <div class="mt-3 px-3 py-5 user-dropzone border bg-light rounded border-{{#if isOver groupIndex role}}primary{{else}}light{{/if}}"
                                          data-index="{{groupIndex}}"
                                          data-role="{{role}}">
                                         <span class="font-weight-bold">{{role}}</span>
@@ -106,7 +105,7 @@
                                     <small class="d-block p-1 text-center text-muted">
                                         {{i18n "groupBuilder.dropUsers"}}
                                     </small>
-                                    <div class="p-3 user-dropzone border rounded border-{{#if isOver groupIndex
+                                    <div class="px-3 py-5 user-dropzone border rounded border-{{#if isOver groupIndex
                                                                                               "none"}}primary{{else}}light{{/if}}"
                                          data-index="{{groupIndex}}"
                                          data-role="none">
