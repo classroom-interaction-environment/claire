@@ -281,7 +281,7 @@ SchoolClass.methods.get = {
   schema: {
     _id: String
   },
-  run: onServer(function ({ _id }) {
+  run: onServer(async function ({ _id }) {
     const { userId } = this
     const query = {
       $or: [
@@ -309,7 +309,7 @@ SchoolClass.methods.my = {
     },
     'ids.$': String
   },
-  run: onServer(function ({ ids }) {
+  run: function myClasses ({ ids }) {
     const { userId } = this
     const query = {
       $or: [
@@ -326,7 +326,7 @@ SchoolClass.methods.my = {
     }
 
     return getCollection(SchoolClass.name).find(query).fetch()
-  })
+  }
 }
 
 /**
@@ -343,7 +343,7 @@ SchoolClass.methods.create = {
     'timeFrame.to': SchoolClass.schema['timeFrame.to']
   },
   role: UserUtils.roles.teacher,
-  run: onServer(function createClass ({ title, timeFrame }) {
+  run: onServer(async function createClass ({ title, timeFrame }) {
     const { userId } = this
     const SchoolClassCollection = getCollection(SchoolClass.name)
     const insert = { title, createdBy: userId }
@@ -466,7 +466,7 @@ SchoolClass.publications.single = {
   schema: {
     _id: String
   },
-  run: onServer(function ({ _id }) {
+  run: onServer(async function ({ _id }) {
     const { userId } = this
     const query = {
       $or: [
@@ -483,7 +483,7 @@ SchoolClass.publications.single = {
 SchoolClass.publications.my = {
   name: 'schoolClass.publications.my',
   schema: {},
-  run: onServer(function () {
+  run: onServer(async function () {
     const { userId } = this
     const query = {
       $or: [

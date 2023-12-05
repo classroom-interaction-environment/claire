@@ -5,10 +5,11 @@ import { logError } from '../../api/errors/server/logerror'
 import { addErrorDetails } from '../../api/errors/server/addErrorDetails'
 import { createLog } from '../../api/log/createLog'
 import { logRuntimeEndpoints } from '../../api/mixins/logRuntimeEndpoints'
+import { asyncReadyMixin } from '../../api/mixins/asyncReadyMixin'
 
 export const createPublication = createPublicationFactory({
   schemaFactory: Schema.create,
-  mixins: [checkPermissions, logRuntimeEndpoints],
+  mixins: [asyncReadyMixin, checkPermissions, logRuntimeEndpoints],
   onError (publicationRuntimeError) {
     const env = this
     error('runtime error catch in publication [', env._name, ']')
