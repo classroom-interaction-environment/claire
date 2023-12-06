@@ -148,6 +148,13 @@ ResponseProcessorRegistry.allForDataType = (dataType, groupMode) => {
   return sortIfGroupMode({ allContexts, groupMode })
 }
 
+/**
+ * Sorts contexts in a way, that group-related RP are
+ * pushed to the top, in case a GroupMode is active.
+ * @param allContexts {Array<Object>}
+ * @param groupMode {string=}
+ * @return {Array<Object>} the sorted list of RP contexts
+ */
 const sortIfGroupMode = ({ allContexts, groupMode }) => {
   // on a given group mode we should prefer group mode
   // processors before any other processor

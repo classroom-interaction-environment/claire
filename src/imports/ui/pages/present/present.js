@@ -29,6 +29,7 @@ import { getMaterialContexts } from '../../../contexts/material/initMaterial'
 import '../../components/invitation/coderender/coderenderer'
 import '../../generic/tooltip/tooltip'
 import './present.html'
+import { getCollection } from '../../../api/utils/getCollection'
 
 const API = Template.present.setDependencies({
   contexts: getMaterialContexts().concat([Unit, Lesson, Task, TaskResults]),
@@ -126,7 +127,10 @@ Template.present.onCreated(function () {
       args: { references: itemRefsForSub },
       callbacks: {
         onError: API.notify,
-        onReady: () => instance.state.set('itemsComplete', true)
+        onReady: () => {
+          console.debug(getCollection(TaskResults).find().fetch())
+          instance.state.set('itemsComplete', true)
+        }
       }
     })
   })

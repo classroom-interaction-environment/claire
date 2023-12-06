@@ -204,6 +204,23 @@ Lesson.publications.my = {
   })
 }
 
+Lesson.publications.myRunning = {
+  name: 'lesson.publication.myRunning',
+  schema: {},
+  roles: UserUtils.roles.teacher,
+  run: onServerExec(function () {
+    return function () {
+      const { userId } = this
+      const query = {
+        createdBy: userId,
+        startedAt: { $exists: true },
+        completedAt: { $exists: false }
+      }
+      return getCollection(Lesson.name).find(query)
+    }
+  })
+}
+
 /**
  * Publishes all Lessons, associated with a unit and which I have created
  * @roles teacher

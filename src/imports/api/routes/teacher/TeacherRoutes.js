@@ -218,7 +218,12 @@ TeacherRoutes.lesson = {
 // ///////////////////////////////////
 
 TeacherRoutes.present = {
-  path: () => '/present',
+  path: ({ lessonId } = {}) => {
+    const base = '/present'
+    return lessonId
+      ? `${base}?lessonId=${lessonId}`
+      : base
+  },
   triggersEnter: () => [leaveCurriculum, loginTrigger, studentTrigger],
   async load () {
     return import('../../../ui/pages/present/present')

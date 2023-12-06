@@ -8,17 +8,4 @@ import '../../layout/footer/footer'
 import './teacherContainer.scss'
 import './teacherContainer.html'
 
-Template.teacherContainer.events({
-  'click .global-beamer-button' (event, templateInstance) {
-    event.preventDefault()
-    if (Beamer.status()) {
-      templateInstance.$('#beamerControlDialog').modal('show')
-    }
-    else {
-      const location = Routes.present.path()
-      setTimeout(() => Beamer.actions.init(location), 500)
-    }
-  }
-})
-
 export const teacherContainer = 'teacherContainer'
