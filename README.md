@@ -26,6 +26,12 @@ Watch the technical overview video from Meteor Impact 2021:
 
 Direct link: https://www.youtube.com/watch?v=upKaZyVfONE
 
+Watch the promotional video about CARO, a reference implementation using CLAIRE:
+
+[![CLAIRE | Promo Video](https://i.vimeocdn.com/video/1368752748-e30ad95de5dafbf878bb9e7b5bba85a2c4f2185302c116a91da319149fa7b7bf-d?mw=480&q=85)](https://player.vimeo.com/video/675438161?h=33c7c08bd1)
+
+Direct link: https://player.vimeo.com/video/675438161?h=33c7c08bd1
+
 ## Installation on your own server
 
 CLAIRE is a monolithic application by choice, thus it can run on a single VM or bare metal server.
