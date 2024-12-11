@@ -6,7 +6,11 @@
 			<a class="navbar-brand" href="/">
                 {{! TODO load logo from db, defined by admin }}
                 {{! TODO use >Image template }}
-				<img src="/main-logo.png" height="100" />
+				{{#if mainLogo}}
+					main
+				{{else}}
+					{{> Image src="/main-logo.png" height="100"}}
+				{{/if}}
 			</a>
 
 			<!-- Toggler/collapsibe Button -->

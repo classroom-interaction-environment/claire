@@ -2,7 +2,7 @@ import { FileTypes } from '../shared/FileTypes'
 import {
   onClient,
   onClientExec,
-  onServer
+  onServer, onServerExec
 } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
 import { Meteor } from 'meteor/meteor'
@@ -36,7 +36,10 @@ export const AppImages = {
     accept: FileTypes.image.accept,
     maxSize: 1024 * 1000 * 6,
     usePartialResponse: false,
-    converter: null // no thumbnails for app images
+    converter: onServerExec(function () {
+      const { imageConvert } = require('./converter/imageConvert')
+      return imageConvert
+    })
   }
 }
 

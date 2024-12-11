@@ -3,6 +3,8 @@ import { i18n } from '../../../api/language/language'
 import { Themes } from '../../../api/themes/Themes'
 import { getCollection } from '../../../api/utils/getCollection'
 import { onClientExec, onServer, onServerExec } from '../../../api/utils/archUtils'
+import { getFilesCollection } from '../../../api/utils/getFilesCollection'
+import { AppImages } from '../../files/image/AppImages'
 
 const reactive = label => () => i18n.get(label)
 
@@ -87,6 +89,27 @@ export const Settings = {
       type: String,
       label: () => i18n.get('common.entry')
     },
+    mainLogo: {
+      type: String,
+      optional: true,
+      autoform: onClientExec(function () {
+        import { FilesTemplates } from '../../files/FilesTemplates'
+        import { AppImages } from '../../files/image/AppImages'
+
+        return {
+          label: false,
+          afFieldInput: {
+            type: FilesTemplates.upload.type,
+            accept: AppImages.files.accept,
+            collection: AppImages.name,
+            previewTemplate: AppImages.renderer.template,
+            maxSize: AppImages.files.maxSize,
+            icon: AppImages.icon,
+            capture: AppImages.files.capture
+          }
+        }
+      })
+    },
     logos: {
       type: Array,
       optional: true
@@ -166,12 +189,12 @@ Settings.methods = {
     schema: Settings.schema,
     timeInterval: 1000,
     numRequests: 1,
-    run: onServer(function ({ ui, imprint, privacy, terms, termsStudent, contact, research, researchOptions, logos }) {
+    run: onServer(function ({ ui, imprint, privacy, terms, termsStudent, contact, research, researchOptions, mainLogo, logos }) {
       const SettingsCollection = getCollection(Settings.name)
       const settingsDoc = SettingsCollection.findOne()
 
       if (!settingsDoc) {
-        return SettingsCollection.insert({ ui, imprint, privacy, terms, termsStudent, research, researchOptions, contact, logos })
+        return SettingsCollection.insert({ ui, imprint, privacy, terms, termsStudent, research, researchOptions, contact, mainLogo, logos })
       }
 
       const { _id } = settingsDoc
@@ -186,11 +209,33 @@ Settings.methods = {
       if (research) modifier.$set.research = research
       if (researchOptions) modifier.$set.researchOptions = researchOptions
       if (logos) modifier.$set.logos = logos
+      if (mainLogo) modifier.$set.mainLogo = mainLogo
 
       SettingsCollection.update(_id, modifier)
       return SettingsCollection.findOne()
     })
   }
+}
+
+Settings.methods.logo = {
+  name: 'settings.methods.logo',
+  schema: {},
+  isPublic: true,
+  run: onServerExec(function () {
+    import { AppImages } from '../../files/image/AppImages'
+    import { getCollection } from '../../../api/utils/getCollection'
+    import { getFilesCollection } from '../../../api/utils/getFilesCollection'
+
+    return function () {
+      const SettingsCollection = getCollection(Settings.name)
+      const settingsDoc = SettingsCollection.findOne()
+      if (settingsDoc.mainLogo) {
+        const appFiles = getFilesCollection(AppImages.name)
+        const file = appFiles.findOne(settingsDoc.mainLogo)
+        return file && file.link()
+      }
+    }
+  })
 }
 
 Settings.methods.updateTheme = {

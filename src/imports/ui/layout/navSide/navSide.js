@@ -14,9 +14,23 @@ import '../../components/beamer/beamer'
 import navLanguage from './i18n/navLanguage'
 import './navSide.html'
 import './navSide.scss'
+import { Settings } from '../../../contexts/system/settings/Settings'
+import { callMethod } from '../../controllers/document/callMethod'
 
 const API = Template.navSide.setDependencies({
   language: navLanguage
+})
+
+Template.navSide.onCreated(function () {
+  const instance = this
+  callMethod({
+    name: Settings.methods.logo.name,
+    success: link => {
+      if (link) {
+        instance.state.set('mainLogo', link)
+      }
+    }
+  })
 })
 
 Template.navSide.helpers({
@@ -35,6 +49,9 @@ Template.navSide.helpers({
   },
   taskContext () {
     return Task
+  },
+  mainLogo () {
+    return Template.getState('mainLogo')
   }
 })
 

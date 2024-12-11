@@ -14,6 +14,7 @@ import '../../components/beamer/beamer'
 import navLanguage from './i18n/navLanguage'
 import './nav.css'
 import './nav.html'
+import { Settings } from '../../../contexts/system/settings/Settings'
 
 Template.nav.setDependencies({
   language: navLanguage
@@ -32,6 +33,12 @@ Template.nav.helpers({
   },
   taskContext () {
     return Task
+  },
+  mainLogo () {
+    debugger
+    const settingsDoc = Settings.helpers.get()
+    console.debug(settingsDoc)
+    return settingsDoc.mainLogo
   }
 })
 

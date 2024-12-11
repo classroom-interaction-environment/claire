@@ -20,6 +20,7 @@ const filesInitialized = Files.initialize(false)
 const themesList = Object.values(Themes)
 const legalFields = {}
 const logosSchema = Schema.create({
+  mainLogo: Settings.schema.mainLogo,
   logos: Settings.schema.logos,
   'logos.$': Settings.schema['logos.$']
 })
