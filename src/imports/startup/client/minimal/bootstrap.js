@@ -27,32 +27,32 @@ Meteor.defer(async () => {
   const currentTheme = settingsDoc?.ui?.theme
   await import('./custom.scss')
 
+  const enable = ({ id, url }) => {
+    for (const style of document.styleSheets) {
+      if (style.href === url && style.disabled) {
+        style.disabled = false
+        return
+      }
+    }
+    console.debug('[Theme]: enable', id, url)
+    const link = document.createElement('link')
+    link.setAttribute('id', id)
+    link.setAttribute('rel', 'stylesheet')
+    link.setAttribute('href', url)
+    document.head.appendChild(link)
+  }
+
+  const disable = ({ url }) => {
+    for (const style of document.styleSheets) {
+      if (style.href === url) {
+        style.disabled = true
+        return
+      }
+    }
+  }
+
   if (!currentTheme || currentTheme === 'caroDefault') {
     let currentIsCurriculum = false
-
-    const enable = ({ id, url }) => {
-      for (const style of document.styleSheets) {
-        if (style.href === url && style.disabled) {
-          style.disabled = false
-          return
-        }
-      }
-      console.debug('[Theme]: enable', id, url)
-      const link = document.createElement('link')
-      link.setAttribute('id', id)
-      link.setAttribute('rel', 'stylesheet')
-      link.setAttribute('href', url)
-      document.head.appendChild(link)
-    }
-
-    const disable = ({ url }) => {
-      for (const style of document.styleSheets) {
-        if (style.href === url) {
-          style.disabled = true
-          return
-        }
-      }
-    }
 
     CurriculumSession.onStateChange(isCurriculum => {
       console.debug('[CurriculumSession]: onState changed', { isCurriculum, currentIsCurriculum })
@@ -74,6 +74,7 @@ Meteor.defer(async () => {
     enable(themes.default)
   }
   else {
+    //enable(themes.default)
     const style = document.createElement('style')
     style.textContent = currentTheme
     document.head.appendChild(style)
