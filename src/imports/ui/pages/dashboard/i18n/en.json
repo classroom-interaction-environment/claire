@@ -9,6 +9,7 @@
     "saveOnly": "Save Only"
   },
   "dashboard": {
+    "myClasses": "My classes",
     "prepare": "Prepare lessons",
     "lesson": "Execute lessons",
     "myLastDocuments": "My last documents",

@@ -15,8 +15,9 @@
     "customUnits": "Eigenen Unterricht planen"
   },
   "dashboard": {
-    "prepare": "Mustervorlagen",
-    "lesson": "Unterricht durchführen"
+    "prepare": "Vorlagen/ Dokumente / Ablage",
+    "lesson": "Unterricht durchführen",
+    "members": "Projektmitglieder"
   },
   "editor": {
     "task":{

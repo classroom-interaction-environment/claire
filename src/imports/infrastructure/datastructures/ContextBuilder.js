@@ -94,7 +94,7 @@ ContextBuilder.build = function (context, buildCallback) {
   check(context, Match.ObjectIncluding(isContext()))
   check(buildCallback, Function)
 
-  const contextInfo = createLog(context)
+  const contextInfo = createLog({ name: context.name })
   const allPipelines = []
 
   // we go through all registries and check for any pipelines

@@ -25,7 +25,7 @@
                         {{> link href="/"
                                 label=(i18n "routes.dashboard")
                                 active=(active 'dashboard')
-                                icon="users"
+                                icon="dashboard"
                                 class="nav-link"}}
                     </li>
                     <li class="nav-item">
@@ -54,6 +54,13 @@
                                 label=(i18n "dashboard.lesson")
                                 active=(active 'lessons' 'lesson')
                                 icon="chalkboard-user"
+                                class="nav-link"}}
+                    </li>
+                    <li class="nav-item">
+                        {{>link href=(route "members")
+                                label=(i18n "dashboard.members")
+                                active=(active 'members')
+                                icon="users"
                                 class="nav-link"}}
                     </li>
                 </ul>

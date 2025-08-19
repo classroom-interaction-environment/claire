@@ -66,7 +66,9 @@ Template.dashboard.onCreated(function () {
 
   instance.updateLessonCounts = () => {
     const classIds = getCollection(SchoolClass.name).find().map(toDocId)
-    if (classIds.length === 0) { return }
+    if (classIds.length === 0) {
+      return
+    }
 
     // once we got all classes we can call for the lesosn counts
     callMethod({
@@ -199,6 +201,46 @@ Template.dashboard.onCreated(function () {
 Template.dashboard.helpers({
   loadComplete () {
     return API.initComplete()
+  },
+  newsfeed () {
+    return [
+      { title: 'Kurs angelegt', details: 'Jahrgang 2024/2025', by: 'Sarah Super', date: new Date(), icon: 'users' },
+      {
+        title: 'Unterricht durchgeführt',
+        details: 'Kommunikation in der Pflege',
+        by: 'Benjamin Pause',
+        date: new Date(),
+        icon: 'flag'
+      },
+      {
+        title: 'Material angelegt',
+        details: 'Powerpoint "Interkulturelle Kompetenz"',
+        by: 'Linda Lehrerin',
+        date: new Date(),
+        icon: 'file'
+      },
+      {
+        title: 'Unterricht gestarted',
+        details: 'Umgang mit Demenzpatienten',
+        by: 'Mark Heckmann',
+        date: new Date(),
+        icon: 'rocket'
+      },
+      {
+        title: 'Unterricht angelegt',
+        details: 'Kritische reflexion des eigenen Handelns',
+        by: 'Berta Bleistift',
+        date: new Date(),
+        icon: 'book'
+      },
+      {
+        title: 'Material angelegt',
+        details: 'Umfrage zur Arbeitsbelastung',
+        by: 'Jan Küster',
+        date: new Date(),
+        icon: 'chart-bar'
+      }
+    ]
   },
   classes () {
     const selector = { createdBy: Meteor.userId() }
@@ -344,8 +386,8 @@ Template.dashboard.events({
     const doc = definitions.doc
       ? definitions.doc
       : _id && (
-        getCollection(target).findOne(_id) ||
-        getLocalCollection(target).findOne(_id))
+      getCollection(target).findOne(_id) ||
+      getLocalCollection(target).findOne(_id))
     const { action, schema } = definitions
 
     FormModal.show({

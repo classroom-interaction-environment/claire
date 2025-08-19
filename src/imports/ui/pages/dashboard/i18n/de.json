@@ -9,7 +9,9 @@
     "saveOnly": "Nur speichern"
   },
   "dashboard": {
-    "prepare": "Mustervorlagen",
+    "myClasses": "Meine Kurse",
+    "newsfeed": "Neuigkeiten / Ereignisse",
+    "prepare": "Vorlagen/ Dokumente / Ablage",
     "lesson": "Unterricht durchführen",
     "myLastDocuments": "Meine letzten Bearbeitungen",
     "createCustom": "Eigener Unterricht",

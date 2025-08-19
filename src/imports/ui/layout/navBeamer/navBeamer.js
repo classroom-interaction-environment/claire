@@ -3,6 +3,8 @@ import { Template } from 'meteor/templating'
 import { Beamer } from '../../../contexts/beamer/Beamer'
 import { SubsManager } from '../../subscriptions/SubsManager'
 import { dataTarget } from '../../utils/dataTarget'
+import { Settings } from '../../../contexts/system/settings/Settings'
+import { callMethod } from '../../controllers/document/callMethod'
 import '../../components/color/selector/colorSelector'
 import '../../generic/print/print'
 import './navBeamer.css'
@@ -22,6 +24,15 @@ Template.navBeamer.onCreated(function onCreated () {
     if (beamerSub.ready()) {
       const beamerDoc = Beamer.doc.get()
       instance.state.set('beamerDoc', beamerDoc)
+    }
+  })
+
+  callMethod({
+    name: Settings.methods.logo.name,
+    success: link => {
+      if (link) {
+        instance.state.set('mainLogo', link)
+      }
     }
   })
 })
@@ -50,6 +61,9 @@ Template.navBeamer.helpers({
     const instance = Template.instance()
     const beamerDoc = instance.state.get('beamerDoc')
     return beamerDoc && beamerDoc.ui && beamerDoc.ui.grid === value
+  },
+  mainLogo () {
+    return Template.getState('mainLogo')
   }
 })
 

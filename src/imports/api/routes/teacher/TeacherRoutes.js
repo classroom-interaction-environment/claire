@@ -229,3 +229,16 @@ TeacherRoutes.present = {
   label: 'beamer.title',
   data: {}
 }
+
+TeacherRoutes.members = {
+  path: () => '/members',
+  triggersEnter: () => [leaveCurriculum, loginTrigger, studentTrigger],
+  async load () {
+    return import('../../../ui/pages/members/members')
+  },
+  target: null,
+  template: 'members',
+  label: 'members.title',
+  roles: null,
+  data: null
+}

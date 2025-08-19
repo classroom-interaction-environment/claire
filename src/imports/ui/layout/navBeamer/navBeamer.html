@@ -3,7 +3,11 @@
 	<nav class="navbar navbar-expand-sm {{#with background}}bg-{{this.className}} text-{{this.text}} navbar-{{this.nav}} {{/with}} fixed-top">
 		<div class="container-fluid">
 			<a class="navbar-brand" href="/">
-				<img src="/main-logo.png" height="100" />
+				{{#if mainLogo}}
+					<img src="{{mainLogo}}" height="100" />
+				{{else}}
+					<img src="/main-logo.png" height="100" />
+				{{/if}}
 			</a>
 
 			<!-- Toggler/collapsibe Button -->
