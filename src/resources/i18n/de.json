@@ -195,6 +195,14 @@
     "email": "Via Email teilen",
     "link": "Via Link teilen"
   },
+  "members": {
+    "title": "Projektmitglieder"
+  },
+  "dashboard": {
+    "newsfeed": "Neuigkeiten / Ereignisse",
+    "myClasses": "Meine Kurse",
+    "createClass": "Kurs anlegen"
+  },
   "codeInvitation": {
     "title": "Registrierung (mit Code)",
     "code": "Code",
@@ -824,7 +832,7 @@
     "optionB": "Option B - Einen neuen Workflow anlegen (weiter Button klicken)",
     "createNewEntry": "Noch kein Eintrag vorhanden?",
     "task": {
-      "title": "Aufgabenverwaltung"
+      "title": "Meine Aufgaben"
     },
     "unit": {
       "title": "Eigenen Unterricht planen"
@@ -1054,7 +1062,7 @@
     "userId": "User-ID"
   },
   "prepare": {
-    "title": "Mustervorlagen",
+    "title": "Vorlagen/ Dokumente / Ablage",
     "createClass": "Kurs anlegen",
     "myClasses": "Meine Kurse"
   },
@@ -1064,7 +1072,7 @@
     "notFound": "Seite nicht gefunden",
     "notFoundExplained": "Die aufgerufene Seite existiert nicht bzw. konnte nicht gefunden werden.",
     "home": "Startseite",
-    "dashboard": "Meine Kurse",
+    "dashboard": "Mein Dashboard",
     "profile": "Benutzerprofil",
     "group": "Meine Gruppe",
     "login": "Login",
