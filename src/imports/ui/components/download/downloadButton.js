@@ -1,3 +1,4 @@
+import { Template } from 'meteor/templating'
 import { getFilesLink } from '../../../contexts/files/getFilesLink'
 import './downloadButton.html'
 

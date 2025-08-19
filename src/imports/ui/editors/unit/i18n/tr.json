@@ -66,6 +66,9 @@
         "deletePhase": "Öğretim aşamasını sil",
         "confirmRemove": "Bu öğretim aşamasını gerçekten kaldırmak ve silmek istiyor musunuz?"
       },
+      "groups": {
+        "title": "Çalışma grupları"
+      },
       "allDocsAdded": "Mevcut tüm belgeler zaten eklenmiştir",
       "codeView": "Kaynak kodu"
     }

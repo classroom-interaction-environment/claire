@@ -1,23 +1,24 @@
 .item-form-container > form {
-	background : none;
+  background: none;
 }
 
 
 input:disabled {
-	pointer-events : none;
+  pointer-events: none;
 }
 
 
-.itemrenderer-edit-button, .itemrenderer-submit-button {
-	z-index : 999;
+.itemrenderer-edit-button,
+.itemrenderer-submit-button {
+  z-index: 999;
 }
 
 
 .passive {
-	pointer-events : none;
-	opacity        : 0.4;
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 .form-group > div {
-	background-color: #FFFFFF;
+  background-color: #fff;
 }

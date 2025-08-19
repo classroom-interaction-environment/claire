@@ -17,6 +17,7 @@ export const ItemFileSchema = {
   label: 'item.fileUpload',
   category: MediaItems,
   dataType: ResponseDataTypes.file.name,
+  save: 'manual',
   edit ({ translate }) {
     return {
       fileType: {
@@ -61,6 +62,7 @@ export const ItemFileSchema = {
         return `${base} - ${details}`
       },
       autoform: {
+        label: false,
         afFieldInput: {
           type: FilesTemplates.upload.type,
           uploadTemplate: FilesTemplates.upload.template,

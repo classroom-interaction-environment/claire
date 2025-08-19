@@ -4,32 +4,33 @@
             <h5>{{i18n "form.fileUpload.label" name=(i18n label)}}</h5>
 
             {{#if showUpload}}
-            <span>{{i18n "form.fileUpload.description" accept=accept}}</span>
+                <span>{{i18n "form.fileUpload.description" accept=accept}}</span>
 
-            <div class="{{#unless uploading}}upload-drop-zone{{/unless}} mt-3 border border-{{#if dragOver}}primary bg-light{{else}}light{{/if}} dashed rounded p-5 text-center d-block w-100">
-                {{#if uploading}}
-                    {{> icon name="spinner" pulse=true}}
-                    <p>{{i18n "form.fileUpload.uploading"}}</p>
-                {{else}}
-                    <div>{{> icon name="upload" class="fa-3x"}}</div>
-                    <div class="text-center">{{i18n "form.fileUpload.drop"}}</div>
+                <div class="{{#unless uploading}}upload-drop-zone{{/unless}} mt-3 border border-{{#if
+                        dragOver}}primary bg-light{{else}}light{{/if}} dashed rounded p-5 text-center d-block w-100">
+                    {{#if uploading}}
+                        {{> icon name="spinner" pulse=true}}
+                        <p>{{i18n "form.fileUpload.uploading"}}</p>
+                    {{else}}
+                        <div>{{> icon name="upload" class="fa-3x"}}</div>
+                        <div class="text-center">{{i18n "form.fileUpload.drop"}}</div>
 
-                    <label for="af-file-upload-capture-{{id}}">
-                        <span class="btn btn-link">{{i18n "form.fileUpload.browse"}}</span>
-                        {{#unless atts.preview}}
-                        <input data-files-collection-upload
-                               id="af-file-upload-capture-{{id}}"
-                               class="d-none"
-                               type="file"
-                               disabled="{{disabled}}"
-                               accept="{{accept}}"
-                               capture="{{capture}}"
-                               multiple="{{multiple}}"
-                               data-id="{{id}}" />
-                        {{/unless}}
-                    </label>
-                {{/if}}
-            </div>
+                        <label for="af-file-upload-capture-{{id}}">
+                            <span class="btn btn-link">{{i18n "form.fileUpload.browse"}}</span>
+                            {{#unless atts.preview}}
+                                <input data-files-collection-upload
+                                       id="af-file-upload-capture-{{id}}"
+                                       class="d-none"
+                                       type="file"
+                                       disabled="{{disabled}}"
+                                       accept="{{accept}}"
+                                       capture="{{capture}}"
+                                       multiple="{{multiple}}"
+                                       data-id="{{id}}"/>
+                            {{/unless}}
+                        </label>
+                    {{/if}}
+                </div>
             {{/if}}
 
             {{#each file in files}}
@@ -59,8 +60,8 @@
                         </div>
                     {{/unless}}
                     <div>
-                            {{#if file.complete}}
-                                {{> actionButton label=(i18n "actions.delete")
+                        {{#if file.complete}}
+                            {{> actionButton label=(i18n "actions.delete")
                                     type="outline-danger"
                                     disabled=disabled
                                     class="border-0 delete-btn"
@@ -68,10 +69,10 @@
                                     blocked=(deleting file.id)
                                     data-target=file.doc._id
                                     data-id=file.id}}
-                            {{else}}
-                                {{> icon name="spinner" pulse=true}}
-                                {{file.progress}}%
-                            {{/if}}
+                        {{else}}
+                            {{> icon name="spinner" pulse=true}}
+                            {{file.progress}}%
+                        {{/if}}
                     </div>
                 </div>
             {{/each}}

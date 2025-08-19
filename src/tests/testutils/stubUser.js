@@ -1,14 +1,15 @@
-/* global Roles */
 import { Meteor } from 'meteor/meteor'
+import { Roles } from 'meteor/alanning:roles'
 import { stub, restore, isStubbed } from './stub'
-import StubCollections from 'meteor/hwillson:stub-collections'
+import { getUsersCollection } from '../../imports/api/utils/getUsersCollection'
 
-export const stubUser = function (userObj, userId, roles, group) {
-  const userDefined = typeof userObj !== 'undefined'
+export const stubUser = function (userObj, userId, roles, institution) {
+  const userIsDefined = typeof userObj !== 'undefined'
+  const UsersCollection = getUsersCollection()
 
-  if (userDefined) {
+  if (userIsDefined) {
     if (userObj !== null) {
-      Meteor.users.upsert({ _id: userObj._id }, userObj)
+      UsersCollection.upsert({ _id: userObj._id }, { $set: { ...userObj } })
       stub(Meteor, 'userId', () => userObj._id)
     }
 
@@ -19,20 +20,18 @@ export const stubUser = function (userObj, userId, roles, group) {
     stub(Meteor, 'user', () => userObj)
   }
 
-  if (!userDefined && typeof userId !== 'undefined') {
+  if (!userIsDefined && typeof userId !== 'undefined') {
     stub(Meteor, 'user', () => userObj || null)
     stub(Meteor, 'userId', () => userId)
   }
 
   if (typeof roles !== 'undefined') {
-    StubCollections.add([Meteor.roles])
-    StubCollections.stub()
     stub(Roles, 'userIsInRole', (id, role, domain) => {
       if (userObj) {
-        return id === userObj._id && roles.includes(role) && domain === group
+        return id === userObj._id && roles.includes(role) && domain === institution
       }
       else {
-        return id === userId && roles.includes(role) && domain === group
+        return id === userId && roles.includes(role) && domain === institution
       }
     })
   }
@@ -52,10 +51,6 @@ export const unstubUser = (user, userId) => {
     restore(Meteor, 'userId')
   }
 
-  if (_id) {
-    Meteor.users.remove(_id)
-  }
-
-  StubCollections.restore()
+  getUsersCollection().remove(_id)
   restore(Roles, 'userIsInRole')
 }

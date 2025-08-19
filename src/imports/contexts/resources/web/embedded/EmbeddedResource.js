@@ -70,7 +70,7 @@ EmbeddedResource.material = {
         return import('./renderer/main/embeddedResourceRenderer')
       },
       data: ({ materialDoc, document, options = {} }) => {
-        const { print = false, preview = true, student = false, editable = true } = options
+        const { print = false, preview = true, student = false /*, editable = true */ } = options
         const { name } = materialDoc
         return Object.assign({}, document, {
           meta: name,

@@ -8,7 +8,9 @@
                 <video controls class="w-100" preload="none" poster="{{getPoster ..}}">
                     <source src="{{this}}" type="{{../type}}">
                     <p>{{i18n "files.videoNotSupported"}}</p>
-                    <a href="{{this}}" target="_blank">{{i18n "actions.play"}} {{../name}}</a>
+                    <a href="{{this}}" target="_blank" rel="noreferrer noopener">
+                        {{i18n "actions.play"}} {{../name}}
+                    </a>
                 </video>
             </div>
 

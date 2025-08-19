@@ -1,0 +1,20 @@
+<template name="h5pPlayer">
+    <h5p-player class="player" content-id="{{contentId}}"></h5p-player>
+    <div class="d-block table-responsive">
+        <table class="table table-bordered">
+            <tbody>
+            {{#each statement in xApiOutput}}
+                <tr>
+                    <td>{{statement.timestamp}}</td>
+                    <td>{{statement.name}}</td>
+                    <td>{{statement.objectType}}</td>
+                    <td>{{statement.verb}}</td>
+                    <td>{{statement.item}}</td>
+                    <td>{{statement.contentId}}</td>
+                    <td>{{statement.result}}</td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</template>

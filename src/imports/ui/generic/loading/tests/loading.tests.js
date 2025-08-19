@@ -3,6 +3,7 @@ import { assert } from 'chai'
 import { Template } from 'meteor/templating'
 import { $ } from 'meteor/jquery'
 import { withRenderedTemplate } from '../../../../../tests/testutils/withRenderedTemplate'
+import '../../../../startup/client/minimal/helpers'
 import '../loading.js'
 
 describe('loading', function () {
@@ -14,10 +15,10 @@ describe('loading', function () {
     Template.deregisterHelper('_')
   })
 
-  it('has a .well class', function (done) {
+  it('has an .alert class', function (done) {
     withRenderedTemplate(Template.loading, {}, el => {
       const target = $(el)
-      assert.equal(target.find('.well').length, 1)
+      assert.equal(target.find('.alert').length, 1)
       done()
     })
   })
@@ -30,7 +31,7 @@ describe('loading', function () {
     })
   })
 
-  it('has a pulising spinner icon', function (done) {
+  it('has a pulsing spinner icon', function (done) {
     withRenderedTemplate(Template.loading, {}, el => {
       const target = $(el)
       assert.equal(target.find('.fa-pulse').length, 1)

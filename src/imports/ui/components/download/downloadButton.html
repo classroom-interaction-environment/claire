@@ -1,5 +1,6 @@
 <template name="downloadButton">
-    <a href="{{fileLink}}?download=true" download="{{this.name}}" target="_blank"
+    <a href="{{fileLink}}?download=true"
+       download="{{this.name}}" target="_blank"
        title="{{#if title}}{{title}}{{else}}{{i18n "actions.download"}}{{/if}}"
        class="btn btn-outline-secondary btn-sm claire-download-button no-wrap">
         <span class="font-weight-normal py-2">

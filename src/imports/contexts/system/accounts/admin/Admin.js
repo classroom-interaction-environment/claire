@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { auto, onClient, onServer, onServerExec } from '../../../../api/utils/archUtils'
 import { AdminErrors } from './AdminErrors'
-import {  UserUtils } from '../users/UserUtils'
+import { UserUtils } from '../users/UserUtils'
 
 export const Admin = {
   name: 'admin',
@@ -34,6 +34,9 @@ Admin.schema = {
   }
 }
 
+/**
+ * @deprecated
+ */
 Admin.errors = AdminErrors
 
 Admin.methods = {}
@@ -80,7 +83,7 @@ Admin.methods.createUser = {
   })(),
   run: onServerExec(function () {
     import { Accounts } from 'meteor/accounts-base'
-        import { UserFactory } from '../../../../api/accounts/registration/UserFactory'
+    import { UserFactory } from '../../../../api/accounts/registration/UserFactory'
     import { createAdmin } from '../../../../api/accounts/admin/createAdmin'
     import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
     import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
@@ -107,7 +110,8 @@ Admin.methods.createUser = {
         lastName: correctName(lastName, options),
         institution: correctName(institution, options),
         email,
-        role })
+        role
+      })
 
       if (willBeAdmin) {
         createAdmin(newUserId)
@@ -131,10 +135,11 @@ Admin.methods.removeUser = {
     import { userExists } from '../../../../api/accounts/user/userExists'
     import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
     import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
+    import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 
     return function ({ _id }) {
       if (!userExists({ userId: _id })) {
-        throw new Meteor.Error('user.notExist', undefined, _id)
+        throw new DocNotFoundError('user.notExist', { _id })
       }
 
       // can't self delete in any case
@@ -172,18 +177,20 @@ Admin.methods.updateRole = {
   })(),
   run: onServerExec(function () {
     import { Roles } from 'meteor/alanning:roles'
-        import { createAdmin } from '../../../../api/accounts/admin/createAdmin'
+    import { createAdmin } from '../../../../api/accounts/admin/createAdmin'
     import { removeAdmin } from '../../../../api/accounts/admin/removeAdmin'
     import { userExists } from '../../../../api/accounts/user/userExists'
     import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
+    import { getCollection } from '../../../../api/utils/getCollection'
+    import { Users } from '../users/User'
 
     return function ({ userId, role, group }) {
       if (this.userId === userId) {
-        throw new Meteor.Error('admin.updateRoleFailed', 'admin.noOwnRolesChangeAllowed', userId)
+        throw new Meteor.Error('admin.updateRoleFailed', 'admin.noOwnRolesChangeAllowed', { userId })
       }
 
       if (!userExists({ userId })) {
-        throw new Meteor.Error('admin.updateRoleFailed', Admin.errors.USER_NOT_FOUND, userId)
+        throw new Meteor.Error('admin.updateRoleFailed', Admin.errors.USER_NOT_FOUND, { userId })
       }
 
       if (!UserUtils.roleExists(role)) {
@@ -207,7 +214,7 @@ Admin.methods.updateRole = {
         throw new Meteor.Error('admin.updateRoleFailed', 'roles.notAssigned', { userId, role, group })
       }
 
-      return Meteor.users.update(userId, { $set: { role } })
+      return getCollection(Users.name).update(userId, { $set: { role } })
     }
   })
 }
@@ -222,12 +229,17 @@ Admin.methods.users = {
     },
     'ids.$': String
   },
-  run: onServer(function ({ ids }) {
-    const query = {}
-    if (ids?.length) {
-      query._id = { $in: ids }
+  run: onServerExec(function () {
+    import { Users } from '../users/User'
+    import { getCollection } from '../../../../api/utils/getCollection'
+
+    return function ({ ids }) {
+      const query = {}
+      if (ids?.length) {
+        query._id = { $in: ids }
+      }
+      return getCollection(Users.name).find(query, { fields: { services: 0 } }).fetch()
     }
-    return Meteor.users.find(query, { fields: { services: 0 } }).fetch()
   })
 }
 

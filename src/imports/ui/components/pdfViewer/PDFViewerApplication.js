@@ -70,7 +70,6 @@ export class PDFViewerApplication {
       pdfViewer.currentScaleValue = defaults.DEFAULT_SCALE_VALUE
       self.page.set(pdfViewer.currentPageNumber)
       self.numPages.set(self.pdfDocument.numPages)
-      console.debug('pages init', self.page.get(), '/', self.numPages.get())
     })
 
     eventBus.on('pagechanging', function (evt) {
@@ -343,12 +342,10 @@ export class PDFViewerApplication {
   }
 
   isFirst () {
-    console.debug('is first', this.page.get())
     return this.page.get() === 1
   }
 
   isLast () {
-    console.debug('is last', this.page.get(), this.numPages.get())
     return this.page.get() === this.numPages.get()
   }
 

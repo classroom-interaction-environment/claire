@@ -2,32 +2,44 @@
 import { Random } from 'meteor/random'
 import { assert, expect } from 'chai'
 import { Beamer } from '../Beamer'
-
+import { Users } from '../../system/accounts/users/User'
 import { isContext } from '../../../../tests/testutils/isContext'
 import { onClientExec, onServerExec } from '../../../api/utils/archUtils'
-import { mockCollection } from '../../../../tests/testutils/mockCollection'
+import {
+  clearCollections,
+  mockCollections,
+  restoreAllCollections
+} from '../../../../tests/testutils/mockCollection'
 import { stubUser, unstubUser } from '../../../../tests/testutils/stubUser'
 import { exampleUser } from '../../../../tests/testutils/exampleUser'
 import { stubMethod, unstubMethod } from '../../../../tests/testutils/stubMethod'
 import { DocNotFoundError } from '../../../api/errors/types/DocNotFoundError'
 
-const BeamerCollection = mockCollection(Beamer)
-
 describe('Beamer', function () {
   let user
   let userId
   let environment
+  let BeamerCollection
+
+  before(function () {
+    [BeamerCollection] = mockCollections(Beamer, Users)
+  })
 
   beforeEach(function () {
     user = exampleUser()
     userId = user._id
     environment = { userId }
     stubUser(user)
-    BeamerCollection.remove({})
   })
 
   afterEach(function () {
+    clearCollections(Beamer)
+    clearCollections(Users)
     unstubUser(user, userId)
+  })
+
+  after(function () {
+    restoreAllCollections()
   })
 
   it('is a context', function () {
@@ -255,7 +267,6 @@ describe('Beamer', function () {
 
           // after update
           Beamer.doc.background(Beamer.ui.backgroundColors.dark.value, (err, color) => {
-            console.info(err, color)
             if (err) {
               console.error(err)
               return done(err)

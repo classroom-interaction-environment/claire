@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { UserUtils } from '../../contexts/system/accounts/users/UserUtils'
 
 export const userIsCurriculum = (userId = Meteor.userId()) => {

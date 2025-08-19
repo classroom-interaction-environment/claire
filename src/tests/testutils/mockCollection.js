@@ -1,33 +1,84 @@
 import { Mongo } from 'meteor/mongo'
 import { Schema } from '../../imports/api/schema/Schema'
+import Collection2 from 'meteor/aldeed:collection2'
+import { Random } from 'meteor/random'
+import { FilesCollection } from 'meteor/ostrio:files'
 
-const _locals = {}
+// XXX: backwards compat for pre 4.0 collection2
+if (Collection2 && typeof Collection2.load === 'function') {
+  Collection2.load()
+}
 
-Mongo.Collection.get = name => _locals[name]
+const originals = new Map()
 
-export const mockCollection = ({ name, schema } = {}, { noSchema = false, override = false } = {}) => {
+Mongo.Collection.get = (name) => {
+  return originals.get(name)
+}
+
+export const mockCollection = ({ name, schema } = {}, {
+  noSchema = false,
+  noDefaults = false,
+  override = false,
+  isFilesCollection = false
+} = {}) => {
   let collection = Mongo.Collection.get(name)
 
-  if (collection) {
-    collection.remove({})
-
-    if (override) {
-      delete _locals[name]
-    }
-
-    else {
-      return collection
-    }
+  if (collection && override) {
+    originals.delete(name)
   }
 
-  collection = new Mongo.Collection(null)
+  if (collection) {
+    return collection
+  }
 
-  if (!noSchema) {
-    const schemaInstance = Schema.withDefault(schema)
+  else if (isFilesCollection) {
+    const filesCollection = new FilesCollection({ collectionName: Random.id() })
+    collection = filesCollection.collection
+  }
+  else {
+    collection = new Mongo.Collection(null)
+    collection._name = `${name}-mocked`
+  }
+
+  if (schema && noSchema !== true) {
+    const schemaInstance = noDefaults
+      ? Schema.create(schema)
+      : Schema.withDefault(schema)
     collection.attachSchema(schemaInstance)
   }
 
-  _locals[name] = collection
+  originals.set(name, collection)
 
   return collection
+}
+
+export const mockCollections = (...collections) => {
+  return collections.map(c => {
+    return (Array.isArray(c))
+      ? mockCollection(c[0], c[1])
+      : mockCollection(c)
+  })
+}
+
+export const restoreCollection = ({ name }) => {
+  const collection = originals.get(name)
+  return collection && originals.delete(name)
+}
+
+export const restoreAllCollections = () => {
+  clearAllCollections()
+  originals.clear()
+}
+
+const clearCollection = ({ name }) => {
+  const collection = originals.get(name)
+  return collection && collection.remove({})
+}
+
+export const clearCollections = (...contexts) => {
+  return contexts.map(c => clearCollection(c))
+}
+
+export const clearAllCollections = () => {
+  originals.forEach(collection => collection.remove({}))
 }

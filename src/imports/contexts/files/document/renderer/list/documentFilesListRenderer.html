@@ -1,5 +1,11 @@
 <template name="documentFilesListRenderer">
-    <td><i class="fa fa-fw fa-{{icon this.extension}}"></i></td>
+    <td>
+        {{#if hasThumbnail this}}
+            {{> image src=(getThumbnail this) height=64 class="border border-light"}}
+        {{else}}
+            {{> icon name=(getIcon this.extension) fw=true}}
+        {{/if}}
+    </td>
     <td class="w-25"><h6>{{this.name}}</h6></td>
     <td class="w-100"></td>
     <td class="no-wrap">{{b2mb this.size}} {{i18n 'fileSize.mb'}}</td>

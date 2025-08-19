@@ -21,7 +21,8 @@ Schema.extendOptions = options => {
  * @param options
  */
 Schema.create = function create (obj, options = {}) {
-  const instance = new Schema.provider(obj, { ..._defaultOptions, ...options })
+  const SchemaClass = Schema.provider
+  const instance = new SchemaClass(obj, { ..._defaultOptions, ...options })
   onCreateStack.forEach(fct => fct(instance))
   return instance
 }
@@ -153,3 +154,4 @@ SimpleSchema.ErrorTypes.GENERIC = 'genericError'
 
 export const RegEx = SimpleSchema.RegEx
 export const ErrorTypes = SimpleSchema.ErrorTypes
+export const Integer = SimpleSchema.Integer

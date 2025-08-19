@@ -1,5 +1,5 @@
-import { WebApp } from 'meteor/webapp'
 import { cspOptions } from '../../../api/csp/cspOptions'
+import { WebApp } from 'meteor/webapp'
 import helmet from 'helmet'
 
 /*
@@ -8,6 +8,8 @@ import helmet from 'helmet'
  *
  * TODO: read extended CSP options from installed plugins
  */
+const externalHostUrls = [
+  'https://h5p.org'
+]
 
-// Within server side Meter.startup()
-WebApp.connectHandlers.use(helmet(cspOptions()))
+WebApp.connectHandlers.use(helmet(cspOptions(externalHostUrls)))

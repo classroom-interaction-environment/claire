@@ -1,15 +1,57 @@
 <template name="afGroupText">
     {{#onLoaded complete=loadComplete}}
-        <div class="d-block text-center text-md-left">
-            {{i18n "groupText.my"}}
-        </div>
-        <textarea class="my-text form-control" rows="{{atts.rows}}" data-schema-key="{{dataSchemaKey}}"></textarea>
+        <ul class="nav nav-tabs" id="afGroupText-{{dataSchemaKey}}-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link bg-transparent active"
+                        id="afGroupText-my-tab"
+                        data-toggle="tab"
+                        data-target="#afGroupText-my"
+                        type="button"
+                        role="tab"
+                        aria-controls="afGroupText-my"
+                        aria-selected="true">
+                    {{i18n "groupText.my"}}
+                </button>
+            </li>
+            {{#each user in groupMembers}}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link group-member-tab bg-transparent {{#if hasUpdate user._id}}text-primary{{/if}}"
+                            id="afGroupText-user-{{@index}}-tab"
+                            data-user="{{user._id}}"
+                            data-toggle="tab"
+                            data-target="#afGroupText-user-{{@index}}"
+                            type="button"
+                            role="tab"
+                            aria-controls="afGroupText-user-{{@index}}"
+                            aria-selected="false">
+                        {{user.firstName}}
+                    </button>
+                </li>
+            {{/each}}
+        </ul>
 
-        {{#each output in groupOutputs}}
-            <div class="d-block text-center text-md-left mt-3">
-                {{username output.createdBy}}
+        <!-- Tab panes -->
+        <div class="tab-content mt-3">
+            <div class="tab-pane fade show active"
+                 id="afGroupText-my"
+                 role="tabpanel"
+                 aria-labelledby="afGroupText-my-tab">
+                <textarea class="my-text form-control"
+                          rows="{{atts.rows}}"
+                          data-schema-key="{{dataSchemaKey}}"></textarea>
             </div>
-            <div class="white-space-pre form-control h-auto">{{output.response}}</div>
-        {{/each}}
+            {{#each user in groupMembers}}
+                <div class="tab-pane fade"
+                     id="afGroupText-user-{{@index}}"
+                     role="tabpanel"
+                     aria-labelledby="afGroupText-user-{{@index}}-tab">
+                    {{#with memberResponse user._id}}
+                        <div class="form-control member-response">{{this}}</div>
+                    {{/with}}
+                </div>
+            {{/each}}
+        </div>
+
+
     {{/onLoaded}}
 </template>

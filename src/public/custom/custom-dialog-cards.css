@@ -1,0 +1,7 @@
+/**
+ * This custom style is only applied to dialog cards. See H5PFactory.js for how
+ * it is injected.
+ */
+.h5p-dialogcards .h5p-dialogcards-card-content {
+    background-color: yellowgreen !important;
+}

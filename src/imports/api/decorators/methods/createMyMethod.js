@@ -1,7 +1,6 @@
 import { $in } from '../../utils/query/inSelector'
 import { onServer } from '../../utils/archUtils'
 import { getCollection } from '../../utils/getCollection'
-import { toOptionalSchema } from '../../schema/toOptionalSchema'
 import { DefaultFields } from '../../defaults/schema'
 
 const defaultPublicFields = { ...DefaultFields }

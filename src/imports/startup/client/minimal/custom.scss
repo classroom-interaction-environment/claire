@@ -244,18 +244,17 @@ fieldset .card-header {
 }
 
 
-input[type=checkbox] {
+input[type='checkbox'] {
   transform: scale(2);
 }
 
-input[type="checkbox"] + label {
+input[type='checkbox'] + label {
   margin-left: 1rem;
 }
 
-.font-large {
-  font-size: 4rem;
-}
+// we want disabled buttons to be much more transparent
 
-.btn.disabled, .btn:disabled {
+.btn.disabled,
+.btn:disabled {
   opacity: 0.25 !important;
 }

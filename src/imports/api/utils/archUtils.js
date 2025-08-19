@@ -12,10 +12,11 @@ export const onClientExec = fct => Meteor.isClient ? fct() : undefined
 export const auto = fct => fct()
 
 export const isomporph = ({ client, server }) => {
-  if (client && Meteor.isClient) {
+  if (Meteor.isClient && client) {
     return client()
   }
-  if (server && Meteor.isServer) {
+  if (Meteor.isServer && server) {
     return server()
   }
+  return null
 }

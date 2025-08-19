@@ -68,12 +68,12 @@ async function loadUserRoutes (userId) {
 }
 
 async function loadMinimalRoutes () {
-  console.info('load minimal routes')
+  debug('load minimal routes')
   return import('./minimal/routes')
 }
 
 async function loadStudent () {
-  console.info('load student routes')
+  debug('load student routes')
   return import('./student/index')
 }
 
@@ -83,12 +83,12 @@ async function loadTeacher () {
 
 async function loadCurriculum () {
   await loadTeacher()
-  console.info('load admin routes')
+  debug('load admin routes')
   return import('./curriculum/index')
 }
 
 async function loadAdmin () {
   await loadTeacher()
-  console.info('load admin routes')
+  debug('load admin routes')
   return import('./admin/index')
 }

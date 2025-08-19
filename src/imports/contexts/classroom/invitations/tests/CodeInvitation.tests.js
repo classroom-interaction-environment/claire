@@ -1,5 +1,4 @@
 /* global describe it beforeEach afterEach */
-import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
 import { expect } from 'chai'
 import { CodeInvitation } from '../CodeInvitations'
@@ -10,6 +9,9 @@ import { createCodeDoc } from '../../../../../tests/testutils/doc/createCodeDoc'
 import { Users } from '../../../system/accounts/users/User'
 import { stub, restoreAll } from '../../../../../tests/testutils/stub'
 import { InvocationChecker } from '../../../../api/utils/InvocationChecker'
+import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
+import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
+import { Admin } from '../../../system/accounts/admin/Admin'
 
 describe(CodeInvitation.name, function () {
   describe('helpers', function () {
@@ -47,12 +49,12 @@ describe(CodeInvitation.name, function () {
       })
 
       it('returns true for a doc with expired date', function () {
-        const expiredDoc = { expires: -3, createdAt: new Date() }
+        const expiredDoc = { expires: -3, createdAt: new Date(), invalid: false }
         expect(CodeInvitation.helpers.isExpired(expiredDoc)).to.equal(true)
       })
 
       it('returns false for a valid doc with unexpired date', function () {
-        const expiredDoc = { expires: 3, createdAt: new Date() }
+        const expiredDoc = { expires: 3, createdAt: new Date(), invalid: false }
         expect(CodeInvitation.helpers.isExpired(expiredDoc)).to.equal(false)
       })
 
@@ -163,12 +165,12 @@ describe(CodeInvitation.name, function () {
   })
 
   onServerExec(function () {
-    import { mockCollection } from '../../../../../tests/testutils/mockCollection'
+    import { mockCollections, clearCollections, restoreAllCollections } from '../../../../../tests/testutils/mockCollection'
     import { exampleUser } from '../../../../../tests/testutils/exampleUser'
     import { unstubUser, stubUser } from '../../../../../tests/testutils/stubUser'
 
-    const CodeCollection = mockCollection(CodeInvitation)
-    const SchoolClassCollection = mockCollection(SchoolClass, { noSchema: true })
+    let CodeCollection
+    let SchoolClassCollection
 
     let user
     let userId
@@ -177,20 +179,26 @@ describe(CodeInvitation.name, function () {
     let classId
 
     describe('methods', function () {
+      before(function () {
+        [CodeCollection, SchoolClassCollection] = mockCollections(CodeInvitation, SchoolClass, Admin, Users)
+      })
+
       beforeEach(function () {
         user = exampleUser()
         userId = user._id
         environment = { userId }
-        SchoolClassCollection.remove({})
         classDoc = { createdBy: userId, title: Random.id() }
         classId = SchoolClassCollection.insert(classDoc)
-        Meteor.users.insert(user)
       })
 
       afterEach(function () {
         unstubUser(user, userId)
         restoreAll()
-        Meteor.users.remove({})
+        clearCollections(Users, CodeInvitation, SchoolClass)
+      })
+
+      after(function () {
+        restoreAllCollections()
       })
 
       const createInvitation = (...args) => CodeInvitation.methods.create.run.call(environment, ...args)
@@ -202,26 +210,33 @@ describe(CodeInvitation.name, function () {
       describe(CodeInvitation.methods.create.name, function () {
         it('throws, if the user cannot invite the given role', function () {
           // expected errors
+          const { admin, schoolAdmin, curriculum, teacher, student } = UserUtils.roles
           const errorPairs = [
-            [UserUtils.roles.schoolAdmin, [UserUtils.roles.admin, UserUtils.roles.schoolAdmin]],
-            [UserUtils.roles.teacher, [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher]],
-            [UserUtils.roles.student, [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher, UserUtils.roles.student]]
+            [schoolAdmin, [admin, schoolAdmin]],
+            [curriculum, [admin, schoolAdmin, curriculum]],
+            [teacher, [admin, schoolAdmin, curriculum, teacher]],
+            [student, [admin, schoolAdmin, curriculum, teacher, student]]
           ]
 
           errorPairs.forEach(entry => {
             const role = entry[0]
             const targets = entry[1]
-            stubUser(user, userId, [role], user.institution)
+            const { institution } = user
+            stubUser(user, userId, [role], institution)
 
             targets.forEach(targetRole => {
               const createDoc = {
                 maxUsers: 1,
                 expires: 1,
                 role: targetRole,
-                institution: user.institution,
+                institution,
                 classId
               }
-              expect(() => createInvitation(createDoc)).to.throw(CodeInvitation.errors.insufficientRole)
+
+              const thrown = expect(() => createInvitation.call(environment, createDoc))
+                .to.throw('codeInvitation.createFailed')
+              thrown.with.property('reason', CodeInvitation.errors.insufficientRole)
+              thrown.with.deep.property('details', { userId, role: targetRole })
             })
 
             unstubUser(user, userId)
@@ -238,11 +253,17 @@ describe(CodeInvitation.name, function () {
           }
 
           // case a: classdoc not found
-          expect(() => createInvitation(createDoc)).to.throw('docNotFound')
+          const notFound = expect(() => createInvitation.call(environment, createDoc))
+            .to.throw(DocNotFoundError.name)
+          notFound.with.property('reason', 'getDocument.docUndefined')
+          notFound.with.deep.property('details', { name: SchoolClass.name, query: createDoc.classId })
 
           // case b: not owner
-          createDoc.classId = SchoolClassCollection.insert({ title: Random.id() })
-          expect(() => createInvitation(createDoc)).to.throw('permissionDenied')
+          createDoc.classId = SchoolClassCollection.insert({ title: Random.id(), createdBy: Random.id() })
+          const notTeacher = expect(() => createInvitation(createDoc))
+            .to.throw(PermissionDeniedError.name)
+          notTeacher.with.property('reason', 'schoolClass.notTeacher')
+          notTeacher.with.deep.property('details', { userId, classId: createDoc.classId })
         })
         it('throws if user is not admin and institutions mismatch', function () {
           const errorPairs = [
@@ -363,7 +384,8 @@ describe(CodeInvitation.name, function () {
             role: codeDoc.role,
             institution: codeDoc.institution,
             email: codeDoc.email,
-            classId: codeDoc.classId
+            classId: codeDoc.classId,
+            className: SchoolClassCollection.findOne(classId).title
           }
           expect(verifiedDoc).to.deep.equal(expectedDoc)
         })

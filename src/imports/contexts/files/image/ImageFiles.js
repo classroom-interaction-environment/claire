@@ -103,9 +103,7 @@ ImageFiles.material = {
       }
     }
   },
-  onCreated: function (imageId, unitDoc) {
-    console.info(imageId, unitDoc)
-  },
+  // onCreated: function (imageId, unitDoc) {},
   async load () {
     await FilesTemplates.upload.load()
     await FilesTemplates.renderer.load()

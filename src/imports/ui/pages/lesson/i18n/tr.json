@@ -71,12 +71,5 @@
     "student": {
       "docNotVisible": "Materyal muhtemelen öğretmen tarafından devre dışı bırakılmıştır."
     }
-  },
-  "group": {
-    "title": "Grup",
-    "groups": "Gruplar",
-    "users": "Üyeler",
-    "phases": "Aşamalarla sınırlı",
-    "material": "Gruplar için öğretim materyali"
   }
 }

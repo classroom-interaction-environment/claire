@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor'
+import { Tracker } from 'meteor/tracker'
 import { ReactiveDict } from 'meteor/reactive-dict'
 import { ResponseProcessorLoader } from '../../contexts/tasks/responseProcessors/ResponseProcessorLoader'
 import { callMethod } from '../../ui/controllers/document/callMethod'
@@ -105,8 +106,12 @@ ResponseProcessorAPI.create = (itemData, templateInstance) => {
           actionHandlers.set(actionId, actionHandler)
         }
       },
-      document: context.schema && (() => {
-        return getCollection(context.name).findOne({ lessonId, taskId, itemId })
+      document: context.schema && (({ groupId }) => {
+        const query = { lessonId, taskId, itemId }
+        if (groupId) {
+          query.groupId = groupId
+        }
+        return getCollection(context.name).findOne(query)
       }),
       onResize: function (callback) {
         resizeListeners.set(actionId, callback)

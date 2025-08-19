@@ -10,7 +10,6 @@ const API = Template.videoFileRenderer.setDependencies({
 
 Template.videoFileRenderer.onCreated(function () {
   const instance = this
-  console.debug('video file renderer created')
   instance.state.setDefault('version', 'original')
   instance.deleteFile = createDeleteFile({
     context: VideoFiles,
@@ -21,7 +20,6 @@ Template.videoFileRenderer.onCreated(function () {
 
 Template.videoFileRenderer.helpers({
   getLink (videoFile) {
-    console.debug(videoFile)
     return getFilesLink({
       file: videoFile,
       name: VideoFiles.name,

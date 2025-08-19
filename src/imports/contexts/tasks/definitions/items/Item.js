@@ -43,7 +43,6 @@ const debug = createLog({ name: Item.name, type: 'debug' })
 /// /////////////////////////////////////////////////////////////////////////////////////////////
 
 const initialized = new ReactiveVar(false)
-let localeTracker
 
 /**
  * Allows to determine, whether this module has been initialized.
@@ -85,7 +84,7 @@ Item.initialize = async function () {
   plugins.forEach(({ name, plugin }) => processPlugin(name, plugin))
 
   // setup reactive language updates
-  localeTracker = Tracker.autorun(() => {
+  Tracker.autorun(() => {
     const currentLocale = i18n.getLocale()
     ItemPlugins.onLanguageChange(currentLocale)
       .catch(e => console.error(e))
@@ -243,6 +242,8 @@ Item.extract = function (itemId, document) {
       item = found
       return true
     }
+
+    return false
   })
 
   return item

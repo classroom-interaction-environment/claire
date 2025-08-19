@@ -9,7 +9,5 @@ the administration are.
 Furthermore, there needs to be a system-wide lock until syncing is 100% complete.
 
 This could be achieved using a flag in the `system/Settings` context document,
-that is kept in server-wide cache and can be accessed using a mixing, 
+that is kept in server-wide cache and can be accessed using a mixing,
 making all curriculum-context-related methods "wait" until the flag disappears.
-
- 

@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { TaskResults } from '../../../../../contexts/tasks/results/TaskResults'
-import { TaskWorkingState } from '../../../../../contexts/tasks/results/TaskWorkingState'
+import { TaskWorkingState } from '../../../../../contexts/tasks/state/TaskWorkingState'
 import {
   fromResponse,
   toResponse
@@ -30,7 +30,8 @@ export const ItemHandlers = {}
  * @return {function}
  */
 ItemHandlers.onItemLoad = ({ instance, TaskResultCollection }) =>
-/**
+  /**
+   * TODO rewrite to use Object param instead of param-sequence
    * loads the data for the given item by itemId and restores, if already given,
    * the previously made response from the user.
    *
@@ -39,7 +40,6 @@ ItemHandlers.onItemLoad = ({ instance, TaskResultCollection }) =>
    * @param page {number} task doc's page, required to search to a response
    * @callback
     */
-
   function onItemLoad (itemId, callback, page) {
     const taskResultDoc = TaskResultCollection.findOne({ itemId })
     const taskDoc = instance.state.get('taskDoc')
@@ -56,7 +56,8 @@ ItemHandlers.onItemLoad = ({ instance, TaskResultCollection }) =>
     const value = fromResponse({ response, page, itemId, taskId, taskDoc })
     const itemDoc = {
       [itemId]: value,
-      updatedAt: taskResultDoc.updatedAt
+      updatedAt: taskResultDoc.updatedAt,
+      updatedBy: taskResultDoc.updatedBy
     }
 
     setTimeout(() => callback(null, itemDoc), 300)
@@ -87,7 +88,15 @@ ItemHandlers.onItemSubmit = ({ instance, onError }) =>
     const groupDoc = instance.state.get('groupDoc')
     const lessonId = lessonDoc._id
     const groupId = groupDoc && groupDoc._id
-    const value = insertDoc[itemId]
+    let value = insertDoc[itemId]
+
+    // if users "delete" their input, for example by
+    // removing all text from a text-input then
+    // we need to grab the unset value and store empty input
+    if (typeof value === 'undefined' && itemId in (updateDoc.$unset ?? {})) {
+      value = updateDoc.$unset[itemId]
+    }
+
     const response = toResponse({ value })
     const args = { lessonId, taskId, itemId, response }
     if (groupId) {

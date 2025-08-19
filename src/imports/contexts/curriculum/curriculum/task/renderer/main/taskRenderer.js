@@ -7,6 +7,7 @@ import taskrendererLang from './i18n/taskRendererLang'
 import './taskRendererFactory'
 import './taskRenderer.scss'
 import './taskRenderer.html'
+import { asyncTimeout } from '../../../../../../api/utils/asyncTimeout'
 
 /* ****************************************************************************
  * TaskRenderer
@@ -219,8 +220,6 @@ Template.taskRenderer.helpers({
 Template.taskRenderer.events({
 
   'click #task-finish-button' (event, templateInstance) {
-    event.preventDefault()
-
     ensureAllSaved(function () {
       const isEditable = templateInstance.state.get('isEditable')
       if (!isEditable) {
@@ -248,8 +247,6 @@ Template.taskRenderer.events({
   },
 
   'click #task-next-button' (event, templateInstance) {
-    event.preventDefault()
-
     ensureAllSaved(function () {
       const currentPage = templateInstance.state.get('current')
       const newPage = currentPage + 1
@@ -277,8 +274,6 @@ Template.taskRenderer.events({
   },
 
   'click #task-prev-button' (event, templateInstance) {
-    event.preventDefault()
-
     ensureAllSaved(function () {
       const current = templateInstance.state.get('current')
       const newPage = current - 1

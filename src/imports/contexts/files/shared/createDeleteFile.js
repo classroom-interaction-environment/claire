@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { check } from 'meteor/check'
 import { confirmDialog } from '../../../ui/components/confirm/confirm'
 import { getFilesCollection } from '../../../api/utils/getFilesCollection'

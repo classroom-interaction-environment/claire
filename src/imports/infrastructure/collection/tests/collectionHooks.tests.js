@@ -1,4 +1,5 @@
 /* eslint-env mocha */
+/* global DDP */
 import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
 import { insertHook, updateHook, getUpdateStamps } from '../collectionHooks'
@@ -14,7 +15,6 @@ describe('collection hooks', function () {
     const userId = Random.id()
     stub(Meteor, 'userId', () => userId)
     const updateStamps = getUpdateStamps()
-    const keys = Object.keys(updateStamps)
     expect(updateStamps.updatedAt).to.be.instanceOf(Date)
     expect(updateStamps.updatedBy).to.equal('system')
 

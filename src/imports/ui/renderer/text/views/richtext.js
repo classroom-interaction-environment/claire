@@ -19,8 +19,6 @@ Template.textRendererrt.helpers({
           .removeAttr('src')
       })
     }
-    const appendedHtml = $('<div>').append($rt).html()
-    // console.log(appendedHtml)
-    return appendedHtml
+    return $('<div>').append($rt).html()
   }
 })

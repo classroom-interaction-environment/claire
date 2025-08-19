@@ -1,5 +1,4 @@
 import { Meteor } from 'meteor/meteor'
-import { Mongo } from 'meteor/mongo'
 import { Template } from 'meteor/templating'
 import { Tracker } from 'meteor/tracker'
 import { Admin } from '../../../../../contexts/system/accounts/admin/Admin'
@@ -86,7 +85,6 @@ Template.adminUsers.onCreated(function () {
       callbacks: {
         onError: API.fatal,
         onReady: () => {
-          console.debug(Meteor.users.find().fetch())
           setTimeout(() => instance.state.set('loadUsers', false), 300)
         }
       }
@@ -105,9 +103,7 @@ Template.adminUsers.helpers({
     return Template.getState('loadUsers')
   },
   getUsers (institution) {
-    const cursor = Meteor.users.find({ institution })
-    console.debug(institution, Template.getState('showInst'), institution === Template.getState('showInst'), cursor.count())
-    return cursor
+    return Meteor.users.find({ institution })
   },
   getUserEmail (user) {
     return user && user.emails ? user.emails[0].address : ''

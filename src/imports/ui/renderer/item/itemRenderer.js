@@ -6,9 +6,12 @@ import { ReactiveDict } from 'meteor/reactive-dict'
 import { Item } from '../../../contexts/tasks/definitions/items/Item'
 import { Form } from '../../components/forms/Form'
 import { Schema } from '../../../api/schema/Schema'
+import { GroupMode } from '../../../contexts/classroom/group/GroupMode'
+import { getUsersCollection } from '../../../api/utils/getUsersCollection'
+import { getFullName } from '../../../api/accounts/emailTemplates/common'
+import { throttle } from '../../utils/performance/throttle'
 import './itemRenderer.scss'
 import './itemRenderer.html'
-import { GroupMode } from '../../../contexts/classroom/group/GroupMode'
 
 export const itemRenderer = 'itemRenderer'
 
@@ -18,7 +21,11 @@ const items = new ReactiveDict()
 const values = new ReactiveDict()
 const states = new ReactiveDict()
 const rendererSchemas = new Map() // TODO make map
+const getFormId = (itemId) => `itemForm_${itemId}`
 
+/**
+ * All available states of this generic renderer.
+ */
 const ItemRendererState = {
   loading: 'loading',
   loadFailed: 'loadFailed',
@@ -41,22 +48,26 @@ Template.itemRenderer.onCreated(function () {
   instance.autorun(async function () {
     const data = Template.currentData()
     const itemInit = Item.isInitialized()
+    const noData = !data
+    const noInit = !itemInit
+    const noMeta = !data?.meta || !Item.has(data.meta)
 
-    if (!itemInit || !data || !data.meta || !Item.has(data.meta)) {
+    if (noData || noInit || noMeta) {
       return
     }
 
     const { onItemLoad, hasUnsavedData, itemId, page } = data
+    const ctx = Item.get(data.meta)
+    instance.state.set({ autoSave: ctx.save === 'auto' })
 
+    // Create build-schema:
     // each item has a specific schema and sometimes even uses
     // a custom form component.
     // In order to pass down dynamic attributes to the schema
     // (like preview mode, lessonId, taskId, etc.)
     // we use the build() function that every item has
     // by definition.
-
     if (!rendererSchemas.has(itemId)) {
-      const ctx = Item.get(data.meta)
       const buildSchema = ctx.build(data)
 
       if (typeof ctx.load === 'function') {
@@ -82,6 +93,7 @@ Template.itemRenderer.onCreated(function () {
         if (itemDoc) {
           states.set(itemId, ItemRendererState.saved)
         }
+
         values.set(itemId, itemDoc)
       }
 
@@ -97,6 +109,51 @@ Template.itemRenderer.onCreated(function () {
       })
     }
   })
+
+  /**
+   * Saves the current scoped item unless validation fails.
+   * @param itemId {string}
+   */
+  instance.saveItem = ({ itemId }) => {
+    if (instance.data.preview) {
+      return // skip submission on preview
+    }
+
+    const formId = `itemForm_${itemId}`
+    instance.state.set('unsaved', false)
+
+    const { insertDoc, updateDoc } = AutoForm.getFormValues(formId)
+
+    // first we validate against the item schema
+    const schema = rendererSchemas.get(itemId)
+    const validateContext = schema.newContext()
+    validateContext.validate(insertDoc)
+
+    // if there are validation errors we attach them
+    // and skip further processing / dispatching
+    const errors = validateContext.validationErrors()
+    if (errors && errors.length > 0) {
+      return
+    }
+
+    // dispatch to the callbacks
+    const { onItemSubmit, groupMode } = instance.data
+
+    if (onItemSubmit) {
+      states.set(itemId, ItemRendererState.submit)
+      onItemSubmit({ itemId, groupMode, insertDoc, updateDoc }, (err, itemDoc) => {
+        setTimeout(() => {
+          if (err) {
+            states.set(itemId, ItemRendererState.submissionFailed)
+          }
+          if (itemDoc) {
+            states.set(itemId, ItemRendererState.saved)
+            values.set(itemId, itemDoc)
+          }
+        }, 500)
+      })
+    }
+  }
 })
 
 // clear all items and schemas but only if if there is no itemId or count is
@@ -145,6 +202,10 @@ Template.itemRenderer.helpers({
   hasGroupMode (mode) {
     return mode && mode !== GroupMode.off.value
   },
+  savedBy (userId) {
+    const user = getUsersCollection().findOne(userId)
+    return user && getFullName(user)
+  },
   buttonClasses (itemId) {
     const status = states.get(itemId)
     if (status === ItemRendererState.submit) return 'btn btn-secondary btn-disabled'
@@ -177,27 +238,26 @@ Template.itemRenderer.helpers({
     return date && date.toLocaleString()
   },
   submitting (itemId) {
-    const status = states.get(itemId)
-    return (status === ItemRendererState.submit)
+    return states.get(itemId) === ItemRendererState.submit
+  },
+  status (itemId) {
+    return states.get(itemId)
   },
   saved (itemId) {
     const status = states.get(itemId)
     return (status === ItemRendererState.saved)
   },
-  itemDisabled (isEditable, itemId, groupMode) {
-    if (!isEditable) { return true }
-
-    // in merge mode we don't disable the item since we
-    // want to keep it "live" for group work.
-    if (groupMode === 'merge') {
-      return false
-    }
-
-    const status = states.get(itemId)
-    return [ItemRendererState.saved, ItemRendererState.submit].includes(status)
+  itemDisabled (isEditable) {
+    return !isEditable
+  },
+  showSaveButton (item) {
+    return item.isEditable && !Template.getState('autoSave')
   },
   error () {
     return Template.getState('error')
+  },
+  isFocus (itemId) {
+    return Template.getState('focus') === itemId
   }
 })
 
@@ -207,53 +267,21 @@ Template.itemRenderer.events({
     const itemId = templateInstance.$(event.currentTarget).data('target')
     states.set(itemId, ItemRendererState.editing)
   },
-  'blur form' (event, templateInstance) {
-    templateInstance.state.set('unsaved', true)
+  'blur .item-form-container' (event, templateInstance) {
+    templateInstance.state.set('focus', null)
+    templateInstance.saveItem({
+      formId: event.currentTarget.id,
+      itemId: templateInstance.data.itemId
+    })
+  },
+  'focus' (event, templateInstance) {
+    templateInstance.state.set('focus', templateInstance.data.itemId)
   },
   'submit form' (event, templateInstance) {
     event.preventDefault()
-
-    if (templateInstance.data.preview) {
-      return // skip submission on preview
-    }
-
-    templateInstance.state.set('unsaved', false)
-    const formId = event.currentTarget.id
-    const itemId = formId.replace('itemForm_', '')
-
-    const { insertDoc } = AutoForm.getFormValues(formId)
-    const { updateDoc } = AutoForm.getFormValues(formId)
-
-    // first we validate against the item schema
-    const schema = rendererSchemas.get(itemId)
-    const validateContext = schema.newContext()
-    validateContext.validate(insertDoc)
-
-    // if there are validation errors we attach them
-    // and skip further processing / dispatching
-    const errors = validateContext.validationErrors()
-    if (errors && errors.length > 0) {
-      return
-    }
-
-    // dispatch to the callbacks
-    const { onItemSubmit, groupMode } = templateInstance.data
-
-    if (onItemSubmit) {
-      states.set(itemId, ItemRendererState.submit)
-      onItemSubmit({ itemId, groupMode, insertDoc, updateDoc }, (err, itemDoc) => {
-        if (err) {
-          states.set(itemId, ItemRendererState.submissionFailed)
-        }
-        if (itemDoc) {
-          states.set(itemId, ItemRendererState.saved)
-          values.set(itemId, itemDoc)
-        }
-      })
-    }
+    templateInstance.saveItem({
+      formId: event.currentTarget.id,
+      itemId: templateInstance.data.itemId
+    })
   }
 })
-
-function getFormId (itemId) {
-  return `itemForm_${itemId}`
-}

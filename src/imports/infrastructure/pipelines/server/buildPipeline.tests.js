@@ -63,7 +63,7 @@ describe(buildPipeline.name, function () {
     const method = products.methods[0]
 
     expect(method._execute({ userId }, { title })).to.equal(true)
-    expect(() => method._execute({ userId }, {})).to.throw('form.validation.required')
+    expect(() => method._execute({ userId }, {})).to.throw('Title is required.')
   })
   it('it creates publications if defined', function () {
     const options = {
@@ -93,10 +93,10 @@ describe(buildPipeline.name, function () {
 
     const products = buildPipeline(context, options)
     const Collection = products.collection
-
     const publication = products.publications[0]
     const docId = Collection.insert({ title })
-    const docs = collectPublication(publication())
+    const cursor = publication()
+    const docs = collectPublication(cursor)
 
     expect(docs.length).to.equal(1)
     expect(docs[0]._id).to.equal(docId)

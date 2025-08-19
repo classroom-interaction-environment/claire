@@ -1,4 +1,5 @@
 /* eslint-env mocha */
+import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
 import { expect } from 'chai'
 import { getVerifyEmailSubject, getVeryFyEmailText } from '../verifyEmail'

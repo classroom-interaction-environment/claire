@@ -1,4 +1,5 @@
 import { Template } from 'meteor/templating'
+import { Mongo } from 'meteor/mongo'
 import { ReactiveDict } from 'meteor/reactive-dict'
 import { Objective } from '../../../../../contexts/curriculum/curriculum/objective/Objective'
 import { curriculumEditorSubKey } from '../../curriculumEditorSubKey'

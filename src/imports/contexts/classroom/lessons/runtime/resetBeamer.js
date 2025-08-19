@@ -6,6 +6,7 @@ import { getCollection } from '../../../../api/utils/getCollection'
 
 /**
  * Resets all beamer settings that are related to the given setting and user.
+ * @type {function}
  * @param lessonId the id of the lesson to which the beamer settings should be reset
  * @param userId the user to whom the respective beamer doc is associated
  * @return {Number} the amount of references, that have been reset

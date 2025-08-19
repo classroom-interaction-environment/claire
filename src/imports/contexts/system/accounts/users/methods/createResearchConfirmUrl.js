@@ -1,3 +1,5 @@
+import { Meteor } from 'meteor/meteor'
+
 export const createResearchConfirmUrl = ({ email, token }) => {
   const queryString = encodeURIComponent(`email=${email}&token=${token}`)
   const base64Query = Buffer.from(queryString).toString('base64')

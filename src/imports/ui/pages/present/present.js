@@ -29,6 +29,7 @@ import { getMaterialContexts } from '../../../contexts/material/initMaterial'
 import '../../components/invitation/coderender/coderenderer'
 import '../../generic/tooltip/tooltip'
 import './present.html'
+import { getCollection } from '../../../api/utils/getCollection'
 
 const API = Template.present.setDependencies({
   contexts: getMaterialContexts().concat([Unit, Lesson, Task, TaskResults]),
@@ -126,7 +127,10 @@ Template.present.onCreated(function () {
       args: { references: itemRefsForSub },
       callbacks: {
         onError: API.notify,
-        onReady: () => instance.state.set('itemsComplete', true)
+        onReady: () => {
+          console.debug(getCollection(TaskResults).find().fetch())
+          instance.state.set('itemsComplete', true)
+        }
       }
     })
   })
@@ -293,15 +297,19 @@ Template.present.onCreated(function () {
       }
 
       // TaskDoc = ref.document
-      // search in the task doc for the current item and skip where possible
+      // search in the task doc for the current item and skip, if possible
       const { itemId } = ref
       ref.document.pages.some(page => {
-        if (!page.content) return
+        if (!page.content) return false
 
         const entry = page.content.find(entry => entry.itemId === itemId)
+
         if (entry) {
-          return referenceQueue.push({ ref, entry })
+          referenceQueue.push({ ref, entry })
+          return true
         }
+
+        return false
       })
     })
 

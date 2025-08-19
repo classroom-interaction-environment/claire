@@ -1,11 +1,11 @@
 import { Template } from 'meteor/templating'
 import { TaskResults } from '../../../../../contexts/tasks/results/TaskResults'
-import { TaskWorkingState } from '../../../../../contexts/tasks/results/TaskWorkingState'
+import { TaskWorkingState } from '../../../../../contexts/tasks/state/TaskWorkingState'
 import { getCollection } from '../../../../../api/utils/getCollection'
 import '../../../../components/profileImage/profileImage'
 import './taskProgress.html'
 
-const API = Template.taskProgress.setDependencies({
+Template.taskProgress.setDependencies({
   contexts: [TaskWorkingState, TaskResults]
 })
 

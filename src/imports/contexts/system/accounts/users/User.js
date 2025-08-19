@@ -1,4 +1,3 @@
-/* global Accounts */
 import { Meteor } from 'meteor/meteor'
 import { auto, onServer, onServerExec } from '../../../../api/utils/archUtils'
 import {
@@ -28,7 +27,51 @@ Users.publicFields = {
   'presence.status': 1
 }
 
-Users.schema = {}
+Users.schema = {
+  username: {
+    type: String,
+    optional: true
+  },
+  profileImage: profileImageSchema({ optional: true }),
+  emails: {
+    type: Array,
+    optional: true
+  },
+  'emails.$': {
+    type: Object,
+    blackbox: true,
+    optional: true
+  },
+  firstName: firstNameSchema({ optional: true }),
+  lastName: lastNameSchema({ optional: true }),
+  locale: {
+    type: String,
+    optional: true
+  },
+  institution: {
+    type: String,
+    optional: true
+  },
+  role: {
+    type: String,
+    optional: true
+  },
+  services: {
+    type: Object,
+    blackbox: true,
+    optional: true
+  },
+  ui: {
+    type: Object,
+    blackbox: true,
+    optional: true
+  },
+  presence: {
+    type: Object,
+    blackbox: true,
+    optional: true
+  }
+}
 
 /** @deprecated **/
 Users.roles = {
@@ -327,7 +370,8 @@ Users.methods.byClass = {
     'skip.$': String
   },
   run: onServerExec(function () {
-    import { usersByClass } from './usersByClass'
+    const { usersByClass } = require('./usersByClass')
+
     const run = usersByClass()
 
     return function ({ classId, skip }) {
@@ -370,7 +414,7 @@ Users.publications.byClass = {
     classId: String
   },
   run: onServerExecLazy(function () {
-    import { usersByClass } from './usersByClass'
+    const { usersByClass } = require('./usersByClass')
     return usersByClass
   })
 }

@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { getQueryParam } from './params/getQueryParam'
 
 const base = Meteor.absoluteUrl().slice(0, -1)

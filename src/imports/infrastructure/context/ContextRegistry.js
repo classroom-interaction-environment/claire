@@ -1,7 +1,7 @@
 import { check, Match } from 'meteor/check'
 import { createLog } from '../../api/log/createLog'
 
-const info = createLog({ name: 'ContextRegistry' })
+const debug = createLog({ name: 'ContextRegistry', type: 'debug' })
 const _contexts = new Map()
 const _settings = new Map()
 
@@ -24,7 +24,7 @@ export const ContextRegistry = {
   },
 
   add (context, { createCollection = true, createMethods = true, createPublications = true } = {}) {
-    info('(add)', context.name)
+    debug('(add/register)', context.name)
     ContextRegistry.validate(context)
     check(createCollection, Boolean)
     check(createMethods, Boolean)

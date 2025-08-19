@@ -29,7 +29,6 @@ export const FormFactory = {
 
       // filter doc fields only by label/value references fields
       const data = collection.find(filter, transform).fetch()
-      // console.log("ger data from " + collectionName, data, filter, transform);
       if (!data || data.length === 0) return []
 
       return groupKey
@@ -68,20 +67,15 @@ export const FormFactory = {
   optionsFromDataWihtGroups (data, label, value, groupKey, collection, resolver) {
     const ret = []
     const groupNames = this.getUniqueGroupNames(data, groupKey)
-    // console.log("******************************")
-    // console.log("optionsFromDataWihtGroups");
-    // console.log(groupNames);
 
     for (let groupName of groupNames) {
       if (typeof groupName === 'undefined') groupName = { $exists: false }
       const query = {}
       query[groupKey] = groupName
       const filteredData = collection.find(query, { sort: { title: 1 } }).fetch()
-      // console.log(query, filteredData);
       ret.push(this.createOptionsGroup(groupName, filteredData, label, value, resolver))
     }
-    // console.log(ret);
-    // console.log("-------------------------");
+
     return ret
   },
 

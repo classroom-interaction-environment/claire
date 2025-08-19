@@ -5,7 +5,7 @@ import { isCurriculumDoc } from './isCurriculumDoc'
 import { checkCurriculum } from './checkCurriculum'
 
 export const createClone = (collectionName, { owner, isCurriculum } = {}) => {
-  const info = createLog( { name: collectionName })
+  const info = createLog({ name: collectionName })
   let collection
 
   return function ({ _id }) {

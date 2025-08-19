@@ -10,7 +10,7 @@ Demo accounts are accounts with original roles but restrictive properties and pe
 - These Email addresses can't be validated, thus they're always `valid: false`
 
 From there the system derives the following restrictions:
- 
+
 - They can only have teacher and/or student roles
 - No invitations can be generated
 - No new classes can be created

@@ -240,7 +240,12 @@
                                         data-content="{{../value}}"
                                         data-meta="{{this.name}}">
                                     <h1>
-                                        <i class="fa fa-fw fa-{{this.icon}} mr-2"></i>
+                                        {{#if this.icon}}
+                                            {{> icon name=this.icon fw=true}}
+                                        {{/if}}
+                                        {{#if this.iconUrl}}
+                                            {{> image src=this.iconUrl}}
+                                        {{/if}}
                                     </h1>
                                     <small>{{i18n this.label}}</small>
                                 </button>
@@ -258,7 +263,12 @@
                                         data-content="{{../value}}"
                                         data-meta="{{this.name}}">
                                     <h1>
-                                        <i class="fa fa-fw fa-{{this.icon}} mr-2"></i>
+                                        {{#if this.icon}}
+                                            {{> icon name=this.icon fw=true}}
+                                        {{/if}}
+                                        {{#if this.iconUrl}}
+                                            {{> image src=this.iconUrl}}
+                                        {{/if}}
                                     </h1>
                                     <small>{{i18n this.label}}</small>
                                 </button>

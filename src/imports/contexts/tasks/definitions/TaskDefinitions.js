@@ -1,4 +1,5 @@
 import { ReactiveVar } from 'meteor/reactive-var'
+import { Tracker } from 'meteor/tracker'
 import { Text } from './text/Text'
 import { WebResources } from '../../resources/web/WebResources'
 import { Item } from './items/Item'
@@ -45,7 +46,6 @@ const log = createLog({ name: TaskDefinitions.name, type: 'debug' })
 /// ////////////////////////////////////////////////////////////////////////////
 
 const init = new ReactiveVar()
-let localeTracker
 let initializing = false
 
 TaskDefinitions.initialize = function () {
@@ -76,7 +76,7 @@ async function initialize () {
   plugins.forEach(({ name, plugin }) => processPlugin(name, plugin))
 
   // TODO merge localeTrackers into one Tracker in plugin registry
-  localeTracker = Tracker.autorun(() => {
+  Tracker.autorun(() => {
     const currentLocale = i18n.getLocale()
     TaskElementPlugins.onLanguageChange(currentLocale)
       .catch(e => console.error(e))

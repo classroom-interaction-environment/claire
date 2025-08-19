@@ -2,17 +2,25 @@ import { SchoolClass } from '../SchoolClass'
 import { Meteor } from 'meteor/meteor'
 import { getCollection } from '../../../../api/utils/getCollection'
 import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
-import { createGetDoc } from '../../../../api/utils/documentUtils'
 import { removeLesson } from '../../lessons/methods/removeLesson'
+import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
 
-const getClassDoc = createGetDoc(SchoolClass)
+const getClassDoc = createDocGetter({ name: SchoolClass.name })
 
+/**
+ * Removes a class by given _id and userId. The user must be externally validated!
+ * @param classId {string}
+ * @param userId {string}
+ * @param log {function=}
+ * @return {number}
+ */
 export const removeClass = function removeClass ({ classId, userId, log = () => {} }) {
   const { Lesson } = require('../../lessons/Lesson')
-  const schoolClassDoc = getClassDoc.call({ userId }, classId)
+  const schoolClassDoc = getClassDoc(classId)
 
   // check if user is even allowed to delete
   const canDelete = userId === schoolClassDoc.createdBy || userIsAdmin(userId)
+
   if (!canDelete) {
     throw new Error('errors.permissionDenied', 'errors.notOwnerOrAdmin')
   }

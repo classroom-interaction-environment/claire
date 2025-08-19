@@ -8,7 +8,9 @@ import { VideoGallery } from '../../../contexts/tasks/responseProcessors/aggrega
 import { AudioList } from '../../../contexts/tasks/responseProcessors/aggregate/audioList/AudioList'
 import { DocumentList } from '../../../contexts/tasks/responseProcessors/aggregate/documentList/DocumentList'
 import { Cluster } from '../../../contexts/tasks/responseProcessors/aggregate/cluster/Cluster'
+import { Network } from '../../../contexts/tasks/responseProcessors/aggregate/network/Network'
 import { Text } from '../../../contexts/tasks/responseProcessors/aggregate/text/Text'
+import { GroupText } from '../../../contexts/tasks/responseProcessors/aggregate/groupText/GroupText'
 import { ContextRegistry } from '../../../infrastructure/context/ContextRegistry'
 import { responseProcessorPipeline } from '../../../contexts/tasks/responseProcessors/responseProcessorPipeline'
 
@@ -20,13 +22,15 @@ import { onClientExec, onServerExec } from '../../../api/utils/archUtils'
  */
 [
   Text,
+  GroupText,
   PieChart,
   BarChart,
   ImageGallery,
   VideoGallery,
   AudioList,
   DocumentList,
-  Cluster
+  Cluster,
+  Network
 ].forEach(function (context) {
   try {
     ResponseProcessorRegistry.register(context)

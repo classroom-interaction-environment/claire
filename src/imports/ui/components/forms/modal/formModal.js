@@ -191,25 +191,26 @@ Template.formModal.events({
 })
 
 export const FormModal = {
-  show: ({
-    action,
-    schema,
-    timeout = 500,
-    doc,
-    load,
-    bind,
-    custom,
-    onSubmit,
-    validation,
-    onClosed,
-    onError,
-    title,
-    description,
-    debug,
-    codeRequired,
-    hideLegend,
-    collapse
-  }) => {
+  show: (options) => {
+    const {
+      action,
+      schema,
+      timeout = 500,
+      doc,
+      load,
+      bind,
+      custom,
+      onSubmit,
+      validation,
+      onClosed,
+      onError,
+      title,
+      description,
+      debug,
+      codeRequired,
+      hideLegend,
+      collapse
+    } = options
     const modalData = state.get()
 
     if (modalData) {

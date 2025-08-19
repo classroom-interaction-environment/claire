@@ -12,7 +12,7 @@ const optionalBoolean = {
 
 const monitorSchema = schema({
   constructView: optionalBoolean,
-  onCreated:optionalBoolean,
+  onCreated: optionalBoolean,
   onRendered: optionalBoolean,
   onDestroyed: optionalBoolean,
   registerHelper: optionalBoolean,
@@ -55,7 +55,22 @@ const accountsFixtureSchema = schema({
 })
 
 const patchSchema = schema({
-  removeDeadReferences: Boolean
+  removeDeadReferences: {
+    type: Boolean,
+    optional: true
+  },
+  imageFiles: {
+    type: Boolean,
+    optional: true
+  },
+  admin: {
+    type: Boolean,
+    optional: true
+  },
+  roles: {
+    type: Boolean,
+    optional: true
+  }
 })
 
 module.exports = schema({
@@ -90,12 +105,17 @@ module.exports = schema({
     'fixtures.teacher': optionalArray,
     'fixtures.teacher.$': accountsFixtureSchema,
     'fixtures.schoolAdmin': optionalArray,
-    'fixtures.schoolAdmin.$': accountsFixtureSchema,
+    'fixtures.schoolAdmin.$': accountsFixtureSchema
   }),
   patch: patchSchema,
   public: schema({
+    logLevel: {
+      type: Number,
+      optional: true,
+      allowedValues: [0, 1, 2, 3, 4]
+    },
     features: schema({
-      groups:Boolean
+      groups: Boolean
     }),
     defaultLocale: String,
     templateMonitor: monitorSchema,

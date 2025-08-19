@@ -9,7 +9,7 @@ export const loadAllFilesForTask = ({ taskId }) => {
   debug('load for', taskId)
 
   return Promise.all(allCtx.map(ctx => {
-    callMethod({
+    return callMethod({
       name: ctx.methods.editor,
       args: { meta: { taskId } },
       success: (fileDocs = []) => {

@@ -1,13 +1,14 @@
+import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
+import { Task } from '../../Task'
 import { userIsCurriculum } from '../../../../../../api/accounts/userIsCurriculum'
 import { isCurriculumDoc } from '../../../../../../api/decorators/methods/isCurriculumDoc'
 import { dataTarget } from '../../../../../../ui/utils/dataTarget'
-import './taskListRenderer.html'
-import { Task } from '../../Task'
 import { renderPreview } from '../../../../../../ui/renderer/renderPreview'
 import { printHTMLElement } from '../../../../../../ui/utils/printHtmlElement'
+import './taskListRenderer.html'
 
-const API = Template.taskListRenderer.setDependencies()
+Template.taskListRenderer.setDependencies()
 
 Template.taskListRenderer.helpers({
   pages (arr) {
