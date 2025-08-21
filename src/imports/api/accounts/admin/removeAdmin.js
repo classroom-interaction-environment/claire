@@ -8,20 +8,20 @@ import { userExists } from '../user/userExists'
 /**
  * Removes a user by user id from the Admins collection.
  * @param userId
- * @return {String} the doc id of the the user's entry in the admin collection
+ * @return {Promise<string>} the doc id of the the user's entry in the admin collection
  */
-export const removeAdmin = function (userId) {
+export const removeAdmin = async (userId) => {
   check(userId, matchNonEmptyString)
 
-  if (!userExists({ userId })) {
+  if (!await userExists({ userId })) {
     throw new Meteor.Error('removeAdmin.failed', 'errors.userNotFound', userId)
   }
 
   const AdminCollection = getCollection(Admin.name)
 
-  if (AdminCollection.find({ userId }).count() === 0) {
+  if (await AdminCollection.countDocuments({ userId }) === 0) {
     throw new Meteor.Error('removeAdmin.failed', 'removeAdmin.notAdmin', userId)
   }
 
-  return AdminCollection.remove({ userId })
+  return AdminCollection.removeAsync({ userId })
 }

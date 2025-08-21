@@ -25,8 +25,9 @@ Admin.schema = {
     custom: auto(function () {
       import { userExists } from '../../../../api/accounts/user/userExists'
 
-      return function () {
-        if (!userExists({ userId: this.value })) {
+      return async function () {
+        const userId = this.value
+        if (!await userExists({ userId })) {
           return 'admin.userDoesNotExist'
         }
       }
@@ -51,8 +52,8 @@ Admin.methods.reinvite = {
     import { Accounts } from 'meteor/accounts-base'
     import { userExists } from '../../../../api/accounts/user/userExists'
 
-    return function ({ userId }) {
-      if (!userExists({ userId })) {
+    return async function ({ userId }) {
+      if (!await userExists({ userId })) {
         throw new Meteor.Error('errors.docNotFound', 'errors.userNotExists', userId)
       }
 
@@ -89,11 +90,11 @@ Admin.methods.createUser = {
     import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
     import { correctName } from '../../../../api/utils/correctName'
 
-    return function ({ role, firstName, lastName, email, institution }) {
+    return async function ({ role, firstName, lastName, email, institution }) {
       const willBeAdmin = role === UserUtils.roles.admin
 
       // deny any attempt to create a new admin from a non-admin account
-      if (willBeAdmin && !userIsAdmin(this.userId)) {
+      if (willBeAdmin && !await userIsAdmin(this.userId)) {
         throw new PermissionDeniedError('roles.notAdmin', {
           userId: this.userId,
           firstName,
@@ -105,7 +106,7 @@ Admin.methods.createUser = {
       }
 
       const options = { trim: true, upperCase: true }
-      const newUserId = UserFactory.create({
+      const newUserId = await UserFactory.create({
         firstName: correctName(firstName, options),
         lastName: correctName(lastName, options),
         institution: correctName(institution, options),
@@ -114,11 +115,11 @@ Admin.methods.createUser = {
       })
 
       if (willBeAdmin) {
-        createAdmin(newUserId)
+        await createAdmin(newUserId)
       }
 
       // send email but return new user's id
-      Accounts.sendEnrollmentEmail(newUserId)
+      await Accounts.sendEnrollmentEmail(newUserId)
       return newUserId
     }
   })
@@ -137,8 +138,8 @@ Admin.methods.removeUser = {
     import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
     import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 
-    return function ({ _id }) {
-      if (!userExists({ userId: _id })) {
+    return async function ({ _id }) {
+      if (!await userExists({ userId: _id })) {
         throw new DocNotFoundError('user.notExist', { _id })
       }
 
@@ -148,7 +149,7 @@ Admin.methods.removeUser = {
       }
 
       // only admin can remove admins
-      if (userIsAdmin(_id) && !userIsAdmin(this.userId)) {
+      if (await userIsAdmin(_id) && !await userIsAdmin(this.userId)) {
         throw new PermissionDeniedError('roles.notAdmin', { userId: this.userId, _id })
       }
 
@@ -184,12 +185,12 @@ Admin.methods.updateRole = {
     import { getCollection } from '../../../../api/utils/getCollection'
     import { Users } from '../users/User'
 
-    return function ({ userId, role, group }) {
+    return async function ({ userId, role, group }) {
       if (this.userId === userId) {
         throw new Meteor.Error('admin.updateRoleFailed', 'admin.noOwnRolesChangeAllowed', { userId })
       }
 
-      if (!userExists({ userId })) {
+      if (!await userExists({ userId })) {
         throw new Meteor.Error('admin.updateRoleFailed', Admin.errors.USER_NOT_FOUND, { userId })
       }
 
@@ -197,24 +198,24 @@ Admin.methods.updateRole = {
         throw new Meteor.Error('admin.updateRoleFailed', 'roles.unknownRole', { userId, role, group })
       }
 
-      Roles.setUserRoles(userId, [role], group)
+      await Roles.setUserRolesAsync(userId, [role], group)
 
       const willBeAdmin = role === UserUtils.roles.admin
-      const isAdmin = userIsAdmin(userId)
+      const isAdmin = await userIsAdmin(userId)
 
       if (willBeAdmin && !isAdmin) {
-        createAdmin(userId)
+        await createAdmin(userId)
       }
 
       if (isAdmin && !willBeAdmin) {
-        removeAdmin(userId)
+        await removeAdmin(userId)
       }
 
-      if (!Roles.userIsInRole(userId, role, group)) {
+      if (!await Roles.userIsInRoleAsync(userId, role, group)) {
         throw new Meteor.Error('admin.updateRoleFailed', 'roles.notAssigned', { userId, role, group })
       }
 
-      return getCollection(Users.name).update(userId, { $set: { role } })
+      return getCollection(Users.name).updateAsync(userId, { $set: { role } })
     }
   })
 }
@@ -233,12 +234,12 @@ Admin.methods.users = {
     import { Users } from '../users/User'
     import { getCollection } from '../../../../api/utils/getCollection'
 
-    return function ({ ids }) {
+    return async function ({ ids }) {
       const query = {}
       if (ids?.length) {
         query._id = { $in: ids }
       }
-      return getCollection(Users.name).find(query, { fields: { services: 0 } }).fetch()
+      return getCollection(Users.name).find(query, { fields: { services: 0 } }).fetchAsync()
     }
   })
 }

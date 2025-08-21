@@ -22,7 +22,7 @@ const i18nFactory = (...args) => i18n.get(...args)
  * @param context {object} the object to create
  * @param options {object}  the build options for this pipeline
  */
-export const buildPipeline = createPipeline('build', function (context, api, options) {
+export const buildPipeline = createPipeline('build', (context, api, options) => {
   const { collection, filesCollection, methods, publications, debug } = options
   const products = {
     collection: null,

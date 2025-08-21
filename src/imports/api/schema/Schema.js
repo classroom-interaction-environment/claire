@@ -1,4 +1,4 @@
-import SimpleSchema from 'simpl-schema'
+import SimpleSchema from 'meteor/aldeed:simple-schema'
 import { createLog } from '../log/createLog'
 
 export const Schema = {}
@@ -16,7 +16,7 @@ Schema.extendOptions = options => {
 
 /**
  * Create a new schema.
- * See simpl-schema documentation.
+ * See aldeed:simple-schema documentation.
  * @param obj
  * @param options
  */

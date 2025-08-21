@@ -89,10 +89,11 @@ done
 # build paths:
 
 cd ..
+LIB_PATH=$(pwd)/lib
 CARO_PATH=$(pwd)
 cd ${CARO_PATH}/src
 
-T_PACKAGE_DIRS="${CARO_PATH}/lib/api:${CARO_PATH}/lib/ui:${CARO_PATH}/lib/contexts:${CARO_PATH}/lib/dev/:${CARO_PATH}/meteor-mocha/"
+T_PACKAGE_DIRS="${LIB_PATH}:${CARO_PATH}/lib/api:${CARO_PATH}/lib/ui:${CARO_PATH}/lib/contexts:${CARO_PATH}/lib/dev/:${CARO_PATH}/meteor-mocha/"
 
 PORT=3099
 

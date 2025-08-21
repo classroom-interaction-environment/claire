@@ -21,6 +21,7 @@ let createSchema
 
 /**
  * Creates a new user account by given options. Args are validated.
+ * @async
  * @param email {string}
  * @param password {string}
  * @param role {string}
@@ -28,21 +29,21 @@ let createSchema
  * @param lastName {string}
  * @param institution {string}
  * @param locale {string=}
- * @returns {string} the new user's document _id
+ * @returns {Promise<String>} the new user's document _id
  * @throws {Meteor.Error} if user exists by given Email
  * @throws {Meteor.Error} if user has not been created
  * @throws {Meteor.Error} if user has not successfully been assigned to given roles
  */
-UserFactory.create = function create ({ email, password, role, firstName, lastName, institution, locale }) {
+UserFactory.create = async ({ email, password, role, firstName, lastName, institution, locale }) => {
   debug('create new user', { email, institution, role })
   if (!createSchema) {
     createSchema = Schema.create(createUserSchema)
   }
 
-  createSchema.validate({ email, password, role, firstName, lastName, institution })
+  await createSchema.validate({ email, password, role, firstName, lastName, institution })
 
   // throws if a user with the given email already exists
-  if (userExists({ email })) {
+  if (await userExists({ email })) {
     throw new Meteor.Error('createUser.failed', 'user.emailUsed', email)
   }
 
@@ -54,7 +55,7 @@ UserFactory.create = function create ({ email, password, role, firstName, lastNa
     createOptions.password = password
   }
 
-  const userId = Accounts.createUser(createOptions)
+  const userId = await Accounts.createUserAsync(createOptions)
 
   if (!userId) {
     throw new Meteor.Error('createUser.failed', 'createUser.notCreated', email)
@@ -79,18 +80,19 @@ UserFactory.create = function create ({ email, password, role, firstName, lastNa
     profileDoc.$set.locale = locale
   }
 
-  const profileUpdated = getUsersCollection().update(userId, profileDoc)
+  const profileUpdated = await getUsersCollection().updateAsync(userId, profileDoc)
 
   if (!profileUpdated) {
-    rollbackAccount(userId)
+    await rollbackAccount(userId)
     throw new Meteor.Error('createUser.failed', 'createUser.profileNotUpdated', email)
   }
 
   debug('add user to roles', userId, [role], institution)
   // adds the user to the given roles and scope
-  Roles.addUsersToRoles(userId, [role], institution)
-  if (!Roles.userIsInRole(userId, [role], institution)) {
-    rollbackAccount(userId)
+  await Roles.addUsersToRolesAsync(userId, [role], institution)
+  const isInRole = await Roles.userIsInRoleAsync(userId, [role], institution)
+  if (!isInRole) {
+    await rollbackAccount(userId)
     throw new Meteor.Error('createUser.failed', 'createUser.rolesNotAdded', email)
   }
 

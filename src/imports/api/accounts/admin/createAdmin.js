@@ -6,18 +6,19 @@ import { Admin } from '../../../contexts/system/accounts/admin/Admin'
 
 /**
  * Adds a user by user id to the Admins collection.
+ * @async
  * @param newAdminId {string} the user _id of the user who will be new admin
- * @return {String} the doc id of the the user's entry in the admin collection
+ * @return {Promise<string>} the doc id of the the user's entry in the admin collection
  */
 
-export const createAdmin = function (newAdminId) {
+export const createAdmin = async (newAdminId) => {
   check(newAdminId, matchNonEmptyString)
 
   const AdminCollection = getCollection(Admin.name)
 
-  if (AdminCollection.find({ userId: newAdminId }).count() > 0) {
+  if (await AdminCollection.findOneAsync({ userId: newAdminId })) {
     throw new Meteor.Error('createAdmin.failed', 'createAdmin.alreadyAdmin', { adminId: newAdminId })
   }
 
-  return AdminCollection.insert({ userId: newAdminId })
+  return AdminCollection.insertAsync({ userId: newAdminId })
 }

@@ -4,35 +4,33 @@ import { createLog } from '../../../../api/log/createLog'
 
 const shouldMigrate = Meteor.settings.patch?.roles
 const info = createLog({ name: 'Roles' })
-const migrateRoles = Meteor.bindEnvironment(function (count) {
+const migrateRoles = async (count) => {
   info('running database migration, count=', count)
-  Roles._forwardMigrate()
-  Roles._forwardMigrate2()
+  await Roles._forwardMigrate()
+  await Roles._forwardMigrate2()
 
   // update users roles
-  Meteor.users.find().forEach(user => {
-    if (!user.roles || user.roles.length === 0) {
-      const roles = Roles.getRolesForUser(user._id)
-      const updated = Meteor.users.update(user._id, { $addToSet: { roles } })
+  const allUsers = Meteor.users.find({}, { fields: { _id: 1, roles: 1 }}).fetchAsync()
+  for (const user of allUsers) {
+    if (!user.roles?.length) {
+      const roles = await Roles.getRolesForUserAsync(user._id)
+      const updated = await Meteor.users.updateAsync(user._id, { $addToSet: { roles } })
       info('updated roles for user after migrate:')
       info('>', user._id)
       info('>', roles)
       info('>', updated ? 'updated' : 'failed')
     }
-  })
-})
+  }
+}
 
 if (shouldMigrate) {
   for (let i = 0; i < 3; i++) {
     try {
-      migrateRoles(i)
-    }
-    catch (e) {
+      await migrateRoles(i)
+    } catch (e) {
       console.error(e)
     }
   }
-}
-
-else {
+} else {
   info('skip patch migration script')
 }

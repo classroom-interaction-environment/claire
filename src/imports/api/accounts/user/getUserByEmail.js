@@ -1,5 +1,5 @@
 import { getUsersCollection } from '../../utils/getUsersCollection'
 
-export const getUserByEmail = email => {
-  return getUsersCollection().findOne({ emails: { $elemMatch: { address: email } } })
+export const getUserByEmail = async email => {
+  return getUsersCollection().findOneAsync({ emails: { $elemMatch: { address: email } } })
 }

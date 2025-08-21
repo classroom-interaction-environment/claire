@@ -11,7 +11,7 @@ if (Meteor.settings.patch?.imageFiles) {
   const imageFiles = new Mongo.Collection('imagefiles')
   const rawCollection = imageFiles.rawCollection()
 
-  if (imageFiles.find().count() > 0) {
+  if (await imageFiles.countDocuments({}) > 0) {
     rawCollection.rename('imageFiles')
   }
 

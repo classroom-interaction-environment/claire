@@ -12,4 +12,5 @@ const externalHostUrls = [
   'https://h5p.org'
 ]
 
-WebApp.connectHandlers.use(helmet(cspOptions(externalHostUrls)))
+const csp = helmet(cspOptions(externalHostUrls))
+WebApp.handlers.use(csp)

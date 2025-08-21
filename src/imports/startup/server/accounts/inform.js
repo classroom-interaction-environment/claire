@@ -13,16 +13,16 @@ const informPasswordReset = ({ allowed, type, methodName }) =>
   type === 'password' &&
   methodName === 'resetPassword'
 
-Accounts.onLogin(function ({ type, allowed, methodName, user }) {
+Accounts.onLogin(async function ({ type, allowed, methodName, user }) {
   if (informPasswordReset({ type, allowed, methodName })) {
     const to = passwordReset
     const subject = createInfomailSubject({ type: 'passwordReset' })
     const text = createInfomailText({ user, type: 'passwordReset' })
-    Email.send({ to, from, subject, text })
+    await Email.sendAsync({ to, from, subject, text })
   }
 })
 
-function createInfomailSubject ({ type }) {
+const createInfomailSubject =({ type }) => {
   const text = i18n.get(`accounts.inform.${type}.subject`, {
     siteName: siteName
   })
@@ -34,7 +34,7 @@ function createInfomailSubject ({ type }) {
   return text
 }
 
-function createInfomailText ({ user, type }) {
+const createInfomailText = ({ user, type }) => {
   const { firstName, lastName, institution } = user.firstName
   const fullName = `${firstName} ${lastName}`
 

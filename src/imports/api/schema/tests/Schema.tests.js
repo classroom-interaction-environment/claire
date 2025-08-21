@@ -2,7 +2,7 @@
 import { Schema } from '../Schema'
 import { expect } from 'chai'
 import { Defaults } from '../../defaults/Defaults'
-import SimpleSchema from 'simpl-schema'
+import SimpleSchema from 'meteor/aldeed:simple-schema'
 
 Schema.extendOptions(Defaults.schemaOptions())
 

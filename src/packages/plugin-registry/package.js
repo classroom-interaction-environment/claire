@@ -8,11 +8,13 @@ Package.describe({
 })
 
 Package.onUse(function (api) {
+  api.versionsFrom(['3.0'])
   api.use('ecmascript')
   api.mainModule('plugin-registry.js')
 })
 
 Package.onTest(function (api) {
+  api.versionsFrom(['3.0'])
   api.use('ecmascript')
   api.use('tinytest')
   api.use('claire:plugin-registry')

@@ -10,21 +10,20 @@ const log = createLog({ name: 'Roles' })
 log('setup roles')
 const allRoles = [admin, schoolAdmin, teacher, student, curriculum]
 
-allRoles.forEach(role => {
+for (const role of allRoles) {
   log(`create role [${role}] if not exists`)
-  Roles.createRole(role, { unlessExists: true })
-})
-
+  await Roles.createRoleAsync(role, { unlessExists: true })
+}
 // build internal hierarchy
 // to allow inheritance of roles
 log('create hierarchy')
-Roles.addRolesToParent(schoolAdmin, admin, { unlessExists: true })
-Roles.addRolesToParent(curriculum, schoolAdmin, { unlessExists: true })
-Roles.addRolesToParent(teacher, curriculum, { unlessExists: true })
-Roles.addRolesToParent(student, teacher, { unlessExists: true })
+Roles.addRolesToParentAsync(schoolAdmin, admin, { unlessExists: true })
+Roles.addRolesToParentAsync(curriculum, schoolAdmin, { unlessExists: true })
+Roles.addRolesToParentAsync(teacher, curriculum, { unlessExists: true })
+Roles.addRolesToParentAsync(student, teacher, { unlessExists: true })
 
 log('remove unused / deprecated roles')
-const removedRoles = Meteor.roles.remove({ _id: $nin(allRoles) })
+const removedRoles = await Meteor.roles.removeAsync({ _id: $nin(allRoles) })
 
 if (removedRoles) {
   log('removed', removedRoles, 'roles')

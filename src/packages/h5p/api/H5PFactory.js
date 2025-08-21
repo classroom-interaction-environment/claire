@@ -28,7 +28,7 @@ H5PFactory.init = ({ config }) => {
     return // run only once!
   }
 
-  const h5pCoreConfig = new H5PConfig(fsImplementations.InMemoryStorage(), config.core)
+  const h5pCoreConfig = new H5PConfig(new fsImplementations.InMemoryStorage(), config.core)
   const cache = CacheMap.create()
   const contentUserDataStorage = new ContentUserDataStorage()
   const urlGenerator = undefined

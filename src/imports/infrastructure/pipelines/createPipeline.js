@@ -7,7 +7,7 @@
  */
 import { createLog } from '../../api/log/createLog'
 
-export const createPipeline = function (name, fn, { quiet = false } = {}) {
+export const createPipeline = (name, fn, { quiet = false } = {}) => {
   let contextName = ''
   const pipelineName = `${name}`
   const pipelineLog = (...args) => log(contextName, pipelineName, ...args)
@@ -16,9 +16,11 @@ export const createPipeline = function (name, fn, { quiet = false } = {}) {
   api.log = pipelineLog
   api.info = pipelineLog
 
-  return function pipeline (context, options = {}) {
+  return (context, options = {}) => {
     contextName = `[${context.name}]:`
-    if (!quiet) pipelineLog('pipeline exec')
+    if (!quiet) {
+      pipelineLog('pipeline exec')
+    }
     return fn(context, api, options)
   }
 }

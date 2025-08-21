@@ -1,7 +1,9 @@
 import { Template } from 'meteor/templating'
-import { PDFViewerApplication } from './PDFViewerApplication'
+// import { PDFViewerApplication } from './PDFViewerApplication'
 import './pdfViewer.scss'
 import './pdfViewer.html'
+
+class PdfViewerApplication {} // TODO implement
 
 const API = Template.pdfViewer.setDependencies({
   loaders: [async () => await PDFViewerApplication.init()]

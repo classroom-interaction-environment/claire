@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor'
 import { getCollection } from '../../../api/utils/getCollection'
-import { _ } from 'meteor/underscore'
 
 /** @deprecated **/
 export const FormFactory = {
@@ -80,9 +79,9 @@ export const FormFactory = {
   },
 
   getUniqueGroupNames (data, groupKey) {
-    return _.uniq(data.map(function (element) {
-      return element[groupKey]
-    })).sort()
+    const mapped = data.map(el => el[groupKey])
+    const unique = [...new Set(mapped)]
+    return unique.sort()
   },
 
   createOptionsGroup (name, elements, label, value, resolver) {

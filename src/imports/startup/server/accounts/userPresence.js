@@ -1,10 +1,11 @@
 import { Meteor } from 'meteor/meteor'
-import UserPresence from 'meteor/danimal:userpresence'
+import { UserPresenceSessions, initUserPresence } from 'meteor/jkuester:userpresence'
 import { createLog } from '../../../api/log/createLog'
 
-Meteor.startup(() => {
+Meteor.startup(async () => {
+  await initUserPresence()
   const log = createLog({ name: 'UserPresence' })
-  const sessionReset = UserPresence.UserPresenceSessions.remove({})
+  const sessionReset = UserPresenceSessions.remove({})
   const usersReset = Meteor.users.update({
     presence: { $exists: true }
   }, {

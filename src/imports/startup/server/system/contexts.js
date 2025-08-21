@@ -18,8 +18,9 @@ const buildOptions = {
 // , because there are no further pipelines applied to them.
 
 System.info('<<< run pipelines >>>')
-;[Admin, Users, Errors, Settings, Version].forEach(context => {
+const system = [Admin, Users, Errors, Settings, Version]
+for (const context of system) {
   systemPipeline(context)
   buildPipeline(context, buildOptions)
   ContextRegistry.add(context)
-})
+}

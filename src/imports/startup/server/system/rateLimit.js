@@ -4,15 +4,12 @@ import { createLog } from '../../../api/log/createLog'
 
 const log = createLog({ name: 'RateLimiter', type: 'warn' })
 
-Meteor.startup(() => {
-  rateLimitAccounts()
-  rateLimitBuiltins()
+Meteor.startup(async () => {
+  await rateLimitAccounts()
+  await rateLimitBuiltins()
 
   const callback = (reply, input) => {
-    if (reply.allowed) {
-      return undefined
-    }
-    else {
+    if (!reply.allowed) {
       log('limit exceeded', JSON.stringify(input), JSON.stringify(reply))
       // TODO track error
     }

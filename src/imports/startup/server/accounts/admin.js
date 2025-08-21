@@ -15,24 +15,24 @@ import { createLog } from '../../../api/log/createLog'
  * There is no Meteor method access to create the initial admin.
  */
 
-onServerExec(Meteor.bindEnvironment(function () {
+onServerExec(async () => {
   const log = createLog(Admin)
   log('start setup')
 
-  const initAdmin = function () {
-    if (adminExists()) {
+  const initAdmin = async () => {
+    if (await adminExists()) {
       return log('setup complete (admin exists)')
     }
 
-    if (Meteor.users.find().count() > 0) {
+    if (await Meteor.users.countDocuments({}) > 0) {
       log('There are users but no admin!')
     }
 
     const adminDoc = Meteor.settings.accounts.admin
     adminDoc.role = UserUtils.roles.admin
 
-    const userId = UserFactory.create(adminDoc)
-    const adminId = createAdmin(userId)
+    const userId = await UserFactory.create(adminDoc)
+    const adminId = await createAdmin(userId)
 
     // add admin to global scope
     // so the client app can easily
@@ -41,28 +41,32 @@ onServerExec(Meteor.bindEnvironment(function () {
       UserUtils.roles.admin,
       UserUtils.roles.curriculum
     ]
-    Roles.addUsersToRoles(userId, adminRoles, null)
+    await Roles.addUsersToRolesAsync(userId, adminRoles, null)
 
-    Accounts.sendResetPasswordEmail(userId)
+    await Accounts.sendResetPasswordEmail(userId)
     log('admin initialized -> ', Boolean(userId && adminId))
     log('setup complete')
+  }
+
+  const onError = err => {
+    console.error(err)
+    process.exit(1)
   }
 
   // in case this is an old running instance, we need to run
   // the migration in order to get the admin collection right
   const OldAdminsCollection = Mongo.Collection.get('Admins')
   if (OldAdminsCollection) {
-    log('migrate database')
+    log('auto-migrate database')
     OldAdminsCollection.rawCollection().rename(Admin.name, null, (err) => {
       if (err) {
-        console.error(err)
-        return process.exit(1)
+        return onError(err)
       }
       log('database successfully migrated')
-      initAdmin()
+      initAdmin().catch(onError)
     })
   }
   else {
-    initAdmin()
+    initAdmin().catch(onError)
   }
-}))
+})
