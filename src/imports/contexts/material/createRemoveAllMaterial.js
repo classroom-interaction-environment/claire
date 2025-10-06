@@ -18,22 +18,21 @@ export const createRemoveAllMaterial = ({ isCurriculum = false } = {}) => {
   /**
    * Removes all material
    */
-  return function removeAllMaterial ({ unitDoc, userId }) {
+  return async ({ unitDoc, userId }) => {
     const unitMaterial = unitMaterialIds(unitDoc)
+    const materialContextNames = Object.keys(unitMaterial)
 
-    Object.keys(unitMaterial).forEach(materialContext => {
-      const materialDocIds = unitMaterial[materialContext]
+    for (const materialCtxName of materialContextNames) {
+      const materialDocIds = unitMaterial[materialCtxName]
 
-      if (!materialDocIds?.length) {
-        unitMaterial[materialContext] = 0
-        return
+      if (materialDocIds?.length) {
+        const materialQuery = createMaterialQuery(unitMaterial[materialCtxName], userId, isCurriculum)
+        unitMaterial[materialCtxName] = await getCollection(materialCtxName).removeAsync(materialQuery)
       }
-
-      const MaterialCollection = getCollection(materialContext)
-      const materialQuery = createMaterialQuery(unitMaterial[materialContext], userId, isCurriculum)
-
-      unitMaterial[materialContext] = MaterialCollection.remove(materialQuery)
-    })
+      else {
+        unitMaterial[materialCtxName] = 0
+      }
+    }
 
     return unitMaterial
   }

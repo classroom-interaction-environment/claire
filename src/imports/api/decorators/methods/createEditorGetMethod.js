@@ -35,7 +35,7 @@ export const createEditorGetMethod = ({ name, isFilesCollection }) => {
         query.meta = meta
       }
 
-      return getCollection(name).find(query).fetch()
+      return getCollection(name).find(query).fetchAsync()
     })
   }
 }

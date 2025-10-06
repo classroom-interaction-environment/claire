@@ -15,7 +15,7 @@ const roleIndices = mapFromObject({
 
 /**
  * User roles utility class
- * TODO rename to UserRoles
+ * @deprecated
  */
 export const UserUtils = {
   roles: {

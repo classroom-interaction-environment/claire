@@ -182,10 +182,10 @@ Beamer.methods.insert = {
   roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher],
   numRequests: 1,
   timeInterval: 50000,
-  run: onServer(function () {
+  run: onServer(async function () {
     const BeamerCollection = getCollection(Beamer.name)
 
-    if (BeamerCollection.findOne({ createdBy: this.userId })) {
+    if (await BeamerCollection.findOneAsync({ createdBy: this.userId })) {
       throw new Meteor.Error('errors.docAlreadyExists')
     }
 
@@ -194,7 +194,7 @@ Beamer.methods.insert = {
       grid: Beamer.defaultGridlayout
     }
 
-    return BeamerCollection.insert({ createdBy: this.userId, references: [], ui })
+    return BeamerCollection.insertAsync({ createdBy: this.userId, references: [], ui })
   })
 }
 
@@ -208,11 +208,11 @@ Beamer.methods.update = {
   roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher],
   numRequests: 100,
   timeInterval: 5000,
-  run: onServer(function (updateDoc) {
+  run: onServer(async function (updateDoc) {
     const modifier = Object.assign({}, updateDoc)
     const BeamerCollection = getCollection(Beamer.name)
     const { _id } = modifier
-    const beamerDoc = BeamerCollection.findOne(_id)
+    const beamerDoc = await BeamerCollection.findOneAsync(_id)
 
     if (!beamerDoc) {
       throw new Meteor.Error('errors.docNotFound', _id)
@@ -222,28 +222,30 @@ Beamer.methods.update = {
     }
 
     delete modifier._id
-    return BeamerCollection.update(_id, { $set: modifier })
+    return BeamerCollection.updateAsync(_id, { $set: modifier })
   })
 }
 
 onClientExec(function () {
-  const _beamerReady = new ReactiveVar(false)
-  const _windowRef = new ReactiveVar(null)
-  const _windowId = new ReactiveVar(null)
-  const _windowUrl = new ReactiveVar(null)
-  let _timerId
+  const beamerReady = new ReactiveVar(false)
+  const windowRef = new ReactiveVar(null)
+  const windowId = new ReactiveVar(null)
+  const windowUrl = new ReactiveVar(null)
+  let timerId
 
   const fallbackCallback = (err) => {
-    if (err) console.error(err)
+    if (err) {
+      console.error(err)
+    }
   }
 
-  function clearTimer () {
-    window.clearInterval(_timerId)
-    _timerId = undefined
+  const clearTimer = () => {
+    window.clearInterval(timerId)
+    timerId = undefined
   }
 
-  function initTimer (windowRef) {
-    if (_timerId) clearTimer()
+  const initTimer = (windowRef) => {
+    if (timerId) clearTimer()
 
     const checkChild = () => {
       if (windowRef.closed) {
@@ -251,15 +253,21 @@ onClientExec(function () {
         Beamer.actions.unload()
       }
     }
-    _timerId = setInterval(checkChild, 500)
+    timerId = setInterval(checkChild, 500)
   }
 
-  function getMaterialIndex ({ beamerDoc, lessonId, referenceId, context, itemId }) {
+  const getMaterialIndex = ({ beamerDoc, lessonId, referenceId, context, itemId }) => {
     const references = beamerDoc.references || []
     const byMaterialProps = el => {
-      if (el.lessonId !== lessonId) return false
-      if (el.referenceId !== referenceId) return false
-      if (typeof context === 'string' && el.context !== context) return false
+      if (el.lessonId !== lessonId) {
+        return false
+      }
+      if (el.referenceId !== referenceId) {
+        return false
+      }
+      if (typeof context === 'string' && el.context !== context) {
+        return false
+      }
       if (typeof itemId === 'string' && itemId.length > 0) {
         return el.itemId === itemId
       }
@@ -269,16 +277,16 @@ onClientExec(function () {
     return references.findIndex(byMaterialProps)
   }
 
-  Beamer.status = () => _windowRef.get()
+  Beamer.status = () => windowRef.get()
 
   Beamer.doc = {}
 
   Beamer.doc.ready = (value) => {
     if (typeof value === 'undefined') {
-      return _beamerReady.get()
+      return beamerReady.get()
     }
     else {
-      return _beamerReady.set(Boolean(value))
+      return beamerReady.set(Boolean(value))
     }
   }
 
@@ -445,10 +453,10 @@ onClientExec(function () {
       const { ref } = opened
       const { id } = opened
 
-      _windowRef.set(ref)
+      windowRef.set(ref)
       initTimer(ref)
-      _windowId.set(id)
-      _windowUrl.set(beamerLocation)
+      windowId.set(id)
+      windowUrl.set(beamerLocation)
       Beamer.doc.update({ window: { id, url: beamerLocation } })
       return opened
     },
@@ -471,8 +479,8 @@ onClientExec(function () {
     },
     open: openWindow,
     unload (callback = fallbackCallback) {
-      if (_timerId) clearTimer()
-      const existingWindow = _windowRef.get()
+      if (timerId) clearTimer()
+      const existingWindow = windowRef.get()
       if (existingWindow && !existingWindow.closed) {
         // Firefox 46.0.1: scripts can not close windows, they had not opened
         existingWindow.close()
@@ -481,10 +489,10 @@ onClientExec(function () {
         }
       }
 
-      const windowId = _windowId.get()
-      _windowRef.set(null)
-      _windowUrl.set(null)
-      _windowId.set(null)
+      const windowId = windowId.get()
+      windowRef.set(null)
+      windowUrl.set(null)
+      windowId.set(null)
       if (windowId && windowId !== global.window.name) {
         Beamer.doc.update({ window: { id: null, url: null } }, callback)
       }
@@ -493,16 +501,16 @@ onClientExec(function () {
       }
     },
     key () {
-      return _windowId.get()
+      return windowId.get()
     },
     url () {
-      return _windowUrl.get()
+      return windowUrl.get()
     },
     timerId () {
-      return _timerId
+      return timerId
     },
     get () {
-      return _windowRef.get()
+      return windowRef.get()
     }
   }
 })

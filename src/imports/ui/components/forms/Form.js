@@ -3,7 +3,7 @@ import { createLog } from '../../../api/log/createLog'
 import { setFatalError } from '../fatal/fatal'
 import 'meteor/aldeed:autoform/dynamic'
 import { AutoFormPassword2 } from 'meteor/jkuester:autoform-password2/dynamic'
-import { AutoFormThemeBootstrap4 } from 'meteor/communitypackages:autoform-bootstrap4/dynamic'
+import { AutoFormThemeBootstrap5 } from 'meteor/communitypackages:autoform-bootstrap5/dynamic'
 
 const initialized = new ReactiveVar()
 const formName = 'Form'
@@ -33,8 +33,8 @@ export const initForms = async function initForms () {
   await AutoForm.load()
 
   debug('load BS4 theme')
-  await AutoFormThemeBootstrap4.load()
-  AutoForm.setDefaultTemplate('bootstrap4')
+  await AutoFormThemeBootstrap5.load()
+  AutoForm.setDefaultTemplate('bootstrap5')
 
   await AutoFormPassword2.load()
 

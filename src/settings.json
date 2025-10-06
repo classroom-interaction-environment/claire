@@ -1,6 +1,6 @@
 {
   "public": {
-    "logLevel": 2,
+    "logLevel": 0,
     "features": {
       "groups": true
     },
@@ -24,13 +24,13 @@
         "rule": true
       },
       "max": {
-        "value": 128,
+        "value": 256,
         "rule": false
       },
       "allowedChars": {
-        "value": "^[a-z0-9A-Z_@&\\-\\+\/\\!\\?\\.]+$",
+        "value": ".*",
         "message": "Buchstaben, Zahlen und Sonderzeichen @ & _ + - ! ? . /",
-        "rule": true
+        "rule": false
       },
       "icon": "lock",
       "confirm": true,
@@ -67,16 +67,16 @@
     }
   },
   "emailTemplates": {
-    "from": "no-reply@claireapp.cloud",
+    "from": "no-reply@example.com",
     "siteName": "CLAIRE",
     "textEncoding": "quoted-printable",
-    "supportEmail": "support@claireapp.cloud"
+    "supportEmail": "support@example.com"
   },
   "accounts": {
     "admin": {
       "firstName": "mister",
       "lastName": "superadmin",
-      "email": "admin@claireapp.cloud",
+      "email": "admin@example.com",
       "institution": "admins"
     },
     "config": {
@@ -88,14 +88,14 @@
       "passwordEnrollTokenExpirationInDays": 3
     },
     "inform": {
-      "passwordReset": "admin@claireapp.cloud"
+      "passwordReset": "admin@example.com"
     },
     "fixtures": {
       "schoolAdmin": [
         {
           "firstName": "Simon",
           "lastName": "Sleepy",
-          "email": "sleepy.simon@claireapp.cloud",
+          "email": "sleepy.simon@example.com",
           "institution": "Best School"
         }
       ],
@@ -103,7 +103,7 @@
         {
           "firstName": "Cindy",
           "lastName": "Candy",
-          "email": "candy.cindy@claireapp.cloud",
+          "email": "candy.cindy@example.com",
           "institution": "Best School"
         }
       ]

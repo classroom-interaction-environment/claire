@@ -17,11 +17,11 @@ import { Users } from '../../../system/accounts/users/User'
 import { LessonRuntime } from '../../lessons/runtime/LessonRuntime'
 import { Unit } from '../../../curriculum/curriculum/unit/Unit'
 import { Phase } from '../../../curriculum/curriculum/phase/Phase'
+import { addStudent } from '../methods/addStudent'
 
 const { isStudent } = SchoolClass.helpers
 const { isTeacher } = SchoolClass.helpers
 const { isMember } = SchoolClass.helpers
-const { addStudent } = SchoolClass.helpers
 const { removeStudent } = SchoolClass.helpers
 
 describe(SchoolClass.name, function () {
@@ -97,7 +97,7 @@ describe(SchoolClass.name, function () {
     })
 
     onServerExec(function () {
-      describe(SchoolClass.helpers.addStudent.name, function () {
+      describe(addStudent.name, function () {
         it('throws if no classdoc is found', function () {
           const addDoc = { userId: Random.id(), classId: Random.id() }
           stub(InvocationChecker, InvocationChecker.ensureMethodInvocation.name, () => undefined)

@@ -7,5 +7,6 @@ import { getCollection } from '../../utils/getCollection'
  * @return {Promise<boolean>}
  */
 export const adminExists = async () => {
-  return getCollection(Admin.name).countDocuments({}) > 0
+  const count = await getCollection(Admin.name).countDocuments({})
+  return count > 0
 }

@@ -37,7 +37,7 @@ Tracker.autorun((computation) => {
       })
   }
 
-  if (!Roles.subscription.ready()) return
+  // if (!Roles.subscription.ready()) return
 
   loadUserRoutes(userId)
     .catch(e => console.error(e))

@@ -73,8 +73,7 @@ export const VideoFiles = {
     maxSize: 1024 * 1000 * 100, // TODO get from Meteor.settings file
     usePartialResponse: true,
     converter: onServerExec(function () {
-      import { videoConvert } from './converter/videoConvert'
-      return videoConvert
+      return require('./converter/videoConvert').videoConvert
     })
   }
 }
@@ -106,6 +105,9 @@ VideoFiles.material = {
       }
     }
   },
+  /**
+   * @client
+   */
   renderer: {
     main: {
       name: 'preview',

@@ -15,13 +15,19 @@ export const createMyFilesPublication = ({ name }) => ({
     },
     run: onServer(function ({ meta = {} }) {
       const { lessonId, taskId, itemId } = meta
-      const userId = this.userId
+      const { userId } = this
 
       const query = { userId }
 
-      if (lessonId) query.lessonId = lessonId
-      if (taskId) query.taskId = taskId
-      if (itemId) query.itemId = itemId
+      if (lessonId) {
+        query.lessonId = lessonId
+      }
+      if (taskId) {
+        query.taskId = taskId
+      }
+      if (itemId){
+        query.itemId = itemId
+      }
 
       return getCollection(name).find({ userId })
     })

@@ -10,10 +10,10 @@ export const createPreviewMethod = (context) => {
     run: onServerExec(function () {
       import { getCollection } from '../../utils/getCollection'
 
-      return function ({ _id, token }) {
+      return async function ({ _id, token }) {
         const collection = getCollection(context.name)
         // TODO validate token
-        return collection.findOne({ _id })
+        return collection.findOneAsync({ _id })
       }
     })
   }

@@ -18,7 +18,7 @@ const themes = {
 
 Meteor.defer(async () => {
   await import('bootstrap')
-  global.Popper = await import('popper.js')
+  global.Popper = await import('@popperjs/core')
 
   const settingsDoc = await callMethod({
     name: Settings.methods.get,

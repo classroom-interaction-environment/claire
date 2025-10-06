@@ -21,18 +21,18 @@ export const createDocGetter = function (options) {
   /**
    * Returns a document by a given _id.
    * @param query {String|Object} The id if the document to be returned.
-   * @returns {Object} a document of a given collection, if found
+   * @returns {Promise<object>} a document of a given collection, if found
    * @throws {Meteor.Error} if no collection is found by the given context
    * @throws {Meteor.Error} if no doc is found by the given _id
    * @throws {Meteor.Error} if current user is neither admin nor owner of the document.
    */
 
-  function getDocument (query) {
+  async function getDocument (query) {
     if (!['string', 'object'].includes(typeof query)) {
       throw new DocNotFoundError('getDocument.invalidQuery', { name, query })
     }
 
-    const document = getCollection(name).findOne(query)
+    const document = await getCollection(name).findOneAsync(query)
 
     if (!optional && !document) {
       throw new DocNotFoundError('getDocument.docUndefined', { name, query })

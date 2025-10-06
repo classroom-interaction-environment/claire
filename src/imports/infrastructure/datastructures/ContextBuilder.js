@@ -10,7 +10,7 @@ const info = createLog({ name: 'ContextBuilder', type: 'info' })
 /**
  * Creates contexts by running them through registered pipelines.
  *
- * For each context category there is a specific Registriy (for example
+ * For each context category there is a specific Registry (for example
  * Material for all Material types, Files for all File types.
  *
  * By adding a registry we can obtain all it's related pipelines.
@@ -19,7 +19,7 @@ const info = createLog({ name: 'ContextBuilder', type: 'info' })
  * automatically and thus create contexts for multiple categories.
  *
  * A pipeline is used to decorate or mutate the context according to
- * the specific categorie's needs.
+ * the specific category's needs.
  *
  * For example, some pipelines define standard CRUD methods for a context,
  * others simply add the context to the related Registry.
@@ -31,7 +31,7 @@ const info = createLog({ name: 'ContextBuilder', type: 'info' })
 export const ContextBuilder = {}
 
 /**
- * If you have multiple contexts to run though build pipelines you can
+ * If you have multiple contexts to run through build pipelines you can
  * register them with this method and finally run {ContextBuilder.runAll}
  *
  * @param context {Object} a context instance

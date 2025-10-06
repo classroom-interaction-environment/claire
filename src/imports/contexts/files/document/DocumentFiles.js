@@ -24,8 +24,7 @@ export const DocumentFiles = {
     usePartialResponse: false,
     accept: FileTypes.document.accept,
     converter: onServerExec(function () {
-      import { documentConverter } from './converter/documentConverter'
-      return documentConverter
+      return require('./converter/documentConverter').documentConverter
     })
   }
 }
@@ -50,6 +49,9 @@ DocumentFiles.material = {
       }
     }
   },
+  /**
+   * @client
+   */
   renderer: {
     list: {
       template: 'documentFilesListRenderer',

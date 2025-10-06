@@ -386,7 +386,7 @@ Unit.methods.byTaskId = {
   run: onServerExec(function () {
     import { userIsCurriculum } from '../../../../api/accounts/userIsCurriculum'
 
-    return function ({ taskId }) {
+    return async function ({ taskId }) {
       const { userId } = this
       const UnitCollection = getCollection(Unit.name)
 
@@ -395,13 +395,13 @@ Unit.methods.byTaskId = {
       const unlinkedUnitsQuery = { tasks: { $nin: [taskId] } }
 
       // non curriculum users can only see the units by task which they own
-      if (!userIsCurriculum(userId)) {
+      if (!await userIsCurriculum(userId)) {
         linkedUnitsQuery.createdBy = userId
         unlinkedUnitsQuery.createdBy = userId
       }
 
-      const linkedUnits = UnitCollection.find(linkedUnitsQuery).fetch()
-      const unlinkedUnits = UnitCollection.find(unlinkedUnitsQuery).fetch()
+      const linkedUnits = await UnitCollection.find(linkedUnitsQuery).fetchAsync()
+      const unlinkedUnits = await UnitCollection.find(unlinkedUnitsQuery).fetchAsync()
 
       return {
         linkedUnits,
@@ -419,7 +419,7 @@ Unit.methods.unlinkTask = {
     const UnitCollection = getCollection(Unit.name)
     const query = { createdBy: this.userId, tasks: { $in: [taskId] } }
     const modifier = { $pull: { tasks: taskId } }
-    return UnitCollection.update(query, modifier)
+    return UnitCollection.updateAsync(query, modifier)
   })
 }
 
@@ -432,8 +432,7 @@ Unit.methods.getEditorDocs = {
   schema: { unitId: String },
   role: UserUtils.roles.teacher,
   run: onServerExecLazy(function () {
-    import { getEditorDocs } from './getEditorDocs'
-    return getEditorDocs
+    return require( './getEditorDocs').getEditorDocs
   })
 }
 
@@ -448,19 +447,19 @@ Unit.methods.remove = {
 
     const removeAllMaterial = createRemoveAllMaterial({ isCurriculum: true })
 
-    return function ({ _id }) {
+    return async function ({ _id }) {
       const { userId } = this
       const UnitCollection = getCollection(Unit.name)
-      const unitDoc = UnitCollection.findOne({ _id, _master: true })
+      const unitDoc = await UnitCollection.findOneAsync({ _id, _master: true })
 
-      ensureDocumentExists({
+      await ensureDocumentExists({
         document: unitDoc,
         userId: userId,
         docId: _id,
         name: Unit.name
       })
 
-      checkOwnership({
+      await checkOwnership({
         document: unitDoc,
         userId: userId,
         context: Unit.name
@@ -469,9 +468,9 @@ Unit.methods.remove = {
       // this removes all material that is related to the unit doc, which
       // can have several implications, if the material is in use anywhere
       // a future versioning of curricula should prevent such issues
-      removeAllMaterial({ unitDoc, userId })
+      await removeAllMaterial({ unitDoc, userId })
 
-      return UnitCollection.remove(_id)
+      return UnitCollection.removeAsync(_id)
     }
   })
 }
@@ -483,14 +482,14 @@ Unit.methods.loadMaterial = {
   run: onServerExec(function () {
     import { loadAllMaterialByUnit } from '../../../material/loadAllMaterialByUnit'
 
-    return function ({ _id }) {
+    return async function ({ _id }) {
       const UnitCollection = getCollection(Unit.name)
-      const unitDoc = UnitCollection.findOne({ _id })
+      const unitDoc = UnitCollection.findOneAsync({ _id })
 
       // master docs are readable by all teachers for now
       // non-master docs have to be checked for ownership
       if (!unitDoc._master) {
-        this.checkOwner(unitDoc, _id, this.userId)
+        await this.checkOwner(unitDoc, _id, this.userId)
       }
 
       return loadAllMaterialByUnit(unitDoc, this.userId)

@@ -1,10 +1,11 @@
 import { Meteor } from 'meteor/meteor'
 import { createLog } from '../../../../api/log/createLog'
+import { getCollection } from '../../../../api/utils/getCollection'
 
 /* Removes all references in units / tasks that have no corresponding file. */
 
 if (Meteor.settings.patch?.removeDeadReferences) {
-  Meteor.startup(() => {
+  Meteor.startup(async () => {
     import { Unit } from '../../../../contexts/curriculum/curriculum/unit/Unit'
     import { Pocket } from '../../../../contexts/curriculum/curriculum/pocket/Pocket'
     import { getCollection } from '../../../../api/utils/getCollection'
@@ -36,24 +37,23 @@ if (Meteor.settings.patch?.removeDeadReferences) {
 
     const PocketCollection = getCollection(Pocket.name)
     const UnitCollection = getCollection(Unit.name)
-
-    UnitCollection.find({ _master: true }).forEach(unitDoc => {
-      const pocketDoc = PocketCollection.findOne(unitDoc.pocket)
+    const unitMasterDocs = await UnitCollection.find({ _master: true }).fetchAsync()
+    for (const unitDoc of unitMasterDocs) {
+      const pocketDoc = await PocketCollection.findOneAsync(unitDoc.pocket)
       const material = unitMaterialIds(unitDoc)
-
-      Object.entries(material).forEach(([materialName, linkedIds]) => {
-        if (!linkedIds || linkedIds.length === 0) { return }
-
+      const materialEntries = Object.entries(material).filter(([, linkedIds]) => linkedIds && linkedIds.length > 0)
+      for (const [materialName, linkedIds] of materialEntries) {
         const collection = getCollection(materialName)
-        linkedIds.forEach(materialId => {
-          if (collection.find({ _id: materialId }).count() === 0) {
+
+        for (const materialId of linkedIds) {
+          if (await collection.countDocuments({ _id: materialId }) === 0) {
             addToRemove(pocketDoc, unitDoc, materialName, materialId)
           }
-        })
-      })
-    })
+        }
+      }
+    }
 
-    Object.entries(remove).forEach(([unitId, materials]) => {
+    for (const [unitId, materials] of Object.entries(remove)) {
       const query = { _id: unitId }
       const transform = { $pullAll: {} }
 
@@ -62,7 +62,7 @@ if (Meteor.settings.patch?.removeDeadReferences) {
       })
 
       log('update unit', unitId, query, transform)
-      UnitCollection.update(query, transform)
-    })
+      await UnitCollection.updateAsync(query, transform)
+    }
   })
 }

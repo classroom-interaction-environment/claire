@@ -97,7 +97,7 @@ LessonHelpers.isStudentOfLesson = function isStudentOfLesson ({ userId, lessonId
  * @return {{lessonDoc: object, classDoc: object}}
  */
 
-LessonHelpers.docsForTeacher = function docsForTeacher ({ userId, lessonId }) {
+LessonHelpers.docsForTeacher = async ({ userId, lessonId }) => {
   const lessonDoc = getLessonDoc(lessonId)
   const classDoc = getClassDoc(lessonDoc.classId)
 

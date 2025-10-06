@@ -24,8 +24,7 @@ export const AudioFiles = {
     maxSize: 1024 * 1000 * 50,
     usePartialResponse: true,
     converter: onServerExec(function () {
-      import { audioConvert } from './converter/audioConvert'
-      return audioConvert
+      return require('./converter/audioConvert').audioConvert
     })
   }
 }
@@ -51,6 +50,9 @@ AudioFiles.material = {
       }
     }
   },
+  /**
+   * @client
+   */
   renderer: {
     list: {
       template: 'audioFileListRenderer',

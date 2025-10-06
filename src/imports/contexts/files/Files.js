@@ -53,6 +53,7 @@ onClientExec(function () {
   /**
    * THis is the generic renderer, which itself is able to include
    * file-type-specific renderers for each registered files-type
+   * @client
    */
   Files.renderer = {
     template: 'fileRenderer',

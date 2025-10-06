@@ -27,8 +27,7 @@ export const ImageFiles = {
     maxSize: 1024 * 1000 * 6,
     usePartialResponse: false,
     converter: onServerExec(function () {
-      import { imageConvert } from './converter/imageConvert'
-      return imageConvert
+      return require('./converter/imageConvert').imageConvert
     }),
     previewVersion: 'thumbnail'
   }
@@ -55,6 +54,9 @@ ImageFiles.material = {
       }
     }
   },
+  /**
+   * @client
+   */
   renderer: {
     list: {
       template: 'imageFileListRenderer',

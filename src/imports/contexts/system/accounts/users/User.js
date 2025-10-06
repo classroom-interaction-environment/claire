@@ -220,13 +220,10 @@ Users.methods.checkResetpasswordToken = {
   },
   isPublic: true,
   numRequests: 1,
-  timeInterval: 1000 * 30,
-  run: onServerExec(function () {
+  timeInterval: 30000,
+  run: onServerExec(() => {
     import { verifyToken } from './methods/verifyToken'
-
-    return function ({ email, token, reason }) {
-      return verifyToken({ email, token, reason })
-    }
+    return () => true
   })
 }
 

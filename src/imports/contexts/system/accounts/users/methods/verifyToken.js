@@ -7,7 +7,7 @@ import { getUserByEmail } from '../../../../../api/accounts/user/getUserByEmail'
  * All three must be valid in order to pass!
  *
  * @param email {string}
- * @param token {srting}
+ * @param token {string}
  * @param reason {string}
  * @return {boolean}
  * @throws {Meteor.Error} when one of the three is not valid

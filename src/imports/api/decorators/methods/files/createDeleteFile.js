@@ -15,7 +15,7 @@ export const createDeleteFile = ({ filesContext }) => {
   return {
     name: `${filesContext.name}.methods.delete`,
     schema: { _id: String },
-    run: function ({ _id }) {
+    run: async function ({ _id }) {
       const { userId, log } = this
       log('(delete)', _id)
 
@@ -23,7 +23,7 @@ export const createDeleteFile = ({ filesContext }) => {
       // this uses the FilesCollection's remove method, that also removes
       // the referenced file from the connected storage
       const FilesCollection = getFilesCollection(filesContext.name)
-      const filesDoc = FilesCollection.findOne({ _id })
+      const filesDoc = await FilesCollection.findOneAsync({ _id })
 
       if (!filesDoc) {
         throw new DocNotFoundError('files.notFound', _id)
@@ -33,12 +33,11 @@ export const createDeleteFile = ({ filesContext }) => {
         throw new PermissionDeniedError('errors.noPermission', _id)
       }
 
-      if (filesDoc._master && !userIsCurriculum(userId)) {
+      if (filesDoc._master && !await userIsCurriculum(userId)) {
         throw new PermissionDeniedError('errors.notInRole', _id)
       }
 
-      const asyncRemove = Meteor.wrapAsync(FilesCollection.remove)
-      const removed = asyncRemove.call(FilesCollection, { _id })
+      const removed = await FilesCollection.remove({ _id })
 
       log('removed', removed)
       return removed

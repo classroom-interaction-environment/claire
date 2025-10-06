@@ -44,14 +44,14 @@ export const createEditorPublication = function createEditorPublication (context
         'ids.$': String
       }, schema),
       roles: UserUtils.roles.teacher,
-      run: onServer(function ({ limit, curriculum, meta, ids, ...customFields }) {
+      run: onServer(async function ({ limit, curriculum, meta, ids, ...customFields }) {
         const { userId } = this
 
         // we want to include by the following conditions
         // - non-cloned createdBy me
         const createdByQuery = { ...customFields }
 
-        if (!userIsAdmin(userId)) {
+        if (!await userIsAdmin(userId)) {
           if (isFilesCollection) {
             createdByQuery.userId = userId
           }
@@ -85,10 +85,7 @@ export const createEditorPublication = function createEditorPublication (context
           projection.limit = limit
         }
 
-        const cursor = getCollection(name).find(query, projection)
-        debug(name, JSON.stringify(query), '=>', cursor.count())
-
-        return cursor
+        return getCollection(name).find(query, projection)
       }),
       timeInterval: 10000,
       numRequests: 100

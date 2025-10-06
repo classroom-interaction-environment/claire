@@ -25,4 +25,16 @@ export class FactoryCollection extends Mongo.Collection {
     updateHook.call(this, query, modifier, options, callback, !!this.filesCollection)
     return super.update(query, modifier, options, callback)
   }
+
+  async insertAsync (doc, callback, cb) {
+    insertHook.call(this, doc, callback, cb, !!this.filesCollection)
+    this.debug('insert', doc)
+    return super.insertAsync(doc, cb || callback)
+  }
+
+  async updateAsync (query, modifier, options) {
+    this.debug('update', query, modifier, options)
+    updateHook.call(this, query, modifier, options, null, !!this.filesCollection)
+    return super.updateAsync(query, modifier, options)
+  }
 }

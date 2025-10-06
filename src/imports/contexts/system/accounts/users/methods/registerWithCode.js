@@ -7,6 +7,7 @@ import { rollbackAccount } from '../../../../../api/accounts/registration/rollba
 import { correctName } from '../../../../../api/utils/correctName'
 import { userExists } from '../../../../../api/accounts/user/userExists'
 import { createDocGetter } from '../../../../../api/utils/document/createDocGetter'
+import { addStudent } from '../../../../classroom/schoolclass/methods/addStudent'
 
 const errors = {
   codeInvalid: 'codeRegister.codeInvalid',
@@ -30,7 +31,7 @@ const getCodeDoc = createDocGetter({ name: CodeInvitation.name, optional: true }
  * @param locale
  * @return {*}
  */
-export const registerWithCode = function ({ code, email, firstName, lastName, password, institution, locale }) {
+export const registerWithCode = async ({ code, email, firstName, lastName, password, institution, locale }) => {
   const codeDoc = getCodeDoc({ code })
 
   // first we validate if the related code doc exists and is still valid
@@ -68,10 +69,11 @@ export const registerWithCode = function ({ code, email, firstName, lastName, pa
   if (classId) {
     // if we have a class associated we aim to add the new student to the class
     // FIXME execution should not be in behalf of user, find another (capability based) check mechanism
-    const thisContext = { userId: codeDoc.createdBy }
-    const studentAdded = SchoolClass.helpers.addStudent.call(thisContext, {
+    const teacherId = codeDoc.createdBy
+    const studentAdded = await addStudent({
       classId,
-      userId
+      userId,
+      teacherId
     })
 
     if (!studentAdded) {

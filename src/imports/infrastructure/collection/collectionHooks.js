@@ -1,7 +1,5 @@
 /* global DDP */
-const exists = function (value) {
-  return value !== null && typeof value !== 'undefined'
-}
+const exists = (value) => value !== null && typeof value !== 'undefined'
 
 const getUserId = function () {
   const currentInvocation = DDP._CurrentMethodInvocation.get() || DDP._CurrentPublicationInvocation.get()

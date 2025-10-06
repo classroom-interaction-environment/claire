@@ -179,9 +179,8 @@ Settings.methods = {
     schema: {},
     isPublic: true,
     run: onServer(function () {
-      this.unblock()
       const SettingsCollection = getCollection(Settings.name)
-      return SettingsCollection.findOne()
+      return SettingsCollection.findOneAsync()
     })
   },
   updateSettings: {
@@ -189,12 +188,12 @@ Settings.methods = {
     schema: Settings.schema,
     timeInterval: 1000,
     numRequests: 1,
-    run: onServer(function ({ ui, imprint, privacy, terms, termsStudent, contact, research, researchOptions, mainLogo, logos }) {
+    run: onServer(async function ({ ui, imprint, privacy, terms, termsStudent, contact, research, researchOptions, mainLogo, logos }) {
       const SettingsCollection = getCollection(Settings.name)
-      const settingsDoc = SettingsCollection.findOne()
+      const settingsDoc = await SettingsCollection.findOneAsync()
 
       if (!settingsDoc) {
-        return SettingsCollection.insert({ ui, imprint, privacy, terms, termsStudent, research, researchOptions, contact, mainLogo, logos })
+        return SettingsCollection.insertAsync({ ui, imprint, privacy, terms, termsStudent, research, researchOptions, contact, mainLogo, logos })
       }
 
       const { _id } = settingsDoc
@@ -211,8 +210,8 @@ Settings.methods = {
       if (logos) modifier.$set.logos = logos
       if (mainLogo) modifier.$set.mainLogo = mainLogo
 
-      SettingsCollection.update(_id, modifier)
-      return SettingsCollection.findOne()
+      await SettingsCollection.updateAsync(_id, modifier)
+      return SettingsCollection.findOneAsync()
     })
   }
 }
@@ -226,12 +225,12 @@ Settings.methods.logo = {
     import { getCollection } from '../../../api/utils/getCollection'
     import { getFilesCollection } from '../../../api/utils/getFilesCollection'
 
-    return function () {
+    return async function () {
       const SettingsCollection = getCollection(Settings.name)
-      const settingsDoc = SettingsCollection.findOne()
+      const settingsDoc = await SettingsCollection.findOneAsync()
       if (settingsDoc.mainLogo) {
         const appFiles = getFilesCollection(AppImages.name)
-        const file = appFiles.findOne(settingsDoc.mainLogo)
+        const file = appFiles.findOneAsync(settingsDoc.mainLogo)
         return file && file.link()
       }
     }
@@ -250,16 +249,16 @@ Settings.methods.updateTheme = {
   run: onServerExec(function () {
     // TODO import CSS validation lib
 
-    return function ({ theme }) {
+    return async function ({ theme }) {
       const SettingsCollection = getCollection(Settings.name)
-      const settingsDoc = SettingsCollection.findOne()
+      const settingsDoc = await SettingsCollection.findOneAsync()
       const modifier = {
         $set: {
           'ui.theme': theme || ''
         }
       }
 
-      return SettingsCollection.update(settingsDoc._id, modifier)
+      return SettingsCollection.updateAsync(settingsDoc._id, modifier)
     }
   })
 }

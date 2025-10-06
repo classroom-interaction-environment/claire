@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { Tracker } from 'meteor/tracker'
 import { ReactiveVar } from 'meteor/reactive-var'
-import { Roles } from 'meteor/alanning:roles'
 import { FlowRouter, RouterHelpers } from 'meteor/ostrio:flow-router-extra'
 import { createLog } from '../log/createLog'
 import { loggedIn } from '../accounts/user/loggedIn'
@@ -114,7 +113,7 @@ function createRoute (routeDef, onError) {
         Promise.resolve(routeDef.load()),
         new Promise((resolve) => {
           Tracker.autorun((computation) => {
-            const loadComplete = !Meteor.loggingIn() && Roles.subscription.ready()
+            const loadComplete = !Meteor.loggingIn() // && Roles.subscription.ready()
             debug('waitOn complete', routeDef.key)
             if (loadComplete) {
               computation.stop()
@@ -147,7 +146,7 @@ function createRoute (routeDef, onError) {
         Router.label(label)
 
         return setTimeout(() => {
-          Router.refresh(routeDef.target || _defaultTarget, 'loading')
+          // Router.refresh(routeDef.target || _defaultTarget, 'loading')
         }, 50)
       }
 

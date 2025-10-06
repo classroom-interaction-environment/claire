@@ -718,7 +718,7 @@ CodeInvitation.methods.addToClass = {
 
     const getClassDoc = createDocGetter(SchoolClass)
 
-    return function ({ code }) {
+    return async function ({ code }) {
       // 1st validate code
       const isValid = CodeInvitation.helpers.validate(code)
       if (!isValid) {
@@ -755,18 +755,16 @@ CodeInvitation.methods.addToClass = {
         throw new PermissionDeniedError(PermissionDeniedError.notInRole, role)
       }
 
+      const teacherId = codeDoc.createdBy
+
       // 6th add to class
-      const thisContext = { userId: codeDoc.createdBy }
       if (role === UserUtils.roles.teacher) {
-        SchoolClass.helpers.addTeacher.call(thisContext, { classId, userId })
+        await addTeacher({ classId, userId, teacherId })
       }
       else if (role === UserUtils.roles.student) {
-        const added = SchoolClass.helpers.addStudent.call(thisContext, {
-          classId,
-          userId
-        })
+        const added = await addStudent({ classId, userId, teacherId })
         if (!added) throw new Meteor.Error(500)
-        getUsersCollection().update(userId, { $set: { 'ui.classId': classId } })
+        await getUsersCollection().updateAsync(userId, { $set: { 'ui.classId': classId } })
       }
       else {
         throw new PermissionDeniedError(SchoolClass.errors.invalidRole, role)

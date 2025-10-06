@@ -67,7 +67,7 @@ leaonline:grid-factory@1.5.0
 ostrio:files@3.0.0-rc.3
 leaonline:method-factory@2.0.2
 leaonline:publication-factory@2.0.0
-leaonline:ratelimit-factory
+leaonline:ratelimit-factory@2.0.0
 
 #========================================
 # SECURITY
@@ -83,7 +83,7 @@ ostrio:flow-router-extra@3.12.0
 #========================================
 # UI / CLIENT
 #========================================
-# ccorcos:subs-cache # subscription cache
+ccorcos:subs-cache # subscription cache
 jkuester:template-states
 # arggh:teleport
 jkuester:template-loader

@@ -24,7 +24,7 @@ export const createMyMethod = ({ name, publicFields = {}, schema, isFilesCollect
   return {
     name: methodName,
     schema: mySchema,
-    run: onServer(function ({ limit, ids, ...customFields }) {
+    run: onServer(async function ({ limit, ids, ...customFields }) {
       const { userId, log } = this
       const collection = getCollection(name)
       const fsQuery = isFilesCollection
@@ -37,7 +37,12 @@ export const createMyMethod = ({ name, publicFields = {}, schema, isFilesCollect
         query._id = $in(ids)
       }
 
-      const projection = { fields: Object.assign({}, defaultPublicFields, publicFields) }
+      const projection = {
+        fields: {
+          ...defaultPublicFields,
+          ...publicFields
+        }
+      }
 
       if (limit) {
         projection.limit = limit
@@ -58,7 +63,7 @@ export const createMyMethod = ({ name, publicFields = {}, schema, isFilesCollect
       // skip, if there are no originals
       // with the initial cursor
       if (uniqueOriginals.size === 0) {
-        return cursor.fetch()
+        return cursor.fetchAsync()
       }
 
       // we need to merge the query with our new added ids
@@ -66,7 +71,7 @@ export const createMyMethod = ({ name, publicFields = {}, schema, isFilesCollect
       const originalsQuery = { _id: $in(originals) }
       const mergedQuery = { $or: [query, originalsQuery] }
 
-      return collection.find(mergedQuery, projection).fetch()
+      return collection.find(mergedQuery, projection).fetchAsync()
     }),
     timeInterval: 10000,
     numRequests: 100

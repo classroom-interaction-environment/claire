@@ -24,13 +24,13 @@ import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
  * }}
  */
 
-export const removeLesson = (options) => {
+export const removeLesson = async (options) => {
   const { userId, log } = options
   let lessonId = options.lessonId
   let lessonDoc = options.lessonDoc
 
   if (!lessonDoc) {
-    const docsForTeacher = LessonHelpers.docsForTeacher({ userId, lessonId })
+    const docsForTeacher = await LessonHelpers.docsForTeacher({ userId, lessonId })
     lessonDoc = docsForTeacher.lessonDoc
   }
 

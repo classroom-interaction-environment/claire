@@ -19,18 +19,15 @@ export const ownerShip = (document, userId) => !!(userId && document && document
 /**
  * Factory function to create a document-getter that includes several safety-checks (collection exists,
  * document exists, ownership).
- * @deprecated use standalone method
  * @param name The name of the context, used to obtain the collection
  * @param checkOwner determines, whether the document is to be checked for ownership
  * @returns {function} A function to retrieve documents by _id
  */
 
-export const createGetDoc = function ({ name } = {}, { checkOwner = true } = {}) {
+export const createGetDoc = ({ name } = {}, { checkOwner = true } = {}) => {
   check(name, String)
-
   /**
    * Returns a document by a given _id.
-   * @deprecated use standalone method
    * @param _id The id if the document to be returned.
    * @returns {Object} a document of a given collection, if found
    * @throws {Meteor.Error} if no collection is found by the given context
@@ -38,11 +35,11 @@ export const createGetDoc = function ({ name } = {}, { checkOwner = true } = {})
    * @throws {Meteor.Error} if current user is neither admin nor owner of the document.
    */
 
-  function getDoc (_id) {
+  async function getDoc (_id) {
     // TODO update tests and uncomment:
     // if (!_id) throw new DocNotFoundError('errors.idUndefined', name)
     const Collection = getCollection(name)
-    const document = Collection.findOne(_id)
+    const document = await Collection.findOneAsync(_id)
     if (!document) throw new DocNotFoundError(_id, name)
 
     if (checkOwner && !(ownerShip(document, this.userId) || UserUtils.isAdmin(this.userId))) {
@@ -67,7 +64,6 @@ export const createUpdateDoc = function ({ name } = {}, { checkOwner = true } = 
 
   /**
    * Updates a document by _id and modifier(s).
-   * @deprecated use standalone method
    * @param _id The _id if the supposed document to be updated
    * @param $set optional modifier
    * @param $unset optional modifier

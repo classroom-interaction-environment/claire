@@ -1,2 +1,0 @@
-import './sync'
-import './cleanFiles'

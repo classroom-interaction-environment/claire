@@ -219,7 +219,7 @@ export const context = function (name) {
 
 export const userReady = function () {
   const user = Meteor.user
-  return user && user.profileReady && Roles.subscription.ready()
+  return user && user.profileReady // && Roles.subscription.ready()
 }
 
 export const route = function (key, ...optionalArgs) {

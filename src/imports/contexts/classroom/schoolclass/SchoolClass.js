@@ -1,10 +1,8 @@
 import { Meteor } from 'meteor/meteor'
-import { check } from 'meteor/check'
 import { i18n } from '../../../api/language/language'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
 import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
-import { DocNotFoundError } from '../../../api/errors/types/DocNotFoundError'
 
 const firstOption = i18n.get('form.selectOne')
 
@@ -101,173 +99,6 @@ SchoolClass.schema = {
   }
 }
 
-/**
- * @deprecated
- * @type {{}}
- */
-SchoolClass.helpers = {}
-
-function checkClassDoc (classDoc) {
-  if (!classDoc) throw new DocNotFoundError(SchoolClass.name)
-}
-
-/**
- * @deprecated
- * @param classDoc
- * @param userId
- * @return {*}
- */
-
-SchoolClass.helpers.isStudent = function isStudent ({ classDoc, userId } = {}) {
-  checkClassDoc(classDoc)
-  return !!(classDoc.students && classDoc.students.includes(userId))
-}
-
-/**
- * Checks, whether a given user is teacher of the class.
- * @deprecated
- * @param classDoc a school class document, must be defined
- * @param userId the _id of the user to be checked
- * @return {boolean} true if user is in teachers or owner of the class
- * @throws {Meteor.Error} is the classDoc is undefined or null
- */
-
-SchoolClass.helpers.isTeacher = function isTeacher ({ classDoc, userId } = {}) {
-  checkClassDoc(classDoc)
-  if (classDoc.createdBy === userId) return true
-  if (classDoc.teachers) {
-    return classDoc.teachers.includes(userId)
-  }
-  return false
-}
-
-/**
- * Checks, whether a user is member of a given class.
- * @deprecated
- * @param classDoc a school class document, must be defined
- * @param userId the _id of the user to be checked
- * @return {boolean} true if user is member of the class, otherwise false
- * @throws {Meteor.Error} is the classDoc is undefined or null
- */
-
-SchoolClass.helpers.isMember = function isMember ({ classDoc, userId } = {}) {
-  const isStudent = SchoolClass.helpers.isStudent({ classDoc, userId })
-  if (isStudent) return true
-  return SchoolClass.helpers.isTeacher({ classDoc, userId })
-}
-
-/**
- * Adds a student to a class. TODO replace with standalone addUserToClass method
- * @deprecated
- * @param classId the id of the class to add the user
- * @param userId the id of the student to be added
- * @returns {number} 1 if added, 0 if not
- * @throws {DocNotFoundError} if there is no class by given id
- * @throws {PermissionDeniedError} if current user is not a teacher
- * @throws {PermissionDeniedError} if student to be added is already in class
- */
-
-SchoolClass.helpers.addStudent = onServerExec(function () {
-  const { InvocationChecker } = require('../../../api/utils/InvocationChecker')
-  const { createGetDoc, createUpdateDoc } = require('../../../api/utils/documentUtils')
-  const { PermissionDeniedError } = require('../../../api/errors/types/PermissionDeniedError')
-
-  // we don't check ownership, because we use
-  // the helpers to allow teachers, that are members
-  // but not owners of the class to to add students
-  const getClassDoc = createGetDoc(SchoolClass, { checkOwner: false })
-  const updateClassDoc = createUpdateDoc(SchoolClass, { checkOwner: false })
-
-  return function addStudent ({ classId, userId }) {
-    check(classId, String)
-    check(userId, String)
-    InvocationChecker.ensureMethodInvocation()
-
-    const classDoc = getClassDoc(classId)
-    const teacherId = this.userId
-
-    const isTeacher = SchoolClass.helpers.isTeacher({ classDoc, userId: teacherId })
-    if (!isTeacher) {
-      throw new PermissionDeniedError(SchoolClass.errors.notTeacher)
-    }
-
-    const isAlreadyStudent = SchoolClass.helpers.isStudent({ classDoc, userId })
-    if (isAlreadyStudent) {
-      throw new PermissionDeniedError(SchoolClass.errors.alreadyMember, { classId, userId })
-    }
-
-    return updateClassDoc(classDoc._id, { $addToSet: { students: userId } })
-  }
-})
-
-/**
- * @deprecated
- */
-SchoolClass.helpers.addTeacher = onServerExec(function () {
-  const { InvocationChecker } = require('../../../api/utils/InvocationChecker')
-  const { createGetDoc, createUpdateDoc } = require('../../../api/utils/documentUtils')
-  const { PermissionDeniedError } = require('../../../api/errors/types/PermissionDeniedError')
-
-  const getClassDoc = createGetDoc(SchoolClass, { checkOwner: false })
-  const updateClassDoc = createUpdateDoc(SchoolClass, { checkOwner: false })
-
-  return function addTeacher ({ classId, userId }) {
-    check(classId, String)
-    check(userId, String)
-    InvocationChecker.ensureMethodInvocation()
-
-    const classDoc = getClassDoc(classId)
-    const teacherId = this.userId
-
-    const creatorIsTeacher = SchoolClass.helpers.isTeacher({ classDoc, userId: teacherId })
-    if (!creatorIsTeacher) {
-      throw new PermissionDeniedError(SchoolClass.errors.notTeacher)
-    }
-
-    const isAlreadyTeacher = SchoolClass.helpers.isTeacher({ classDoc, userId })
-    if (isAlreadyTeacher) {
-      throw new PermissionDeniedError(SchoolClass.errors.alreadyMember, { classId, userId })
-    }
-
-    return updateClassDoc(classDoc._id, { $addToSet: { teachers: userId } })
-  }
-})
-
-/**
- * @deprecated
- */
-SchoolClass.helpers.removeStudent = onServerExec(function () {
-  const { InvocationChecker } = require('../../../api/utils/InvocationChecker')
-  const { createGetDoc, createUpdateDoc } = require('../../../api/utils/documentUtils')
-
-  // we don't check ownership, because we use
-  // the helpers to allow teachers, that are members
-  // but not owners of the class to to add students
-  const getClassDoc = createGetDoc(SchoolClass, { checkOwner: false })
-  const updateClassDoc = createUpdateDoc(SchoolClass, { checkOwner: false })
-
-  return function removeStudent ({ classId, userId }) {
-    check(classId, String)
-    check(userId, String)
-    InvocationChecker.ensureMethodInvocation()
-
-    const classDoc = getClassDoc(classId)
-    const teacherId = this.userId
-
-    const isTeacher = SchoolClass.helpers.isTeacher({ classDoc, userId: teacherId })
-    if (!isTeacher) {
-      throw new Meteor.Error('errors.permissionDenied', SchoolClass.errors.notTeacher)
-    }
-
-    const isStudent = SchoolClass.helpers.isStudent({ classDoc, userId })
-    if (!isStudent) {
-      throw new Meteor.Error('errors.permissionDenied', SchoolClass.errors.notMember, { classId, userId })
-    }
-
-    return updateClassDoc(classDoc._id, { $pull: { students: userId } })
-  }
-})
-
 /**************************************************************
  *
  *  METHODS
@@ -276,20 +107,20 @@ SchoolClass.helpers.removeStudent = onServerExec(function () {
 
 SchoolClass.methods = {}
 
+/**
+ * Returns a single class, assuming I am associated with it
+ */
 SchoolClass.methods.get = {
   name: 'schoolClass.methods.get',
   schema: {
     _id: String
   },
-  run: onServer(async function ({ _id }) {
-    const { userId } = this
-    const query = {
-      $or: [
-        { _id, students: userId },
-        { _id, createdBy: userId }
-      ]
+  run: onServerExec(() => {
+    import { getSchoolClass } from './methods/getSchoolClas'
+    return async function ({ _id }) {
+      const { userId } = this
+      return getSchoolClass({ classId: _id, userId })
     }
-    return getCollection(SchoolClass.name).find(query, { limit: 1 }).fetch()
   }),
   timeInterval: 1000,
   numRequests: 10
@@ -299,7 +130,6 @@ SchoolClass.methods.get = {
  * Returns all classes, I am associated with
  * @roles: all
  */
-
 SchoolClass.methods.my = {
   name: 'schoolClass.methods.my',
   schema: {
@@ -309,31 +139,19 @@ SchoolClass.methods.my = {
     },
     'ids.$': String
   },
-  run: function myClasses ({ ids }) {
-    const { userId } = this
-    const query = {
-      $or: [
-        { students: userId },
-        { teachers: userId },
-        { createdBy: userId }
-      ]
+  run: onServerExec(() => {
+    import { getMyClasses } from './methods/getMyClasses'
+    return async function myClasses ({ ids }) {
+      const { userId } = this
+      return getMyClasses({ userId, ids })
     }
-
-    if (ids?.length) {
-      query.$or[0]._id = { $in: ids }
-      query.$or[1]._id = { $in: ids }
-      query.$or[2]._id = { $in: ids }
-    }
-
-    return getCollection(SchoolClass.name).find(query).fetch()
-  }
+  })
 }
 
 /**
- * Creates a new class
+ * Creates a new class, assuming I have the teacher role
  * @roles: teacher
  */
-
 SchoolClass.methods.create = {
   name: 'schoolClass.methods.create',
   schema: {
@@ -343,30 +161,18 @@ SchoolClass.methods.create = {
     'timeFrame.to': SchoolClass.schema['timeFrame.to']
   },
   role: UserUtils.roles.teacher,
-  run: onServer(async function createClass ({ title, timeFrame }) {
-    const { userId } = this
-    const SchoolClassCollection = getCollection(SchoolClass.name)
-    const insert = { title, createdBy: userId }
-
-    if (SchoolClassCollection.find(insert).count() > 0) {
-      throw new Meteor.Error('create.error', 'schoolClass.exists', {
-        key: 'title',
-        type: 'valueAlreadyExists',
-        value: title
-      })
+  run: onServerExec(() => {
+    import { createSchoolClass } from './helpers/createSchoolClass'
+    return async function createClass ({ title, timeFrame }) {
+      const { userId } = this
+      return createSchoolClass({ title, timeFrame, userId })
     }
-
-    if (timeFrame) {
-      insert.timeFrame = timeFrame
-    }
-
-    insert.students = []
-    insert.teachers = [userId]
-
-    return SchoolClassCollection.insert(insert)
   })
 }
 
+/**
+ * Updates the title of a class
+ */
 SchoolClass.methods.update = {
   name: 'schoolClass.methods.update',
   schema: {
@@ -431,7 +237,14 @@ SchoolClass.methods.addStudent = {
     userId: String
   },
   roles: UserUtils.roles.teacher,
-  run: onServer(SchoolClass.helpers.addStudent)
+  run: onServerExec(() => {
+    import { addStudent } from './methods/addStudent'
+
+    return async function ({ classId, userId }) {
+      const teacherId = this.userId
+      return addStudent({ classId, userId, teacherId })
+    }
+  })
 }
 
 /**
@@ -445,7 +258,13 @@ SchoolClass.methods.removeStudent = {
     userId: String
   },
   roles: UserUtils.roles.teacher,
-  run: onServer(SchoolClass.helpers.removeStudent)
+  run: onServerExec(() => {
+    import { removeStudent } from './methods/removeStudent'
+    return async function ({ classId, userId }) {
+      const teacherId = this.userId
+      return removeStudent({ classId, userId, teacherId })
+    }
+  })
 }
 
 /**************************************************************

@@ -12,10 +12,12 @@ import {
   getEnrollAccountSubject,
   getEnrollAccountText
 } from '../../../api/accounts/emailTemplates/enrollAccount'
+import { createLog } from '../../../api/log/createLog'
 
 const { from, textEncoding, supportEmail } = Meteor.settings.emailTemplates
 const { siteName, defaultLocale } = Meteor.settings.public
 const { passwordResetTokenExpirationInDays, passwordEnrollTokenExpirationInDays } = Meteor.settings.accounts.config
+const debug = createLog({ name: 'Accounts.emailTemplates', type: 'debug' })
 
 Accounts.emailTemplates.siteName = siteName
 Accounts.emailTemplates.from = from
@@ -26,13 +28,15 @@ Accounts.emailTemplates.textEncoding = textEncoding
 // /////////////////////////////////////////////////////////////////////////////
 Accounts.emailTemplates.enrollAccount.subject = getEnrollAccountSubject({
   siteName,
-  defaultLocale
+  defaultLocale,
+  debug
 })
 
 Accounts.emailTemplates.enrollAccount.text = getEnrollAccountText({
   expiration: passwordEnrollTokenExpirationInDays,
   defaultLocale,
-  supportEmail
+  supportEmail,
+  debug
 })
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -40,13 +44,15 @@ Accounts.emailTemplates.enrollAccount.text = getEnrollAccountText({
 // /////////////////////////////////////////////////////////////////////////////
 Accounts.emailTemplates.resetPassword.subject = getResetPasswordSubject({
   siteName,
-  defaultLocale
+  defaultLocale,
+  debug
 })
 
 Accounts.emailTemplates.resetPassword.text = getResetPasswordText({
   expiration: passwordResetTokenExpirationInDays,
   defaultLocale,
-  supportEmail
+  supportEmail,
+  debug
 })
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -54,7 +60,8 @@ Accounts.emailTemplates.resetPassword.text = getResetPasswordText({
 // /////////////////////////////////////////////////////////////////////////////
 Accounts.emailTemplates.verifyEmail.subject = getVerifyEmailSubject({
   siteName,
-  defaultLocale
+  defaultLocale,
+  debug
 })
 
-Accounts.emailTemplates.verifyEmail.text = getVeryFyEmailText({ defaultLocale, supportEmail })
+Accounts.emailTemplates.verifyEmail.text = getVeryFyEmailText({ defaultLocale, supportEmail, debug })

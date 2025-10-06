@@ -27,8 +27,7 @@ export const ProfileImages = {
     maxSize: 1024 * 1000 * 6,
     usePartialResponse: false,
     converter: onServerExec(function () {
-      const { imageConvert } = require('./converter/imageConvert')
-      return imageConvert
+      return require('./converter/imageConvert').imageConvert
     })
   }
 }
@@ -46,8 +45,7 @@ ProfileImages.methods.byClass = {
     'skip.$': String
   },
   run: onServerExecLazy(function () {
-    import { profileImagesByClass } from './profileImagesByClass'
-    return profileImagesByClass
+    return require('./profileImagesByClass').profileImagesByClass
   })
 }
 
@@ -60,11 +58,11 @@ ProfileImages.publications.fileList = {
     import { getCollection } from '../../../api/utils/getCollection'
     import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
 
-    return function () {
-      const isAdmin = userIsAdmin(this.userId)
-      const query = isAdmin ? {} : { userId: this.userId }
+    return async function () {
+      const { userId } = this
+      const isAdmin = await userIsAdmin(userId)
+      const query = isAdmin ? {} : { userId }
       return getCollection(ProfileImages.name).find(query)
     }
   })
-
 }

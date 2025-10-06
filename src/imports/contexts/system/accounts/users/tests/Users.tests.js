@@ -119,7 +119,6 @@ describe('Users', function () {
           stub(CodeInvitation.helpers, CodeInvitation.helpers.validate.name, () => true)
           stub(CodeInvitation.helpers, CodeInvitation.helpers.addUserToInvitation.name, () => 1)
           stub(UserFactory, UserFactory.create.name, () => Random.id())
-          stub(SchoolClass.helpers, SchoolClass.helpers.addStudent.name, () => false)
 
           const thrown = expect(() => registerWithCode(registerDoc))
             .to.throw('codeRegister.failed')

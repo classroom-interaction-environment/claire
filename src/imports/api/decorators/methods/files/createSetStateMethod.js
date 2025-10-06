@@ -57,16 +57,16 @@ export const createSetStateMethod = (context, { type = 'master' } = {}) => {
        * @return {number} 1 if successful
        */
 
-      function ({ _id, value }) {
+      async function ({ _id, value }) {
         const { userId, checkDoc } = this
 
         const filesCollection = getCollection(context.name)
-        const filesDoc = filesCollection.findOne(_id)
+        const filesDoc = await filesCollection.findOneAsync(_id)
         checkDoc(filesDoc, _id, userId)
 
         const updateDoc = createUpdate(value)
 
-        return filesCollection.update(_id, updateDoc)
+        return filesCollection.updateAsync(_id, updateDoc)
       }
     )
   }
