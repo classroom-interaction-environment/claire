@@ -38,7 +38,7 @@
                         <th>{{i18n "userProfile.firstName"}}</th>
                         <th>{{i18n "common.email"}}</th>
                         <th>{{i18n "common.roles"}}</th>
-                        <th class="text-right">{{i18n
+                        <th class="text-end">{{i18n
                                 "common.actions"}}</th>
                     </tr>
                     </thead>
@@ -61,7 +61,7 @@
                                         {{> icon fw=true class="text-light" type="far" title=(i18n "user.offline") name="circle"}}
                                     {{/if}}
                                 </td>
-                                <td class="text-left">
+                                <td class="text-start">
                                     {{#if user.presence}}
                                     {{#if isVerified user}}
                                         {{> icon name="user-check" fw=true title=(i18n "user.verified") class="text-success"}}
@@ -80,7 +80,7 @@
                                         {{i18n (concat "roles." user)}}
                                     {{/with}}
                                 </td>
-                                <td class="text-right">
+                                <td class="text-end">
                                     {{> actionButton type="outline-secondary"
                                             title=(i18n "admin.users.view")
                                             blocked=(submitting user._id)

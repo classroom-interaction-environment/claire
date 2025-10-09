@@ -22,7 +22,7 @@
                             <th>{{i18n "codeInvitation.expiresAt"}}</th>
                             <th>{{i18n "common.role"}}</th>
                             <!--<th>{{i18n "common.details"}}</th>-->
-                            <th class="text-right">{{i18n
+                            <th class="text-end">{{i18n
                                     "common.actions"}}</th>
                         </tr>
                         </thead>
@@ -33,7 +33,7 @@
                                         class="text-muted">{{this.code}}</code>
                                 </td>
                                 {{>invitationRowRenderer invitation=this status=true users=true expiration=true role=true  deleting=(deleting deleting this._id)}}
-                                <td class="no-wrap text-right">
+                                <td class="no-wrap text-end">
                                     {{#if codeOnBeamer this.code}}
                                         {{> actionButton
                                                 data-target=this.code
@@ -105,7 +105,7 @@
                             <th>{{i18n "codeInvitation.expiresAt"}}</th>
                             <th>{{i18n "common.role"}}</th>
                             <!--<th>{{i18n "common.details"}}</th>-->
-                            <th class="text-right">{{i18n
+                            <th class="text-end">{{i18n
                                     "common.actions"}}</th>
                         </tr>
                         </thead>
@@ -116,7 +116,7 @@
                                         class="text-muted">{{this.code}}</code>
                                 </td>
                                 {{>invitationRowRenderer invitation=this status=true users=true expiration=true role=true deleting=(deleting deleting this._id)}}
-                                <td class="no-wrap text-right">
+                                <td class="no-wrap text-end">
                                     {{#if codeOnBeamer this.code}}
                                         {{> actionButton
                                                 data-target=this.code

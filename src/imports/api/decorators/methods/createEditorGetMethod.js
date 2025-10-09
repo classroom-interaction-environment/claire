@@ -1,6 +1,6 @@
-import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
 import { onServer } from '../../utils/archUtils'
 import { getCollection } from '../../utils/getCollection'
+import { Hierarchy } from '../../accounts/roles/Hierarchy'
 
 const filesSchema = {
   meta: {
@@ -25,11 +25,10 @@ export const createEditorGetMethod = ({ name, isFilesCollection }) => {
   return {
     name: methodName,
     schema: schema,
-    role: UserUtils.roles.teacher,
+    role: Hierarchy.teacher,
     timeInterval: 500,
     numRequests: 1,
     run: onServer(function ({ meta }) {
-  throw new Error('not migrated')
       const query = {}
 
       if (isFilesCollection && meta) {

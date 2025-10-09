@@ -3,7 +3,7 @@
 	{{#with results}}
 		<ul class="list-group">
 			{{#each result in this}}
-				<li class="list-group-item text-left">
+				<li class="list-group-item text-start">
 					<div class="d-block fw-bold">{{username result.createdBy null 0}}</div>
 					<div class="d-block"><code>{{#if result.response}}{{stringify result.response}}{{/if}}</code></div>
 				</li>

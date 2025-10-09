@@ -67,7 +67,7 @@
                                 </td>
 
                                 {{! MIN / PERIOD }}
-                                <td class="text-right">
+                                <td class="text-end">
                                     {{> link href="" label=this.period class="phase-edit-link text-dark" data-field="period" data-target=this._id }}
                                 </td>
 
@@ -154,7 +154,7 @@
                                         {{/if}}
                                     </p>
                                 </td>
-                                <td class="d-print-none text-right no-wrap">
+                                <td class="d-print-none text-end no-wrap">
                                     {{#if this.unit}}
                                         {{> actionButton type="outline-danger"
                                                 icon="trash"
@@ -188,7 +188,7 @@
                     <tfoot>
                     <tr class="border-top-4">
                         <td class="d-print-none"></td>
-                        <td class="text-right">
+                        <td class="text-end">
                             {{#with overallTime}}
                                 <span class="{{#if
                                         this.danger}}text-danger{{else}}text-success{{/if}}">{{this.value}}</span>
@@ -250,7 +250,7 @@
                     <table>
                         {{#each this}}
                             <tr>
-                                <td class="text-right">{{this.period}}</td>
+                                <td class="text-end">{{this.period}}</td>
                                 <td>{{this.title}}{{#unless this.unit}}*{{/unless}}</td>
                                 <td>{{this.plot}}</td>
                                 <td class="no-wrap">
@@ -282,7 +282,7 @@
                                 <td>
                                     {{this.notes}}
                                 </td>
-                                <td class="text-right">
+                                <td class="text-end">
                                     <button class="btn btn-sm btn-outline-secondary uephases-add-phase-button"
                                             data-target="{{this._id}}">
                                         {{#if submitting}}

@@ -1,4 +1,4 @@
-export const UserRoles = {
+export const Hierarchy = {
   admin: 'admin',
   schoolAdmin: 'schoolAdmin',
   curriculum: 'curriculum',

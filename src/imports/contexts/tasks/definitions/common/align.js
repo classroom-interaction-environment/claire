@@ -6,7 +6,7 @@ export const Alignment = {
   left: {
     value: 'center',
     label: i18n.reactive('orientation.left'),
-    class: 'text-left'
+    class: 'text-start'
   },
   center: {
     value: 'center',
@@ -16,7 +16,7 @@ export const Alignment = {
   right: {
     value: 'right',
     label: i18n.reactive('orientation.right'),
-    class: 'text-right'
+    class: 'text-end'
   },
   justify: {
     value: 'justify',

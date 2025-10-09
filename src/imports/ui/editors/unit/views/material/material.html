@@ -49,7 +49,7 @@
                         {{! custom list renderer for material }}
                         {{> Template.dynamic template=listRendererTemplate data=(withUnitDoc entry)}}
 
-                        <td class="text-right no-wrap">
+                        <td class="text-end no-wrap">
                             {{#if preview}}
                                 {{> actionButton
                                         type="outline-secondary"
@@ -127,7 +127,7 @@
                             {{> Template.dynamic
                                     template=listRendererTemplate
                                     data=(selectEntryModalData entry)}}
-                            <td class="text-right no-wrap">
+                            <td class="text-end no-wrap">
                                 {{> actionButton type="outline-secondary"
                                         class="btn-sm uematerial-add-button"
                                         data-target=(entry._id)

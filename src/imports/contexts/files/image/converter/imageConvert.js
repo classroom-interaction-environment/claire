@@ -1,46 +1,16 @@
 import { Meteor } from 'meteor/meteor'
 import { createLog } from '../../../../api/log/createLog'
+import { fileExists } from '../../../../api/utils/filesystem/fileExists'
+import { gmexec } from '../../shared/converters/gmexec'
 
 const info = createLog({ name: 'imageConvert', devOnly: true })
-let fs
 let gm
-
-function exists (path) {
-  return new Promise((resolve, reject) => {
-    if (!fs) fs = require('fs')
-    fs.stat(path, (err, stats) => {
-      if (err) {
-        reject(err)
-      }
-      else if (!stats) {
-        reject(new Error())
-      }
-      else {
-        resolve(stats)
-      }
-    })
-  })
-}
-
-function gmexec (thisObj, fct, ...args) {
-  return new Promise((resolve, reject) => {
-    args.push((err, res) => {
-      if (err) {
-        reject(err)
-      }
-      else {
-        resolve(res)
-      }
-    })
-    fct.call(thisObj, ...args)
-  })
-}
 
 export const imageConvert = async function (fileRef) {
   info('convert thumbnail')
   const collection = this
-  const fileExists = await exists(fileRef.path)
-  if (!fileExists) {
+  const exists = await fileExists(fileRef.path)
+  if (!exists) {
     throw Meteor.Error('upload.convertError')
   }
 
@@ -90,7 +60,7 @@ export const imageConvert = async function (fileRef) {
 
   // Change width and height proportionally
   await gmexec(img, img.write, thumbnailPath)
-  const stat = exists(thumbnailPath)
+  const stat = await fileExists(thumbnailPath)
   const thumbImage = gm(thumbnailPath)
   const imgInfo = await gmexec(thumbImage, thumbImage.size)
   fileRef.versions.thumbnail = {

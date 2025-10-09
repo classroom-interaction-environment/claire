@@ -1,6 +1,7 @@
-//import { fileTypeFromFile } from 'file-type'
+import FileType from 'file-type'
 import { createLog } from '../../../../api/log/createLog'
-import fs from 'fs'
+import { fileExists } from '../../../../api/utils/filesystem/fileExists'
+import fs from 'node:fs/promises'
 
 const log = createLog({ name: 'videoConvert' })
 const mp4Extension = 'mp4'
@@ -14,27 +15,15 @@ export const videoConvert = async function convertVideo (uploadedFile) {
   const filesCollection = this
   log('run on', uploadedFile.name, uploadedFile._id)
   const { _id, size, path, /* extension, */ name, _storagePath } = uploadedFile
-
-  // create screenshot for video thumbnail here so we can early on display
-  // some loading indicator with also a "preview" image
-  const posterPath = `${_storagePath}/poster-${_id}.jpg`
-  const posterStats = await exists(posterPath)
-  const posterCommand = `-ss 00:00:05 -i ${path} -frames:v 1 -q:v 2 ${posterPath}`
-  await ffmpeg(posterCommand)
-
-  // update poster version
-  uploadedFile.versions.poster = {
-    path: posterPath,
-    size: posterStats.size,
-    type: 'image/jpeg',
-    extension: 'jpg',
-    meta: {
-      // TODO with/height
-    }
-  }
-
   const modifier = { $set: {} }
-  modifier.$set['versions.poster'] = uploadedFile.versions.poster
+
+  try {
+    uploadedFile.versions.poster = await createPoster(uploadedFile)
+    modifier.$set['versions.poster'] = uploadedFile.versions.poster
+  } catch (e) {
+    log('could not create poster')
+    console.error(e)
+  }
 
   // for now we assume mp4 files to be support, even if the
   // internal codec may not be h264
@@ -56,8 +45,8 @@ export const videoConvert = async function convertVideo (uploadedFile) {
 
   await ffmpeg(command)
 
-  const mp4Stats = await exists(compressedPath)
-  const mp4Mime = await fileTypeFromFile(compressedPath)
+  const mp4Stats = await fileExists(compressedPath)
+  const mp4Mime = await FileType.fromFile(compressedPath)
 
   log('compressed size is', mp4Stats.size)
   log('originals size was', size)
@@ -90,7 +79,12 @@ export const videoConvert = async function convertVideo (uploadedFile) {
   modifier.$set['versions.original'] = uploadedFile.versions.original
   log('update collection')
   await filesCollection.collection.updateAsync(uploadedFile._id, modifier)
-  await remove(path)
+  try {
+    await fs.rm(path)
+  } catch (e) {
+    log('could not remove original file', path)
+    console.error(e)
+  }
 
   // we need to return the updated file
   const updatedFile = await filesCollection.collection.findOneAsync(uploadedFile._id)
@@ -98,41 +92,28 @@ export const videoConvert = async function convertVideo (uploadedFile) {
   return updatedFile
 }
 
+async function createPoster ({ _id, _storagePath, path }) {
+  // create screenshot for video thumbnail here so we can early on display
+  // some loading indicator with also a "preview" image
+  const posterPath = `${_storagePath}/poster-${_id}.jpg`
+  const posterStats = await fileExists(posterPath)
+  const posterCommand = `-ss 00:00:05 -i ${path} -frames:v 1 -q:v 2 ${posterPath}`
+  await ffmpeg(posterCommand)
+
+  // update poster version
+  return {
+    path: posterPath,
+    size: posterStats.size,
+    type: 'image/jpeg',
+    extension: 'jpg',
+    meta: {
+      // TODO with/height
+    }
+  }
+}
+
 async function ffmpeg (command) {
   const _ffmpeg = await import('ffmpeg-cli')
   log('ffmpeg', command)
   return _ffmpeg.run(command)
-}
-
-function exists (path) {
-  import fs from 'fs'
-  return new Promise((resolve, reject) => {
-    fs.stat(path, (err, stats) => {
-      if (err) {
-        reject(err)
-      }
-
-      else if (!stats) {
-        reject(new Error())
-      }
-
-      else {
-        resolve(stats)
-      }
-    })
-  })
-}
-
-function remove (path) {
-  return new Promise((resolve, reject) => {
-    fs.rm(path, (err) => {
-      if (err) {
-        reject(err)
-      }
-
-      else {
-        resolve()
-      }
-    })
-  })
 }

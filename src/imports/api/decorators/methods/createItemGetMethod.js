@@ -12,15 +12,14 @@ export const createItemGetMethod = ({ name }) => {
       taskId: String,
       itemId: String
     },
-    run: onServer(function run ({ lessonId, taskId, itemId }) {
-      throw new Error('not migrated')
-      const userId = this.userId
-      // TODO decouple isMemberOfLesson from lesseon
-      if (!isMemberOfLesson({ userId, lessonId })) {
+    run: onServer(async function run ({ lessonId, taskId, itemId }) {
+      const { userId } = this
+
+      if (!await isMemberOfLesson({ userId, lessonId })) {
         throw new Meteor.Error('schoolClass.errors.noMember')
       }
 
-      return getCollection(name).findOne({ lessonId, taskId, itemId })
+      return getCollection(name).findOneAsync({ lessonId, taskId, itemId })
     })
   }
 }

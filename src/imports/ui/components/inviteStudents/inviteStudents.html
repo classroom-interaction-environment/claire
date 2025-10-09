@@ -17,7 +17,7 @@
                         </th>
                     {{/if}}
 					{{!--<th>{{i18n "common.details"}}</th>--}}
-					<th class="text-right"><span class="d-none d-md-block">{{i18n "common.actions"}}</span></th>
+					<th class="text-end"><span class="d-none d-md-block">{{i18n "common.actions"}}</span></th>
 				</tr>
 				</thead>
 				<tbody>
@@ -30,7 +30,7 @@
                             expiration=false
                             countDownActive=../countDownActive
                             countdown=countDown}}
-					<td class="text-right no-wrap">
+					<td class="text-end no-wrap">
 						<button class="btn btn-sm btn-{{#unless
 								showList}}outline-{{/unless}}secondary show-invitationlist-button">
 							{{#if showList}}

@@ -1,7 +1,7 @@
 import { isomporph } from '../../utils/archUtils'
 import { Meteor } from 'meteor/meteor'
 import { getUsersCollection } from '../../utils/getUsersCollection'
-import { UserRoles } from './UserRoles'
+import { Hierarchy } from './Hierarchy'
 
 export const isAdmin = isomporph({
   client: function () {
@@ -10,7 +10,7 @@ export const isAdmin = isomporph({
       const user = getUsersCollection().findOne(userId)
 
       if (!user) return false
-      return Roles.userIsInRole(userId, UserRoles.admin, user.institution)
+      return Roles.userIsInRole(userId, Hierarchy.admin, user.institution)
     }
   },
 

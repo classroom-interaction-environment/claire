@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor'
-import { UserRoles } from './roles/UserRoles'
+import { Hierarchy } from './roles/Hierarchy'
 import { getUsersCollection } from '../utils/getUsersCollection'
 import { hasRole } from './roles/hasRole'
 import { isAdmin } from './roles/isAdmin'
@@ -23,8 +23,8 @@ export const userIsCurriculum = async (userId = Meteor.userId(), scope) => {
   }
 
   if (
-    await hasRole(userId, UserRoles.curriculum, finalScope) ||
-    await hasRole(userId, UserRoles.schoolAdmin, finalScope)
+    await hasRole(userId, Hierarchy.curriculum, finalScope) ||
+    await hasRole(userId, Hierarchy.schoolAdmin, finalScope)
   ) {
     return true
   }

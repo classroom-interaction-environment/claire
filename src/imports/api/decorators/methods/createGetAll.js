@@ -72,8 +72,7 @@ const getRunFct = ({ name, isCurriculum }) => {
 
   // is this is not part of the curriculum we don't need any _master flags
   // se we just return queries for the current user.
-  return function ({ ids = [], skip = [] }) {
-    throw new Error('not migrated')
+  return async function ({ ids = [], skip = [] }) {
     const { userId, log } = this
     const collection = getCollection(name)
     const query = {}
@@ -91,8 +90,8 @@ const getRunFct = ({ name, isCurriculum }) => {
       query.createdBy = userId
     }
 
-    const cursor = collection.find(query)
-    log('get all', query, '=>', cursor.count())
-    return cursor.fetch()
+    const docs = await collection.find(query).fetchAsync()
+    log('get all', query, '=>', docs.length)
+    return docs
   }
 }

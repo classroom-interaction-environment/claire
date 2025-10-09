@@ -1,5 +1,5 @@
-import { Meteor } from 'meteor/meteor'
 import { fileExists } from '../../../../api/utils/filesystem/fileExists'
+import { gmexec } from '../../shared/converters/gmexec'
 
 let im
 
@@ -10,16 +10,12 @@ export const documentConverter = async function (fileRef, options) {
   }
 
   const filesCollection = this
-  const exists = await fileExists(fileRef.path)
-
-  if (!exists) {
-    throw Meteor.Error('upload.convertError')
-  }
+  await fileExists(fileRef.path)
 
   if (!im) im = require('gm').subClass({ imageMagick: true })
 
   let document
-  const thumbnailPath = (filesCollection.storagePath(fileRef)) + '/thumbnail-' + fileRef._id + '.png'
+  const thumbnailPath = `${(filesCollection.storagePath(fileRef))}/thumbnail-${fileRef._id}.png`
 
   try {
     document = im(fileRef.path)
@@ -69,21 +65,7 @@ export const documentConverter = async function (fileRef, options) {
   // update the files doc
   const updateDoc = { $set: {} }
   updateDoc.$set['versions.thumbnail'] = fileRef.versions.thumbnail
-  await filesCollection.collection.update(fileRef._id, updateDoc)
+  await filesCollection.collection.updateAsync(fileRef._id, updateDoc)
 
   return fileRef
-}
-
-function gmexec (thisObj, fct, ...args) {
-  return new Promise((resolve, reject) => {
-    args.push((err, res) => {
-      if (err) {
-        reject(err)
-      }
-      else {
-        resolve(res)
-      }
-    })
-    fct.call(thisObj, ...args)
-  })
 }
