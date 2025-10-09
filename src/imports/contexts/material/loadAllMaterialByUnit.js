@@ -10,16 +10,16 @@ import { unitMaterialIds } from '../curriculum/curriculum/unit/unitMaterialIds'
  * @param userId
  * @return {*|{}}
  */
-export const loadAllMaterialByUnit = onServer((unitDoc) => {
+export const loadAllMaterialByUnit = onServer(async (unitDoc) => {
   const unitMaterial = unitMaterialIds(unitDoc)
   const dependencies = {}
   const material = {}
-  loadMaterial({
+  await loadMaterial({
     source: unitMaterial,
     destination: material,
     dependencies: dependencies
   })
-  loadMaterial({
+  await loadMaterial({
     source: dependencies,
     destination: material
   })

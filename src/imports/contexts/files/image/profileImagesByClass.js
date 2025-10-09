@@ -1,5 +1,8 @@
 import { Meteor } from 'meteor/meteor'
 import { getCollection } from '../../../api/utils/getCollection'
+import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
+import { getUsersCollection } from '../../../api/utils/getUsersCollection'
+import { $in } from '../../../api/utils/query/inSelector'
 
 /**
  * Gets all profile images (docs, not binary), linked to all
@@ -10,23 +13,25 @@ export const profileImagesByClass = function () {
   // initialization phase
   import { SchoolClass } from '../../classroom/schoolclass/SchoolClass'
   import { ProfileImages } from './ProfileImages'
-  import { UserUtils } from '../../system/accounts/users/UserUtils'
 
   // run phase
-  return function ({ classId, skip }) {
-    const classDoc = getCollection(SchoolClass.name).findOne(classId)
+  return async function ({ classId, skip }) {
+    const classDoc = await getCollection(SchoolClass.name).findOneAsync(classId)
+    const { userId } = this
     if (!classDoc) {
       throw new Meteor.Error('errors.docNotFound', classId)
     }
-    if (!classDoc.createdBy === this.userId && !UserUtils.isAdmin()) {
+    if (!classDoc.createdBy === this.userId && !await userIsAdmin(userId)) {
       throw new Meteor.Error('errors.permissionDenied', classId)
     }
     const students = classDoc.students || []
     const teachers = classDoc.teachers || []
-    const allUsersImages = students
-      .concat(teachers)
-      .map(userId => (Meteor.users.findOne(userId) || {}).profileImage)
-      .filter(profileImageId => !!profileImageId)
+    const allUsers = await getUsersCollection()
+      .find({ _id: $in(students.concat(teachers)) }, { fields: { profileImage: 1 }})
+      .fetchAsync()
+    const allUsersImages = allUsers
+      .map(user => (user || {}).profileImage)
+      .filter(Boolean)
 
     const query = { _id: { $in: allUsersImages } }
     if (skip && skip.length > 0) {
@@ -35,6 +40,6 @@ export const profileImagesByClass = function () {
 
     return getCollection(ProfileImages.name)
       .find(query)
-      .fetch()
+      .fetchAsync()
   }
 }

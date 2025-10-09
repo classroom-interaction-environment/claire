@@ -29,7 +29,7 @@ Template.loading.helpers({
     const data = Template.instance()?.data || {}
     const alertSize = `p-${size}`
     const customClass = data.class || ''
-    const className = `alert alert-info ${alertSize} text-center text-md-left ${loadingClassName} ${customClass}`
+    const className = `alert alert-info ${alertSize} text-center text-md-start ${loadingClassName} ${customClass}`
     return {
       class: className
     }

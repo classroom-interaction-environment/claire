@@ -54,14 +54,14 @@
         {{#each lesson in lessons}}
             <a href="{{route "lesson" lesson._id}}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-baseline {{liclass}}">
                 <span class="d-flex align-items-center">
-                {{> lessonStatus lessonDoc=lesson class="p-0 ml-0 mr-2" bg=false colorize=true}}
+                {{> lessonStatus lessonDoc=lesson class="p-0 ms-0 me-2" bg=false colorize=true}}
                 {{#with unit lesson.unit}}
                     <span>{{this.title}}</span>
                     {{else}}
                     <span>{{lesson.unit}}</span>
                 {{/with}}
                 </span>
-                <span class="text-dark font-weight-normal">
+                <span class="text-dark fw-normal">
                     {{toDate lesson.startedAt "date"}}
                 </span>
             </a>

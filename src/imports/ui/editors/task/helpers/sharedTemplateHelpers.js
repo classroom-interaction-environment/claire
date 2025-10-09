@@ -1,8 +1,8 @@
 import { check } from 'meteor/check'
 import { Template } from 'meteor/templating'
-import { i18n } from '../../../../api/language/language'
 import { Shared } from './shared'
 import { TaskDefinitions } from '../../../../contexts/tasks/definitions/TaskDefinitions'
+import { translate } from '../../../../api/language/translate'
 
 // TODO check if these are still relevant to be shared
 
@@ -41,7 +41,7 @@ Template.registerHelper('taskPageMetaLabel', function (contentKey, metaKey) {
 })
 
 Template.registerHelper('toTitle', function toTitle (str) {
-  return str || i18n.get('common.untitled')
+  return str || translate('common.untitled')
 })
 
 function strReduce (args = ['']) {

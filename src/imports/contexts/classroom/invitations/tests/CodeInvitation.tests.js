@@ -12,29 +12,37 @@ import { InvocationChecker } from '../../../../api/utils/InvocationChecker'
 import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 import { Admin } from '../../../system/accounts/admin/Admin'
+import { getInvitationOffset } from '../validation/getInvitationOffset'
+import { invitationTimeLeft } from '../validation/invitationTimeLeft'
+import { invitationExpired } from '../validation/invitationExpired'
+import { invitationComplete } from '../validation/invitationComplete'
+import { invitationPending } from '../validation/invitationPending'
+import { getInvitationStatus } from '../validation/getInvitationStatus'
+import { createInvitationURLQuery } from '../url/createInvitationURLQuery'
+import { parseInvitationURLQuery } from '../url/parseInvitationURLQuery'
 
 describe(CodeInvitation.name, function () {
-  describe('helpers', function () {
-    describe(CodeInvitation.helpers.getOffset.name, function () {
+  describe('helpers (now refactored into functions)', function () {
+    describe(getInvitationOffset.name, function () {
       it('Calculates a future date as unix timestamp', function () {
         const now = new Date()
         const time = now.getTime()
 
         const counts = Math.floor(Math.random() * 10)
         for (let i = 0; i < counts; i++) {
-          const offset = CodeInvitation.helpers.getOffset(now, i)
+          const offset = getInvitationOffset(now, i)
           const expectedTime = time + (i * 1000 * 60 * 60 * 24)
           expect(offset).to.equal(expectedTime)
         }
       })
     })
 
-    describe(CodeInvitation.helpers.timeLeft.name, function () {
+    describe(invitationTimeLeft.name, function () {
       it('Returns the time left in ms between now and the expiration date', function () {
         const now = new Date()
         const counts = Math.floor(Math.random() * 10)
         for (let i = 0; i < counts; i++) {
-          const timeLeft = CodeInvitation.helpers.timeLeft(now, i)
+          const timeLeft = invitationTimeLeft(now, i)
           const expectedTimeLeft = i * 1000 * 60 * 60 * 24
           const diff = Math.abs(expectedTimeLeft - timeLeft)
           expect(diff).to.be.below(10) // there are some miliseconds of diffing here and we
@@ -42,111 +50,111 @@ describe(CodeInvitation.name, function () {
       })
     })
 
-    describe(CodeInvitation.helpers.isExpired.name, function () {
+    describe(invitationExpired.name, function () {
       it('returns true for a doc with invalid flag', function () {
         const invalid = { invalid: true, expires: 4, createdAt: new Date() }
-        expect(CodeInvitation.helpers.isExpired(invalid)).to.equal(true)
+        expect(invitationExpired(invalid)).to.equal(true)
       })
 
       it('returns true for a doc with expired date', function () {
         const expiredDoc = { expires: -3, createdAt: new Date(), invalid: false }
-        expect(CodeInvitation.helpers.isExpired(expiredDoc)).to.equal(true)
+        expect(invitationExpired(expiredDoc)).to.equal(true)
       })
 
       it('returns false for a valid doc with unexpired date', function () {
         const expiredDoc = { expires: 3, createdAt: new Date(), invalid: false }
-        expect(CodeInvitation.helpers.isExpired(expiredDoc)).to.equal(false)
+        expect(invitationExpired(expiredDoc)).to.equal(false)
       })
 
       it('throws, if params are missing', function () {
-        expect(() => CodeInvitation.helpers.isExpired({})).to.throw()
+        expect(() => invitationExpired({})).to.throw()
       })
     })
 
-    describe(CodeInvitation.helpers.isComplete.name, function () {
+    describe(invitationComplete.name, function () {
       it('returns false for a doc with no registered users', function () {
         const doc = createCodeDoc({ registeredUsers: null })
-        expect(CodeInvitation.helpers.isComplete(doc)).to.equal(false)
+        expect(invitationComplete(doc)).to.equal(false)
       })
 
       it('returns false for a doc where the registered users are below max users', function () {
         const doc = createCodeDoc({ registeredUsers: [Random.id()], maxUsers: 2 })
-        expect(CodeInvitation.helpers.isComplete(doc)).to.equal(false)
+        expect(invitationComplete(doc)).to.equal(false)
       })
 
       it('returns true for a doc where all users have been completed', function () {
         const doc = createCodeDoc({ registeredUsers: [Random.id(), Random.id()], maxUsers: 2 })
-        expect(CodeInvitation.helpers.isComplete(doc)).to.equal(true)
+        expect(invitationComplete(doc)).to.equal(true)
       })
 
       it('throws, if registered users are greater than max users', function () {
         const doc = createCodeDoc({ registeredUsers: [Random.id(), Random.id()], maxUsers: 1 })
-        expect(() => CodeInvitation.helpers.isComplete(doc)).to.throw()
+        expect(() => invitationComplete(doc)).to.throw()
       })
 
       it('throws, if params are missing', function () {
-        expect(() => CodeInvitation.helpers.isComplete({})).to.throw()
+        expect(() => invitationComplete({})).to.throw()
       })
     })
 
-    describe(CodeInvitation.helpers.isPending.name, function () {
+    describe(invitationPending.name, function () {
       it('returns false, if a doc is invalid', function () {
         const doc = createCodeDoc()
         doc.invalid = true
-        expect(CodeInvitation.helpers.isPending(doc)).to.equal(false)
+        expect(invitationPending(doc)).to.equal(false)
       })
       it('returns false, if a doc is expired', function () {
         const doc = createCodeDoc({ expires: -2 })
-        expect(CodeInvitation.helpers.isPending(doc)).to.equal(false)
+        expect(invitationPending(doc)).to.equal(false)
       })
       it('returns false, if a doc is completed', function () {
         const doc = createCodeDoc({ registeredUsers: [Random.id()] })
-        expect(CodeInvitation.helpers.isPending(doc)).to.equal(false)
+        expect(invitationPending(doc)).to.equal(false)
       })
       it('returns true otherwise', function () {
         const doc = createCodeDoc()
-        expect(CodeInvitation.helpers.isPending(doc)).to.equal(true)
+        expect(invitationPending(doc)).to.equal(true)
       })
       it('throws if params are incomplete', function () {
-        expect(() => CodeInvitation.helpers.isPending({})).to.throw()
+        expect(() => invitationPending({})).to.throw()
       })
     })
 
-    describe(CodeInvitation.helpers.getStatus.name, function () {
+    describe(getInvitationStatus.name, function () {
       it('gets the correct status for invalid', function () {
         const doc = createCodeDoc()
         doc.invalid = true
-        const status = CodeInvitation.helpers.getStatus(doc)
+        const status = getInvitationStatus(doc)
         expect(status).to.deep.equal(CodeInvitation.status.expired)
       })
       it('gets the correct status for expired', function () {
         const doc = createCodeDoc({ expires: -2 })
-        const status = CodeInvitation.helpers.getStatus(doc)
+        const status = getInvitationStatus(doc)
         expect(status).to.deep.equal(CodeInvitation.status.expired)
       })
       it('gets the correct status for completed', function () {
         const doc = createCodeDoc({ registeredUsers: [Random.id()] })
-        const status = CodeInvitation.helpers.getStatus(doc)
+        const status = getInvitationStatus(doc)
         expect(status).to.deep.equal(CodeInvitation.status.complete)
       })
       it('gets the correct status for pending', function () {
         const doc = createCodeDoc()
-        const status = CodeInvitation.helpers.getStatus(doc)
+        const status = getInvitationStatus(doc)
         expect(status).to.deep.equal(CodeInvitation.status.pending)
       })
     })
 
     onClientExec(function () {
-      describe(CodeInvitation.helpers.createURLQuery.name, function () {
+      describe(createInvitationURLQuery.name, function () {
         it('Creates a compressed version of URL query containing invitation credentials', function () {
           const doc = createCodeDoc()
-          const queryString = CodeInvitation.helpers.createURLQuery(doc)
+          const queryString = createInvitationURLQuery(doc)
           expect(queryString).to.be.a('string')
           expect(queryString.length < JSON.stringify(doc).length).to.equal(true)
         })
       })
 
-      describe(CodeInvitation.helpers.parseURLQuery.name, function () {
+      describe(parseInvitationURLQuery.name, function () {
         it('parses a compressed url query', function () {
           const doc = createCodeDoc()
           const queryDoc = {
@@ -156,8 +164,8 @@ describe(CodeInvitation.name, function () {
             email: doc.email,
             institution: doc.institution
           }
-          const queryString = CodeInvitation.helpers.createURLQuery(queryDoc)
-          const parsed = CodeInvitation.helpers.parseURLQuery(queryString)
+          const queryString = createInvitationURLQuery(queryDoc)
+          const parsed = parseInvitationURLQuery(queryString)
           expect(parsed).to.deep.equal(queryDoc)
         })
       })

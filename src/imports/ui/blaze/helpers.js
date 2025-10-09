@@ -12,6 +12,9 @@ import { Features } from '../../api/config/Features'
 import { isTodayOrYesterday } from '../../utils/isTodayOrYesterday'
 import { createLog } from '../../api/log/createLog'
 import { getUser } from '../../contexts/system/accounts/users/getUser'
+import { Template } from 'meteor/templating'
+import { isTranslateableString } from '../../api/language/isTranslateableString'
+import { translate } from '../../api/language/translate'
 
 export const feature = function (name) {
   return Features.get(name)
@@ -250,6 +253,18 @@ export const join = function (char, ...args) {
 
 export const getIndex = function (index) {
   return typeof index === 'number' ? index + 1 : undefined
+}
+
+export const translateError = function (e) {
+  if (!e) return
+  if (isTranslateableString(e.reason)) {
+    return translate(e.reason)
+  }
+  if (isTranslateableString(e.message)) {
+    return translate(e.message)
+  }
+
+  return e.message
 }
 
 export { getUser }

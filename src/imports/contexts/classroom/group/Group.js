@@ -204,12 +204,11 @@ Group.methods.get = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { $in } from '../../../api/utils/query/inSelector'
+    import { getGroups } from './methods/getGroups'
 
-    return function ({ ids }) {
+    return async function ({ ids }) {
       const { userId } = this
-      const query = { _id: $in(ids), createdBy: userId }
-      return getCollection(Group.name).find(query).fetch()
+      return getGroups({ ids, userId })
     }
   })
 }
@@ -236,22 +235,10 @@ Group.methods.save = {
   }, Group.schema),
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { checkEditPermission } from '../../../api/document/checkEditPermissions'
-    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
-
-    const getGroupDoc = createDocGetter({ name: Group.name })
-
+    import { saveGroup } from './methods/saveGroup'
     return function (groupDoc) {
       const { userId } = this
-      const { _id, ...doc } = groupDoc
-
-      if (_id) {
-        const originalDoc = getGroupDoc({ _id })
-        checkEditPermission({ doc: originalDoc, userId })
-        return getCollection(Group.name).update(_id, { $set: doc })
-      }
-
-      return getCollection(Group.name).insert(doc)
+      return saveGroup({ doc: groupDoc, userId })
     }
   })
 }
@@ -261,16 +248,10 @@ Group.methods.update = {
   schema: { _id: String, ...Group.schema },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { checkEditPermission } from '../../../api/document/checkEditPermissions'
-    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
-
-    const getGroupDoc = createDocGetter({ name: Group.name })
-
-    return function ({ _id, ...updateDoc }) {
-      const doc = getGroupDoc({ _id })
+    import { updateGroup } from './methods/updateGroup'
+    return function (doc) {
       const { userId } = this
-      checkEditPermission({ doc, userId })
-      return getCollection(Group.name).update({ _id }, { $set: updateDoc })
+      return updateGroup({ doc, userId })
     }
   })
 }
@@ -280,16 +261,10 @@ Group.methods.delete = {
   schema: { _id: String },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { checkEditPermission } from '../../../api/document/checkEditPermissions'
-    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
-
-    const getGroupDoc = createDocGetter({ name: Group.name })
-
+    import { deleteGroup } from './methods/deleteGroup'
     return function ({ _id }) {
-      const doc = getGroupDoc({ _id })
       const { userId } = this
-      checkEditPermission({ doc, userId })
-      return getCollection(Group.name).remove(_id)
+      return deleteGroup({ groupId: _id, userId })
     }
   })
 }
@@ -299,29 +274,10 @@ Group.methods.toggleMaterial = {
   schema: { _id: String, materialId: String, contextName: String },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { checkEditPermission } from '../../../api/document/checkEditPermissions'
-    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
-
-    const getGroupDoc = createDocGetter({ name: Group.name })
-
+    import { toggleGroupMaterial } from './methods/toggleGroupMaterial'
     return function ({ _id, materialId, contextName }) {
-      const groupDoc = getGroupDoc({ _id })
       const { userId } = this
-      checkEditPermission({ doc: groupDoc, userId })
-
-      const mutation = {}
-      const visibleList = groupDoc.visible || []
-      const hasMaterial = visibleList.some(v => v._id === materialId)
-
-      if (hasMaterial) {
-        mutation.$pull = { visible: { _id: materialId } }
-      }
-
-      else {
-        const visible = { _id: materialId, context: contextName }
-        mutation.$addToSet = { visible }
-      }
-      return getCollection(Group.name).update(_id, mutation)
+      return toggleGroupMaterial({ groupId: _id, userId, materialId, contextName })
     }
   })
 }
@@ -331,35 +287,10 @@ Group.methods.users = {
   schema: { groupId: String },
   role: UserUtils.roles.student,
   run: onServerExec(function () {
-    import { Users } from '../../system/accounts/users/User'
-    import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
-    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
-    import { $in } from '../../../api/utils/query/inSelector'
-    import { getUsersCollection } from '../../../api/utils/getUsersCollection'
-
-    const getGroupDoc = createDocGetter(Group)
-
+    import { getGroupUsers } from './methods/getGroupUsers'
     return function ({ groupId }) {
       const { userId } = this
-      const groupDoc = getGroupDoc({ _id: groupId })
-      const { users, createdBy } = groupDoc
-
-      if (createdBy !== userId && !users.some(entry => entry.userId === userId)) {
-        throw new PermissionDeniedError('group.notAMember', {
-          groupId, userId
-        })
-      }
-
-      const allUserIds = []
-      users.forEach(entry => {
-        if (entry.userId !== userId) {
-          allUserIds.push(entry.userId)
-        }
-      })
-
-      return getUsersCollection()
-        .find({ _id: $in(allUserIds) }, { fields: Users.publicFields })
-        .fetch()
+      return getGroupUsers({ groupId, userId })
     }
   })
 }

@@ -1,6 +1,6 @@
 import { check } from 'meteor/check'
-import { UnexpectedError } from '../../errors/types/UnexpectedError'
 import { getCollection } from '../getCollection'
+import { UnexpectedError } from '../../errors/types/UnexpectedError'
 import { DocNotFoundError } from '../../errors/types/DocNotFoundError'
 
 /**
@@ -10,7 +10,7 @@ import { DocNotFoundError } from '../../errors/types/DocNotFoundError'
  * @param checkOwner determines, whether the document is to be checked for ownership
  * @returns {function} A function to update documents by _id and modifier
  */
-export const createDocCloner = function getClone ({ name } = {}) {
+export const createDocCloner = ({ name } = {}) => {
   check(name, String)
 
   /**
@@ -22,9 +22,9 @@ export const createDocCloner = function getClone ({ name } = {}) {
    * @throws {Meteor.Error} if no doc is found by the given _id
    */
 
-  function cloneDoc (docId, { $set } = {}) {
+  const cloneDoc = async (docId, { $set } = {}) => {
     const Collection = getCollection(name)
-    const sourceDoc = Collection.findOne(docId)
+    const sourceDoc = await Collection.findOneAsync(docId)
 
     if (!sourceDoc) {
       throw new DocNotFoundError('createCloneDoc.sourceNotFound', { name, docId })
@@ -45,7 +45,7 @@ export const createDocCloner = function getClone ({ name } = {}) {
     const insertDoc = $set ? Object.assign({}, sourceDoc, $set) : sourceDoc
     // XXX: simple sanity check if we really have a new _id
     // Could be the case, when someone weirdly added the original _id to the $set
-    const clonedDocId = Collection.insert(insertDoc)
+    const clonedDocId = await Collection.insertAsync(insertDoc)
     if (!clonedDocId || clonedDocId === docId) {
       throw new UnexpectedError('createCloneDoc.failed', { docId, clonedDocId })
     }

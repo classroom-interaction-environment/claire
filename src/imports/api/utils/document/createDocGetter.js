@@ -8,7 +8,7 @@ import { DocNotFoundError } from '../../errors/types/DocNotFoundError'
  * @param options  {object}
  * @param options.name {string} The name of the context, used to obtain the collection
  * @param {boolean=false} options.optional use to skip doc not found errors
- * @returns {function} A function to retrieve documents by query
+ * @returns {function(...*):Promise<object>} An async function to retrieve documents by query
  */
 
 export const createDocGetter = function (options) {

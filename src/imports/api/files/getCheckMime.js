@@ -1,18 +1,17 @@
 import { check } from 'meteor/check'
 import mimeTypes from 'mime-types'
 import { createLog } from '../log/createLog'
-// import { fileTypeFromFile } from 'file-type'
 
 const debug = createLog({ name: 'checkMime', type: 'debug' })
 
 export const getCheckMime = (i18nFactory = x => x, filesDef) => {
   check(i18nFactory, Function)
-
+  const FileType = require('file-type')
   return async uploadedFile => {
     const { path, extension } = uploadedFile
     debug('check mime for', uploadedFile)
 
-    const detected = await fileTypeFromFile(path)
+    const detected = await FileType.fromFile(path)
 
     if (!detected) {
       throw new Error(i18nFactory('files.mimeError', {

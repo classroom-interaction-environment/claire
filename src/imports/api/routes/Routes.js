@@ -1,9 +1,9 @@
 import { Meteor } from 'meteor/meteor'
 import { Router } from './Router'
-import { CodeInvitation } from '../../contexts/classroom/invitations/CodeInvitations'
 import { createLoggedinTrigger } from './triggers/createLoggedinTrigger'
 import { createToRoute } from './createToRoute'
 import { resolveRedirect } from './getResolveRedirect'
+import { createInvitationURLQuery } from '../../contexts/classroom/invitations/url/createInvitationURLQuery'
 
 /**
  * This defines the minimal set of routes, that are available either for
@@ -26,7 +26,7 @@ Routes.fallback = {
     if (context.params && context.params[0] && context.params[0].length === 5) {
       const code = context.params[0].substr(1, context.params[0].length)
       // todo extract CodeInvitation and load dynamically when required
-      const queryParams = CodeInvitation.helpers.createURLQuery({ code })
+      const queryParams = createInvitationURLQuery({ code })
       return toCodeRegisterRoute(queryParams)
     }
 

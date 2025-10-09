@@ -49,7 +49,7 @@ export const createMyMethod = ({ name, publicFields = {}, schema, isFilesCollect
       }
 
       const cursor = collection.find(query, projection)
-      log(JSON.stringify(query), '=>', cursor.count())
+      // log(JSON.stringify(query), '=>', cursor.count())
 
       // we often create documents as "fork" of originals, so we need to
       // publish the originals, too!
@@ -63,15 +63,18 @@ export const createMyMethod = ({ name, publicFields = {}, schema, isFilesCollect
       // skip, if there are no originals
       // with the initial cursor
       if (uniqueOriginals.size === 0) {
-        return cursor.fetchAsync()
+        const found = await cursor.fetchAsync()
+        log(`${JSON.stringify(query)} => ${found.length}`)
       }
 
       // we need to merge the query with our new added ids
       const originals = Array.from(uniqueOriginals)
       const originalsQuery = { _id: $in(originals) }
       const mergedQuery = { $or: [query, originalsQuery] }
+      const mergedFound = collection.find(mergedQuery, projection).fetchAsync()
 
-      return collection.find(mergedQuery, projection).fetchAsync()
+      log(`${JSON.stringify(mergedQuery)} => ${mergedFound.length}`)
+      return mergedFound
     }),
     timeInterval: 10000,
     numRequests: 100

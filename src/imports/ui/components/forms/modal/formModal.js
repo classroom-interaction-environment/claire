@@ -3,6 +3,7 @@ import { ReactiveVar } from 'meteor/reactive-var'
 import { Random } from 'meteor/random'
 import { formIsValid, formReset } from '../formUtils'
 import './formModal.html'
+import { errorToObject } from '../../../../utils/errorToObject'
 
 const API = Template.formModal.setDependencies()
 const state = new ReactiveVar(null)
@@ -117,14 +118,8 @@ Template.formModal.events({
         })
       }
 
-      templateInstance.state.set({
-        error: {
-          name: e.error || e.name,
-          message: e.reason || e.message
-        }
-      })
-
-      templateInstance.state.set({ successful: false })
+      const error = errorToObject(e)
+      templateInstance.state.set({ error,  successful: false })
     }
     finally {
       templateInstance.state.set('submitting', false)

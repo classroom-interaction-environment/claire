@@ -13,7 +13,7 @@ const failedState = ({ bg }) => ({
 
 const getTooltipClass = ({ bg, color }) => {
   const type = bg !== false
-    ? `badge-${color}`
+    ? `bg-${color}`
     : ''
   return `badge ${type} text-wrap text-center m-0 p-2`
 }

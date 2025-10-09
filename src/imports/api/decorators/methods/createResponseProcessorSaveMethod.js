@@ -9,6 +9,7 @@ export const createResponseProcessorSaveMethod = function ({ name, schema }) {
     name: `${name}.methods.saveResponseProduct`,
     schema: schema,
     run: onServer(function run ({ lessonId, taskId, itemId, ...customFields }) {
+      throw new Error('not migrated')
       const userId = this.userId
       if (!isMemberOfLesson({ userId, lessonId })) {
         throw new Meteor.Error('schoolClass.errors.noMember')

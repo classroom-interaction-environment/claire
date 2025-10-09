@@ -45,7 +45,7 @@
                     {{/mbody}}
                 {{/with}}
                 {{#mfooter}}
-                        <button class="btn btn-secondary" data-dismiss="modal">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">
                             {{i18n "actions.close"}}
                         </button>
                 {{/mfooter}}
@@ -63,7 +63,7 @@
                 <span class="flex-fill mx-2">
                             <span>{{task.title}}</span>
                         </span>
-                <span class="font-weight-normal text-muted mx-2">{{toDate task.updatedAt}}</span>
+                <span class="fw-normal text-muted mx-2">{{toDate task.updatedAt}}</span>
                 <span class="mx-2">
                     {{> Template.contentBlock task}}
                     {{#routeButton href=(route "taskEditor" task._id (getUnit task._id))

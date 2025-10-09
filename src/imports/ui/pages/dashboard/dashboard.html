@@ -1,30 +1,11 @@
 <template name="dashboard">
-    <strong>{{i18n "dashboard.newsfeed"}}</strong>
-
-    <ul class="list-group mt-2">
-        {{#each entry in newsfeed}}
-            <li class="list-group-item d-flex align-items-top">
-                <div class="mx-2 text-center text-secondary">
-                    {{> icon name=entry.icon}}
-                </div>
-                <div class="flex-fill ms-2">
-                        <strong class="text-secondary">{{entry.title}}</strong>
-                        <p class="">{{entry.details}}</p>
-                </div>
-                <div class="text-right">
-                    <div>{{toDate entry.date}}</div>
-                    <div>von {{entry.by}}</div>
-                </div>
-            </li>
-         {{/each}}
-    </ul>
+    {{> routeInfo}}
 
     <div class="d-flex justify-content-between align-items-baseline mt-5">
-        <strong>{{i18n "dashboard.myClasses"}}</strong>
         {{> actionButton
                 type="success"
                 label=(i18n "actions.createClass")
-                class="form-btn"
+                class="form-btn ms-auto"
                 icon="plus"
                 data-target=schoolClassCtxName
                 data-action="create"}}
@@ -38,7 +19,7 @@
                     ========================================= --}}
                 <div class="d-flex justify-content-between">
                         <span class="flex-fill">
-                            <a class="load-lessons d-block" data-toggle="collapse" href="#class-collapse-{{@index}}"
+                            <a class="load-lessons d-block" data-bs-toggle="collapse" href="#class-collapse-{{@index}}"
                                role="button" aria-expanded="false" aria-controls="class-collapse-{{@index}}"
                                data-class="{{schoolClass._id}}">
                                 {{schoolClass.title}}
@@ -82,7 +63,7 @@
                         <a href="#class-collapse-{{@index}}"
                            class="load-lessons btn btn-outline-secondary"
                            title="{{i18n "lessons.title"}}"
-                           data-toggle="collapse"
+                           data-bs-toggle="collapse"
                            role="button"
                            aria-expanded="false"
                            data-class="{{schoolClass._id}}">
@@ -118,7 +99,7 @@
             {{! =========================================
                     LESSONS FOR EACH CLASS
                     ========================================= --}}
-            <div class="collapse pl-5" id="class-collapse-{{@index}}" data-class="{{schoolClass._id}}">
+            <div class="collapse ps-5" id="class-collapse-{{@index}}" data-class="{{schoolClass._id}}">
                 {{#with (lessons schoolClass._id)}}
                     <ul class="list-group">
                         {{#each lesson in this}}
@@ -197,6 +178,29 @@
             </li>
         {{/each}}
     </div>
+
+
+    {{!--
+        <strong>{{i18n "dashboard.newsfeed"}}</strong>
+
+    <ul class="list-group mt-2">
+        {{#each entry in newsfeed}}
+            <li class="list-group-item d-flex align-items-top">
+                <div class="mx-2 text-center text-secondary">
+                    {{> icon name=entry.icon}}
+                </div>
+                <div class="flex-fill ms-2">
+                        <strong class="text-secondary">{{entry.title}}</strong>
+                        <p class="">{{entry.details}}</p>
+                </div>
+                <div class="text-right">
+                    <div>{{toDate entry.date}}</div>
+                    <div>von {{entry.by}}</div>
+                </div>
+            </li>
+         {{/each}}
+    </ul>
+    --}}
 
     {{> formModal}}
 

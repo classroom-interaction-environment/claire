@@ -1,17 +1,16 @@
-import { Users } from '../../../contexts/system/accounts/users/User'
-import { getCollection } from '../../utils/getCollection'
+import { getUsersCollection } from '../../utils/getUsersCollection'
 
 /**
  *
- * @param userId {string}
- * @param email {string}
+ * @param userId {string=}
+ * @param email {string=}
  * @return {Promise<boolean>}
  */
 export const userExists = async ({ userId, email } = {}) => {
   let query
 
   if (userId) {
-    query = { userId }
+    query = { _id: userId }
   }
 
   if (email) {
@@ -22,6 +21,6 @@ export const userExists = async ({ userId, email } = {}) => {
     throw new Error('userExists: either userId or email must be provided')
   }
 
-  const count = await getCollection(Users.name).countDocuments(query)
+  const count = await getUsersCollection().countDocuments(query)
   return count > 0
 }

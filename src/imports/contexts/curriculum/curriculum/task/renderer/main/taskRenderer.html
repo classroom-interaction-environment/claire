@@ -24,7 +24,7 @@
 							{{> TaskRendererFactory type=this.type attributes=(attributes this) }}
 						</div>
 					{{/each}}
-					<hr class="font-weight-lighter text-light">
+					<hr class="fw-lighter text-light">
 				{{/with}}
 			</div>
 
@@ -66,7 +66,7 @@
 
 			<div class="my-4">
 				{{#with footer}}
-					<hr class="font-weight-lighter text-light">
+					<hr class="fw-lighter text-light">
 					{{#each this.content}}
 						<div class="task-content">
 							{{> TaskRendererFactory type=this.type attributes=(attributes this)}}
@@ -100,7 +100,7 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 					</div>
 					<div class="modal-body">
 						<div class="modal-body">
@@ -135,7 +135,7 @@
 		{{! PREV BUTTON }}
 		{{#if hasPrev}}
 			<div class="col">
-				<button class="btn btn-block btn-lg  btn-secondary task-renderer-prev-button" id="task-prev-button">
+				<button class="btn w-100 btn-lg  btn-secondary task-renderer-prev-button" id="task-prev-button">
 					<i class="fa fa-arrow-left"></i> {{i18n "wizard.back"}}
 				</button>
 			</div>
@@ -144,11 +144,11 @@
 		{{! NEXT / FINISH BUTTON }}
 		<div class="col">
 			{{#if hasNext}}
-				<button class="btn btn-block btn-lg btn-primary task-renderer-next-button" id="task-next-button">
+				<button class="btn w-100 btn-lg btn-primary task-renderer-next-button" id="task-next-button">
 					{{i18n "wizard.next"}} <i class="fa fa-arrow-right"></i>
 				</button>
 			{{else if isEditable}}
-                <button class="btn btn-block btn-lg btn-success task-renderer-next-button task-renderer-finish-button"
+                <button class="btn w-100 btn-lg btn-success task-renderer-next-button task-renderer-finish-button"
                         id="task-finish-button">
                     {{i18n "wizard.finish"}}
                 </button>

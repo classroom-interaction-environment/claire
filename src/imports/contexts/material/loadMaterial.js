@@ -8,8 +8,8 @@ import { Material } from './Material'
  * @param destination
  * @param dependencies
  */
-export const loadMaterial = function ({ source = {}, destination = {}, dependencies = {} }) {
-  Object.keys(source).forEach(contextName => {
+export const loadMaterial = async ({ source = {}, destination = {}, dependencies = {} }) => {
+  for (let contextName of Object.keys(source)) {
     // fixme remove the next line's hotfix and get this running correctly
     if (contextName === 'imagefiles') {
       contextName = 'imageFiles'
@@ -28,7 +28,7 @@ export const loadMaterial = function ({ source = {}, destination = {}, dependenc
       _id: { $in: source[contextName] }
     }
 
-    const documents = materialCollection.find(materialQuery).fetch()
+    const documents = await materialCollection.find(materialQuery).fetchAsync()
 
     if (documents.length !== materialDocIds.length) {
       destination.notFound = destination.notFound || []
@@ -55,5 +55,5 @@ export const loadMaterial = function ({ source = {}, destination = {}, dependenc
     }
 
     destination[contextName].push(...documents)
-  })
+  }
 }

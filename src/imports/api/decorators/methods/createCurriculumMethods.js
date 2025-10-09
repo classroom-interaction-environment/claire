@@ -25,6 +25,7 @@ const curriclumSchema = {
  * @return {boolean}
  */
 export const createCurriculumMethods = function createCurriculumMethods ({ name, schema, methods }) {
+  throw new Error('not migrated')
   const methodsDefKeys = Object.keys(methods)
   const methodDefs = methodsDefKeys
     .map(key => methods[key])

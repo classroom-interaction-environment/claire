@@ -7,27 +7,27 @@
         {{/unless}}
     {{else}}
         {{#with unitDoc}}
-            {{#Teleport destination="#route-info-destination"}}
-                <div class="text-center text-md-right">
+            {{#routeInfo}}
+                <div class="d-flex justify-content-between">
+                <div class="text-center text-md-end">
                     <h4>{{unitDoc.title}}</h4>
 
                     {{! if this is itself not a master document}}
                     {{> documentState document=unitDoc original=originalUnit}}
                 </div>
-            {{/Teleport}}
 
-            {{#Teleport destination="#route-subtitle-destination"}}
                 {{#with classDoc}}
-                    <div class="font-weight-light my-2 w-100 text-center text-md-left">
+                    <div class="fw-light my-2 w-100 text-center text-md-start">
                         <span>{{i18n "schoolClass.title"}}</span>
                         <span>"{{this.title}}"</span>
                     </div>
                 {{/with}}
-            {{/Teleport}}
+                </div>
+            {{/routeInfo}}
 
             {{! display a route button to allow users to navigtate to the lesson }}
             {{#submenu submenuData}}
-                <li class="nav-item ml-auto">
+                <li class="nav-item ms-auto">
                     {{#with lessonDoc}}
                         {{# routeButton
                                 class="d-block d-md-inline-block"
@@ -44,6 +44,8 @@
             {{/submenu}}
 
             {{> TemplateLoader currentView}}
+        {{else}}
+            {{>docnotfound}}
         {{/with}}
     {{/unless}}
     {{> confirm static=true}}

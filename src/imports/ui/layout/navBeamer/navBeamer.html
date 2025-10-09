@@ -10,7 +10,7 @@
           {{/if}}
       </a>
       <!-- Toggler/collapsibe Button -->
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -19,12 +19,12 @@
 
             <span class="navbar-text" id="navbar-destination"></span>
 
-            <ul id="mainNavbarMenu" class="navbar-nav ml-auto">
+            <ul id="mainNavbarMenu" class="navbar-nav ms-auto">
                 {{! change current class }}
               <li class="nav-item dropdown">
                 <a id="navBeamerLessonDropdown" href="#"
-                   class="nav-link font-weight-light dropdown-toggle"
-                   data-toggle="dropdown"
+                   class="nav-link fw-light dropdown-toggle"
+                   data-bs-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
                     {{#with currentLesson}}
                         {{this.unitDoc.title}}
@@ -38,7 +38,7 @@
                       justify-content-between">
                         {{entry.unitDoc.title}}
                         {{#if entry.refsCount}}
-                          <span class="badge badge-pill badge-light">
+                          <span class="badge bg-pill bg-light">
                                             {{> icon name="chart-simple" fw=true}}
                               {{entry.refsCount}}
                                         </span>
@@ -55,14 +55,14 @@
 
                 {{! change grid }}
               <li class="nav-item">
-                <a href class="nav-link font-weight-light modal-select-button" data-type="grid">
+                <a href class="nav-link fw-light modal-select-button" data-type="grid">
                   <i class="fa fa-fw fa-th-large"></i>
                 </a>
               </li>
 
                 {{! change background color }}
               <li class="nav-item">
-                <a href class="nav-link font-weight-light modal-select-button" data-type="color">
+                <a href class="nav-link fw-light modal-select-button" data-type="color">
                   <i class="fa fa-fw fa-paint-brush"></i>
                 </a>
               </li>
@@ -75,9 +75,9 @@
                 {{! user menu dropdown }}
               <li class="nav-item dropdown">
                 <a id="navUserMenuDropdown" href="#"
-                   class="nav-link font-weight-light dropdown-toggle d-flex align-items-center
+                   class="nav-link fw-light dropdown-toggle d-flex align-items-center
                                 {{#if active 'admin' 'profile'}}active{{/if}}"
-                   data-toggle="dropdown"
+                   data-bs-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
                     {{> profileImage user=currentUser height=20 width=20 round=true}} {{currentUser.username}}
                 </a>
@@ -108,7 +108,7 @@
     {{#modal id="beamer-select-modal" large=true}}
         {{#mbody}}
             {{#if onModal "color"}}
-                {{> colorSelector colors=beamerColors class="nav-link font-weight-light"}}
+                {{> colorSelector colors=beamerColors class="nav-link fw-light"}}
             {{/if}}
             {{#if onModal "grid"}}
               <div class="d-flex">

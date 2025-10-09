@@ -35,7 +35,6 @@ Template.nav.helpers({
     return Task
   },
   mainLogo () {
-    debugger
     const settingsDoc = Settings.helpers.get()
     console.debug(settingsDoc)
     return settingsDoc.mainLogo

@@ -1,18 +1,17 @@
 <template name="legal">
-    {{#Teleport destination="#route-subtitle-destination"}}
-        <div class="text-md-left text-center font-weight-bold">
-            {{i18n (concat "legal." currentType)}}
+    {{#routeInfo}}
+        <div class="d-flex justify-content-between">
+            <div class="text-md-start text-center fw-bold">
+                {{i18n (concat "legal." currentType)}}
+            </div>
+            <div class="text-center text-md-end w-100">
+                {{#routeButton href=getLastRoute type="outline-secondary"}}
+                    {{> icon name="caret-left"}}
+                    <span>{{i18n "actions.back"}}</span>
+                {{/routeButton}}
+            </div>
         </div>
-    {{/Teleport}}
-
-    {{#Teleport destination="#route-info-destination"}}
-        <div class="text-center text-md-right w-100">
-            {{#routeButton href=getLastRoute type="outline-secondary"}}
-                {{> icon name="caret-left"}}
-                <span>{{i18n "actions.back"}}</span>
-            {{/routeButton}}
-        </div>
-    {{/Teleport}}
+    {{/routeInfo}}
 
     <h2 class="text-center my-4">{{i18n (concat "legal." currentType)}}</h2>
 

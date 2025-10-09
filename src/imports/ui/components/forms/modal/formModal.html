@@ -21,17 +21,16 @@
                 {{/mbody}}
                 {{#with error}}
                     {{#mbody}}
-                    <small class="d-block text-danger font-weight-bold p-3">
-                        {{i18n "error.occurred"}}:
-                        {{this.name}} {{this.message}}
+                    <small class="d-block text-danger fw-bold p-3">
+                        {{i18n "errors.occurred"}}: {{translateError error}}
                     </small>
-                    {{/mbody}}
+                {{/mbody}}
                 {{/with}}
                 {{#if data.codeRequired}}
                     {{#mfooter}}
                         <div class="text-center w-100">
                             <p class="text-center">{{i18n "confirm.codeRequired"}}</p>
-                            <p class="text-center font-weight-bold">{{data.code}}</p>
+                            <p class="text-center fw-bold">{{data.code}}</p>
                             <input class="form-control confirm-input text-center" autofocus>
                         </div>
                     {{/mfooter}}
@@ -71,7 +70,7 @@
                     </span>
                         {{> actionButton
                                 type="secondary"
-                                data-dismiss="modal"
+                                data-bs-dismiss="modal"
                                 label=(i18n "actions.cancel")}}
                     {{/if}}
                 {{/mfooter}}

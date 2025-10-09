@@ -3,39 +3,37 @@
         {{> loading type="data"}}
     {{else}}
 
-    {{! basic info }}
+    {{#routeInfo}}
+        <div class="d-flex justify-content-between">
         {{#with getTaskDoc}}
-            {{#Teleport destination="#route-info-destination"}}
-                <div class="text-center text-md-right">
+                <div class="text-center text-md-end">
                     <h4>{{getTaskDoc.title}}</h4>
                     {{> documentState document=getTaskDoc}}
 
                     {{#if unitDoc}}
-                        <div class="text-muted font-weight-light my-2 w-100 text-center text-md-right">
+                        <div class="text-muted fw-light my-2 w-100 text-center text-md-end">
                             <span>{{i18n "curriculum.unit"}}</span>
                             <span>"{{unitDoc.title}}"</span>
                         </div>
                     {{/if}}
 
                     {{#if pocketDoc}}
-                        <div class="text-muted font-weight-light my-2 w-100 text-center text-md-right">
+                        <div class="text-muted fw-light my-2 w-100 text-center text-md-end">
                             <span>{{i18n "curriculum.pocket"}}</span>
                             <span>"{{pocketDoc.title}}"</span>
                         </div>
                     {{/if}}
                 </div>
-            {{/Teleport}}
         {{/with}}
 
         {{! pocket info}}
         {{#with unitDoc}}
-            {{#Teleport destination="#route-subtitle-destination"}}
-                <div class="font-weight-light my-2 w-100 text-center text-md-left">
+                <div class="fw-light my-2 w-100 text-center text-md-start">
                     {{> link href=(route "unitEditor" unitDoc._id 'material' 'tasks' task._id) class="border-0" icon="caret-left" label=(i18n "editor.task.backToUnit")}}
                 </div>
-            {{/Teleport}}
         {{/with}}
-
+        </div>
+        {{/routeInfo}}
         {{! navbar }}
         {{> submenu submenuData}}
 

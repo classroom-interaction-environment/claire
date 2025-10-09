@@ -4,7 +4,7 @@
     {{else}}
 
         <div class="my-4 clearfix">
-            <span class="float-right">
+            <span class="float-end">
                 {{> info id="objectivesInfo" outline=true sm=true label=(i18n 'editor.unit.objectives.description') }}
                 <button class="btn btn-sm btn-secondary ueobjectives-showmodal-button">
                     <i class="fa fa-fw fa-list"></i> {{i18n 'actions.add'}}
@@ -20,7 +20,7 @@
                 {{#each objectiveDoc in this}}
                     <li class="list-group-item d-flex justify-content-between">
                         {{> objective objectiveDoc}}
-                        <span class="ml-3">
+                        <span class="ms-3">
                             {{> actionButton
                                     type="outline-danger"
                                     class="ueobjectives-remove-button"
@@ -59,7 +59,7 @@
                 {{#unless unitHasObjective objectiveDoc._id}}
                     <li class="list-group-item d-flex justify-content-between">
                         {{> objective objectiveDoc}}
-                        <span class="ml-3">
+                        <span class="ms-3">
                             {{> actionButton
                                     type="outline-secondary"
                                     class="ueobjectives-add-button"
@@ -80,8 +80,8 @@
                 </div>
             {{/each}}
             {{#mfooter}}
-                <button class="btn btn-block btn-secondary"
-                        data-dismiss="modal">
+                <button class="btn w-100 btn-secondary"
+                        data-bs-dismiss="modal">
                     {{i18n "actions.close"}}
                 </button>
             {{/mfooter}}

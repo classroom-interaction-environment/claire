@@ -7,9 +7,7 @@ import {
   password2Schema
 } from '../../../../api/accounts/registration/registerUserSchema'
 import { UserUtils } from './UserUtils'
-import { getCollection } from '../../../../api/utils/getCollection'
 import { profileImageSchema } from '../../../../api/accounts/schema/profileImageSchema'
-import { onServerExecLazy } from '../../../../infrastructure/loading/onServerExecLazy'
 
 export const Users = {
   name: 'users',
@@ -156,7 +154,8 @@ Users.methods.setResearch = {
     import { setResearch } from './methods/setResearch'
 
     return function ({ participate }) {
-      return setResearch.call(this, { participate })
+      const { userId } = this
+      return setResearch({ userId, participate })
     }
   })
 }
@@ -223,7 +222,7 @@ Users.methods.checkResetpasswordToken = {
   timeInterval: 30000,
   run: onServerExec(() => {
     import { verifyToken } from './methods/verifyToken'
-    return () => true
+    return verifyToken
   })
 }
 
@@ -367,12 +366,12 @@ Users.methods.byClass = {
     'skip.$': String
   },
   run: onServerExec(function () {
-    const { usersByClass } = require('./usersByClass')
+    const { usersByClass } = require('./publications/usersByClass')
 
-    const run = usersByClass()
-
-    return function ({ classId, skip }) {
-      return run.call(this, { classId, skip }).fetch()
+    return async function ({ classId, skip }) {
+      const { userId } = this
+      const cursor = await usersByClass({ userId, classId, skip })
+      return cursor.fetchAsync()
     }
   })
 }
@@ -410,9 +409,12 @@ Users.publications.byClass = {
   schema: {
     classId: String
   },
-  run: onServerExecLazy(function () {
-    const { usersByClass } = require('./usersByClass')
-    return usersByClass
+  run: onServerExec(function () {
+    const { usersByClass } = require('./publications/usersByClass')
+    return async function ({ classId }) {
+      const { userId } = this
+      return usersByClass({ userId, classId })
+    }
   })
 }
 
@@ -423,20 +425,11 @@ Users.publications.byGroup = {
     groupId: String
   },
   run: onServerExec(function () {
-    import { Group } from '../../../classroom/group/Group'
+    import { usersByGroup } from './publications/usersByGroup'
 
-    return function ({ groupId } = {}) {
+    return async function ({ groupId } = {}) {
       const { userId } = this
-      const groupDoc = getCollection(Group.name).findOne({ _id: groupId, users: { $elemMatch: { userId } } })
-
-      if (!groupDoc) {
-        throw new Meteor.Error('error.docNotFound')
-      }
-
-      const userIds = groupDoc.users.map(doc => doc.userId)
-      return Meteor.users.find({ _id: { $in: userIds } }, {
-        fields: Users.publicFields
-      })
+      return usersByGroup({ userId, groupId })
     }
   })
 }

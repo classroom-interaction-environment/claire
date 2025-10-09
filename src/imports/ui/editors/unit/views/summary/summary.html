@@ -11,7 +11,7 @@
                 {{#each entry in baseData}}
                     <li class="list-group-item d-flex">
                         {{> tooltip icon=entry.icon title=(i18n entry.label)}}
-                        <span class="w-100 ml-3">
+                        <span class="w-100 ms-3">
                             {{entry.value}}
                         </span>
                     </li>
@@ -30,7 +30,7 @@
             <div class="card">
                 <div class="card-body">
                     {{#each dimension in this}}
-                        <span class="badge p-3 mr-2 mb-2 font-weight-light"
+                        <span class="badge p-3 me-2 mb-2 fw-light"
                               style="background-color: {{dimension.color}};color: {{contrastColor
                                       dimension.color}};">
                             {{dimension.title}}
@@ -79,7 +79,7 @@
                 <h5>{{../title}}</h5>
                 <span class="text-right d-print-none">
                     {{#unless ../preview}}
-                        <button class="btn btn-outline-primary ml-auto uesummary-edit-button"
+                        <button class="btn btn-outline-primary ms-auto uesummary-edit-button"
                                 data-target="{{../target}}"
                                 title="{{i18n 'actions.edit'}}">
                             <i class="fa fa-fw fa-edit"></i>
@@ -102,7 +102,7 @@
                         <span class="text-right d-print-none">
                             {{#unless preview}}
                                 <button href
-                                        class="btn btn-warning ml-auto uesummary-fix-button"
+                                        class="btn btn-warning ms-auto uesummary-fix-button"
                                         data-target="{{target}}"
                                         title="{{i18n 'actions.fixNow'}}">
                                     <i class="fa fa-fw fa-wrench"></i>

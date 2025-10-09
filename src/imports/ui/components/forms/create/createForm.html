@@ -4,7 +4,7 @@
 		{{> mheader bg="primary" title=title dismiss=true}}
 		{{> caroForm id=id schema=schema type="normal" hideLegend=hideLegend doc=doc}}
 		{{#mfooter}}
-			{{> actionButton type="success" form=id submit=true class="btn-block" blocked=submitting icon="plus" label=(i18n "actions.create")}}
+			{{> actionButton type="success" form=id submit=true class="w-100" blocked=submitting icon="plus" label=(i18n "actions.create")}}
 		{{/mfooter}}
 	{{/modal}}
 </template>

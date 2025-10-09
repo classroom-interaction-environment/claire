@@ -4,6 +4,7 @@ import { Roles } from 'meteor/alanning:roles'
 import { mapFromObject } from '../../../../api/utils/mapFromObject'
 import { isomporph } from '../../../../api/utils/archUtils'
 import { getUsersCollection } from '../../../../api/utils/getUsersCollection'
+import { deprecate } from '../../../../infrastructure/functions/deprecate'
 
 const roleIndices = mapFromObject({
   admin: 0,
@@ -84,11 +85,19 @@ export const UserUtils = {
   roleExists (name) {
     return roleMap.get(name)
   },
+  /**
+   * Use hasRole standalone function instead
+   * @deprecated
+   * @param userId
+   * @param role
+   * @param scope
+   * @return {*}
+   */
   hasRole (userId = Meteor.userId(), role, scope) {
     check(userId, String)
     check(role, Match.OneOf(String, [String]))
     check(scope, Match.Maybe(String))
-    return Roles.userIsInRole(userId, role, scope)
+    return Roles.userIsInRoleAsync(userId, role, scope)
   },
   hasAtLeastRole (userId = Meteor.userId(), role) {
     check(userId, String)
@@ -124,10 +133,10 @@ export const UserUtils = {
  * @param scope {String} the institutional scope of the curriculum permission
  * @return {Boolean} true / false
  */
-UserUtils.isCurriculum = function (userId = Meteor.userId(), scope) {
+UserUtils.isCurriculum = deprecate(async function (userId = Meteor.userId(), scope) {
   let finalScope
   if (!scope) {
-    const user = getUsersCollection().findOne(userId)
+    const user = getUsersCollection().findOneAsync(userId)
     finalScope = user.institution
   }
   else {
@@ -135,16 +144,16 @@ UserUtils.isCurriculum = function (userId = Meteor.userId(), scope) {
   }
 
   if (
-    UserUtils.hasRole(userId, UserUtils.roles.curriculum, finalScope) ||
-    UserUtils.hasRole(userId, UserUtils.roles.schoolAdmin, finalScope)
+    await UserUtils.hasRole(userId, UserUtils.roles.curriculum, finalScope) ||
+    await UserUtils.hasRole(userId, UserUtils.roles.schoolAdmin, finalScope)
   ) {
     return true
   }
 
   return UserUtils.isAdmin(userId)
-}
+})
 
-UserUtils.isAdmin = isomporph({
+UserUtils.isAdmin = deprecate(isomporph({
   client: function () {
     return function isAdmin (userId = Meteor.userId()) {
       if (!userId) return false
@@ -163,6 +172,6 @@ UserUtils.isAdmin = isomporph({
       return userIsAdmin(userId)
     }
   }
-})
+}))
 
 const roleMap = mapFromObject(UserUtils.roles)

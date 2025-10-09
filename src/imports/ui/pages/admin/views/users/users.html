@@ -1,7 +1,7 @@
 <template name="adminUsers">
     <div class="card my-4">
         <div class="card-body">
-            <button class="btn btn-success float-right create-user-button">{{i18n
+            <button class="btn btn-success float-end create-user-button">{{i18n
                     "admin.create.user"}}</button>
             <h4><i class="fa fa-users"></i> {{i18n "common.users"}}</h4>
         </div>
@@ -143,7 +143,7 @@
         {{/mbody}}
         {{#mfooter class="d-flex justify-content-between"}}
             {{>actionButton submit=true form="updateUserForm" type="primary" label=(i18n "actions.update") blocked=(submitting "updateUserForm")}}
-            {{>actionButton type="outline-secondary" label=(i18n "actions.cancel") data-dismiss="modal"}}
+            {{>actionButton type="outline-secondary" label=(i18n "actions.cancel") data-bs-dismiss="modal"}}
         {{/mfooter}}
     {{/modal}}
 

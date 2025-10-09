@@ -29,13 +29,13 @@ const isCustomUnit = (unitDoc = {}) => unitDoc.pocket === '__custom__'
  * @return {{ lessonId: String, unitId: String }} the _id values of the newly created lesson and unit
  */
 
-export const createLesson = function createLesson ({ classId, unit, userId } = {}) {
+export const createLesson = async ({ classId, unit, userId } = {}) => {
   // check class membership at very first, because
   // only class teachers and admins can create a new lesson
-  const classDoc = getClassDoc(classId)
-  checkIsTeacher({ userId, classDoc })
+  const classDoc = await getClassDoc(classId)
+  await checkIsTeacher({ userId, classDoc })
 
-  const unitDoc = getUnitDoc(unit)
+  const unitDoc = await getUnitDoc(unit)
 
   let finalUnitId
   let finalUnitDoc
@@ -64,8 +64,8 @@ export const createLesson = function createLesson ({ classId, unit, userId } = {
     }))
   }
 
-  newPhases.forEach(phaseId => {
-    const phaseDoc = getPhaseDoc(phaseId)
+  for (const phaseId of newPhases) {
+    const phaseDoc = await getPhaseDoc(phaseId)
     if (phaseDoc.unit === unit) {
       throw new Meteor.Error(LessonErrors.unexpectedPhaseLink, {
         phaseId,
@@ -73,10 +73,10 @@ export const createLesson = function createLesson ({ classId, unit, userId } = {
         actual: unit
       })
     }
-  })
+  }
 
   if (newPhases && newPhases.length > 0) {
-    getCollection(Unit.name).update(finalUnitDoc, {
+    await getCollection(Unit.name).updateAsync(finalUnitDoc, {
       $set: {
         phases: newPhases,
         _original: unit
@@ -85,7 +85,7 @@ export const createLesson = function createLesson ({ classId, unit, userId } = {
   }
 
   // create the lesson with the new and old unit referenced
-  const lessonId = getCollection(Lesson.name).insert({
+  const lessonId = await getCollection(Lesson.name).insertAsync({
     classId,
     unit: finalUnitId,
     unitOriginal: unit

@@ -1,5 +1,6 @@
+import { Match } from 'meteor/check'
 export const isContext = () => ({
   name: String,
-  label: String,
-  icon: String
+  label: Match.Maybe(String),
+  icon: Match.Maybe(String)
 })

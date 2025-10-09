@@ -37,7 +37,7 @@
                     </a>
 
                     {{! pocket actions }}
-                    <span class="ml-auto no-wrap {{#unless isHovered pocket._id}}passive{{/unless}}">
+                    <span class="ms-auto no-wrap {{#unless isHovered pocket._id}}passive{{/unless}}">
                         {{> actionButton
                                 type=(ternary (isHovered pocket._id) "outline-success" "outline-light")
                                 data-pocket=pocket._id
@@ -94,7 +94,7 @@
 
             {{! units sub-list }}
             {{#with units pocket._id}}
-                <ul class="ml-4 list-group dep-sortable-root mt-1 mb-3 {{#unless expanded pocket._id}}d-none{{/unless}}"
+                <ul class="ms-4 list-group dep-sortable-root mt-1 mb-3 {{#unless expanded pocket._id}}d-none{{/unless}}"
                     data-parent="{{pocket._id}}">
                     {{#each unit in this}}
                         <li class="list-group-item unit-entry"
@@ -105,7 +105,7 @@
                             <div class="white-space-normal d-flex">
 
                                 {{! unit info }}
-                                <span class="font-weight-bold text-dark">
+                                <span class="fw-bold text-dark">
                                     {{#with unitContext}}
                                         {{> icon fw=true name=this.icon title=(i18n this.label)}}
                                     {{/with}}
@@ -114,7 +114,7 @@
                                 </span>
 
                                 {{! unit actions }}
-                                <span class="ml-auto no-wrap {{#unless isHovered unit._id}}passive text-muted{{/unless}}">
+                                <span class="ms-auto no-wrap {{#unless isHovered unit._id}}passive text-muted{{/unless}}">
                                     {{> actionButton
                                             type=(ternary (isHovered unit._id) "outline-secondary" "outline-light")
                                             icon="arrows-alt-v"
@@ -172,11 +172,11 @@
 
                                 {{! unit objectives }}
                                     {{#with (count unit.objectives)}}
-                                        <span class="text-dark pr-2 no-wrap">
+                                        <span class="text-dark pe-2 no-wrap">
                                             {{this}} {{i18n "curriculum.objectives"}}
                                         </span>
                                     {{else}}
-                                        <span class="text-danger pr-2 no-wrap">
+                                        <span class="text-danger pe-2 no-wrap">
                                             0 {{i18n "curriculum.objectives"}}
                                         </span>
                                     {{/with}}
@@ -240,9 +240,9 @@
                         label=(i18n "actions.update")}}
                 {{>actionButton
                         blocked=(updating "new")
-                        data-dismiss="modal"
+                        data-bs-dismiss="modal"
                         type="outline-secondary"
-                        class="ml-auto"
+                        class="ms-auto"
                         label=(i18n "actions.cancel")}}
             {{/mfooter}}
 
@@ -264,9 +264,9 @@
                         label=(i18n "actions.create")}}
                 {{>actionButton
                         blocked=(updating "new")
-                        data-dismiss="modal"
+                        data-bs-dismiss="modal"
                         type="outline-secondary"
-                        class="ml-auto"
+                        class="ms-auto"
                         label=(i18n "actions.cancel")}}
             {{/mfooter}}
         {{/with}}
@@ -288,8 +288,8 @@
                     doc=this
                     hideLegend=true collapse=false}}
             {{#mfooter}}
-                {{> actionButton type="primary" class="mr-auto" submit=true form="editUnitForm" label=(i18n "actions.update") icon="save" blocked=(updating "newUnit")}}
-                {{> actionButton type="secondary" class="ml-auto didactics-cancel-button" label=(i18n "actions.cancel") blocked=processing data-dismiss="modal"}}
+                {{> actionButton type="primary" class="me-auto" submit=true form="editUnitForm" label=(i18n "actions.update") icon="save" blocked=(updating "newUnit")}}
+                {{> actionButton type="secondary" class="ms-auto didactics-cancel-button" label=(i18n "actions.cancel") blocked=processing data-bs-dismiss="modal"}}
             {{/mfooter}}
 
         {{else}}
@@ -303,8 +303,8 @@
                     doc=createUnitDoc
                     hideLegend=true collapse=false}}
             {{#mfooter}}
-                {{> actionButton type="success" class="mr-auto" submit=true form="editUnitForm" label=(i18n "actions.create") icon="plus" blocked=(updating "newUnit")}}
-                {{> actionButton type="secondary" class="ml-auto didactics-cancel-button" label=(i18n "actions.cancel") blocked=processing data-dismiss="modal"}}
+                {{> actionButton type="success" class="me-auto" submit=true form="editUnitForm" label=(i18n "actions.create") icon="plus" blocked=(updating "newUnit")}}
+                {{> actionButton type="secondary" class="ms-auto didactics-cancel-button" label=(i18n "actions.cancel") blocked=processing data-bs-dismiss="modal"}}
             {{/mfooter}}
         {{/with}}
     {{/modal}}

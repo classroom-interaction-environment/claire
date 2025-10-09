@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor'
 import { getUsersCollection } from '../../../../../api/utils/getUsersCollection'
 
-export const getUser = function getUser ({ _id, userId }) {
-  const userDoc = getUsersCollection().findOne(_id)
+export const getUser = async ({ _id, userId }) => {
+  const userDoc = getUsersCollection().findOneAsync(_id)
   if (!userDoc) {
     throw new Meteor.Error('user.invalidUser', 'user.notFound', _id)
   }

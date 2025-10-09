@@ -287,13 +287,13 @@ Lesson.publications.byClass = {
   },
   run: onServerExec(function () {
     import { SchoolClass } from '../schoolclass/SchoolClass'
-
-    return function ({ classId }) {
+    import { isTeacher } from '../schoolclass/helpers/isTeacher'
+    return async function ({ classId }) {
       const userId = this.userId
-      const classDoc = getCollection(SchoolClass.name).findOne({ _id: classId })
-      const isTeacher = SchoolClass.helpers.isTeacher({ userId, classDoc })
-      this.log({ isTeacher })
-      return isTeacher
+      const classDoc = await getCollection(SchoolClass.name).findOneAsync({ _id: classId })
+      const userIsTeacher = isTeacher(userId, classDoc)
+      this.log({ userIsTeacher })
+      return userIsTeacher
         ? getCollection(Lesson.name).find({ classId })
         : null
     }
@@ -400,15 +400,15 @@ Lesson.methods.counts = {
     'classIds.$': String
   },
   roles: UserUtils.roles.teacher,
-  run: onServer(function ({ classIds }) {
+  run: onServer(async function ({ classIds }) {
     const { userId } = this
     const out = Object.create(null)
     const LessonCollection = getCollection(Lesson.name)
 
-    classIds.forEach(classId => {
+    for (const classId of classIds) {
       const query = { classId, createdBy: userId }
-      out[classId] = LessonCollection.find(query).count()
-    })
+      out[classId] = await LessonCollection.countDocuments(query)
+    }
 
     return out
   })
@@ -740,49 +740,11 @@ Lesson.methods.units = {
     'lessonIds.$': String
   },
   run: onServerExec(function () {
-    import { SchoolClass } from '../schoolclass/SchoolClass'
-    import { Unit } from '../../curriculum/curriculum/unit/Unit'
-    import { $in } from '../../../api/utils/query/inSelector'
-    import { LessonHelpers } from './LessonHelpers'
+    import { unitsByLesson } from './methods/unitsByLesson'
 
-    /**
-     * Getss all associated units by a given set of lessons (via lesson ids)
-     * @param lessonIds
-     * @return {*}
-     */
-
-    return function unitsByLessons ({ lessonIds }) {
+    return function ({ lessonIds }) {
       const { userId } = this
-
-      const classIds = new Set()
-      const unitsIds = new Set()
-      const lessonDocs = getCollection(Lesson.name).find({ _id: $in(lessonIds) })
-
-      lessonDocs.forEach(doc => {
-        classIds.add(doc.classId)
-      })
-
-      const classDocs = getCollection(SchoolClass.name).find({ _id: $in(classIds) }).fetch()
-      const validQuery = lessonDocs.fetch().every(lessonDoc => {
-        const { classId } = lessonDoc
-        const classDoc = classDocs.find(({ _id }) => _id === classId)
-
-        if (!classDoc) {
-          return false
-        }
-
-        return LessonHelpers.isMemberOfClass({ classDoc, userId })
-      })
-
-      if (!validQuery) {
-        throw new Meteor.Error('errors.permissionDenied', SchoolClass.errors.notMember, { userId })
-      }
-
-      lessonDocs.forEach(doc => {
-        unitsIds.add(doc.unit)
-      })
-
-      return getCollection(Unit.name).find({ _id: $in(unitsIds) }).fetch()
+      return unitsByLesson({ userId, lessonIds })
     }
   })
 }

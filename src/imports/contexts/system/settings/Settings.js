@@ -5,6 +5,7 @@ import { getCollection } from '../../../api/utils/getCollection'
 import { onClientExec, onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getFilesCollection } from '../../../api/utils/getFilesCollection'
 import { AppImages } from '../../files/image/AppImages'
+import { getFilesLink } from '../../files/getFilesLink'
 
 const reactive = label => () => i18n.get(label)
 
@@ -176,7 +177,7 @@ onClientExec(function () {
 Settings.methods = {
   get: {
     name: 'settings.methods.get',
-    schema: {},
+    schema: null,
     isPublic: true,
     run: onServer(function () {
       const SettingsCollection = getCollection(Settings.name)
@@ -218,20 +219,20 @@ Settings.methods = {
 
 Settings.methods.logo = {
   name: 'settings.methods.logo',
-  schema: {},
+  schema: null,
   isPublic: true,
   run: onServerExec(function () {
     import { AppImages } from '../../files/image/AppImages'
     import { getCollection } from '../../../api/utils/getCollection'
     import { getFilesCollection } from '../../../api/utils/getFilesCollection'
 
-    return async function () {
+    return async () => {
       const SettingsCollection = getCollection(Settings.name)
       const settingsDoc = await SettingsCollection.findOneAsync()
       if (settingsDoc.mainLogo) {
         const appFiles = getFilesCollection(AppImages.name)
-        const file = appFiles.findOneAsync(settingsDoc.mainLogo)
-        return file && file.link()
+        const file = await appFiles.findOneAsync(settingsDoc.mainLogo)
+        return file && getFilesLink({ file, collection: appFiles })
       }
     }
   })

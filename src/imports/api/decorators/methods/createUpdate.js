@@ -31,7 +31,7 @@ export const createUpdate = ({ name, schema, roles, isOwner, isCurriculum }) => 
       idSchema.validate({ _id })
       updateSchema.validate(doc)
     }),
-    run: onServer(function ({ _id, doc }) {
+    run: onServer(async function ({ _id, doc }) {
       const { userId, log } = this
       const collection = getCollection(name)
 
@@ -39,21 +39,21 @@ export const createUpdate = ({ name, schema, roles, isOwner, isCurriculum }) => 
       // so this method always throws, in case the user
       // tries to edit a document she doesn't own
       if (isOwner) {
-        checkOwnership(collection, _id, userId)
+        await checkOwnership({ collection, docId: _id, userId })
       }
 
       // prevent attempts to manipulate curriculum docs from outside of a
       // curriculum method (for example from a unit editor method etc.)
       const query = curriculumQuery({ _id })
-      const editCurriculum = isCurriculumDoc(doc) || collection.find(query).count() > 0
+      const editCurriculum = isCurriculumDoc(doc) || await collection.countDocuments(query) > 0
 
       if (editCurriculum) {
         log('check curriculum edit permissions')
-        checkCurriculum({ isCurriculum, userId, _id })
+        await checkCurriculum({ isCurriculum, userId, _id })
       }
 
       log(`update ${_id} with ${JSON.stringify(doc)}`)
-      const update = collection.update(_id, { $set: doc })
+      const update = await collection.updateAsync(_id, { $set: doc })
       log(`update ${update ? 'successful' : 'failed'}`)
 
       return update

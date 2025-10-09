@@ -3,18 +3,10 @@ import { i18n } from '../../../api/language/language'
 import { getCollection } from '../../../api/utils/getCollection'
 import { onServer } from '../../../api/utils/archUtils'
 
-let _collection
-
 export const Errors = {
   name: 'errors',
   label: 'errorLog.title',
   icon: 'exclamation-triangle',
-  collection () {
-    if (!_collection) {
-      _collection = getCollection(Errors.name)
-    }
-    return _collection
-  },
   schema: {
     source: {
       type: String,
@@ -127,7 +119,7 @@ Errors.publications = {
       }
 
       const query = {}
-      return Errors.collection().find(query, projection)
+      return getCollection(Errors.name).find(query, projection)
     })
   }
 }
@@ -136,13 +128,13 @@ Errors.methods = {
   logClient: {
     name: 'error.methods.logClient',
     schema: Errors.schema,
-    run: onServer(function (errDoc) {
+    run: onServer(async function (errDoc) {
       const ErrorsCollection = getCollection(Errors.name)
       errDoc.isClient = true
       errDoc.isServer = false
       errDoc.isMethod = false
       errDoc.isPublication = false
-      return ErrorsCollection.insert(errDoc)
+      return ErrorsCollection.insertAsync(errDoc)
     })
   }
   // TODO getLogCount

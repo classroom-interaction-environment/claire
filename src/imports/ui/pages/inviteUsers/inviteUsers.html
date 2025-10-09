@@ -4,7 +4,7 @@
     {{else}}
         <div class="d-flex mb-3 justify-content-between align-items-baseline">
             <h4>{{i18n "codeInvitation.activeCodes"}}</h4>
-            <button class="ml-auto btn btn-success create-invitation-button">
+            <button class="ms-auto btn btn-success create-invitation-button">
                 <i class="fa fa-fw fa-plus"></i> {{i18n "actions.create"}}
             </button>
         </div>
@@ -184,7 +184,7 @@
                     validation="submit"}}
             {{#mfooter class="d-flex"}}
                 {{> actionButton type="success"
-                        class="mr-auto"
+                        class="me-auto"
                         submit=true
                         form="createInvitationForm"
                         label=(i18n "actions.create")
@@ -230,7 +230,7 @@
                                         {{/if}}
 									</span>
                                     <button class="btn btn-outline-secondary"
-                                            type="button" data-dismiss="modal">
+                                            type="button" data-bs-dismiss="modal">
                                         {{i18n "actions.close"}}
                                     </button>
                                 </div>

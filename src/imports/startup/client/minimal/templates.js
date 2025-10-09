@@ -3,7 +3,6 @@ import { TemplateLoader } from 'meteor/jkuester:template-loader'
 import { initTemplateDependencies } from '../../../ui/blaze/initTemplateDependencies'
 import '../../../ui/generic/loading/loading'
 import '../../../ui/components/onloaded/onLoaded'
-
 /*******************************************************************************
  * By loading this template the client creates a prototype function for the
  * Template class, which allows to decouple infrastructural tasks from the

@@ -384,29 +384,11 @@ Unit.methods.byTaskId = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { userIsCurriculum } from '../../../../api/accounts/userIsCurriculum'
+    import { getUnitsByTaskId } from './methods/getUnitsByTaskId'
 
     return async function ({ taskId }) {
       const { userId } = this
-      const UnitCollection = getCollection(Unit.name)
-
-      // build queries
-      const linkedUnitsQuery = { tasks: { $in: [taskId] } }
-      const unlinkedUnitsQuery = { tasks: { $nin: [taskId] } }
-
-      // non curriculum users can only see the units by task which they own
-      if (!await userIsCurriculum(userId)) {
-        linkedUnitsQuery.createdBy = userId
-        unlinkedUnitsQuery.createdBy = userId
-      }
-
-      const linkedUnits = await UnitCollection.find(linkedUnitsQuery).fetchAsync()
-      const unlinkedUnits = await UnitCollection.find(unlinkedUnitsQuery).fetchAsync()
-
-      return {
-        linkedUnits,
-        unlinkedUnits
-      }
+      return getUnitsByTaskId({ taskId, userId })
     }
   })
 }
@@ -415,11 +397,12 @@ Unit.methods.unlinkTask = {
   name: 'unit.methods.unlinkTask',
   schema: { taskId: String },
   role: UserUtils.roles.teacher,
-  run: onServer(function ({ taskId }) {
-    const UnitCollection = getCollection(Unit.name)
-    const query = { createdBy: this.userId, tasks: { $in: [taskId] } }
-    const modifier = { $pull: { tasks: taskId } }
-    return UnitCollection.updateAsync(query, modifier)
+  run: onServerExec(() => {
+    import { unlinkUnitTask } from './methods/unlinkUnitTask'
+    return async function ({ taskId }) {
+      const { userId } = this
+      return unlinkUnitTask({ userId, taskId })
+    }
   })
 }
 
@@ -432,7 +415,7 @@ Unit.methods.getEditorDocs = {
   schema: { unitId: String },
   role: UserUtils.roles.teacher,
   run: onServerExecLazy(function () {
-    return require( './getEditorDocs').getEditorDocs
+    return require( './methods/getEditorDocs').getEditorDocs
   })
 }
 
@@ -440,37 +423,12 @@ Unit.methods.remove = {
   name: 'unit.methods.remove',
   schema: { _id: String },
   role: UserUtils.roles.curriculum,
-  run: onServerExec(function () {
-    import { createRemoveAllMaterial } from '../../../material/createRemoveAllMaterial'
-    import { checkOwnership } from '../../../../api/utils/document/checkOwnership'
-    import { ensureDocumentExists } from '../../../../api/utils/document/ensureDocumentExists'
-
-    const removeAllMaterial = createRemoveAllMaterial({ isCurriculum: true })
+  run: onServerExec(() => {
+    import { deleteUnit } from './methods/deleteUnit'
 
     return async function ({ _id }) {
       const { userId } = this
-      const UnitCollection = getCollection(Unit.name)
-      const unitDoc = await UnitCollection.findOneAsync({ _id, _master: true })
-
-      await ensureDocumentExists({
-        document: unitDoc,
-        userId: userId,
-        docId: _id,
-        name: Unit.name
-      })
-
-      await checkOwnership({
-        document: unitDoc,
-        userId: userId,
-        context: Unit.name
-      })
-
-      // this removes all material that is related to the unit doc, which
-      // can have several implications, if the material is in use anywhere
-      // a future versioning of curricula should prevent such issues
-      await removeAllMaterial({ unitDoc, userId })
-
-      return UnitCollection.removeAsync(_id)
+      return deleteUnit({ unitId: _id, userId })
     }
   })
 }
@@ -480,19 +438,11 @@ Unit.methods.loadMaterial = {
   schema: { _id: String },
   role: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { loadAllMaterialByUnit } from '../../../material/loadAllMaterialByUnit'
+    import { loadMaterial } from './methods/loadMaterial'
 
     return async function ({ _id }) {
-      const UnitCollection = getCollection(Unit.name)
-      const unitDoc = UnitCollection.findOneAsync({ _id })
-
-      // master docs are readable by all teachers for now
-      // non-master docs have to be checked for ownership
-      if (!unitDoc._master) {
-        await this.checkOwner(unitDoc, _id, this.userId)
-      }
-
-      return loadAllMaterialByUnit(unitDoc, this.userId)
+      const { userId } = this
+      return loadMaterial({ unitId: _id, userId })
     }
   })
 }

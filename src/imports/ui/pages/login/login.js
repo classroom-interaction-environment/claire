@@ -9,8 +9,9 @@ import { formIsValid, getFormData } from '../../components/forms/formUtils'
 import { codeSchema, passwordSchemaClassic } from '../../../api/accounts/registration/registerUserSchema'
 import loginLanguage from './i18n/loginLanguage'
 import dely from 'dely'
-import './login.html'
 import { resolveRedirect } from '../../../api/routes/getResolveRedirect'
+import { createInvitationURLQuery } from '../../../contexts/classroom/invitations/url/createInvitationURLQuery'
+import './login.html'
 
 const by300 = dely(300)
 const { siteName } = Meteor.settings.public
@@ -173,14 +174,10 @@ Template.login.events({
       return
     }
 
-    const { CodeInvitation } = await import('../../../contexts/classroom/invitations/CodeInvitations')
-    const { initContext } = await import('../../../startup/client/contexts/initContext')
-    initContext(CodeInvitation)
-
     templateInstance.$('#registerCodeModal').modal('hide')
 
     setTimeout(() => {
-      const qp = CodeInvitation.helpers.createURLQuery(insertDoc)
+      const qp = createInvitationURLQuery(insertDoc)
       const registerPath = Routes.codeRegister.path(qp)
       Router.go(registerPath)
     }, 500)

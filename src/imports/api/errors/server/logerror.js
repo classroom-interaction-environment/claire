@@ -2,13 +2,13 @@ import { Errors } from '../../../contexts/system/errors/Errors'
 import { formatError } from '../both/formatError'
 import { getCollection } from '../../utils/getCollection'
 
-export const logError = function logError ({ error, createdBy, createdAt, isServer, isClient, isMethod, isPublication, source }) {
+export const logError = async function logError ({ error, createdBy, createdAt, isServer, isClient, isMethod, isPublication, source }) {
   try {
-    const ErrorCollection = getCollection(Errors.name)
-    const existingError = ErrorCollection.findOne({ stack: error.stack })
+    const ErrorCollection = getCollection(Errors)
+    const existingError = await ErrorCollection.findOneAsync({ stack: error.stack })
     if (existingError) {
       // add user and timestamp
-      ErrorCollection.update(existingError._id, { $push: { history: { createdAt, createdBy } } })
+      await ErrorCollection.updateAsync(existingError._id, { $push: { history: { createdAt, createdBy } } })
       return existingError._id
     }
     else {
@@ -26,7 +26,7 @@ export const logError = function logError ({ error, createdBy, createdAt, isServ
   catch (e) {
     console.warn('FATAL: Error while logging Error:')
     console.error(e)
-    console.warn('original error:')
-    console.error(error)
+    console.error('details', e.details)
+    console.warn('caused by', error)
   }
 }

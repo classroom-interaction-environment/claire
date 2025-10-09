@@ -6,7 +6,7 @@
         {{! left: invite button}}
         <div class="col-xs-12 col-md-4 col-lg-6">
             {{>actionButton
-                    type="outline-secondary btn-block"
+                    type="outline-secondary w-100"
                     class="show-invitations-button h-100 mb-4"
                     icon="paper-plane"
                     label=(i18n "schoolClass.invite")
@@ -18,7 +18,7 @@
             <div class="card bg-primary text-light">
                 <div class="card-body d-flex justify-content-end align-items-center">
                     <strong>{{i18n "lesson.phases.schema"}}</strong>
-                    <span class="no-wrap ml-auto">
+                    <span class="no-wrap ms-auto">
 						{{# routeButton
                                 href=(route "unitEditor" unitDoc._id 'phases')
                                 title=(i18n "editor.unit.editInUnitEditor")
@@ -47,7 +47,7 @@
                 <li class="list-group-item d-flex justify-content-between mt-1">
                     <div class="flex-fill text-primary">
                         {{#if phase.plot}}
-                            <a data-toggle="collapse" href="#phase-collapse-{{@index}}" role="button"
+                            <a data-bs-toggle="collapse" href="#phase-collapse-{{@index}}" role="button"
                                aria-expanded="false" aria-controls="phase-collapse-{{@index}}">
                                 {{phase.title}}
                             </a>
@@ -77,7 +77,7 @@
                                 </div>
 
                                 {{! group material }}
-                                <ul class="list-group flex-fill ml-1">
+                                <ul class="list-group flex-fill ms-1">
                                     {{#each materialId in group.material}}
                                         <li class="list-group-item d-flex">
                                             {{> lessonPhaseMaterial phaseMaterialAtts materialId phase group}}
@@ -141,7 +141,7 @@
                                 </div>
 
                                 {{! group material }}
-                                <ul class="list-group flex-fill ml-1">
+                                <ul class="list-group flex-fill ms-1">
                                     {{#each materialId in group.material}}
                                         <li class="list-group-item d-flex">
                                             {{> lessonPhaseMaterial phaseMaterialAtts materialId phase group}}
@@ -201,14 +201,14 @@
             <div class="col-xs-12 col-sm-6">
                 {{#if isIdle}}
                     {{>actionButton
-                            type="outline-primary btn-block"
+                            type="outline-primary w-100"
                             class="start-lesson-button h-100 mb-4"
                             icon="rocket"
                             label=(i18n "lesson.actions.start")
                             blocked=isStarting}}
                 {{else if isRunning}}
                     {{>actionButton
-                            type="outline-secondary btn-block passive"
+                            type="outline-secondary w-100 passive"
                             class="h-100 mb-4"
                             icon="play"
                             label=(i18n "lesson.states.running")}}
@@ -217,14 +217,14 @@
             <div class="col-xs-12 col-sm-6">
                 {{#if isRunning}}
                     {{>actionButton
-                            type="success btn-block"
+                            type="success w-100"
                             class="complete-lesson-button h-100 mb-4"
                             icon="flag"
                             label=(i18n "lesson.actions.complete")
                             blocked=isStarting}}
                 {{else if isIdle}}
                     {{>actionButton
-                            type="outline-secondary btn-block passive"
+                            type="outline-secondary w-100 passive"
                             class="h-100 mb-4"
                             icon="flag"
                             label=(i18n "lesson.actions.complete")}}
@@ -249,7 +249,7 @@
         {{#with currentTaskDoc}}
             {{#mbody}}
             {{! general task information }}
-                <div class="font-weight-bold">{{../title}}</div>
+                <div class="fw-bold">{{../title}}</div>
                 {{#if ../description}}
                     <p>{{../description}}</p>
                 {{/if}}
@@ -262,7 +262,7 @@
                 </span>
 
                 <div class="present-item-info flex-fill">
-                    <div class="font-weight-bold">
+                    <div class="fw-bold">
                         <span>{{item.title}}</span>
                     </div>
                     <div>"{{this.item.label}}"</div>
@@ -275,7 +275,7 @@
                                                          item.itemId}}outline-{{/unless}}secondary dropdown-toggle"
                                 type="button"
                                 id="dropdownMenuButton"
-                                data-toggle="dropdown"
+                                data-bs-toggle="dropdown"
                                 aria-haspopup="true"
                                 aria-expanded="false">
                             {{#with currentResponseProcessor item}}
@@ -364,7 +364,7 @@
             <button class="btn btn-outline-primary print-material-preview-button">
                 <i class="fa fa-fw fa-print"></i> {{i18n "actions.print"}}
             </button>
-            <button class="btn btn-secondary" data-dismiss="modal">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
                 {{i18n "actions.close"}}
             </button>
         {{/mfooter}}
@@ -378,8 +378,8 @@
             <div class="testimonial-group h-100">
                 <div class="row h-100">
                     <div class="col h-100 landscape" id="lesson-preview-phases">
-                        <div class="font-weight-bold d-print-block">{{unitDoc.title}}</div>
-                        <div class="font-small font-weight-light">
+                        <div class="fw-bold d-print-block">{{unitDoc.title}}</div>
+                        <div class="font-small fw-light">
                             {{> phaseFullRenderer hidePlot=false phases=this unitDoc=unitDoc fluid=true responsive=true border=true actions=false}}
                         </div>
                     </div>
@@ -393,7 +393,7 @@
                         label=(i18n "actions.print")
                         icon="print"
                         blocked=printing}}
-                <button class="btn btn-outline-secondary" data-dismiss="modal">
+                <button class="btn btn-outline-secondary" data-bs-dismiss="modal">
                     {{i18n "actions.close"}}
                 </button>
             {{/mfooter}}

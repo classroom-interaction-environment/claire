@@ -28,20 +28,20 @@ export const createRemove = ({ name, roles, isOwner, isCurriculum } = {}) => {
       }
     },
     roles: roles,
-    run: onServer(function ({ _id, force }) {
+    run: onServer(async function ({ _id, force }) {
       const { userId, log } = this
       const collection = getCollection(name)
 
       if (isOwner) {
-        checkOwnership(collection, _id, userId)
+        await checkOwnership({ collection, docId: _id, userId })
       }
 
       const query = curriculumQuery({ _id })
-      const editCurriculumAttempt = collection.find(query).count() > 0
+      const editCurriculumAttempt = await collection.countDocuments(query) > 0
 
       if (editCurriculumAttempt) {
         log('check curriculum edit permissions')
-        checkCurriculum({ isCurriculum, userId, _id })
+        await checkCurriculum({ isCurriculum, userId, _id })
       }
 
       if (!force) {
@@ -50,7 +50,7 @@ export const createRemove = ({ name, roles, isOwner, isCurriculum } = {}) => {
       }
 
       log('remove', _id)
-      return collection.remove({ _id })
+      return collection.removeAsync({ _id })
     })
   }
 }

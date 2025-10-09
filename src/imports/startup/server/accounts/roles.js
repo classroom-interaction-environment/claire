@@ -29,13 +29,4 @@ if (removedRoles) {
   log('removed', removedRoles, 'roles')
 }
 
-log('publish own roles')
-Meteor.publish(null, function () {
-  const { userId } = this
-  if (userId) {
-    return Meteor.roleAssignment.find({ 'user._id': userId })
-  }
-  this.ready()
-})
-
 log('setup complete')

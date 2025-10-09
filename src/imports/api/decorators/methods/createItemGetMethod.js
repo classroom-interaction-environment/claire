@@ -13,6 +13,7 @@ export const createItemGetMethod = ({ name }) => {
       itemId: String
     },
     run: onServer(function run ({ lessonId, taskId, itemId }) {
+      throw new Error('not migrated')
       const userId = this.userId
       // TODO decouple isMemberOfLesson from lesseon
       if (!isMemberOfLesson({ userId, lessonId })) {

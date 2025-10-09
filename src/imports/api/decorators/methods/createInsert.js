@@ -21,7 +21,7 @@ export const createInsert = ({ name, schema, roles, isCurriculum }) => {
     timeInterval: 1000,
     numRequests: 10,
     roles: roles,
-    run: onServer(function (insertDoc) {
+    run: onServer(async function (insertDoc) {
       const { userId, log } = this
 
       // 1. Curriculum check
@@ -29,7 +29,7 @@ export const createInsert = ({ name, schema, roles, isCurriculum }) => {
       // is enabled for this method and the current user has the permissions.
       // This also ensures, that non curriculum methods can't edit the curriculum.
       if (isCurriculumDoc(insertDoc)) {
-        checkCurriculum({ isCurriculum, userId, doc: insertDoc })
+        await checkCurriculum({ isCurriculum, userId, doc: insertDoc })
       }
 
       // 2. Custom docs check
@@ -40,8 +40,8 @@ export const createInsert = ({ name, schema, roles, isCurriculum }) => {
       }
 
       log('insert doc', JSON.stringify(insertDoc || {}))
-      const docId = getCollection(name).insert(insertDoc)
-      log('docId', docId)
+      const docId = await getCollection(name).insertAsync(insertDoc)
+      log(`user ${userId} created a new document with docId`, docId)
       return docId
     })
   }

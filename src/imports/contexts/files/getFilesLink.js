@@ -4,12 +4,13 @@ const warn = name => console.warn('could not get link for', name)
 
 /**
  * Returns a valid download link for a given file.
- * @param file
- * @param name
- * @param version
+ * @param file {object}
+ * @param name {string=}
+ * @param collection {FilesCollection=}
+ * @param version {string=}
  * @return {void|string}
  */
-export const getFilesLink = ({ file, name, version = 'original' }) => {
+export const getFilesLink = ({ file, name, collection, version = 'original' }) => {
   if (!file) {
     return warn('undefined file')
   }
@@ -24,8 +25,9 @@ export const getFilesLink = ({ file, name, version = 'original' }) => {
     link = file.link(version)
   }
   else {
-    const collection = name && getFilesCollection(name)
-    link = collection && collection.link(file, version)
+    const fCollection = collection ?? (name && getFilesCollection(name))
+    console.debug('getFilesLink:', version, file)
+    link = fCollection && fCollection.link(file, version)
   }
 
   if (!link) {

@@ -3,7 +3,7 @@ import { check, Match } from 'meteor/check'
 import { ReactiveVar } from 'meteor/reactive-var'
 import { UserUtils } from '../system/accounts/users/UserUtils'
 import { getCollection } from '../../api/utils/getCollection'
-import { onClientExec, onServer } from '../../api/utils/archUtils'
+import { isomporph, onClientExec, onServer } from '../../api/utils/archUtils'
 import { openWindow } from '../../ui/utils/browser/windowUtils'
 
 const backgroundColors = {
@@ -294,7 +294,10 @@ onClientExec(function () {
     Meteor.call(Beamer.methods.insert.name, {}, callback)
   }
 
-  Beamer.doc.get = () => getCollection(Beamer.name).findOne()
+  Beamer.doc.get = isomporph({
+    server: () => () => getCollection(Beamer.name).findOneAsync(),
+    client: () => () => getCollection(Beamer.name).findOne()
+  })
 
   Beamer.doc.update = (beamerDoc, callback = fallbackCallback) => {
     check(callback, Match.Maybe(Function))
@@ -489,11 +492,11 @@ onClientExec(function () {
         }
       }
 
-      const windowId = windowId.get()
+      const _windowId = windowId.get()
       windowRef.set(null)
       windowUrl.set(null)
       windowId.set(null)
-      if (windowId && windowId !== global.window.name) {
+      if (_windowId && _windowId !== global.window.name) {
         Beamer.doc.update({ window: { id: null, url: null } }, callback)
       }
       else {

@@ -1,5 +1,6 @@
 import { check, Match } from 'meteor/check'
 import { createLog } from '../../api/log/createLog'
+import { isContext } from '../datastructures/isContext'
 
 const debug = createLog({ name: 'ContextRegistry', type: 'debug' })
 const _contexts = new Map()
@@ -10,12 +11,7 @@ export const ContextRegistry = {
   name: 'ContextRegistry',
 
   validate (ctx) {
-    check(ctx, Match.ObjectIncluding({
-      name: String,
-      label: String,
-      icon: String
-    }))
-
+    check(ctx, Match.ObjectIncluding(isContext()))
     return true
   },
 

@@ -2,12 +2,13 @@ import { Meteor } from 'meteor/meteor'
 import { Accounts } from 'meteor/accounts-base'
 import { CodeInvitation } from '../../../../classroom/invitations/CodeInvitations'
 import { UserFactory } from '../../../../../api/accounts/registration/UserFactory'
-import { SchoolClass } from '../../../../classroom/schoolclass/SchoolClass'
 import { rollbackAccount } from '../../../../../api/accounts/registration/rollbackAccount'
 import { correctName } from '../../../../../api/utils/correctName'
 import { userExists } from '../../../../../api/accounts/user/userExists'
 import { createDocGetter } from '../../../../../api/utils/document/createDocGetter'
 import { addStudent } from '../../../../classroom/schoolclass/methods/addStudent'
+import { validateInvitation } from '../../../../classroom/invitations/validation/validateInvitation'
+import { addUserToInvitation } from '../../../../classroom/invitations/methods/addUserToInvitation'
 
 const errors = {
   codeInvalid: 'codeRegister.codeInvalid',
@@ -35,12 +36,12 @@ export const registerWithCode = async ({ code, email, firstName, lastName, passw
   const codeDoc = getCodeDoc({ code })
 
   // first we validate if the related code doc exists and is still valid
-  if (!CodeInvitation.helpers.validate(codeDoc)) {
+  if (validateInvitation(codeDoc)) {
     throw new Meteor.Error(errors.failed, errors.codeInvalid)
   }
 
   // second we check if the user already exists by given Email address
-  if (userExists({ email })) {
+  if (await userExists({ email })) {
     throw new Meteor.Error(errors.failed, errors.emailExists)
   }
 
@@ -48,7 +49,7 @@ export const registerWithCode = async ({ code, email, firstName, lastName, passw
   let userId
   const options = { trim: true, upperCase: true }
   try {
-    userId = UserFactory.create({
+    userId = await UserFactory.create({
       email: email || codeDoc.email,
       password: password,
       firstName: correctName(firstName ?? codeDoc.firstName, options),
@@ -77,7 +78,7 @@ export const registerWithCode = async ({ code, email, firstName, lastName, passw
     })
 
     if (!studentAdded) {
-      rollbackAccount(userId)
+      await rollbackAccount(userId)
       throw new Meteor.Error(errors.failed, errors.studentNotAdded, {
         classId,
         studentAdded
@@ -98,7 +99,7 @@ export const registerWithCode = async ({ code, email, firstName, lastName, passw
   }
 
   // invalidate invitation
-  const invitationUpdated = CodeInvitation.helpers.addUserToInvitation(codeDoc, userId)
+  const invitationUpdated = addUserToInvitation(codeDoc, userId)
   if (!invitationUpdated) {
     throw new Meteor.Error(errors.failed, errors.invitationNotUpdated)
   }

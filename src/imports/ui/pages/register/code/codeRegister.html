@@ -7,7 +7,7 @@
                     registering}}passive{{/if}}">
                 <p class="mt-5 py-2">{{i18n "codeRegister.description"}}</p>
 
-                {{> routeButton type="outline-secondary" label=(i18n "codeRegister.alreadyRegistered") class="btn-block" href=(route "login" fullPath) }}
+                {{> routeButton type="outline-secondary" label=(i18n "codeRegister.alreadyRegistered") class="w-100" href=(route "login" fullPath) }}
 
                 <!-- first name and last name -->
                 {{#wizardStep name="basics" visible=(stateVisible 'basics')
@@ -25,7 +25,7 @@
                         {{#unless stepComplete 'basics'}}
                             {{> actionButton
                                     type="outline-primary"
-                                    class="btn-block"
+                                    class="w-100"
                                     submit=true
                                     block=submitting
                                     icon="arrow-down"
@@ -57,7 +57,7 @@
                         {{#unless stepComplete 'username'}}
                             {{> actionButton
                                     type="outline-primary"
-                                    class="btn-block"
+                                    class="w-100"
                                     submit=true
                                     block=submitting
                                     icon="arrow-down"
@@ -80,7 +80,7 @@
                         {{#unless stepComplete 'password'}}
                             {{> actionButton
                                     type="outline-primary"
-                                    class="btn-block"
+                                    class="w-100"
                                     submit=true
                                     block=submitting
                                     icon="arrow-down"
@@ -107,7 +107,7 @@
                                         custom=true
                                         hideLegend=true
                                         collapse=false doc=doc}}
-                                <div class="pl-2 mt-5 text-body">
+                                <div class="ps-2 mt-5 text-body">
                                     <div class="d-flex">
                                         {{> afQuickField name="terms"}}
                                         <div>
@@ -120,7 +120,7 @@
                                                     href=(route "legal" "terms")
                                                     label=(i18n "user.enrollAccount.acceptTerms.show")
                                                     rel="noreferrer noopener"
-                                                    class="mt-3 btn-block"}}
+                                                    class="mt-3 w-100"}}
                                         </div>
                                     </div>
 
@@ -136,7 +136,7 @@
                                                     href=(route "legal" "privacy")
                                                     label=(i18n "user.enrollAccount.acceptPrivacy.show")
                                                     rel="noreferrer noopener"
-                                                    class="mt-3 btn-block"}}
+                                                    class="mt-3 w-100"}}
                                         </div>
                                     </div>
 
@@ -146,7 +146,7 @@
                         {{#unless stepComplete 'terms'}}
                             {{> actionButton
                                     type="primary"
-                                    class="btn-block mt-4"
+                                    class="w-100 mt-4"
                                     submit=true
                                     block=submitting
                                     icon="thumbs-up"
@@ -221,12 +221,12 @@
                                 type="submit" form="codeForm">
                             {{i18n "codeRegister.retryCode"}}
                         </button>
-                        <p class="text-muted text-center text-md-left py-2">{{i18n
+                        <p class="text-muted text-center text-md-start py-2">{{i18n
                                 "common.or"}}</p>
                         <button class="btn btn-outline-primary reload-page-button">
                             {{i18n "codeRegister.retry"}}
                         </button>
-                        <p class="text-muted text-center text-md-left py-2">{{i18n
+                        <p class="text-muted text-center text-md-start py-2">{{i18n
                                 "common.or"}}</p>
                         <a href="mailto:?subject={{i18n
                                 this.error}}&amp;body={{i18n

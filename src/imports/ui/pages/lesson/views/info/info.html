@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-xs-12 col-md-4 col-lg-6">
                 {{>actionButton
-                        type="outline-secondary btn-block"
+                        type="outline-secondary w-100"
                         class="show-invitations-button h-100 mb-4"
                         icon="paper-plane"
                         label=(i18n "schoolClass.invite")
@@ -13,7 +13,7 @@
                 <div class="card bg-transparent border border-secondary">
                     <div class="card-body d-flex justify-content-end align-items-center">
                         <strong>{{> icon name="users" fw=true}} {{i18n "group.createGroups"}}</strong>
-                        <span class="no-wrap ml-auto">
+                        <span class="no-wrap ms-auto">
                             {{>actionButton
                                     type="success"
                                     class="groups-action-btn"

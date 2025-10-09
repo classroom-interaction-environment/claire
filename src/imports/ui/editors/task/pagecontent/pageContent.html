@@ -66,7 +66,7 @@
                                         aria-expanded="false"
                                         title=(i18n 'editor.task.moveToPage')
                                         disabled=(moveDisabled entry.id)
-                                        data-toggle="dropdown" aria-haspopup="true"
+                                        data-bs-toggle="dropdown" aria-haspopup="true"
                                         icon="copy"}}
                                 <div class="dropdown-menu"
                                      aria-labelledby="dropdownMenuLink_{{entry.id}}">
@@ -163,7 +163,7 @@
 
                     {{! preview the entry in the left column }}
                     <div class="col">
-                        <legend class="my-4 text-primary font-weight-light">
+                        <legend class="my-4 text-primary fw-light">
                             {{i18n "common.preview"}}
                         </legend>
                         {{#with editPreview}}
@@ -206,7 +206,7 @@
                         label=(i18n "actions.cancel")
                         type="outline-secondary"
                         class="cancel-edit-button"
-                        data-dismiss="modal"
+                        data-bs-dismiss="modal"
                         sm=true
                         blocked=submitting}}
             </div>
@@ -236,7 +236,7 @@
                         {{#each taskPageMetaType this.value subCategory.name}}
                             <div class="col-sm-4 col-lg-3 element-select-col mb-2">
                                 <button class="btn {{#if newElement ../value
-                                                         this.name}}btn-secondary{{else}}btn-outline-secondary{{/if}} btn-block select-new-element-button h-100 text-center"
+                                                         this.name}}btn-secondary{{else}}btn-outline-secondary{{/if}} w-100 select-new-element-button h-100 text-center"
                                         data-content="{{../value}}"
                                         data-meta="{{this.name}}">
                                     <h1>
@@ -259,7 +259,7 @@
                         {{#each taskPageMetaType this.value}}
                             <div class="col-sm-4 col-lg-3 element-select-col mb-2">
                                 <button class="btn {{#if newElement ../value
-                                                         this.name}}btn-secondary{{else}}btn-outline-secondary{{/if}} btn-block select-new-element-button h-100 text-center"
+                                                         this.name}}btn-secondary{{else}}btn-outline-secondary{{/if}} w-100 select-new-element-button h-100 text-center"
                                         data-content="{{../value}}"
                                         data-meta="{{this.name}}">
                                     <h1>
@@ -300,10 +300,10 @@
             {{#if newElementFormState}}
                 {{> actionButton submit=true form="newElementForm"
                         blocked=submitting
-                        type="success" class="mr-auto" icon="plus" label=(i18n "actions.create")}}
+                        type="success" class="me-auto" icon="plus" label=(i18n "actions.create")}}
 
             {{/if}}
-            <button class="btn btn-secondary" data-dismiss="modal">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
                 {{i18n "actions.cancel"}}
             </button>
         {{/mfooter}}

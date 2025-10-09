@@ -5,7 +5,7 @@
 
         {{#with unitDoc}}
             <div class="my-4 clearfix">
-				<span class="float-right d-print-none">
+				<span class="float-end d-print-none">
 					{{> info id="phasesInfo" sm=true outline=true label=(i18n 'editor.unit.phases.description')}}
                     <button class="btn btn-sm btn-secondary uephases-select-button">
 						<i class="fa fa-fw fa-list"></i> {{i18n 'actions.add'}}
@@ -73,7 +73,7 @@
 
                                 {{! TITLE + DESCRIPTION }}
                                 <td class="wrap-cell white-space-normal td-description">
-                                    <p class="font-weight-bold d-block">
+                                    <p class="fw-bold d-block">
                                         {{> link href="" label=this.title class="phase-edit-link text-dark" data-field="title" data-target=this._id }}
                                         {{#unless this.unit}}*{{/unless}}
                                     </p>
@@ -123,7 +123,7 @@
                                                 <div class="d-flex align-items-baseline p-1">
                                                     <i class="fa fa-fw fa-{{this.icon}}"
                                                        title="{{i18n this.label}}"></i>
-                                                    <span class="ml-1">
+                                                    <span class="ms-1">
                                                         {{#if true}}
                                                             {{#if this.isFilesCollection}}
                                                                 {{this.doc.name}}
@@ -231,7 +231,7 @@
                                 schema=(editSchema this.fieldName) hideLegend=true }}
                         <div class="d-flex justify-content-between">
                             {{> actionButton submit=true label=(i18n "actions.update") icon="sync" type="secondary" blocked=submitting form="editPhaseFieldForm"}}
-                            {{> actionButton data-dismiss="modal" label=(i18n "actions.close") type="outline-secondary" blocked=submitting}}
+                            {{> actionButton data-bs-dismiss="modal" label=(i18n "actions.close") type="outline-secondary" blocked=submitting}}
                         </div>
                     {{/caroForm}}
                 {{/with}}
@@ -300,7 +300,7 @@
                 {{/with}}
             {{/mbody}}
             {{#mfooter}}
-                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">{{i18n 'common.complete'}}</span>
                 </button>
             {{/mfooter}}

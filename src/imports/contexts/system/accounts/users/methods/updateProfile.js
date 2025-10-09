@@ -11,8 +11,8 @@ import { getUsersCollection } from '../../../../../api/utils/getUsersCollection'
  * @param locale {string=} optional, new locale iso code
  * @return {number} 1 if updated, 0 of not
  */
-export const updateProfile = function updateProfile ({ userId, profileImage, firstName, lastName, locale }) {
-  if (!userExists({ userId })) {
+export const updateProfile = async ({ userId, profileImage, firstName, lastName, locale }) => {
+  if (!await userExists({ userId })) {
     throw new Meteor.Error('errors.403', 'user.updateProfile', 'user.userNotFound')
   }
 
@@ -33,5 +33,5 @@ export const updateProfile = function updateProfile ({ userId, profileImage, fir
     updateDoc.locale = locale
   }
 
-  return getUsersCollection().update(userId, { $set: updateDoc })
+  return getUsersCollection().updateAsync(userId, { $set: updateDoc })
 }

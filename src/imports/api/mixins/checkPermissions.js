@@ -7,6 +7,7 @@ import { getMinimalRole } from '../accounts/getMinimalRole'
 import { userIsCurriculum } from '../accounts/userIsCurriculum'
 import { userOwnsDocument } from '../utils/permission/checkOnwership'
 import { ensureDocumentExists } from '../utils/document/ensureDocumentExists'
+import { isAdmin } from '../../ui/blaze/helpers'
 
 const minimalRole = getMinimalRole()
 
@@ -24,7 +25,7 @@ export const checkPermissions = function (options) {
   const group = options.group
 
   const runFct = options.run
-  options.run = function run (...args) {
+  options.run = async function run (...args) {
     const environment = this
     const { userId } = environment
 
@@ -34,29 +35,33 @@ export const checkPermissions = function (options) {
     }
 
     // check if user is admin
-    if (admin && !UserUtils.isAdmin(userId)) {
+    if (admin && !await isAdmin(userId)) {
       throw new PermissionDeniedError('errors.userNotAdmin', { userId, name: options.name })
     }
 
     // check if user needs to be enabled for curriculum
-    if (curriculum && !userIsCurriculum(userId)) {
+    if (curriculum && !await userIsCurriculum(userId)) {
       throw new PermissionDeniedError('errors.userNotCurriculum', { userId, name: options.name })
     }
 
     // roles / group level permissions
     if (roles) {
-      const scope = group || (Meteor.users.findOne(userId)).institution
-      if (!Roles.userIsInRole(userId, roles, scope)) {
+      const scope = group || (await Meteor.users.findOneAsync(userId)).institution
+      if (!await Roles.userIsInRoleAsync(userId, roles, scope)) {
         const { name } = options
         throw new NotInRolesError({ userId, roles, scope, source: name })
       }
     }
 
     /** @deprecated import as standalone method */
-    environment.checkDoc = (document, docId, userId) => ensureDocumentExists({ document, docId, userId })
+    environment.checkDoc = (document, docId, userId) => {
+      console.warn(`[${options.name}]: this.checkDoc is deprecated, import it as standalone method!`)
+      return ensureDocumentExists({ document, docId, userId })
+    }
 
     /** @deprecated import as standalone method */
     environment.checkOwner = function (document) {
+      console.warn(`[${options.name}]: this.checkOwner is deprecated, import it as standalone method!`)
       if (!userOwnsDocument(document, userId)) {
         throw new PermissionDeniedError('errors.accessDenied', {
           docId: document?._id, userId

@@ -183,15 +183,15 @@ SchoolClass.methods.update = {
   run: onServerExec(function () {
     import { checkEditPermission } from '../../../api/document/checkEditPermissions'
 
-    return function createClass ({ _id, title }) {
+    return async function createClass ({ _id, title }) {
       const { userId } = this
       const SchoolClassCollection = getCollection(SchoolClass.name)
-      const doc = SchoolClassCollection.findOne(_id)
+      const doc = await SchoolClassCollection.findOneAsync(_id)
 
       // only admin can update non-owned docs
       checkEditPermission({ doc, userId })
 
-      if (SchoolClassCollection.find({ title, createdBy: this.userId }).count() > 0) {
+      if (await SchoolClassCollection.countDocuments({ title, createdBy: this.userId }) > 0) {
         throw new Meteor.Error('create.error', 'schoolClass.exists', {
           key: 'title',
           type: 'valueAlreadyExists',
@@ -199,7 +199,7 @@ SchoolClass.methods.update = {
         })
       }
 
-      return SchoolClassCollection.update(_id, { $set: { title } })
+      return SchoolClassCollection.updateAsync(_id, { $set: { title } })
     }
   })
 }

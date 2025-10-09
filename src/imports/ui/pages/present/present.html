@@ -16,7 +16,7 @@
                                 </button>
                             </div>
                             <div class="card-body bg-transparent text-center">
-                                {{> codeRender code=this.invitationCode class="ml-auto mr-auto"}}
+                                {{> codeRender code=this.invitationCode class="ms-auto me-auto"}}
                                 <div class="w-100 text-center">
                                     <code style="font-size: 8rem;"
                                           class="d-block text-dark">{{codeUrl
@@ -38,7 +38,7 @@
                                 {{! material Icon and title }}
                                 <div class="card-header d-flex justify-content-between bg-transparent border-0 align-items-center">
                                     <div class="d-flex align-items-center">
-                                        <span class="mr-3">
+                                        <span class="me-3">
                                             {{#with itemContext reference.itemId}}
                                                 {{> tooltip icon=this.icon title=(i18n this.label)}}
                                             {{else}}
@@ -78,7 +78,7 @@
                                                 <button class="btn btn-outline-secondary dropdown-toggle border-0"
                                                         type="button"
                                                         id="dropdownMenuButton"
-                                                        data-toggle="dropdown"
+                                                        data-bs-toggle="dropdown"
                                                         aria-haspopup="true"
                                                         aria-expanded="false">
                                                     {{#with responseProcessor reference}}

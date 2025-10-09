@@ -11,7 +11,7 @@ export const createGroupsSchema = ({ phases, material, translate }) => ({
       defaultValue: 1,
       min: 1,
       group: 'nums',
-      'formgroup-class': 'col-12 col-md-6 float-left'
+      'formgroup-class': 'col-12 col-md-6 float-start'
     }
   },
   maxGroups: {
@@ -22,7 +22,7 @@ export const createGroupsSchema = ({ phases, material, translate }) => ({
       min: 1,
       defaultValue: 1,
       group: 'nums',
-      'formgroup-class': 'col-12 col-md-6 float-right'
+      'formgroup-class': 'col-12 col-md-6 float-end'
     }
   },
 
@@ -68,7 +68,7 @@ export const createGroupsSchema = ({ phases, material, translate }) => ({
         if (materialAutoShuffle) return true
       },
       afFieldInput: {
-        class: 'ml-3'
+        class: 'ms-3'
       }
     }
   },
@@ -87,7 +87,7 @@ export const createGroupsSchema = ({ phases, material, translate }) => ({
         if (materialForAllGroups) return true
       },
       afFieldInput: {
-        class: 'ml-3'
+        class: 'ms-3'
       }
     }
   }

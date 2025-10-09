@@ -18,7 +18,7 @@ export const sendResearchConfirmationEmail = ({ to, fullName, url }) => {
     info(url)
   }
 
-  return Email.send({
+  return Email.sendAsync({
     from, to, subject, text, headers
   })
 }

@@ -1,8 +1,8 @@
 <template name="lessonPhaseMaterial">
     {{! material title }}
-    <span class="d-flex mr-2 align-items-start flex-fill">
+    <span class="d-flex me-2 align-items-start flex-fill">
         {{>tooltip title=(i18n material.label) icon=material.icon}}
-        <span class="text-wrap ml-2 d-none d-md-inline-flex">
+        <span class="text-wrap ms-2 d-none d-md-inline-flex">
             {{#if material.isFilesCollection}}
                 {{material.doc.name}}
             {{else}}
@@ -12,7 +12,7 @@
     </span>
 
     {{! material actions }}
-    <span class="ml-auto">
+    <span class="ms-auto">
         {{> actionButton
                 class="preview-material-button"
                 type="outline-primary"

@@ -1,7 +1,7 @@
 <template name="taskPages">
 	<div class="my-4">
 		<div class="d-flex justify-content-between">
-			<ul class="nav nav-pills mr-4">
+			<ul class="nav nav-pills me-4">
 				{{#each pages}}
 					{{#if isActive @index}}
 						<li class="nav-item no-wrap m-1">
@@ -45,7 +45,7 @@
 				<div class="card mb-4">
 					<div class="card-body d-flex">
 						<h5 class="card-title">{{i18n "common.title"}}: "{{toTitle this.title}}"</h5>
-						<span class="ml-auto no-wrap">
+						<span class="ms-auto no-wrap">
 							{{>actionButton
 									id="edit-pagetitle-button"
 									type="outline-primary"
@@ -75,7 +75,7 @@
 		{{> caroForm id="createPageForm" schema=taskPageTitleSchema type="normal"}}
 		{{#mfooter class="d-flex justify-content-between"}}
 			{{>actionButton type="success" blocked=submitting label=(i18n "actions.create") icon="plus" submit=true form="createPageForm"}}
-			{{>actionButton type="secondary" blocked=submitting label=(i18n "actions.cancel") data-dismiss="modal"}}
+			{{>actionButton type="secondary" blocked=submitting label=(i18n "actions.cancel") data-bs-dismiss="modal"}}
 		{{/mfooter}}
 	{{/modal}}
 	{{#modal id="editPageModal" large=true static=true}}
@@ -83,7 +83,7 @@
 		{{> caroForm id="editPageForm" schema=taskPageTitleSchema type="normal" doc=pageTitleDoc}}
 		{{#mfooter class="d-flex justify-content-between"}}
 			{{>actionButton type="primary" blocked=submitting label=(i18n "actions.save") icon="save" submit=true form="editPageForm"}}
-			{{>actionButton type="secondary" blocked=submitting label=(i18n "actions.cancel") data-dismiss="modal"}}
+			{{>actionButton type="secondary" blocked=submitting label=(i18n "actions.cancel") data-bs-dismiss="modal"}}
 		{{/mfooter}}
 	{{/modal}}
 </template>

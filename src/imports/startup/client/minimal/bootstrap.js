@@ -4,15 +4,16 @@ import { setFatalError } from '../../../ui/components/fatal/fatal'
 import { callMethod } from '../../../ui/controllers/document/callMethod'
 import { CurriculumSession } from '../../../ui/curriculum/CurriculumSession'
 import { createLog } from '../../../api/log/createLog'
+import 'bootstrap/dist/css/bootstrap.css'
 
 const themes = {
   default: {
     id: 'theme-default',
-    url: Meteor.absoluteUrl('default.css')
+    url: Meteor.absoluteUrl('default444.css')
   },
   curriculum: {
     id: 'theme-curriculum',
-    url: Meteor.absoluteUrl('curriculum.css')
+    url: Meteor.absoluteUrl('curriculum444.css')
   }
 }
 
@@ -26,7 +27,8 @@ Meteor.defer(async () => {
   })
 
   const currentTheme = settingsDoc?.ui?.theme
-  await import('./custom.scss')
+  await import('./caro.css')
+  // await import('./caro.css')
 
   const enable = ({ id, url }) => {
     for (const style of document.styleSheets) {

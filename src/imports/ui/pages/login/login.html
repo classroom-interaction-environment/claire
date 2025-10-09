@@ -10,14 +10,14 @@
                              blocked=loggingIn
                              hideLegend=true}}
                     <div class="text-center w-100 my-2">
-                        <small class="ml-auto">
+                        <small class="ms-auto">
                             <a href class="forgot-password-link">
                                 {{i18n "login.forgotPassword"}}
                             </a>
                         </small>
                     </div>
                     {{#actionButton type="primary"
-                                    class="btn-lg btn-block"
+                                    class="btn-lg w-100"
                                     submit=true
                                     icon="unlock-alt"
                                     label=(i18n "actions.login")
@@ -31,7 +31,7 @@
                     </div>
 
                     {{> actionButton type="success"
-                            class="btn-lg btn-block enter-code-button white-space-normal"
+                            class="btn-lg w-100 enter-code-button white-space-normal"
                             disabled=loggingIn
                             icon="plus-circle"
                             label=(i18n "login.registerWithCode")}}
@@ -59,7 +59,7 @@
                             block=true
                             type="primary"
                             label=(i18n "actions.close")
-                            data-dismiss="modal"}}
+                            data-bs-dismiss="modal"}}
                 {{/mfooter}}
             {{else}}
                 {{#caroForm
@@ -70,7 +70,7 @@
                         hideLegend=true}}
                     <p>{{i18n "login.resetPassword.description"}}</p>
                     {{> actionButton
-                            class="btn-block"
+                            class="w-100"
                             submit=true
                             type="primary"
                             icon="envelope"
@@ -85,7 +85,7 @@
 
             {{#caroForm id="codeForm" type="normal" schema=codeSchema
                         hideLegend=true}}
-                {{> actionButton class="btn-block" submit=true type="success" label=(i18n "actions.submit")}}
+                {{> actionButton class="w-100" submit=true type="success" label=(i18n "actions.submit")}}
             {{/caroForm}}
         {{/modal}}
     {{/onLoaded}}

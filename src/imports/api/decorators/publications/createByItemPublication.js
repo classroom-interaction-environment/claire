@@ -23,7 +23,7 @@ export const createByItemPublication = ({ name }) => {
       }
       const query = { lessonId, itemId, taskId }
       const projection = { limit: 1 }
-      log(`[${name}.publications.byItem]: `, getCollection(name).find(query, projection).count())
+      // log(`[${name}.publications.byItem]: `, getCollection(name).find(query, projection).count())
       return getCollection(name).find(query, projection)
     })
   }

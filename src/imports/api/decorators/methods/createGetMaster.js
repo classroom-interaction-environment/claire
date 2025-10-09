@@ -23,7 +23,7 @@ export const createGetMaster = ({ name }) => {
     role: UserUtils.roles.teacher,
     numRequests: 1,
     timeInterval: 300,
-    run: onServer(function ({ ids = [], skip = [] }) {
+    run: onServer(async function ({ ids = [], skip = [] }) {
       const query = {}
       query._master = true
 
@@ -36,7 +36,7 @@ export const createGetMaster = ({ name }) => {
         query._id.$nin = skip
       }
 
-      return getCollection(name).find(query).fetch()
+      return getCollection(name).find(query).fetchAsync()
     })
   }
 }

@@ -7,7 +7,7 @@
             {{#unless custom}}
                 <fieldset {{fieldSetAtts}}>
                     {{#unless hideLegend}}
-                        <legend class="mb-4 text-primary font-weight-light">{{i18n "form.mandatoryFields"}}</legend>
+                        <legend class="mb-4 text-primary fw-light">{{i18n "form.mandatoryFields"}}</legend>
                     {{/unless}}
                     {{#each mandatoryFields afFieldNames schema}}
                         {{> afQuickField
@@ -20,9 +20,9 @@
 
                 {{#with optionalFields afFieldNames schema}}
                     {{#unless preventCollapse ../collapse}}
-                        <button class="btn btn-block btn-outline-secondary my-4"
+                        <button class="btn w-100 btn-outline-secondary my-4"
                                 type="button"
-                                data-toggle="collapse"
+                                data-bs-toggle="collapse"
                                 data-target="#{{id}}_collapseTarget"
                                 aria-expanded="false"
                                 aria-controls="collapseExample">
@@ -35,7 +35,7 @@
                          id="{{id}}_collapseTarget">
                         <fieldset {{fieldSetAtts}}>
                             {{#unless ../hideLegend}}
-                                <legend class="my-4 text-primary font-weight-light">{{i18n "form.optionalFields"}}</legend>
+                                <legend class="my-4 text-primary fw-light">{{i18n "form.optionalFields"}}</legend>
                             {{/unless}}
                             {{#each this}}
                                 {{> afQuickField name=this.name options=afOptionsFromSchema}}

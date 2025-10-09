@@ -3,10 +3,8 @@ import { createResearchConfirmToken } from './createResearchConfirmToken'
 import { createResearchConfirmUrl } from './createResearchConfirmUrl'
 import { sendResearchConfirmationEmail } from './sendResearchConfirmationEmail'
 
-export const setResearch = function setResearch ({ participate }) {
-  const { userId } = this
-
-  Meteor.users.update(userId, {
+export const setResearch = async ({ userId, participate }) => {
+  await Meteor.users.updateAsync(userId, {
     $set: {
       'research.participate': participate
     },
@@ -18,9 +16,9 @@ export const setResearch = function setResearch ({ participate }) {
   })
 
   if (participate) {
-    const user = Meteor.users.findOne(userId)
+    const user = await Meteor.users.findOneAsync(userId)
     const { firstName, lastName } = user
-    const token = createResearchConfirmToken({ userId })
+    const token = await createResearchConfirmToken({ userId })
     const email = user.emails[0].address
 
     return sendResearchConfirmationEmail({

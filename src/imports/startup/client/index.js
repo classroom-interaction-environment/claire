@@ -3,9 +3,10 @@ import { Blaze } from 'meteor/blaze'
 import { Template } from 'meteor/templating'
 import { Tracker } from 'meteor/tracker'
 import { Router } from '../../api/routes/Router'
-import { Roles } from 'meteor/alanning:roles'
+
 import { dynamicImport } from '../../ui/utils/dynamicImport'
 import { createLog } from '../../api/log/createLog'
+import { UserRoles } from '../../api/roles/UserRoles'
 
 if (Blaze.setExceptionHandler) Blaze.setExceptionHandler(console.error)
 if (Template.stateName) Template.stateName('state')
@@ -37,7 +38,7 @@ Tracker.autorun((computation) => {
       })
   }
 
-  // if (!Roles.subscription.ready()) return
+  if (!UserRoles.subscription.ready()) return
 
   loadUserRoutes(userId)
     .catch(e => console.error(e))
@@ -63,7 +64,7 @@ async function loadUserRoutes (userId) {
     case UserUtils.roles.admin:
       return await loadAdmin() && role
     default:
-      console.warn('Undefined role:', role)
+      throw new Error('Undefined role:', role)
   }
 }
 

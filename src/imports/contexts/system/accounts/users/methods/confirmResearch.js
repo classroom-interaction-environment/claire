@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor'
 import { Accounts } from 'meteor/accounts-base'
 
-export const confirmResearch = ({ email, token }) => {
-  const user = Accounts.findUserByEmail(email)
+export const confirmResearch = async ({ email, token }) => {
+  const user = await Accounts.findUserByEmail(email)
   const expectedToken = user?.research?.token
 
   if (token !== expectedToken) {
@@ -10,7 +10,7 @@ export const confirmResearch = ({ email, token }) => {
   }
 
   const confirmedAt = new Date()
-  return Meteor.users.update(user._id, {
+  return Meteor.users.updateAsync(user._id, {
     $set: {
       'research.confirmed': true,
       'research.confirmedAt': confirmedAt

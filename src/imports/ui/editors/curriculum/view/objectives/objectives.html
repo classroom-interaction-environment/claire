@@ -53,9 +53,9 @@
                         label=(i18n "actions.update")}}
                 {{>actionButton
                         blocked=(updating "new")
-                        data-dismiss="modal"
+                        data-bs-dismiss="modal"
                         type="outline-secondary"
-                        class="ml-auto"
+                        class="ms-auto"
                         label=(i18n "actions.cancel")}}
             {{/mfooter}}
         {{else}}
@@ -82,9 +82,9 @@
                         label=(i18n "actions.create")}}
                 {{>actionButton
                         blocked=(updating "new")
-                        data-dismiss="modal"
+                        data-bs-dismiss="modal"
                         type="outline-secondary"
-                        class="ml-auto"
+                        class="ms-auto"
                         label=(i18n "actions.cancel")}}
             {{/mfooter}}
         {{/with}}
@@ -99,7 +99,7 @@
         <div class=""
              data-parent="{{../parent}}">
             {{#each child in this}}
-                <div class="pr-0 py-0 {{#if ../parent}}ml-3{{else}}ml-0{{/if}}"
+                <div class="pe-0 py-0 {{#if ../parent}}ms-3{{else}}ms-0{{/if}}"
                      data-target="{{child._id}}"
                      data-index="{{@index}}">
 

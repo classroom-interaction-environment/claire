@@ -19,6 +19,10 @@ import '../../generic/nodocs/nodocs'
 import '../invitation/rowRenderer/rowRenderer'
 import '../invitation/coderender/coderenderer'
 import './inviteStudents.html'
+import { invitationTimeLeft } from '../../../contexts/classroom/invitations/validation/invitationTimeLeft'
+import { createInvitationURLQuery } from '../../../contexts/classroom/invitations/url/createInvitationURLQuery'
+import { invitationComplete } from '../../../contexts/classroom/invitations/validation/invitationComplete'
+import { invitationExpired } from '../../../contexts/classroom/invitations/validation/invitationExpired'
 
 const API = Template.inviteStudents.setDependencies({
   contexts: [CodeInvitation, Beamer]
@@ -62,7 +66,7 @@ Template.inviteStudents.onCreated(function () {
   instance.startCountdown = ({ createdAt, expires }) => {
     instance.endCountdown()
     instance.countDown = setInterval(() => {
-      const timeLeft = CodeInvitation.helpers.timeLeft(createdAt, expires)
+      const timeLeft = invitationTimeLeft(createdAt, expires)
       if (timeLeft <= 0) {
         instance.endCountdown()
         instance.state.set('countDown', i18n.get('codeInvitation.expired'))
@@ -78,7 +82,7 @@ Template.inviteStudents.onCreated(function () {
   }
 
   instance.getLink = (invitationDoc) => {
-    const queryParams = CodeInvitation.helpers.createURLQuery(invitationDoc)
+    const queryParams = createInvitationURLQuery(invitationDoc)
     const invitationRoute = Routes.codeRegister.path(queryParams)
     const url = Meteor.absoluteUrl()
     return url.substring(0, url.length - 1) + invitationRoute
@@ -134,7 +138,7 @@ Template.inviteStudents.onCreated(function () {
             return
           }
 
-          const invitationExpiredOrComplete = codeDoc && (CodeInvitation.helpers.isExpired(codeDoc) || CodeInvitation.helpers.isComplete(codeDoc))
+          const invitationExpiredOrComplete = codeDoc && (invitationExpired(codeDoc) || invitationComplete(codeDoc))
           const registeredUsers = (codeDoc.registeredUsers || []).map(userId => {
             const user = Meteor.users.findOne(userId)
             return {
@@ -226,7 +230,7 @@ Template.inviteStudents.helpers({
     return Template.getState('registeredUsers')
   },
   isExpired (invitationDoc) {
-    return CodeInvitation.helpers.isExpired(invitationDoc)
+    return invitationExpired(invitationDoc)
   },
   creating () {
     return Template.getState('creating')

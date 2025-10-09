@@ -2,6 +2,7 @@
   "Match failed": "Server Fehler. Fehlerhafte Anfrage.",
   "errors": {
     "Error": "Fehler!",
+    "occurred": "Es ist ein Fehler aufgetreten",
     "errorId": "Fehlercode",
     "source": "Fehlerquelle",
     "message": "Fehlernachricht",
@@ -199,6 +200,7 @@
     "title": "Projektmitglieder"
   },
   "dashboard": {
+    "title": "Übersicht",
     "newsfeed": "Neuigkeiten / Ereignisse",
     "myClasses": "Meine Kurse",
     "createClass": "Kurs anlegen"
@@ -1072,7 +1074,7 @@
     "notFound": "Seite nicht gefunden",
     "notFoundExplained": "Die aufgerufene Seite existiert nicht bzw. konnte nicht gefunden werden.",
     "home": "Startseite",
-    "dashboard": "Mein Dashboard",
+    "dashboard": "Meine Kurse",
     "profile": "Benutzerprofil",
     "group": "Meine Gruppe",
     "login": "Login",

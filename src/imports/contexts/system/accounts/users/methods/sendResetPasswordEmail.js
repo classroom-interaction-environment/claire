@@ -1,8 +1,8 @@
 import { Accounts } from 'meteor/accounts-base'
 import { getUserByEmail } from '../../../../../api/accounts/user/getUserByEmail'
 
-export const sendResetPasswordEmail = function sendResetPasswordEmail ({ email }) {
-  const user = getUserByEmail(email)
+export const sendResetPasswordEmail = async ({ email }) => {
+  const user = await getUserByEmail(email)
 
   if (user) {
     return Accounts.sendResetPasswordEmail(user._id)

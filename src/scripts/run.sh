@@ -47,4 +47,4 @@ echo "=> CLAIRE path: [${CLAIRE_PATH}]"
 echo "=> Port: [${PORT}]"
 echo "=> Lib path(s): [${PACKAGE_DIRS}]"
 
-METEOR_PACKAGE_DIRS=${PACKAGE_DIRS} meteor ${DEBUG_MODE} --port=$PORT --settings=settings.json --exclude-archs web.browser.legacy,web.cordova
+METEOR_PACKAGE_DIRS=${PACKAGE_DIRS} meteor ${DEBUG_MODE} --port=$PORT --settings=settings.json

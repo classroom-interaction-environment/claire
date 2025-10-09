@@ -14,11 +14,11 @@
         {{/mbody}}
         {{#mfooter class="d-flex"}}
             {{#unless connected}}
-            <button class="btn btn-outline-secondary btn-block reload-page-button">
+            <button class="btn btn-outline-secondary w-100 reload-page-button">
                 {{i18n "connection.reloadPage"}}
             </button>
                 {{else}}
-                <button class="btn btn-outline-primary btn-block" data-dismiss="modal">
+                <button class="btn btn-outline-primary w-100" data-bs-dismiss="modal">
                     {{i18n "actions.continue"}}
                 </button>
                 {{/unless}}

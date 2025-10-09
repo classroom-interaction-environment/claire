@@ -11,7 +11,7 @@
                         <fieldset disabled="{{#if itemDisabled ../isEditable ../itemId ../groupMode}}disabled{{/if}}">
                             {{#each afFieldNames}}
                                 <div class="field-wrapper">
-                                    <label class="font-weight-bold text-center text-md-left w-100 p-2">
+                                    <label class="fw-bold text-center text-md-start w-100 p-2">
                                         {{../label}}
                                     </label>
 
@@ -37,26 +37,26 @@
                             {{#unless submitting this.itemId}}
                                 {{#if eq ../groupMode "merge"}}
                                     <button type="button"
-                                            class="btn btn-sm btn-block btn-outline-secondary"
+                                            class="btn btn-sm w-100 btn-outline-secondary"
                                             data-target="{{this.itemId}}" disabled>
                                         <i class="fa fa-users"></i> {{i18n "group.editing"}}
                                     </button>
                                 {{else if saved this.itemId}}
                                     <button type="button"
-                                            class="btn btn-sm btn-block btn-outline-primary itemrenderer-edit-button"
+                                            class="btn btn-sm w-100 btn-outline-primary itemrenderer-edit-button"
                                             data-target="{{this.itemId}}">
                                         <i class="fa fa-edit"></i> {{i18n "actions.edit"}}
                                     </button>
                                 {{else if (itemHasValue this.itemId)}}
                                     <button type="submit"
-                                            class="btn btn-sm btn-block btn-primary itemrenderer-submit-button">
+                                            class="btn btn-sm w-100 btn-primary itemrenderer-submit-button">
                                         <i class="fa fa-save"></i> {{i18n
                                             "actions.save"}}
                                     </button>
                                 {{/if}}
                             {{else if (itemHasValue this.itemId)}}
                                 <button type="submit"
-                                        class="btn btn-primary btn-block itemrenderer-submit-button btn-sm"
+                                        class="btn btn-primary w-100 itemrenderer-submit-button btn-sm"
                                         disabled>
                                     <i class="fa fa-sync fa-spin"></i> {{i18n
                                         "actions.saving"}}

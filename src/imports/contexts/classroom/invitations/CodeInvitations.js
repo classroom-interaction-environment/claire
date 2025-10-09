@@ -1,17 +1,14 @@
 /* global btoa atob */
 import { Meteor } from 'meteor/meteor'
-import { check, Match } from 'meteor/check'
-import { Random } from 'meteor/random'
 import { i18n } from '../../../api/language/language'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
 import { SchoolClass } from '../schoolclass/SchoolClass'
-import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
-import { DocNotFoundError } from '../../../api/errors/types/DocNotFoundError'
 import { getCollection } from '../../../api/utils/getCollection'
-import { onClient, onServer, onServerExec } from '../../../api/utils/archUtils'
+import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getSchemaField } from '../../../ui/utils/form/getSchemaField'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
-import { getUsersCollection } from '../../../api/utils/getUsersCollection'
+import { verifyInvitation } from './methods/verifyInvitation'
+import { getInvitationOffset } from './validation/getInvitationOffset'
 
 const mappedRoles = Object.values(UserUtils.roles).map(role => ({
   value: role,
@@ -100,7 +97,7 @@ CodeInvitation.schema = {
       hint: () => {
         if (!global.AutoForm) return
         const value = AutoForm.getFieldValue('expires') || 1
-        const offset = CodeInvitation.helpers.getOffset(new Date(), value)
+        const offset = getInvitationOffset(new Date(), value)
         const expirationDate = new Date(offset).toLocaleString()
         return `${i18n.get('codeInvitation.expiresAt')} ${expirationDate}`
       }
@@ -274,11 +271,11 @@ CodeInvitation.publications.myCodes = {
   run: onServerExec(function () {
     import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
 
-    return function () {
+    return async function () {
       const { userId } = this
       const query = {}
 
-      if (!userIsAdmin(userId)) {
+      if (!await userIsAdmin(userId)) {
         query.createdBy = userId
       }
 
@@ -299,11 +296,11 @@ CodeInvitation.publications.getInvitationForClass = {
   run: onServerExec(function () {
     import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
 
-    return function ({ classId }) {
+    return async function ({ classId }) {
       const { userId } = this
       const query = { classId }
 
-      if (!userIsAdmin(userId)) {
+      if (!await userIsAdmin(userId)) {
         query.createdBy = userId
       }
 
@@ -322,11 +319,11 @@ CodeInvitation.publications.class = {
   run: onServerExec(function () {
     import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
 
-    return function ({ classId }) {
+    return async function ({ classId }) {
       const { userId } = this
       const query = { classId }
 
-      if (!userIsAdmin(userId)) {
+      if (!await userIsAdmin(userId)) {
         query.createdBy = userId
       }
 
@@ -337,217 +334,6 @@ CodeInvitation.publications.class = {
     }
   })
 }
-
-/**
- * Will soon be an own module
- * @deprecated
- */
-CodeInvitation.helpers = {}
-
-/**
- * Creates a compressed version of URL query containing invitation credentials.
- * @param code required - The invitation code
- * @param firstName optional - The first name of the user
- * @param lastName optional - The last name of the user
- * @param email optional - Email of the user
- * @param institution optional - The institution the users are related to
- * @return {string} A commpressed encoded URI component
- */
-
-CodeInvitation.helpers.createURLQuery = onClient(function ({ code, firstName, lastName, email, institution }) {
-  const params = { code }
-
-  if (firstName) params.firstName = firstName
-  if (lastName) params.lastName = lastName
-  if (email) params.email = email
-  if (institution) params.institution = institution
-
-  const jsonData = JSON.stringify(params)
-  return encodeURIComponent(btoa(jsonData))
-})
-
-/**
- * Decompresses and decodes a URL query parameter, created via {createURLQuery}
- * @param queryParams The isolated queryparameter
- * @return {Object} the parses code doc credentials
- */
-
-CodeInvitation.helpers.parseURLQuery = onClient(function (queryParams) {
-  const decoded = decodeURIComponent(queryParams)
-  const decompressed = atob(decoded)
-  const parsed = JSON.parse(decompressed)
-  if (!parsed || !parsed.code) {
-    throw new Meteor.Error(CodeInvitation.errors.invalidQueryParams)
-  }
-  return parsed
-})
-
-/**
- * Calculates a future date as unix timestamp
- * @param date A date instance
- * @param days the number of days to add
- * @return {number} the unix timestamp as integer
- */
-
-CodeInvitation.helpers.getOffset = function getOffset (date, days) {
-  const offset = days * 86400000 // days in ms
-  return date.getTime() + offset
-}
-
-/**
- * Returns the time left in ms between now and the expiration date
- * @param createdAt - the creation date of the doc
- * @param expires - the number of days until expiration
- * @return {number} a unix timestamp as integer
- */
-
-CodeInvitation.helpers.timeLeft = function timeLeft (createdAt, expires) {
-  const now = new Date().getTime()
-  const expirationDate = CodeInvitation.helpers.getOffset(new Date(createdAt), expires)
-  return expirationDate - now
-}
-
-/**
- * Checks, whether a code doc is expired. Checks for validity and expiration date.
- * @param codeDoc {object}
- * @param codeDoc.invalid {boolean=} - the invalid flag for force-expired docs
- * @param codeDoc.createdAt {Date} - the creation date of the doc
- * @param codeDoc.expires {Number} - the number of days until expiration
- * @return {boolean} true if
- */
-
-CodeInvitation.helpers.isExpired = function isExpired (codeDoc) {
-  check(codeDoc, Match.ObjectIncluding({
-    createdAt: Date,
-    expires: Number
-  }))
-
-  const { invalid, createdAt, expires } = codeDoc
-
-  if (invalid) {
-    return true
-  }
-
-  const now = new Date().getTime()
-  const expirationDate = CodeInvitation.helpers.getOffset(new Date(createdAt), expires)
-  return (now - expirationDate) >= 0
-}
-
-/**
- * Checks, whether a code document is considered complete. This is the case when all users have fulfilled their
- * invitation with a registration. It does not differentiate , whether a registration failed or succeeded.
- * @param codeDoc {object}
- * @param codeDoc._id {string} the _id of the current code doc
- * @param codeDoc.registeredUsers {[string]=} the current registered users
- * @param codeDoc.maxUsers {Number} the number of maxmimum allowed registrations
- * @return {boolean} true if max users is exactly reached, otherwise false
- * @throws {Meteor.Error} if parameters are not contained or validated
- * @throws {Meteor.Error} in case the registered users amount has exceeded the max users
- */
-CodeInvitation.helpers.isComplete = function isComplete (codeDoc) {
-  check(codeDoc, Match.ObjectIncluding({
-    _id: String,
-    maxUsers: Number
-  }))
-  const { _id, registeredUsers, maxUsers } = codeDoc
-
-  if (!Array.isArray(registeredUsers) || !registeredUsers.length) {
-    return false
-  }
-  else if (registeredUsers.length > maxUsers) {
-    throw new Meteor.Error(CodeInvitation.errors.maxUsersExceeded, _id)
-  }
-  else {
-    return registeredUsers.length === maxUsers
-  }
-}
-
-/**
- * Returns if a doc is considered to be active and pending to be completed
- * @param doc The code document to be checked
- * @return {boolean} true if not expired and not complete
- */
-CodeInvitation.helpers.isPending = function isPending (doc) {
-  return !CodeInvitation.helpers.isExpired(doc) && !CodeInvitation.helpers.isComplete(doc)
-}
-
-/**
- * Returns the considered status of a code document
- * @param createdAt
- * @param expires
- * @param registeredUsers
- * @param maxUsers
- * @param _id
- * @return {*}
- */
-CodeInvitation.helpers.getStatus = function getStatus ({
-  invalid,
-  createdAt,
-  expires,
-  registeredUsers,
-  maxUsers,
-  _id
-}) {
-  const isExpired = CodeInvitation.helpers.isExpired({
-    invalid,
-    createdAt,
-    expires
-  })
-  const isComplete = CodeInvitation.helpers.isComplete({
-    _id,
-    registeredUsers,
-    maxUsers
-  })
-
-  if (!isExpired && !isComplete) return CodeInvitation.status.pending
-  if (isComplete) return CodeInvitation.status.complete
-  if (isExpired) return CodeInvitation.status.expired
-  throw new Error(`Unexpected undefined state for invitation document [${_id}]`)
-}
-
-/**
- * Validates a given code or codeDoc and returns true if the code is valid to be used, otherwise false
- * @param codeOrCodeDoc either a codeDoc or code to find a codeDoc
- * @return {boolean}
- */
-
-CodeInvitation.helpers.validate = function validate (codeOrCodeDoc) {
-  if (!codeOrCodeDoc) return false
-
-  const codeDoc = typeof codeOrCodeDoc === 'object'
-    ? codeOrCodeDoc
-    : getCollection(CodeInvitation.name).findOne({ code: codeOrCodeDoc })
-
-  if (!codeDoc) {
-    return false
-  }
-
-  const isExpired = CodeInvitation.helpers.isExpired(codeDoc)
-  const isComplete = CodeInvitation.helpers.isComplete(codeDoc)
-  return !isExpired && !isComplete
-}
-
-CodeInvitation.helpers.getCodeDoc = function getCodeDoc (code) {
-  return getCollection(CodeInvitation.name).findOne({ code })
-}
-
-CodeInvitation.helpers.addUserToInvitation = onServerExec(function () {
-  return function addUserToInvitation (codeOrCodeDoc, userId) {
-    const codeDoc = typeof codeOrCodeDoc === 'object'
-      ? codeOrCodeDoc
-      : CodeInvitation.helpers.getCodeDoc(codeOrCodeDoc)
-
-    const registeredUsers = codeDoc.registeredUsers || []
-    if (registeredUsers.length >= codeDoc.maxUsers) {
-      throw new Error(CodeInvitation.errors.maxUsersExceeded)
-    }
-
-    registeredUsers.push(userId)
-    return getCollection(CodeInvitation.name).update(codeDoc._id, {
-      $set: { registeredUsers }
-    })
-  }
-})
 
 /**
  *
@@ -565,62 +351,10 @@ CodeInvitation.methods.create = {
   schema: CodeInvitation.createCodeSchema,
   roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.curriculum, UserUtils.roles.teacher],
   run: onServerExec(function () {
-    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
-    import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
-
-    const getClassDoc = createDocGetter(SchoolClass)
-
+    import { createInvitation } from './methods/createInvitation'
     return function (createDoc) {
       const { userId } = this
-
-      if (!UserUtils.canInvite(userId, createDoc.role)) {
-        throw new Meteor.Error(
-          'codeInvitation.createFailed',
-          CodeInvitation.errors.insufficientRole,
-          { userId, role: createDoc.role }
-        )
-      }
-
-      // check if institution matches
-      const user = getUsersCollection().findOne(userId)
-      const { institution } = user
-
-      if (institution !== createDoc.institution && !userIsAdmin(userId)) {
-        throw new Meteor.Error(
-          'codeInvitation.createFailed',
-          CodeInvitation.errors.institutionMismatch,
-          { institution: createDoc.institution, userId }
-        )
-      }
-
-      const insertDoc = {
-        code: Random.id(4),
-        expires: createDoc.expires,
-        role: createDoc.role,
-        firstName: createDoc.firstName,
-        lastName: createDoc.lastName,
-        email: createDoc.email,
-        institution: createDoc.institution,
-        registeredUsers: [],
-        maxUsers: createDoc.maxUsers,
-        classId: createDoc.classId
-      }
-
-      // verify class ownership
-      if (createDoc.role === UserUtils.roles.student) {
-        const { classId } = insertDoc
-        const classDoc = getClassDoc(classId)
-
-        if (!SchoolClass.helpers.isTeacher({ classDoc, userId })) {
-          throw new PermissionDeniedError('schoolClass.notTeacher', { classId, userId })
-        }
-      }
-      // otherwise remove class entirely
-      else {
-        delete insertDoc.classId
-      }
-
-      return getCollection(CodeInvitation.name).insert(insertDoc)
+      return createInvitation({ userId, createDoc })
     }
   })
 }
@@ -637,33 +371,9 @@ CodeInvitation.methods.verify = {
   },
   isPublic: true,
   run: onServerExec(function () {
-    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
-
-    const getCodeDoc = createDocGetter({ name: CodeInvitation.name, optional: true })
-    const getClassDoc = createDocGetter({ name: SchoolClass.name })
-
+    import { verifyInvitation } from './methods/verifyInvitation'
     return function ({ code }) {
-      const codeDoc = getCodeDoc({ code })
-
-      if (!codeDoc || CodeInvitation.helpers.isExpired(codeDoc) || CodeInvitation.helpers.isComplete(codeDoc)) {
-        throw new Meteor.Error(CodeInvitation.errors.invalidLink, CodeInvitation.errors.invalidLinkReason)
-      }
-
-      let classDoc
-
-      if (codeDoc.classId) {
-        classDoc = getClassDoc(codeDoc.classId)
-      }
-
-      return {
-        firstName: codeDoc.firstName,
-        lastName: codeDoc.lastName,
-        role: codeDoc.role,
-        institution: codeDoc.institution,
-        email: codeDoc.email,
-        classId: codeDoc.classId,
-        className: classDoc?.title
-      }
+      return verifyInvitation({ code })
     }
   })
 }
@@ -677,16 +387,11 @@ CodeInvitation.methods.forceExpire = {
   roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher],
   schema: { _id: String },
   run: onServerExec(function () {
-    import { createGetDoc } from '../../../api/utils/documentUtils'
+    import { forceExpire } from './methods/forceExpire'
 
     return function ({ _id }) {
       const { userId } = this
-      const opts = { checkOwner: !UserUtils.isAdmin(userId) }
-      createGetDoc(CodeInvitation, opts).call({ userId }, _id)
-
-      return getCollection(CodeInvitation.name).update(_id, {
-        $set: { invalid: true }
-      })
+      return forceExpire({ codeDocId: _id, userId })
     }
   })
 }
@@ -700,7 +405,7 @@ CodeInvitation.methods.remove = {
   roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin],
   schema: { _id: String },
   run: onServer(function ({ _id }) {
-    return getCollection(CodeInvitation.name).remove(_id)
+    return getCollection(CodeInvitation.name).removeAsync(_id)
   })
 }
 
@@ -716,63 +421,9 @@ CodeInvitation.methods.addToClass = {
     import { Users } from '../../system/accounts/users/User'
     import { createDocGetter } from '../../../api/utils/document/createDocGetter'
 
-    const getClassDoc = createDocGetter(SchoolClass)
 
     return async function ({ code }) {
-      // 1st validate code
-      const isValid = CodeInvitation.helpers.validate(code)
-      if (!isValid) {
-        throw new PermissionDeniedError(CodeInvitation.errors.invalidCode)
-      }
 
-      // 2nd validate user
-      const userId = this.userId
-      const user = getUsersCollection().findOne(userId)
-      if (!Users.helpers.verify(user)) {
-        console.warn('warning adding unverified user', user._id)
-        // throw new PermissionDeniedError('user.notVerified')
-      }
-
-      const codeDoc = CodeInvitation.helpers.getCodeDoc(code)
-      if (!codeDoc) throw new DocNotFoundError(code)
-
-      // 3rd get class doc
-      const { classId } = codeDoc
-      const classDoc = getClassDoc(classId)
-
-      // 4th validate if user is already member
-      const isStudent = SchoolClass.helpers.isMember({ classDoc, userId })
-      if (isStudent) {
-        throw new PermissionDeniedError(CodeInvitation.errors.alreadyClassMember, JSON.stringify({
-          classId,
-          userId
-        }))
-      }
-
-      // 5th check roles match
-      const { role } = codeDoc
-      if (!UserUtils.hasRole(userId, role, user.institution)) {
-        throw new PermissionDeniedError(PermissionDeniedError.notInRole, role)
-      }
-
-      const teacherId = codeDoc.createdBy
-
-      // 6th add to class
-      if (role === UserUtils.roles.teacher) {
-        await addTeacher({ classId, userId, teacherId })
-      }
-      else if (role === UserUtils.roles.student) {
-        const added = await addStudent({ classId, userId, teacherId })
-        if (!added) throw new Meteor.Error(500)
-        await getUsersCollection().updateAsync(userId, { $set: { 'ui.classId': classId } })
-      }
-      else {
-        throw new PermissionDeniedError(SchoolClass.errors.invalidRole, role)
-      }
-
-      // add
-      CodeInvitation.helpers.addUserToInvitation.call(thisContext, code, userId)
-      return true
     }
   })
 }

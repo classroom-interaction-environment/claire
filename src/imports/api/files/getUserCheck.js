@@ -1,17 +1,17 @@
 import { Meteor } from 'meteor/meteor'
 import { createLog } from '../log/createLog'
 import { userIsCurriculum } from '../accounts/userIsCurriculum'
+import { userExists } from '../accounts/user/userExists'
 
-const userExists = (userId) => !!(userId && Meteor.users.find({ _id: userId }).count() > 0)
 const debug = createLog({ name: 'validateUser', type: 'debug' })
 
 export const getUserCheck = function () {
-  return function validateUser (user, file, type) {
-    debug('for', file.name, type, user?.emails)
+  return async (user, file, type) => {
     const userId = user?._id
+    debug('for', file.name, type, user?.emails, userId)
 
-    if (!userExists(userId)) {
-      debug('user does not exist, deny', type, file.name)
+    if (!await userExists({ userId })) {
+      debug(`user ${userId} does not exist, deny`, type, file.name)
       return false
     }
 
@@ -19,7 +19,7 @@ export const getUserCheck = function () {
     const fileIsCurriculum = file._master === true
 
     if (type === 'upload') {
-      if (fileIsCurriculum && !userIsCurriculum(userId)) {
+      if (fileIsCurriculum && !await userIsCurriculum(userId)) {
         debug('upload to curriculum as as non-curriculum user denied')
         return false
       }

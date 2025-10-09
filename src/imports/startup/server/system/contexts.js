@@ -7,6 +7,7 @@ import { systemPipeline } from '../../../contexts/system/systemPipeline'
 import { ContextRegistry } from '../../../infrastructure/context/ContextRegistry'
 import { buildPipeline } from '../../../infrastructure/pipelines/server/buildPipeline'
 import { System } from '../../../contexts/system/System'
+import { UserRoles } from '../../../api/roles/UserRoles'
 
 const buildOptions = {
   collection: true,
@@ -24,3 +25,7 @@ for (const context of system) {
   buildPipeline(context, buildOptions)
   ContextRegistry.add(context)
 }
+
+systemPipeline(UserRoles)
+buildPipeline(UserRoles, { collection: false, methods: false, publications: true })
+ContextRegistry.add(UserRoles)

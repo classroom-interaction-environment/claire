@@ -20,6 +20,7 @@ import { loadIntoCollection } from '../../../infrastructure/loading/loadIntoColl
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
 import '../../components/invitation/rowRenderer/rowRenderer'
 import './inviteUsers.html'
+import { createInvitationURLQuery } from '../../../contexts/classroom/invitations/url/createInvitationURLQuery'
 
 const API = Template.inviteUsers.setDependencies({
   contexts: [CodeInvitation, SchoolClass, Beamer]
@@ -98,7 +99,7 @@ Template.inviteUsers.helpers({
   },
   getLink (docId) {
     const invitationDoc = getCollection(CodeInvitation.name).findOne(docId)
-    const queryParams = CodeInvitation.helpers.createURLQuery(invitationDoc)
+    const queryParams = createInvitationURLQuery(invitationDoc)
     const invitationRoute = Routes.codeRegister.path(queryParams)
     const url = Meteor.absoluteUrl()
     return url.substring(0, url.length - 1) + invitationRoute

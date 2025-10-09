@@ -15,7 +15,7 @@ export const logRuntimeEndpoints = function (options) {
     endpointType = 'publication'
   }
 
-  const wrap = (originalFct, type) => function (...args) {
+  const wrap = (originalFct, type) => async function (...args) {
     const environment = this
     const methodId = createMethodId()
     const logName = `${endpointType}:${name} (${methodId})`
@@ -45,8 +45,8 @@ export const logRuntimeEndpoints = function (options) {
 
       if (['Meteor.Error', 'ClientError'].includes(runtimeError.errorType || runtimeError.name)) {
         runtimeError.isClientSafe = true
-        endpointType.isMethod = isMethod
-        endpointType.isPublication = isPublication
+        runtimeError.isMethod = isMethod
+        runtimeError.isPublication = isPublication
         error(runtimeError) // client safe errors are not logged on the server
       }
 

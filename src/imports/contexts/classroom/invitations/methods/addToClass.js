@@ -1,17 +1,21 @@
+import { Meteor } from 'meteor/meteor'
 import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
 import { SchoolClass } from '../../schoolclass/SchoolClass'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
-import { Meteor } from 'meteor/meteor'
-import { Users } from '../../../system/accounts/users/User'
 import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
+import { Users } from '../../../system/accounts/users/User'
 import { UserUtils } from '../../../system/accounts/users/UserUtils'
 import { CodeInvitation } from '../CodeInvitations'
+import { validateInvitation } from '../validation/validateInvitation'
+import { addUserToInvitation } from './addUserToInvitation'
+import { getUsersCollection } from '../../../../api/utils/getUsersCollection'
 
-const getClassDoc = createDocGetter(SchoolClass)
+const getClassDoc = createDocGetter({ name: SchoolClass.name })
+const getCodeDoc = createDocGetter({ name: CodeInvitation.name })
 
-export const addToClass = function ({ code }) {
+export const addToClass = async ({ code }) => {
   // 1st validate code
-  const isValid = CodeInvitation.helpers.validate(code)
+  const isValid = validateInvitation(code)
   if (!isValid) {
     throw new PermissionDeniedError(CodeInvitation.errors.invalidCode)
   }
@@ -24,12 +28,12 @@ export const addToClass = function ({ code }) {
     // throw new PermissionDeniedError('user.notVerified')
   }
 
-  const codeDoc = CodeInvitation.helpers.getCodeDoc(code)
+  const codeDoc = await getCodeDoc(code)
   if (!codeDoc) throw new DocNotFoundError(code)
 
   // 3rd get class doc
   const { classId } = codeDoc
-  const classDoc = getClassDoc(classId)
+  const classDoc = await getClassDoc(classId)
 
   // 4th validate if user is already member
   const isStudent = SchoolClass.helpers.isMember({ classDoc, userId })
@@ -57,13 +61,13 @@ export const addToClass = function ({ code }) {
       userId
     })
     if (!added) throw new Meteor.Error(500)
-    Meteor.users.update(userId, { $set: { 'ui.classId': classId } })
+    await getUsersCollection().updateAsync(userId, { $set: { 'ui.classId': classId } })
   }
   else {
     throw new PermissionDeniedError(SchoolClass.errors.invalidRole, role)
   }
 
   // add
-  CodeInvitation.helpers.addUserToInvitation.call(thisContext, code, userId)
+  await addUserToInvitation(code, userId)
   return true
 }

@@ -40,7 +40,7 @@ const getRunFct = ({ name, isCurriculum }) => {
     // because the curriculum is a "semi-public" entity: all registered users
     // should be able to read all curriculum documents
 
-    return function ({ ids = [], skip = [] }) {
+    return async function ({ ids = [], skip = [] }) {
       const { userId, log } = this
       const collection = getCollection(name)
       const masterDocsQuery = {}
@@ -65,14 +65,15 @@ const getRunFct = ({ name, isCurriculum }) => {
         customDocsQuery.createdBy = userId
       }
 
-      log('get all', JSON.stringify(query), '=>', collection.find(query).count())
-      return collection.find(query).fetch()
+      log('get all', JSON.stringify(query))
+      return collection.find(query).fetchAsync()
     }
   }
 
   // is this is not part of the curriculum we don't need any _master flags
   // se we just return queries for the current user.
   return function ({ ids = [], skip = [] }) {
+    throw new Error('not migrated')
     const { userId, log } = this
     const collection = getCollection(name)
     const query = {}

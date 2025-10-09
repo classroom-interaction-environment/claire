@@ -3,6 +3,7 @@ import { SchoolClass } from '../schoolclass/SchoolClass'
 import { createDocGetter } from '../../../api/utils/document/createDocGetter'
 import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
 import { isMemberOfClass } from '../schoolclass/helpers/isMemberOfClass'
+import { deprecate } from '../../../infrastructure/functions/deprecate'
 
 const getLessonDoc = createDocGetter(Lesson)
 const getClassDoc = createDocGetter(SchoolClass)
@@ -54,7 +55,11 @@ LessonHelpers.isMemberOfLesson = function isMemberOfLesson ({ userId, lessonId }
   return isMemberOfClass({ classDoc, userId })
 }
 
-LessonHelpers.isMemberOfClass = ({ classDoc, userId }) => isMemberOfClass({ classDoc, userId })
+/**
+ * @deprecated
+ * @type {(function({classDoc: Object, userId: string}): boolean)|*}
+ */
+LessonHelpers.isMemberOfClass = deprecate(isMemberOfClass, 'LessonHelpers.isMemberOfClass')
 
 /**
  * Checks if the given user is teacher of the lesson, or if not, being teacher of the class.

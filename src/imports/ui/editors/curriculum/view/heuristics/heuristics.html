@@ -7,7 +7,7 @@
     <div class="d-flex w-100">
         {{>actionButton
                 type="success"
-                class="ml-auto create-dimension-button text-nowrap"
+                class="ms-auto create-dimension-button text-nowrap"
                 label=(i18n "actions.create")
                 icon="plus"}}
     </div>
@@ -85,9 +85,9 @@
                     label=(i18n "actions.create")}}
             {{>actionButton
                     blocked=(updating "new")
-                    data-dismiss="modal"
+                    data-bs-dismiss="modal"
                     type="outline-secondary"
-                    class="ml-auto"
+                    class="ms-auto"
                     label=(i18n "actions.cancel")}}
         {{/mfooter}}
         {{/onLoaded}}

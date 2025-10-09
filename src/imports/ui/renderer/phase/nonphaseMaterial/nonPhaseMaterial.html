@@ -15,7 +15,7 @@
                     {{/if}}
                 </strong>
                 {{#if inlineActive}}
-                    <span class="mr-1">
+                    <span class="me-1">
                         {{#each reference in this}}
                             {{#if reference.isFilesCollection}}
                                 {{>tooltip title=reference.doc.name icon=reference.icon}}
@@ -31,9 +31,9 @@
             {{#unless inlineActive}}
                 {{#each reference in this}}
                     <li class="list-group-item align-items-center text-dark {{../liclass}}">
-                        <span class="mr-2">
+                        <span class="me-2">
                             {{>tooltip title=(i18n reference.label) icon=reference.icon}}
-                            <span class="text-wrap ml-2 d-none d-md-inline-flex">
+                            <span class="text-wrap ms-2 d-none d-md-inline-flex">
                                 {{#if reference.isFilesCollection}}
                                     {{reference.doc.name}}
                                 {{else}}

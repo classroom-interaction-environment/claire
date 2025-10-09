@@ -29,6 +29,7 @@ export const createEditorGetMethod = ({ name, isFilesCollection }) => {
     timeInterval: 500,
     numRequests: 1,
     run: onServer(function ({ meta }) {
+  throw new Error('not migrated')
       const query = {}
 
       if (isFilesCollection && meta) {
