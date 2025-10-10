@@ -3,10 +3,11 @@ import { Blaze } from 'meteor/blaze'
 import { Template } from 'meteor/templating'
 import { Tracker } from 'meteor/tracker'
 import { Router } from '../../api/routes/Router'
-
+import { Hierarchy } from '../../api/accounts/roles/Hierarchy'
 import { dynamicImport } from '../../ui/utils/dynamicImport'
 import { createLog } from '../../api/log/createLog'
 import { UserRoles } from '../../api/roles/UserRoles'
+import { getHighestRole } from '../../api/accounts/roles/getHighestRole'
 
 if (Blaze.setExceptionHandler) Blaze.setExceptionHandler(console.error)
 if (Template.stateName) Template.stateName('state')
@@ -51,17 +52,16 @@ Tracker.autorun((computation) => {
 })
 
 async function loadUserRoutes (userId) {
-  const { UserUtils } = await import('../../contexts/system/accounts/users/UserUtils')
-  const role = UserUtils.getHighestRole(userId)
+  const role = await getHighestRole(userId)
   switch (role) {
-    case UserUtils.roles.student:
+    case Hierarchy.student:
       return await loadStudent() && role
-    case UserUtils.roles.teacher:
+    case Hierarchy.teacher:
       return await loadTeacher() && role
-    case UserUtils.roles.curriculum:
+    case Hierarchy.curriculum:
       return await loadCurriculum() && role
-    case UserUtils.roles.schoolAdmin:
-    case UserUtils.roles.admin:
+    case Hierarchy.schoolAdmin:
+    case Hierarchy.admin:
       return await loadAdmin() && role
     default:
       throw new Error('Undefined role:', role)

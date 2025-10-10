@@ -10,6 +10,7 @@ UserRoles.publications = {}
 UserRoles.publications.my = {
   name: 'userRoles.publications.my',
   schema: {},
+  isPublic: true,
   run: onServer(function () {
     const { userId } = this
     if (userId) {

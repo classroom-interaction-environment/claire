@@ -55,6 +55,8 @@ export const createGetDoc = ({ name } = {}, { checkOwner = true } = {}) => {
 /**
  * Factory function to create a document-updater that includes several safety-checks (collection exists,
  * document exists, ownership).
+ * TODO: refactor → reify to single argument and remove this-context binding
+ * @deprecated
  * @param name The name of the context, used to obtain the collection
  * @param checkOwner determines, whether the document is to be checked for ownership
  * @returns {function} A function to update documents by _id and modifier

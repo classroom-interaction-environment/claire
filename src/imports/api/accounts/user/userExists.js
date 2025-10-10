@@ -22,5 +22,6 @@ export const userExists = async ({ userId, email } = {}) => {
   }
 
   const count = await getUsersCollection().countDocuments(query)
+  console.debug('userExists', { userId, email }, '=>', count)
   return count > 0
 }

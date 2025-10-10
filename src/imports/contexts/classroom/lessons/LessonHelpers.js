@@ -97,6 +97,7 @@ LessonHelpers.isStudentOfLesson = function isStudentOfLesson ({ userId, lessonId
 
 /**
  * Gets lessonDoc and classDoc if the userId is a teacher
+ * @deprecated
  * @param userId
  * @param lessonId
  * @return {{lessonDoc: object, classDoc: object}}

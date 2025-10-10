@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
-import { CodeInvitation } from '../../../../contexts/classroom/invitations/CodeInvitations'
 import { Routes } from '../../../../api/routes/Routes'
+import { createInvitationURLQuery } from '../../../../contexts/classroom/invitations/url/createInvitationURLQuery'
 import QRCode from 'qrcode'
 import './coderender.html'
 
@@ -16,7 +16,7 @@ Template.codeRender.onCreated(function () {
     const { code } = data
     if (!code) return
 
-    const codeUrlQuery = CodeInvitation.helpers.createURLQuery({ code })
+    const codeUrlQuery = createInvitationURLQuery({ code })
     const invitationRoute = Routes.codeRegister.path(codeUrlQuery)
     const url = Meteor.absoluteUrl()
     const invitationPath = url.substring(0, url.length - 1) + invitationRoute

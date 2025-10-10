@@ -33,11 +33,11 @@ const getCodeDoc = createDocGetter({ name: CodeInvitation.name, optional: true }
  * @return {*}
  */
 export const registerWithCode = async ({ code, email, firstName, lastName, password, institution, locale }) => {
-  const codeDoc = getCodeDoc({ code })
+  const codeDoc = await getCodeDoc({ code })
 
   // first we validate if the related code doc exists and is still valid
-  if (validateInvitation(codeDoc)) {
-    throw new Meteor.Error(errors.failed, errors.codeInvalid)
+  if (!validateInvitation(codeDoc)) {
+    throw new Meteor.Error(errors.failed, errors.codeInvalid, { code })
   }
 
   // second we check if the user already exists by given Email address
@@ -92,14 +92,14 @@ export const registerWithCode = async ({ code, email, firstName, lastName, passw
 
   // send verification email
   if (password && password.length > 0) {
-    Accounts.sendVerificationEmail(userId)
+    await Accounts.sendVerificationEmail(userId)
   }
   else {
-    Accounts.sendEnrollmentEmail(userId)
+    await Accounts.sendEnrollmentEmail(userId)
   }
 
   // invalidate invitation
-  const invitationUpdated = addUserToInvitation(codeDoc, userId)
+  const invitationUpdated = await addUserToInvitation(codeDoc, userId)
   if (!invitationUpdated) {
     throw new Meteor.Error(errors.failed, errors.invitationNotUpdated)
   }

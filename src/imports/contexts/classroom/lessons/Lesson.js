@@ -1,9 +1,9 @@
 import { Meteor } from 'meteor/meteor'
 import { UserUtils } from '../../system/accounts/users/UserUtils'
 import { i18n } from '../../../api/language/language'
-import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
 import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
+import { resumeLesson, stopLesson } from './methods/lessonActions'
 
 /**
  * The Lesson is a fundamental part of this application.
@@ -252,20 +252,11 @@ Lesson.publications.single = {
     _id: String
   },
   run: onServerExec(function () {
-    import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
-    import { LessonHelpers } from './LessonHelpers'
+    import { singleLesson } from './publications/singleLesson'
 
-    return function ({ _id }) {
+    return async function ({ _id }) {
       const { userId } = this
-      const isMember = LessonHelpers.isMemberOfLesson({
-        userId,
-        lessonId: _id
-      })
-      if (!isMember && !userIsAdmin(userId)) {
-        throw new PermissionDeniedError('lesson.notAMember')
-      }
-
-      return getCollection(Lesson.name).find({ _id }, { limit: 1 })
+      return singleLesson({ lessonId: _id, userId })
     }
   }),
   timeInterval: 1000,
@@ -286,16 +277,10 @@ Lesson.publications.byClass = {
     classId: String
   },
   run: onServerExec(function () {
-    import { SchoolClass } from '../schoolclass/SchoolClass'
-    import { isTeacher } from '../schoolclass/helpers/isTeacher'
+    import { lessonsByClassTeacher } from './publications/lessonsByClass'
     return async function ({ classId }) {
-      const userId = this.userId
-      const classDoc = await getCollection(SchoolClass.name).findOneAsync({ _id: classId })
-      const userIsTeacher = isTeacher(userId, classDoc)
-      this.log({ userIsTeacher })
-      return userIsTeacher
-        ? getCollection(Lesson.name).find({ classId })
-        : null
+      const { userId } = this
+      return lessonsByClass({ userId, classId })
     }
   })
 }
@@ -313,12 +298,11 @@ Lesson.publications.byClassStudent = {
     classId: String
   },
   run: onServerExec(function () {
-    import { LessonHelpers } from './LessonHelpers'
+    import {lessonsByClassStudent} from './publications/lessonsByClass'
 
     return function ({ classId }) {
-      const userId = this.userId
-      const classDoc = LessonHelpers.getClassDocIfStudent({ userId, classId })
-      return getCollection(Lesson.name).find({ classId: classDoc && classDoc._id })
+      const { userId } = this
+      return lessonsByClassStudent({ classId, userId })
     }
   })
 }
@@ -400,17 +384,12 @@ Lesson.methods.counts = {
     'classIds.$': String
   },
   roles: UserUtils.roles.teacher,
-  run: onServer(async function ({ classIds }) {
-    const { userId } = this
-    const out = Object.create(null)
-    const LessonCollection = getCollection(Lesson.name)
-
-    for (const classId of classIds) {
-      const query = { classId, createdBy: userId }
-      out[classId] = await LessonCollection.countDocuments(query)
+  run: onServerExec(() => {
+    import { countLessons } from './methods/countLessons'
+    return async function ({ classIds }) {
+      const { userId } = this
+      return countLessons({ classIds, userId })
     }
-
-    return out
   })
 }
 
@@ -454,38 +433,12 @@ Lesson.methods.start = {
     _id: String
   },
   role: UserUtils.roles.teacher,
-  run: onServerExec(function () {
-    import { LessonStates } from './LessonStates'
-    import { LessonErrors } from './LessonErrors'
-    import { LessonHelpers } from './LessonHelpers'
-    import { createUpdateDoc } from '../../../api/utils/documentUtils'
-
-    const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
-
-    /**
-     * Starts a lesson by _id.
-     * @throws Meteor.Error if the lesson is not found by _id
-     * @throws Meteor.Error if the lesson is not owned by the user
-     * @throws Meteor.Error if the lesson is not in idle state
-     * @param _id The _id of the target lesson
-     * @return {Boolean} A boolean value, whether the operation has been successful
-     */
-    function startLesson ({ _id }) {
-      const userId = this.userId
-      const { lessonDoc } = LessonHelpers.docsForTeacher({
-        userId,
-        lessonId: _id
-      })
-
-      if (!LessonStates.canStart(lessonDoc)) {
-        throw new Meteor.Error(LessonErrors.unexpectedState, 'lesson.errors.expectedIdle')
-      }
-
-      const startedAt = new Date()
-      return !!updateLesson.call(this, lessonDoc._id, { $set: { startedAt } })
+  run: onServerExec(() => {
+    import { startLesson } from './methods/lessonActions'
+    return async function ({ _id }) {
+      const { userId } = this
+      return startLesson({ userId, lessonId: _id })
     }
-
-    return startLesson
   })
 }
 
@@ -496,42 +449,11 @@ Lesson.methods.complete = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { createUpdateDoc } from '../../../api/utils/documentUtils'
-    import { LessonStates } from './LessonStates'
-    import { LessonHelpers } from './LessonHelpers'
-
-    const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
-
-    /**
-     * Completes a lesson by _id
-     * @throws Meteor.Error if lesson is not in running state
-     * @param _id The _id of the target lesson
-     * @return {Boolean} A boolean value, whether the operation has been successful
-     */
-
-    function completeLesson ({ _id }) {
-      const userId = this.userId
-      const { lessonDoc } = LessonHelpers.docsForTeacher({
-        userId,
-        lessonId: _id
-      })
-
-      if (!LessonStates.canComplete(lessonDoc)) {
-        throw new Meteor.Error('lesson.errors.unexpectedState', 'lesson.errors.expectedRunning')
-      }
-
-      // this is our indicator for the lesson being completed
-      const completedAt = new Date()
-
-      // we also unset all visible materials, to prevent any runtime issues
-      // with current opened materials on the student views, that could arise
-      // during the state changing from running to completed
-      const visibleStudent = []
-
-      return !!updateLesson.call(this, _id, { $set: { completedAt, visibleStudent } })
+    import { completeLesson } from './methods/lessonActions'
+    return async function ({ _id }) {
+      const { userId } = this
+      return completeLesson({ userId, lessonId: _id })
     }
-
-    return completeLesson
   })
 }
 
@@ -542,35 +464,11 @@ Lesson.methods.stop = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { LessonErrors } from './LessonErrors'
-    import { LessonStates } from './LessonStates'
-    import { LessonHelpers } from './LessonHelpers'
-    import { createUpdateDoc } from '../../../api/utils/documentUtils'
-
-    const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
-
-    /**
-     * Stops a lesson by _id
-     * @throws Meteor.Error if lesson is not in running state
-     * @param _id The _id of the target lesson
-     * @return {Boolean} A boolean value, whether the operation has been successful
-     */
-
-    function stopLesson ({ _id }) {
-      const userId = this.userId
-      const { lessonDoc } = LessonHelpers.docsForTeacher({
-        userId,
-        lessonId: _id
-      })
-
-      if (!LessonStates.isRunning(lessonDoc)) {
-        throw new Meteor.Error(LessonErrors.unexpectedState)
-      }
-
-      return updateLesson.call(this, lessonDoc._id, { $unset: { startedAt: 1 } })
+    import { stopLesson } from './methods/lessonActions'
+    return async function ({ _id }) {
+      const { userId } = this
+      return stopLesson({ userId, lessonId: _id })
     }
-
-    return stopLesson
   })
 }
 
@@ -581,31 +479,11 @@ Lesson.methods.resume = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { LessonStates } from './LessonStates'
-    import { LessonErrors } from './LessonErrors'
-    import { LessonHelpers } from './LessonHelpers'
-    import { createUpdateDoc } from '../../../api/utils/documentUtils'
-
-    const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
-
-    /**
-     * Resumes a lesson by _id
-     * @throws Meteor.Error if lesson is not in completed state
-     * @param _id The _id of the target lesson
-     * @return {Boolean} A boolean value, whether the operation has been successful
-     */
-
-    function resumeLesson ({ _id }) {
-      const userId = this.userId
-      const { lessonDoc } = LessonHelpers.docsForTeacher({
-        userId,
-        lessonId: _id
-      })
-      if (!LessonStates.canResume(lessonDoc)) throw new Meteor.Error(LessonErrors.unexpectedState)
-      return updateLesson.call(this, lessonDoc._id, { $unset: { completedAt: 1 } })
+    import { resumeLesson } from './methods/lessonActions'
+    return async function ({ _id }) {
+      const { userId } = this
+      return resumeLesson({ userId, lessonId: _id })
     }
-
-    return resumeLesson
   })
 }
 
@@ -616,58 +494,11 @@ Lesson.methods.restart = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { LessonRuntime } from './runtime/LessonRuntime'
-    import { LessonStates } from './LessonStates'
-    import { LessonHelpers } from './LessonHelpers'
-    import { createUpdateDoc } from '../../../api/utils/documentUtils'
-
-    const updateLesson = createUpdateDoc(Lesson)
-
-    /**
-     * Restartes a lesson by _id and removes all data that has been generated during the lesson run
-     * TODO also check here if an inversion of control is possible, since we
-     * TODO will definitely have to expand the list of contexts that will be used here
-     * @throws Meteor.Error if lesson is not in running state and also not in completed state
-     * @param _id The _id of the target lesson
-     * @return {object} A boolean value, whether the operation has been successful
-     */
-    function restartLesson ({ _id }) {
-      const { userId, log } = this
-      const { lessonDoc } = LessonHelpers.docsForTeacher({
-        userId,
-        lessonId: _id
-      })
-
-      if (!LessonStates.canRestart(lessonDoc)) {
-        throw new Meteor.Error(
-          'lesson.errors.unexpectedState',
-          'lesson.errors.expectedRestartable',
-          { lessonId: _id, userId }
-        )
-      }
-
-      const options = { lessonId: _id, userId, unitId: lessonDoc.unit }
-      const runtimeDocs = LessonRuntime.removeDocuments(options)
-      const groupDocs = LessonRuntime.resetGroups(options)
-      const beamerReset = LessonRuntime.resetBeamer(options)
-      const lessonReset = !!updateLesson.call(this, _id, {
-        $unset: {
-          phase: 1,
-          startedAt: 1,
-          completedAt: 1,
-          artifacts: 1,
-          uploads: 1,
-          visibleStudent: 1,
-          visibleBeamer: 1
-        }
-      })
-
-      const result = { runtimeDocs, beamerReset, lessonReset, groupDocs }
-      log(result)
-      return result
+    import { restartLesson} from './methods/restartLesson'
+    return async function ({ _id }) {
+      const { userId } = this
+      return restartLesson({ userId, lessonId: _id })
     }
-
-    return restartLesson
   })
 }
 

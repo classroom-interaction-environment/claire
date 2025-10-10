@@ -316,8 +316,8 @@ Users.methods.userIsAvailable = {
   run: onServerExec(function () {
     import { userExists } from '../../../../api/accounts/user/userExists'
 
-    return function ({ email }) {
-      return !userExists({ email })
+    return async function ({ email }) {
+      return !(await userExists({ email }))
     }
   })
 }

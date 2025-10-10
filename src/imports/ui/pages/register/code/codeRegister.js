@@ -25,6 +25,8 @@ import codeRegisterLanguage from './i18n/codeRegisterLang'
 import '../enroll/enrollAccount.scss'
 import './codeRegister.html'
 import { currentLanguage } from '../../../../api/language/currentLanguage'
+import { createInvitationURLQuery } from '../../../../contexts/classroom/invitations/url/createInvitationURLQuery'
+import { parseInvitationURLQuery } from '../../../../contexts/classroom/invitations/url/parseInvitationURLQuery'
 
 /**
  * This page is used to register users by a given code (transaction number)
@@ -179,7 +181,7 @@ Template.codeRegister.onCreated(function () {
   try {
     const userId = Meteor.userId()
     const queryParams = Router.queryParam('qp')
-    const parsed = CodeInvitation.helpers.parseURLQuery(queryParams)
+    const parsed = parseInvitationURLQuery(queryParams)
 
     Meteor.call(CodeInvitation.methods.verify.name, { code: parsed.code }, (err, validCodeDoc) => {
       if (err) {
@@ -401,7 +403,7 @@ Template.codeRegister.events({
     event.preventDefault()
     const insertDoc = formIsValid(codeFormSchema, 'codeForm')
     if (!insertDoc) return
-    const qp = CodeInvitation.helpers.createURLQuery(insertDoc)
+    const qp = createInvitationURLQuery(insertDoc)
     const registerPath = Routes.codeRegister.path(qp)
     Router.go(registerPath)
   },
