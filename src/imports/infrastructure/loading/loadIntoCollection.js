@@ -8,7 +8,7 @@ const debug = createLog({ name: 'loadIntoCollection', type: 'debug' })
  * collection.
  *
  * Handles single and multiple docs.
- *
+ * @async
  * @param name
  * @param args
  * @param collection

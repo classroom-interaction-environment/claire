@@ -3,6 +3,7 @@ import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 import { getCollection } from '../../../../api/utils/getCollection'
 import { TaskResults } from '../TaskResults'
+import { checkIsGroupMember } from '../../../classroom/lessons/helpers/checkIsGroupMember'
 
 const getGroupDoc = createDocGetter(Group)
 
@@ -14,17 +15,10 @@ const getGroupDoc = createDocGetter(Group)
  * @returns {Mongo.Cursor}
  * @throws {PermissionDeniedError} if user is not in group
  */
-export const getAllTasksByGroupAndItem = function ({ groupId, itemId }) {
-  const { userId } = this
-
+export const getAllTasksByGroupAndItem = async ({ userId, groupId, itemId }) => {
   // check if user is group member
-  const groupDoc = getGroupDoc(groupId)
-  const { users } = groupDoc
-
-  if (!users || !users.length || !users.find(u => u && u.userId === userId)) {
-    throw new PermissionDeniedError('group.notAMember', { userId, groupId })
-  }
-
+  const groupDoc = await getGroupDoc(groupId)
+  checkIsGroupMember(userId, groupDoc)
   const query = { groupId, itemId }
   return getCollection(TaskResults.name).find(query)
 }

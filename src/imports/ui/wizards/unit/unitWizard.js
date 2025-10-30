@@ -183,7 +183,7 @@ Template.unitWizard.events({
 
         const res = await callMethod({
           name: Lesson.methods.create,
-          args: { classId, unit: unitId }
+          args: { classId, unitId }
         })
 
         return { unitId: res.unitId, lessonId: res.lessonId, classId, originalUnit: unitId }

@@ -1,17 +1,16 @@
-import { LessonHelpers } from '../LessonHelpers'
 import { LessonStates } from '../LessonStates'
 import { Meteor } from 'meteor/meteor'
-import { LessonRuntime } from '../runtime/LessonRuntime'
-import { getDocsForTeacher } from '../helpers/getDocsForTeacher'
+import { getDocsForMember } from '../helpers/getDocsForMember'
 import { LessonErrors } from '../LessonErrors'
-import { createUpdateDoc } from '../../../../api/utils/documentUtils'
 import { Lesson } from '../Lesson'
-import { notMigrated } from '../../../../infrastructure/functions/notMIgrated'
+import { resetBeamer } from '../runtime/resetBeamer'
+import { resetGroups } from '../runtime/resetGroups'
+import { removeDocuments } from '../runtime/removeDocuments'
+import { getCollection } from '../../../../api/utils/getCollection'
 
-const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
 
 /**
- * Restartes a lesson by _id and removes all data that has been generated during the lesson run
+ * Restarts a lesson by _id and removes all data that has been generated during the lesson run
  * TODO also check here if an inversion of control is possible, since we
  * TODO will definitely have to expand the list of contexts that will be used here
  * @throws Meteor.Error if lesson is not in running state and also not in completed state
@@ -19,8 +18,7 @@ const updateLesson = createUpdateDoc(Lesson, { checkOwner: false })
  * @return {object} A boolean value, whether the operation has been successful
  */
 export const restartLesson = async ({ lessonId, userId }) => {
-  notMigrated()
-  const { lessonDoc } = await getDocsForTeacher({ lessonId, userId })
+  const { lessonDoc } = await getDocsForMember({ lessonId, userId })
 
   if (!LessonStates.canRestart(lessonDoc)) {
     throw new Meteor.Error(
@@ -31,10 +29,10 @@ export const restartLesson = async ({ lessonId, userId }) => {
   }
 
   const options = { lessonId, userId, unitId: lessonDoc.unit }
-  const runtimeDocs = await LessonRuntime.removeDocuments(options)
-  const groupDocs = await LessonRuntime.resetGroups(options)
-  const beamerReset = await LessonRuntime.resetBeamer(options)
-  const lessonReset = !!updateLesson.call(this, lessonId, {
+  const runtimeDocs = await removeDocuments(options)
+  const groupDocs = await resetGroups(options)
+  const beamerReset = await resetBeamer(options)
+  const lessonReset = await getCollection(Lesson.name).updateAsync(lessonId, {
     $unset: {
       phase: 1,
       startedAt: 1,

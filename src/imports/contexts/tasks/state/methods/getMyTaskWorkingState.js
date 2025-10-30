@@ -1,9 +1,9 @@
 import { Features } from '../../../../api/config/Features'
-import { getCollection } from '../../../../api/utils/getCollection'
 import { TaskWorkingState } from '../TaskWorkingState'
+import { getCollection } from '../../../../api/utils/getCollection'
 
-export const getMyTaskWorkingState = function ({ lessonId, taskId, groupId }) {
-  const createdBy = this.userId
+export const getMyTaskWorkingState = async ({ lessonId, taskId, groupId, userId }) => {
+  const createdBy = userId
   const query = { lessonId, createdBy }
 
   if (taskId) {

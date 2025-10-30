@@ -6,11 +6,11 @@ import { Users } from '../../../../../contexts/system/accounts/users/User'
 import { ProfileImages } from '../../../../../contexts/files/image/ProfileImages'
 import { Group } from '../../../../../contexts/classroom/group/Group'
 import { unitEditorSubscriptionKey } from '../../unitEditorSubscriptionKey'
-import { getMaterialContexts } from '../../../../../contexts/material/initMaterial'
 import { loadIntoCollection } from '../../../../../infrastructure/loading/loadIntoCollection'
 import { getLocalCollection } from '../../../../../infrastructure/collection/getLocalCollection'
 import { $in } from '../../../../../api/utils/query/inSelector'
 import { findUnassociatedMaterial } from '../../../../../api/utils/findUnassociatedMaterial'
+import { uniqueGroupMaterialContexts } from './uniqueGroupMaterialContexts'
 import '../../../groups/groupsEditor'
 import './unitEditorGroupsView.html'
 
@@ -30,7 +30,7 @@ import './unitEditorGroupsView.html'
  */
 
 const API = Template.unitEditorGroupsView.setDependencies({
-  contexts: [...(new Set([Phase, Unit, ProfileImages, Users, Group].concat(getMaterialContexts()))).values()],
+  contexts: uniqueGroupMaterialContexts(Phase, Unit, ProfileImages, Users, Group),
   debug: true
 })
 
@@ -45,6 +45,10 @@ Template.unitEditorGroupsView.onCreated(function () {
     instance.state.set('loadComplete', false)
     const data = Template.currentData()
     const { unitDoc, classDoc } = data
+    if (!unitDoc) {
+      return
+    }
+
     const phasesList = unitDoc.phases || []
 
     loadIntoCollection({
@@ -56,22 +60,6 @@ Template.unitEditorGroupsView.onCreated(function () {
         instance.state.set({ phases })
       },
       failure: API.notify
-    })
-
-    loadIntoCollection({
-      name: ProfileImages.methods.byClass,
-      args: { classId: classDoc._id },
-      collection: getLocalCollection(ProfileImages.name),
-      failure: API.notify,
-      success: () => instance.state.set('profileImagesReady', true)
-    })
-
-    loadIntoCollection({
-      name: Users.methods.byClass,
-      args: { classId: classDoc._id },
-      collection: getLocalCollection(Users.name),
-      failure: API.notify,
-      success: () => instance.state.set('usersReady', true)
     })
 
     LessonMaterial.load(unitDoc, (err, material) => {
@@ -87,14 +75,34 @@ Template.unitEditorGroupsView.onCreated(function () {
     // - my groups
 
     API.subscribe({
+      key: unitEditorSubscriptionKey,
       name: Group.publications.my,
       args: { unitId: unitDoc._id },
-      key: unitEditorSubscriptionKey,
       callbacks: {
         onError: API.fatal,
         onReady: () => instance.state.set({ groupSubscriptionComplete: true })
       }
     })
+
+    // class related data is not available in curriculum mode
+    // so we skip loading profile images and users then
+    if (classDoc) {
+      loadIntoCollection({
+        name: ProfileImages.methods.byClass,
+        args: { classId: classDoc._id },
+        collection: getLocalCollection(ProfileImages.name),
+        failure: API.notify,
+        success: () => instance.state.set('profileImagesReady', true)
+      })
+
+      loadIntoCollection({
+        name: Users.methods.byClass,
+        args: { classId: classDoc._id },
+        collection: getLocalCollection(Users.name),
+        failure: API.notify,
+        success: () => instance.state.set('usersReady', true)
+      })
+    }
   })
 })
 

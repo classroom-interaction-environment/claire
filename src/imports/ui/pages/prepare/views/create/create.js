@@ -367,7 +367,7 @@ Template.createClass.events(Wizard.getEvents())
 function createLesson ({ classId, unitId }, callback) {
   Meteor.call(Lesson.methods.create.name, {
     classId,
-    unit: unitId
+    unitId
   }, (err, lessonResults) => {
     if (err) {
       return API.notify(err)

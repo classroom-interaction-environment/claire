@@ -149,9 +149,8 @@ Group.publications.my = {
       optional: true
     }
   },
-  run: onServer(function ({ classId, unitId } = {}) {
+  run: onServer(async function ({ classId, unitId } = {}) {
     const { userId } = this
-    const query = { $or: [] }
 
     // option 1: I am creator of these
     const myGroups = { createdBy: userId }
@@ -165,7 +164,8 @@ Group.publications.my = {
     if (classId) iamMember.classId = classId
     if (unitId) iamMember.unitId = unitId
 
-    query.$or.push(myGroups, iamMember)
+    const query = { $or: [myGroups, iamMember] }
+    console.warn('Group.publications.my query:', query, await getCollection(Group.name).countDocuments(query))
     return getCollection(Group.name).find(query, { fields: Group.publicFields })
   })
 }

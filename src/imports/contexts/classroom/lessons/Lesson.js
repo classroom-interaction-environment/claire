@@ -3,7 +3,8 @@ import { UserUtils } from '../../system/accounts/users/UserUtils'
 import { i18n } from '../../../api/language/language'
 import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
-import { resumeLesson, stopLesson } from './methods/lessonActions'
+import { notMigrated } from '../../../infrastructure/functions/notMIgrated'
+import { loadLessonMaterial } from './methods/loadMaterial'
 
 /**
  * The Lesson is a fundamental part of this application.
@@ -280,7 +281,7 @@ Lesson.publications.byClass = {
     import { lessonsByClassTeacher } from './publications/lessonsByClass'
     return async function ({ classId }) {
       const { userId } = this
-      return lessonsByClass({ userId, classId })
+      return lessonsByClassTeacher({ userId, classId })
     }
   })
 }
@@ -298,7 +299,7 @@ Lesson.publications.byClassStudent = {
     classId: String
   },
   run: onServerExec(function () {
-    import {lessonsByClassStudent} from './publications/lessonsByClass'
+    import { lessonsByClassStudent } from './publications/lessonsByClass'
 
     return function ({ classId }) {
       const { userId } = this
@@ -397,15 +398,16 @@ Lesson.methods.create = {
   name: 'lesson.methods.create',
   schema: {
     classId: String,
-    unit: String
+    unitId: String
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
     import { createLesson } from './methods/createLesson'
 
-    return function ({ classId, unit }) {
+    return async function ({ classId, unitId }) {
       const { userId } = this
-      return createLesson({ classId, unit, userId })
+      const lessonId = await createLesson({ classId, unitId, userId })
+      return lessonId
     }
   })
 }
@@ -420,9 +422,8 @@ Lesson.methods.remove = {
     import { removeLesson } from './methods/removeLesson'
 
     return function ({ _id }) {
-      const { userId, log } = this
-      const lessonId = _id
-      return removeLesson({ lessonId, userId, log })
+      const { userId } = this
+      return removeLesson({ lessonId: _id, userId })
     }
   })
 }
@@ -494,7 +495,7 @@ Lesson.methods.restart = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { restartLesson} from './methods/restartLesson'
+    import { restartLesson } from './methods/restartLesson'
     return async function ({ _id }) {
       const { userId } = this
       return restartLesson({ userId, lessonId: _id })
@@ -511,51 +512,11 @@ Lesson.methods.toggle = {
   },
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
-    import { LessonStates } from './LessonStates'
-    import { LessonErrors } from './LessonErrors'
-    import { LessonHelpers } from './LessonHelpers'
-    import { createUpdateDoc } from '../../../api/utils/documentUtils'
-    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
-
-    const updateLesson = createUpdateDoc(Lesson)
-
-    function toggleLessonMaterial ({ _id, referenceId, context }) {
+    import { toggleLessonMaterial } from './methods/toggleLessonMaterial'
+    return async function ({ _id, referenceId, context }) {
       const { userId } = this
-      const { lessonDoc } = LessonHelpers.docsForTeacher({
-        userId,
-        lessonId: _id
-      })
-
-      if (!LessonStates.canToggle(lessonDoc)) {
-        throw new Meteor.Error('lesson.errors.unexpectedState', 'lesson.errors.expectedToggleAble')
-      }
-
-      // use doc getter to ensure reference doc exists
-      createDocGetter({ name: context })(referenceId)
-
-      const index = (lessonDoc.visibleStudent || []).findIndex(reference => reference._id === referenceId)
-      const transform = {}
-      const target = { _id: referenceId, context }
-
-      // if we found no document, we add it to the list
-      if (index === -1) {
-        transform.$push = { visibleStudent: target }
-      }
-
-      // if we found it we remove it
-      else if (index > -1) {
-        transform.$pull = { visibleStudent: target }
-      }
-
-      // in case of unexpected state we throw
-      else {
-        throw new Meteor.Error(LessonErrors.unexpectedMaterialIndex, index)
-      }
-
-      return !!updateLesson.call(this, _id, transform)
+      return toggleLessonMaterial({ lessonId: _id, userId, referenceId, context })
     }
-
-    return toggleLessonMaterial
   })
 }
 
@@ -600,92 +561,10 @@ Lesson.methods.material = {
     'skip.$': String
   },
   run: onServerExec(function () {
-    import { Group } from '../group/Group'
-    import { SchoolClass } from '../schoolclass/SchoolClass'
-    import { LessonStates } from './LessonStates'
-    import { LessonErrors } from './LessonErrors'
-    import { LessonHelpers } from './LessonHelpers'
-    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
-    import { loadMaterial } from '../../material/loadMaterial'
-
-    const getClassDoc = createDocGetter(SchoolClass)
-    const getGroupDoc = createDocGetter({ name: Group.name })
-
-    /**
-     * Loads material relevant for a lesson.
-     * Allows to skip already loaded material
-     * @param userId
-     * @param _id
-     * @param skip
-     * @throws Meteor.Error if the lesson does not exists by given _id
-     * @throws Meteor.Error if the no class is found for the linked classId
-     * @throws Meteor.Error if the user is not member of the linked class
-     * @throws Meteor.Error if a collection is not found by context, referenced in the material
-     * @throws Meteor.Error if the document is not found by _id, referenced in the material
-     * @return {undefined|{}} an Object containing all referenced documents, otherwise undefined
-     */
-
-    function lessonMaterial ({ _id, groupId, skip = [] }) {
-      const { userId, log } = this
-
-      // first we need the lesson doc for any further steps
-      const { lessonDoc } = LessonHelpers.docsForStudent({
-        userId,
-        lessonId: _id
-      })
-
-      // check if the lesson has an appropriate state
-      if (!LessonStates.canToggle(lessonDoc)) {
-        throw new Meteor.Error(LessonErrors.unexpectedState, 'lesson.errors.expectedRunningOrComplete')
-      }
-
-      const groupDoc = groupId && getGroupDoc(groupId)
-      const allReferences = (lessonDoc.visibleStudent || []).concat(groupDoc?.visible || [])
-      log(allReferences)
-      // if nothing to display, abort
-      if (allReferences.length === 0) {
-        return
-      }
-
-      // check class membership
-      const { classId } = lessonDoc
-      getClassDoc(classId)
-
-      // prepare the material for loading multiple docs
-      // the source list will be in the form of
-      // { contextName1: [_id1, _id2, ...], ... }
-      const materialSourceList = {}
-
-      allReferences.forEach(ref => {
-        if (!materialSourceList[ref.context]) {
-          materialSourceList[ref.context] = []
-        }
-
-        if (!skip.includes(ref._id)) {
-          materialSourceList[ref.context].push(ref._id)
-        }
-      })
-
-      // load the material
-      const dependencies = {}
-      const material = {}
-
-      loadMaterial({
-        source: materialSourceList,
-        destination: material,
-        dependencies: dependencies,
-        skip: skip
-      })
-
-      loadMaterial({
-        source: dependencies,
-        destination: material,
-        skip: skip
-      })
-
-      return material
+    import { loadLessonMaterial } from './methods/loadMaterial'
+    return async function ({ _id, groupId, skip = [] }) {
+      const { userId } = this
+      return loadLessonMaterial({ lessonId: _id, groupId, userId, skip })
     }
-
-    return lessonMaterial
   })
 }

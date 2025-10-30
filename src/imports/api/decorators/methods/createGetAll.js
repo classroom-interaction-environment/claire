@@ -2,6 +2,7 @@ import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
 import { getCollection } from '../../utils/getCollection'
 import { $in } from '../../utils/query/inSelector'
 import { onServer } from '../../utils/archUtils'
+import { userIsAdmin } from '../../accounts/admin/userIsAdmin'
 
 /**
  *
@@ -41,11 +42,14 @@ const getRunFct = ({ name, isCurriculum }) => {
     // should be able to read all curriculum documents
 
     return async function ({ ids = [], skip = [] }) {
+      if (ids.length === 0) {
+        return []
+      }
+
       const { userId, log } = this
       const collection = getCollection(name)
       const masterDocsQuery = {}
       const customDocsQuery = {}
-      const query = { $or: [masterDocsQuery, customDocsQuery] }
 
       if (ids?.length > 0) {
         customDocsQuery._id = $in(ids)
@@ -61,12 +65,14 @@ const getRunFct = ({ name, isCurriculum }) => {
 
       masterDocsQuery._master = { $exists: true }
 
-      if (!UserUtils.isAdmin(userId)) {
+      if (!await userIsAdmin(userId)) {
         customDocsQuery.createdBy = userId
       }
 
-      log('get all', JSON.stringify(query))
-      return collection.find(query).fetchAsync()
+      const query = { $or: [masterDocsQuery, customDocsQuery] }
+      const docs = await collection.find(query).fetchAsync()
+      log('get all', JSON.stringify(query), '=>', docs.length)
+      return docs
     }
   }
 
@@ -86,12 +92,12 @@ const getRunFct = ({ name, isCurriculum }) => {
       query._id.$nin = skip
     }
 
-    if (!UserUtils.isAdmin(userId)) {
+    if (!await userIsAdmin(userId)) {
       query.createdBy = userId
     }
 
     const docs = await collection.find(query).fetchAsync()
-    log('get all', query, '=>', docs.length)
+    log('get one', JSON.stringify(query), '=>', docs.length)
     return docs
   }
 }

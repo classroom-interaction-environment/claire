@@ -91,11 +91,9 @@ export const createDashboardFormActions = ({ onError, translate }) => {
       create: {
         label: 'dashboard.createOnlyClass',
         type: 'primary',
-        onSubmit: onCreateClassSubmit,
-        onClosed: ({ successful, result, templateInstance }) => {
-          if (successful) {
-            templateInstance.state.set({ schoolClassUpdated: result })
-          }
+        onSubmit: async ({ doc, templateInstance }) => {
+          const result = await onCreateClassSubmit({ doc })
+          templateInstance.state.set({ schoolClassUpdated: result })
         }
       }
     }
@@ -197,13 +195,13 @@ export const createDashboardFormActions = ({ onError, translate }) => {
     }),
     doc: ({ lessonId, classId }) => {
       const lessonDoc = getCollection(Lesson.name).findOne(lessonId)
-      const unitDoc = getLocalCollection(Unit.name).findOne(lessonDoc.unit)
+      const unitDoc = getLocalCollection(Unit.name).findOne(lessonDoc?.unit)
       const classDoc = getCollection(SchoolClass.name).findOne(classId)
-      const pocketDoc = getLocalCollection(Pocket.name).findOne(unitDoc.pocket)
+      const pocketDoc = getLocalCollection(Pocket.name).findOne(unitDoc?.pocket)
       return {
-        class: classDoc.title,
-        title: unitDoc.title,
-        period: unitDoc.period,
+        class: classDoc?.title,
+        title: unitDoc?.title,
+        period: unitDoc?.period,
         pocket: pocketDoc ? pocketDoc.title : translate('unit.custom')
       }
     },
@@ -239,7 +237,7 @@ export const createDashboardFormActions = ({ onError, translate }) => {
 
     const res = await callMethod({
       name: Lesson.methods.create,
-      args: { classId, unit: unitId }
+      args: { classId, unitId }
     })
     // we need to make sure we route into the correct unit so the unitId should
     // always be the one returned by lesson.methods.create, because this is
@@ -252,29 +250,25 @@ export const createDashboardFormActions = ({ onError, translate }) => {
     editInUnitEditor: {
       type: 'primary',
       label: 'actions.editInUnitEditor',
-      onSubmit: createUnit,
-      onClosed: ({ successful, result, templateInstance }) => {
-        if (successful) {
-          const { unitId } = result
-          templateInstance.data.unitEditor({ unitId })
-        }
+      onSubmit: async (onSubmitDoc) => {
+        const { templateInstance } = onSubmitDoc
+        const result = await createUnit(onSubmitDoc)
+        const { unitId } = result
+        templateInstance.data.unitEditor({ unitId })
       }
     },
     createNoEdit: {
       type: 'secondary',
       label: 'actions.createNoEdit',
-      onSubmit: createUnit,
-      onClosed: ({ successful, result, classId }) => {
-        if (successful) {
-          const lessonIds = [result.lessonId]
-
-          loadIntoCollection({
-            name: Lesson.methods.units,
-            args: { lessonIds },
-            collection: getLocalCollection(Unit.name),
-            failure: onError
-          })
-        }
+      onSubmit: async (onSubmitDoc) => {
+        const result = await createUnit(onSubmitDoc)
+        const lessonIds = [result.lessonId]
+        await loadIntoCollection({
+          name: Lesson.methods.units,
+          args: { lessonIds },
+          collection: getLocalCollection(Unit.name),
+          failure: onError
+        })
       }
     }
   }

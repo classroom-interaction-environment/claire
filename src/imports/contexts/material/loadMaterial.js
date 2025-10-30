@@ -4,6 +4,7 @@ import { Material } from './Material'
 /**
  * Loads material from a source list into a destination Object.
  * // TODO recursive until no deps are there anymore + security of 100 iterations
+ * @async
  * @param source
  * @param destination
  * @param dependencies

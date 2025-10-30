@@ -157,11 +157,11 @@ export const createCloneDoc = function getClone ({ name } = {}) {
   return cloneDoc
 }
 
-export const createRemoveDoc = function createRemoveDoc ({ name, isFilesCollection } = {}, { checkOwner = true, multiple = false } = {}) {
+export const createRemoveDoc = ({ name, isFilesCollection } = {}, { checkOwner = true, multiple = false } = {}) => {
   check(name, String)
 
   if (multiple) {
-    return function removeDocs (query) {
+    return async function removeDocs (query) {
       const Collection = isFilesCollection
         ? getFilesCollection(name)
         : getCollection(name)

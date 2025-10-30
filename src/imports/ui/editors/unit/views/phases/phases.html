@@ -211,7 +211,11 @@
         {{#modal id="uniteditor-phase-create-modal" large=true static=true}}
             {{#mheader dismiss=true title=(i18n 'editor.unit.phases.createPhase')
                        class="bg-success text-white"}}{{/mheader}}
+            {{#mbody}}
+            {{#if addPhase}}
             {{>caroForm id="uecreatePhaseForm" schema=createPhaseSchema type=formType doc=createPhaseSchemaDoc}}
+            {{/if}}
+            {{/mbody}}
             {{#mfooter}}
                 <button type="submit" form="uecreatePhaseForm" class="btn btn-success btn-sm">
                     {{i18n "actions.create"}}

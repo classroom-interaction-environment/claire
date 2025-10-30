@@ -30,7 +30,7 @@ Template.groupBuilder.onCreated(function () {
   const groupTitleDefault = translate('groupBuilder.defaultTitle')
 
   instance.builder = new GroupBuilder({ groupTitleDefault })
-  instance.builder.setOptions({ users: classDoc?.students })
+  instance.builder.setOptions({ users: classDoc?.students ?? [] })
   instance.state.set('view', views.defineSettings)
 
   const schemaOptions = { phases, material, translate }

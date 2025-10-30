@@ -9,6 +9,8 @@ import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
 import { ensureDocumentExists } from '../../../../api/utils/document/ensureDocumentExists'
 import { getCollection } from '../../../../api/utils/getCollection'
 import { LessonHelpers } from '../../../classroom/lessons/LessonHelpers'
+import { notMigrated } from '../../../../infrastructure/functions/notMIgrated'
+import { getDocsForMember } from '../../../classroom/lessons/helpers/getDocsForMember'
 
 const checkTaskDoc = createDocGetter({ name: Task.name, optional: false })
 const getGroupDoc = createDocGetter({ name: Group.name, optional: false })
@@ -17,15 +19,15 @@ const getGroupDoc = createDocGetter({ name: Group.name, optional: false })
  * Saves a current task working state.
  * @param lessonId
  * @param taskId
+ * @param userId
  * @param groupId
  * @param complete
  * @param page
  * @param progress
  * @return {*}
  */
-export const saveTaskWorkingState = function ({ lessonId, taskId, groupId, complete, page, progress }) {
-  const { userId } = this
-  const { lessonDoc } = LessonHelpers.docsForStudent({ userId, lessonId })
+export const saveTaskWorkingState = async ({ lessonId, taskId, groupId, complete, page, progress, userId }) => {
+  const { lessonDoc } = await getDocsForMember({ userId, lessonId, isStudent: true })
 
   ensureDocumentExists({
     document: lessonDoc,
@@ -38,7 +40,7 @@ export const saveTaskWorkingState = function ({ lessonId, taskId, groupId, compl
   }
 
   // look for task doc and throw if no doc found by id
-  checkTaskDoc(taskId)
+  await checkTaskDoc(taskId)
 
   // if we have a group we need to get the groupDoc, too
   let groupDoc
@@ -70,7 +72,7 @@ export const saveTaskWorkingState = function ({ lessonId, taskId, groupId, compl
     taskWorkingStateQuery.groupId = groupId
   }
 
-  const taskWorkingStateDoc = TaskWorkingStateCollection.findOne(taskWorkingStateQuery)
+  const taskWorkingStateDoc = await TaskWorkingStateCollection.findOneAsync(taskWorkingStateQuery)
 
   // create a new task working state if none exists yet
   if (!taskWorkingStateDoc) {
@@ -80,13 +82,13 @@ export const saveTaskWorkingState = function ({ lessonId, taskId, groupId, compl
       newTaskWorkingStateDoc.groupId = groupId
     }
 
-    return TaskWorkingStateCollection.insert(newTaskWorkingStateDoc)
+    return TaskWorkingStateCollection.insertAsync(newTaskWorkingStateDoc)
   }
 
   // or update the existing one
   else {
     // TODO add a safety check to prevent updating tas kworking state document from other users
-    const updated = TaskWorkingStateCollection.update(taskWorkingStateDoc._id, {
+    const updated = await TaskWorkingStateCollection.updateAsync(taskWorkingStateDoc._id, {
       $set: { complete, page, progress }
     })
 

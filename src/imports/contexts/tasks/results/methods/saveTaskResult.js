@@ -1,19 +1,18 @@
 import { Meteor } from 'meteor/meteor'
 import { LessonErrors } from '../../../classroom/lessons/LessonErrors'
-import { SchoolClass } from '../../../classroom/schoolclass/SchoolClass'
 import { LessonStates } from '../../../classroom/lessons/LessonStates'
-import { Lesson } from '../../../classroom/lessons/Lesson'
 import { Task } from '../../../curriculum/curriculum/task/Task'
 import { Group } from '../../../classroom/group/Group'
 import { TaskResults } from '../TaskResults'
-import { LessonHelpers } from '../../../classroom/lessons/LessonHelpers'
 import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
 import { getCollection } from '../../../../api/utils/getCollection'
 import { GroupMode } from '../../../classroom/group/GroupMode'
+import { getDocsForMember } from '../../../classroom/lessons/helpers/getDocsForMember'
+import { taskIsEditable } from '../../../classroom/lessons/helpers/taskIsEditable'
 
-const getLessonDoc = createDocGetter(Lesson)
-const checkTask = createDocGetter(Task)
-const getGroupDoc = createDocGetter(Group)
+const checkTask = createDocGetter({ name: Task.name })
+const getGroupDoc = createDocGetter({ name: Group.name })
+const getTaskResultDoc = createDocGetter({ name: TaskResults.name, optional: true })
 
 /**
  * Saves a response to an item of a given task
@@ -26,22 +25,19 @@ const getGroupDoc = createDocGetter(Group)
  *   updated (0 if failed)
  */
 
-export const saveTaskResult = ({ userId, lessonId, taskId, itemId, groupId, groupMode, response }) => {
-  if (!LessonHelpers.isMemberOfLesson({ userId, lessonId })) {
-    throw new Meteor.Error('errors.permissionDenied', SchoolClass.errors.notMember)
-  }
-
-  checkTask(taskId)
-  const lessonDoc = getLessonDoc(lessonId)
+export const saveTaskResult = async ({ userId, lessonId, taskId, itemId, groupId, groupMode, response }) => {
+  const { lessonDoc } = await getDocsForMember({ userId, lessonId, isStudent: true })
   if (!LessonStates.isRunning(lessonDoc)) {
     throw new Meteor.Error('errors.permissionDenied', LessonErrors.unexpectedState)
   }
+
+  await checkTask(taskId)
 
   // if groupId check group membership
   let groupDoc
 
   if (groupId) {
-    groupDoc = getGroupDoc(groupId)
+    groupDoc = await getGroupDoc(groupId)
 
     if (!groupDoc.users.some(entry => entry.userId === userId)) {
       throw new Meteor.Error('errors.permissionDenied', 'group.notAMember', { groupId, userId })
@@ -49,15 +45,37 @@ export const saveTaskResult = ({ userId, lessonId, taskId, itemId, groupId, grou
   }
 
   // check if we can even edit the task
-  if (!LessonHelpers.taskIsEditable({ lessonDoc, taskId, groupDoc })) {
+  if (!taskIsEditable({ lessonDoc, taskId, groupDoc })) {
     throw new Meteor.Error('errors.permissionDenied', TaskResults.errors.notEditable)
   }
 
   const createdBy = userId
   const TaskResultCollection = getCollection(TaskResults.name)
-  const query = { lessonId, taskId, itemId, createdBy }
   const isOverride = groupMode === GroupMode.override.value
+  const query = createQuery({ lessonId, taskId, itemId, createdBy, groupId, isOverride })
+  const taskResultDoc = await getTaskResultDoc(query)
 
+  if (taskResultDoc) {
+    const updateDoc = { response }
+
+    if (isOverride) {
+      updateDoc.createdBy = createdBy
+    }
+
+    return TaskResultCollection.updateAsync(taskResultDoc._id, { $set: updateDoc })
+  }
+
+  const insertDoc = { lessonId, taskId, itemId, response }
+
+  if (groupId) {
+    insertDoc.groupId = groupId
+  }
+
+  return TaskResultCollection.insertAsync(insertDoc)
+}
+
+const createQuery = ({ lessonId, taskId, itemId, createdBy, groupId, isOverride }) => {
+  const query = { lessonId, taskId, itemId, createdBy }
   if (groupId) {
     query.groupId = groupId
 
@@ -67,24 +85,5 @@ export const saveTaskResult = ({ userId, lessonId, taskId, itemId, groupId, grou
       delete query.createdBy
     }
   }
-
-  const taskResultDoc = TaskResultCollection.findOne(query)
-
-  if (taskResultDoc) {
-    const updateDoc = { response }
-
-    if (isOverride) {
-      updateDoc.createdBy = createdBy
-    }
-
-    return TaskResultCollection.update(taskResultDoc._id, { $set: updateDoc })
-  }
-
-  const insertDoc = { lessonId, taskId, itemId, response }
-
-  if (groupId) {
-    insertDoc.groupId = groupId
-  }
-
-  return TaskResultCollection.insert(insertDoc)
+  return query
 }

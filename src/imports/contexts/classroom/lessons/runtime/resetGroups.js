@@ -5,6 +5,7 @@ import { Group } from '../../group/Group'
 /**
  * Resets all groups of a given unit.
  * Removes all ad-hoc groups.
+ * @async
  * @param options {object}
  * @param options.lessonId {string}
  * @param options.unitId {string}

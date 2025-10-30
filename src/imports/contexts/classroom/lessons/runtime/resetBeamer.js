@@ -7,16 +7,17 @@ import { getCollection } from '../../../../api/utils/getCollection'
 /**
  * Resets all beamer settings that are related to the given setting and user.
  * @type {function}
- * @param lessonId the id of the lesson to which the beamer settings should be reset
- * @param userId the user to whom the respective beamer doc is associated
- * @return {Number} the amount of references, that have been reset
+ * @async
+ * @param lessonId {string} the id of the lesson to which the beamer settings should be reset
+ * @param userId {string} the user to whom the respective beamer doc is associated
+ * @return {number} the amount of references, that have been reset
  */
-export const resetBeamer = function resetBeamer ({ lessonId, userId } = {}) {
+export const resetBeamer = async ({ lessonId, userId }) => {
   check(lessonId, String)
   check(userId, String)
 
   const BeamerCollection = getCollection(Beamer.name)
-  const beamerDoc = BeamerCollection.findOne({ createdBy: userId })
+  const beamerDoc = await BeamerCollection.findOneAsync({ createdBy: userId })
 
   // no beamer doc exists
   if (!beamerDoc) return -1
@@ -28,7 +29,7 @@ export const resetBeamer = function resetBeamer ({ lessonId, userId } = {}) {
 
     if (diff > 0) {
       const modifier = { $set: { references: updatedReferences } }
-      const updated = BeamerCollection.update(beamerDoc._id, modifier)
+      const updated = await BeamerCollection.updateAsync(beamerDoc._id, modifier)
       return updated && diff
     }
 

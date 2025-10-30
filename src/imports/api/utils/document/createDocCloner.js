@@ -8,20 +8,19 @@ import { DocNotFoundError } from '../../errors/types/DocNotFoundError'
  * document exists, ownership).
  * @param name The name of the context, used to obtain the collection
  * @param checkOwner determines, whether the document is to be checked for ownership
- * @returns {function} A function to update documents by _id and modifier
+ * @returns {function():Promise<string>} A function to update documents by _id and modifier
  */
 export const createDocCloner = ({ name } = {}) => {
   check(name, String)
 
   /**
    * Clones a document by _id and modifier(s).
-   * @param docId The _id if the supposed document to be cloned
+   * @param docId {string} The _id if the supposed document to be cloned
    * @param $set optional modifier
    * @returns {String} docId of the new document, if the doc has been cloned, otherwise undefined
    * @throws {Meteor.Error} if no collection is found by the given context
    * @throws {Meteor.Error} if no doc is found by the given _id
    */
-
   const cloneDoc = async (docId, { $set } = {}) => {
     const Collection = getCollection(name)
     const sourceDoc = await Collection.findOneAsync(docId)

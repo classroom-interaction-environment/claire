@@ -50,7 +50,10 @@ TaskWorkingState.methods.saveState = {
   run: onServerExec(() => {
     import { saveTaskWorkingState } from './methods/saveTaskWorkingState'
 
-    return saveTaskWorkingState
+    return async function ({ lessonId, taskId, groupId, complete, page, progress }) {
+      const { userId } = this
+      return saveTaskWorkingState({ lessonId, taskId, groupId, complete, page, progress, userId })
+    }
   })
 }
 
@@ -66,7 +69,10 @@ TaskWorkingState.publications.byLesson = {
   },
   run: onServerExec(() => {
     import { taskWorkingStateByLesson } from './methods/byLesson'
-    return taskWorkingStateByLesson
+    return async function ({ lessonId }) {
+      const { userId } = this
+      return taskWorkingStateByLesson({ lessonId, userId })
+    }
   }),
   roles: [UserUtils.roles.teacher]
 }
@@ -86,6 +92,9 @@ TaskWorkingState.publications.myTask = {
   },
   run: onServerExec(() => {
     import { getMyTaskWorkingState } from './methods/getMyTaskWorkingState'
-    return getMyTaskWorkingState
+    return async function ({ lessonId, taskId, groupId }) {
+      const { userId } = this
+      return getMyTaskWorkingState({ lessonId, taskId, groupId, userId })
+    }
   })
 }

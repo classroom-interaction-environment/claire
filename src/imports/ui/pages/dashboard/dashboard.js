@@ -22,6 +22,7 @@ import '../../components/confirm/confirm'
 import '../../renderer/lesson/list/lessonListRenderer'
 import './dashboard.html'
 
+
 const API = Template.dashboard.setDependencies({
   contexts: [SchoolClass, Lesson, Users, Pocket, ProfileImages, Dimension],
   language: dashboardLanguage
@@ -108,8 +109,10 @@ Template.dashboard.onCreated(function () {
           // at this point we load the units in order to get the titles
           // and several static definitions of the lessons, such as dimensions, objectives etc.
           const UnitCollection = getLocalCollection(Unit.name)
-          const ids = getCollection(Lesson.name).find({ classId }).map(lessonDoc => lessonDoc.unit)
-          const skip = UnitCollection.find({ _id: { $in: ids } }).map(toDocId)
+          const ids = getCollection(Lesson.name).find({ classId })
+            .map(lessonDoc => typeof lessonDoc.unit === 'string' ? lessonDoc.unit : null)
+            .filter(Boolean)
+          const skip = UnitCollection.find({ _id: { $in: ids } }).map(toDocId).filter(Boolean)
 
           if (ids.length === 0) {
             return
@@ -376,7 +379,7 @@ Template.dashboard.events({
   // ------------------------------------------------------------------------------------------------------
   'click .form-btn': async (event, templateInstance) => {
     event.preventDefault()
-
+debugger
     const target = dataTarget(event, templateInstance)
     const classId = dataTarget(event, templateInstance, 'class')
     const lessonId = dataTarget(event, templateInstance, 'lesson')
@@ -402,6 +405,9 @@ Template.dashboard.events({
       custom: definitions.handlers,
       onSubmit: definitions.onSubmit,
       onClosed: (options, ...args) => {
+        if (options.successful) {
+          API.notify(definitions.onSuccessMessage ?? 'common.success')
+        }
         templateInstance.updateLessonCounts()
         if (typeof definitions.onClosed === 'function') {
           return definitions.onClosed(options, ...args)

@@ -8,6 +8,7 @@ import { checkIsTeacher } from '../helpers/checkIsTeacher'
 import { getCollection } from '../../../../api/utils/getCollection'
 import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
 import { createDocCloner } from '../../../../api/utils/document/createDocCloner'
+import { mapAsync } from '../../../../api/utils/async/mapAsync'
 
 const getClassDoc = createDocGetter(SchoolClass)
 const getPhaseDoc = createDocGetter(Phase)
@@ -22,40 +23,40 @@ const isCustomUnit = (unitDoc = {}) => unitDoc.pocket === '__custom__'
  * it's phases and tasks (but not other materials).
  * The unit and phases are copied in order to be able to be subject of change
  * in the preparation of the upcoming lesson.
- *
- * @param classId The _id of the SchoolClass of which this lesson applies
- * @param unit The _id of the unit for which this lesson is created
- * @param userId The _id of the user on which behalf this method is scoped
+ * @async
+ * @param classId {string} The _id of the SchoolClass of which this lesson applies
+ * @param unitId {string} The _id of the unit for which this lesson is created
+ * @param userId {string} The _id of the user on which behalf this method is scoped
  * @return {{ lessonId: String, unitId: String }} the _id values of the newly created lesson and unit
  */
 
-export const createLesson = async ({ classId, unit, userId } = {}) => {
+export const createLesson = async ({ classId, unitId, userId } = {}) => {
   // check class membership at very first, because
   // only class teachers and admins can create a new lesson
   const classDoc = await getClassDoc(classId)
   await checkIsTeacher({ userId, classDoc })
 
-  const unitDoc = await getUnitDoc(unit)
+  const unitDoc = await getUnitDoc(unitId)
 
   let finalUnitId
   let finalUnitDoc
 
   // custom units require no cloning as there is no "original"
   if (isCustomUnit(unitDoc)) {
-    finalUnitId = unit
+    finalUnitId = unitId
     finalUnitDoc = unitDoc
   }
 
-  // oherwise clone the original unit if it's not a custom unit
+  // otherwise clone the original unit if it's not a custom unit
   else {
-    finalUnitId = cloneUnit(unit)
-    finalUnitDoc = getUnitDoc(finalUnitId)
+    finalUnitId = await cloneUnit(unitId)
+    finalUnitDoc = await getUnitDoc(finalUnitId)
   }
 
   // clone all referenced phases and make new phase point to new unit
   // and the new unit contain the new phases
   const modifier = { $set: { unit: finalUnitId } }
-  const newPhases = (finalUnitDoc.phases || []).map(phaseId => clonePhase(phaseId, modifier))
+  const newPhases = await mapAsync(finalUnitDoc.phases ?? [], phaseId => clonePhase(phaseId, modifier))
 
   if (finalUnitDoc.phases && finalUnitDoc.phases.length !== newPhases.length) {
     throw new Meteor.Error('errors.unexpected', JSON.stringify({
@@ -66,11 +67,11 @@ export const createLesson = async ({ classId, unit, userId } = {}) => {
 
   for (const phaseId of newPhases) {
     const phaseDoc = await getPhaseDoc(phaseId)
-    if (phaseDoc.unit === unit) {
+    if (phaseDoc.unit === unitId) {
       throw new Meteor.Error(LessonErrors.unexpectedPhaseLink, {
         phaseId,
         expected: finalUnitId,
-        actual: unit
+        actual: unitId
       })
     }
   }
@@ -79,7 +80,7 @@ export const createLesson = async ({ classId, unit, userId } = {}) => {
     await getCollection(Unit.name).updateAsync(finalUnitDoc, {
       $set: {
         phases: newPhases,
-        _original: unit
+        _original: unitId
       }
     })
   }
@@ -88,7 +89,7 @@ export const createLesson = async ({ classId, unit, userId } = {}) => {
   const lessonId = await getCollection(Lesson.name).insertAsync({
     classId,
     unit: finalUnitId,
-    unitOriginal: unit
+    unitOriginal: unitId
   })
 
   return { lessonId, unitId: finalUnitId }

@@ -67,9 +67,9 @@ TaskResults.methods.saveTask = {
   run: onServerExec(() => {
     import { saveTaskResult } from './methods/saveTaskResult'
 
-    return function (taskResultDoc) {
+    return function (saveDoc) {
       const { userId } = this
-      return saveTaskResult({ userId, ...taskResultDoc })
+      return saveTaskResult({ userId, ...saveDoc })
     }
   })
 }
@@ -92,7 +92,10 @@ TaskResults.publications.allByItem = {
   roles: UserUtils.roles.teacher,
   run: onServerExec(function () {
     import { getAllTasksByItem } from './methods/getAllTasksByItem'
-    return getAllTasksByItem
+    return async function ({ references }) {
+      const { userId } = this
+      return getAllTasksByItem({ userId, references })
+    }
   })
 }
 /**
@@ -107,7 +110,10 @@ TaskResults.publications.byGroup = {
   },
   run: onServerExec(function () {
     import { getAllTasksByGroupAndItem } from './methods/getAllTaskByGroup'
-    return getAllTasksByGroupAndItem
+    return function ({ groupId, itemId }) {
+      const { userId } = this
+      return getAllTasksByGroupAndItem({ userId, groupId, itemId })
+    }
   })
 }
 
@@ -126,6 +132,9 @@ TaskResults.publications.byTask = {
   },
   run: onServerExec(function () {
     import { getAllTaskResultsByTask } from './methods/getAllTaskResultsByTask'
-    return getAllTaskResultsByTask
+    return function ({ lessonId, taskId, groupId }) {
+      const { userId } = this
+      return getAllTaskResultsByTask({ userId, lessonId, taskId, groupId })
+    }
   })
 }

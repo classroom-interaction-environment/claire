@@ -1,8 +1,8 @@
-import { checkIsTeacher } from './checkIsTeacher'
-import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
-import { SchoolClass } from '../../schoolclass/SchoolClass'
-import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
 import { Lesson } from '../Lesson'
+import { SchoolClass } from '../../schoolclass/SchoolClass'
+import { checkIsTeacher } from './checkIsTeacher'
+import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
+import { checkIsMember } from './checkIsMember'
 
 let getLessonDoc
 let getClassDoc
@@ -15,15 +15,17 @@ let getClassDoc
  * @param lessonId
  * @return {Promise<{classDoc: Object, lessonDoc: Object}>}
  */
-export const getDocsForTeacher = async ({ userId, lessonId }) => {
+export const getDocsForMember = async ({ userId, lessonId, isStudent = false }) => {
   if (!getLessonDoc) getLessonDoc = createDocGetter({ name: Lesson.name })
   if (!getClassDoc) getClassDoc = createDocGetter({ name: SchoolClass.name })
   const lessonDoc = await getLessonDoc(lessonId)
   const classDoc = await getClassDoc(lessonDoc.classId)
 
-  if (!await checkIsTeacher({ classDoc, userId })) {
-    throw new PermissionDeniedError(SchoolClass.errors.notTeacher, { userId, lessonId })
+  if (isStudent) {
+    await checkIsMember({ classDoc, userId })
   }
-
+  else {
+    await checkIsTeacher({ classDoc, userId })
+  }
   return { lessonDoc, classDoc }
 }
