@@ -1,4 +1,5 @@
 <template name="prepare">
+    {{> routeInfo}}
     {{#unless loadComplete}}
         {{> loading title=(i18n "lesson.lessons") type="data"}}
     {{else}}

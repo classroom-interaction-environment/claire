@@ -1,4 +1,6 @@
 <template name="inviteUsers">
+    {{> routeInfo}}
+
     {{#unless loadComplete}}
         {{> loading title="codeInvitation.title"}}
     {{else}}

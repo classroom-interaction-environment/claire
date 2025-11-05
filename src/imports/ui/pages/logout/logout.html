@@ -1,4 +1,5 @@
 <template name="logout">
+    {{> routeInfo}}
     {{#onLoaded complete=loadComplete}}
         {{#unless complete}}
             {{> loading title=(i18n 'logout.loggingOut')}}

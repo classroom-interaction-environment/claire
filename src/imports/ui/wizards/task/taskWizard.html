@@ -1,4 +1,5 @@
 <template name="taskWizard">
+    {{> routeInfo}}
     {{#unless loadComplete}}
         {{> loading type="data"}}
     {{else}}

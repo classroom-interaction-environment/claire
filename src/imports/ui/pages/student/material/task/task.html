@@ -1,4 +1,5 @@
 <template name="task">
+    {{> routeInfo}}
     {{#unless loadComplete}}
             {{> loading type="data" title=title}}
     {{else}}
