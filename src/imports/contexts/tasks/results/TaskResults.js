@@ -79,7 +79,6 @@ TaskResults.publications = {}
 /**
  * Reveal all results for a specific item, usable for instance in presentation mode
  */
-
 TaskResults.publications.allByItem = {
   name: 'taskResult.publications.allbyItem',
   schema: {
@@ -98,6 +97,7 @@ TaskResults.publications.allByItem = {
     }
   })
 }
+
 /**
  * Subscribe to all my responses to an item that are associated with
  * my working group by groupId.

@@ -12,8 +12,8 @@ import { getUserByEmail } from '../../../../../api/accounts/user/getUserByEmail'
  * @return {boolean}
  * @throws {Meteor.Error} when one of the three is not valid
  */
-export const verifyToken = function verifyToken ({ email, token, reason }) {
-  const user = getUserByEmail(email)
+export const verifyToken = async function verifyToken ({ email, token, reason }) {
+  const user = await getUserByEmail(email)
 
   if (!user) {
     throw new Meteor.Error('user.tokenInvalid', 'user.userNotFound', { email })

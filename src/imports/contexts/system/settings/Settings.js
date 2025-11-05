@@ -238,28 +238,3 @@ Settings.methods.logo = {
   })
 }
 
-Settings.methods.updateTheme = {
-  name: 'admin.methods.updateTheme',
-  admin: true,
-  schema: {
-    theme: {
-      type: String,
-      optional: true
-    }
-  },
-  run: onServerExec(function () {
-    // TODO import CSS validation lib
-
-    return async function ({ theme }) {
-      const SettingsCollection = getCollection(Settings.name)
-      const settingsDoc = await SettingsCollection.findOneAsync()
-      const modifier = {
-        $set: {
-          'ui.theme': theme || ''
-        }
-      }
-
-      return SettingsCollection.updateAsync(settingsDoc._id, modifier)
-    }
-  })
-}
