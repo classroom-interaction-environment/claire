@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor'
 import { auto, onClient, onServer, onServerExec } from '../../../../api/utils/archUtils'
 import { AdminErrors } from './AdminErrors'
 import { UserUtils } from '../users/UserUtils'
-import { getAllInstitutions } from './getAllInstitutions'
 
 export const Admin = {
   name: 'admin',
@@ -264,7 +263,8 @@ Admin.methods.updateTheme = {
   roles: [UserUtils.roles.schoolAdmin],
   schema: {
     theme: {
-      type: String
+      type: String,
+      optional: true
     },
     reset: {
       type: Boolean,

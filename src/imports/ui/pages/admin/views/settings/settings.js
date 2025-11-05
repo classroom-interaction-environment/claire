@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
-import { Themes } from '../../../../../api/themes/Themes'
 import { Settings } from '../../../../../contexts/system/settings/Settings'
 import { Schema } from '../../../../../api/schema/Schema'
 import { AppImages } from '../../../../../contexts/files/image/AppImages'
@@ -14,10 +13,10 @@ import { loadIntoCollection } from '../../../../../infrastructure/loading/loadIn
 import { getLocalCollection } from '../../../../../infrastructure/collection/getLocalCollection'
 import '../../../../generic/nodocs/nodocs'
 import './settings.html'
+import { Admin } from '../../../../../contexts/system/accounts/admin/Admin'
 
 const formInitialized = Form.initialized()
 const filesInitialized = Files.initialize(false)
-const themesList = Object.values(Themes)
 const legalFields = {}
 const logosSchema = Schema.create({
   mainLogo: Settings.schema.mainLogo,
@@ -60,7 +59,7 @@ const API = Template.adminSettings.setDependencies({
   ]
 })
 
-Template.adminSettings.onCreated(function onAdminSettingsCreated () {
+Template.adminSettings.onCreated(async function () {
   const instance = this
   instance.state.set('updating', false)
   instance.state.set('edit', false)
@@ -87,6 +86,10 @@ Template.adminSettings.onCreated(function onAdminSettingsCreated () {
 
     computation.stop()
   })
+
+  const themeRequest = await fetch('/app-theme')
+  const currentTheme = await themeRequest.text()
+  instance.state.set({ currentTheme })
 })
 
 Template.adminSettings.helpers({
@@ -95,17 +98,11 @@ Template.adminSettings.helpers({
       formInitialized.get() &&
       Template.getState('loadComplete')
   },
-  themes () {
-    return themesList
-  },
-  currentTheme (name) {
-    return Template.getState('currentTheme') === name
-  },
-  customTheme () {
-    return Template.getState('customTheme')
-  },
   legalFields () {
     return legalFieldsList
+  },
+  currentTheme () {
+    return Template.getState('currentTheme')
   },
   settingsDoc () {
     return Template.getState('settingsDoc')
@@ -134,26 +131,12 @@ Template.adminSettings.helpers({
 })
 
 Template.adminSettings.events({
-  'change .admin-theme-select' (event, templateInstance) {
-    const themeValue = templateInstance.$(event.currentTarget).val()
-    const settingsDoc = getCollection(Settings.name).findOne()
-    settingsDoc.ui.theme = themeValue
-    delete settingsDoc._id
-    Meteor.call(Settings.methods.updateSettings.name, settingsDoc, (err) => {
-      if (err) {
-        API.notify(err)
-      }
-      else {
-        API.notify(true)
-      }
-    })
-  },
   'click .update-custom-theme' (event, templateInstance) {
     event.preventDefault()
     const theme = templateInstance.$('.custom-theme-area').val() || ''
 
     callMethod({
-      name: Settings.methods.updateTheme,
+      name: Admin.methods.updateTheme,
       args: { theme },
       failure: API.notify,
       success: () => {

@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 // see https://github.com/NitroBAY/meteor-service-worker
 Meteor.startup(() => {
-  if (!window.navigator.serviceWorker) {
+  if (!window.navigator.serviceWorker || Meteor.settings.public.sw === false) {
     return
   }
 

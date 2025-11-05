@@ -3,31 +3,38 @@ import fs from 'node:fs/promises'
 import nodePath from 'node:path'
 
 const { express } = WebApp
-const ROOT = '/assets/app'
-const sourcePath = () => nodePath.join(process.cwd(), ROOT, 'theme/default.css')
+const ROOT = '/assets/app/theme/'
+const sourcePath = (name = 'default.css') => nodePath.join(process.cwd(), ROOT, name)
 
 /**
  * Updates the theme CSS file.
- * @param userId
  * @param theme
  * @param reset
  * @return {Promise<*>}
  */
-export const updateTheme = async ({ userId, theme, reset }) => {
-  if (!theme || theme.length === 0 || reset) {
-    return clear()
-  }
+export const updateTheme = async ({ theme, reset }) => {
   const path = sourcePath()
+  const back = sourcePath('backup.css')
 
-  // backup default
-  await fs.rename(path, path + '.bak')
-  await write(theme)
+  if (!theme || theme.length === 0 || reset) {
+    return clear(back, path)
+  }
+
+  // if we have no backup of the original, create one
+  if (!await exists(back)) {
+    console.debug('[updateTheme] creating backup of original theme:')
+    console.debug(path)
+    console.debug(back)
+    await fs.copyFile(path, back)
+  }
+
+  await write(path, theme)
 }
 
-const write = async (content) => {
+const write = async (path, content) => {
   let handle = null;
   try {
-    handle = await fs.open(sourcePath(), 'w+')
+    handle = await fs.open(path, 'w+')
     await handle.writeFile(content);
   } catch (e) {
     console.error('[updateTheme] error updating theme:', e)
@@ -40,27 +47,23 @@ const write = async (content) => {
 }
 
 const exists = async (path) => {
-  let handle = null;
   try {
-    handle = await fs.open(path, 'w+')
-    return !!handle
-  } catch {
+    const f = await fs.stat(path)
+    console.debug('file exists?', path, f.isFile())
+    return f.isFile()
+  } catch (e) {
+    console.error(e)
     return false;
-  } finally {
-    if (handle) {
-      // close the file if it is opened.
-      await handle.close();
-    }
   }
 }
 
-const clear = async () => {
-  const path = sourcePath()
-  if (!await exists(path + '.bak')) {
+const clear = async (backupPath, path) => {
+  if (!await exists(backupPath)) {
     return
   }
   await fs.unlink(path)
-  await fs.rename(path + '.bak', path)
+  await fs.copyFile(backupPath, path)
+  await fs.unlink(backupPath)
 }
 
 WebApp.handlers.use('/app-theme', express.static(sourcePath(), {

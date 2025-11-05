@@ -107,6 +107,7 @@ module.exports = ({ factory, Integer, RegEx }) => {
     }),
     patch: patchSchema,
     public: factory({
+      sw: Boolean,
       logLevel: {
         type: Number,
         optional: true,
