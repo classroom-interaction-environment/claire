@@ -15,6 +15,7 @@ import '../../../ui/components/onloaded/onLoaded'
 
 // MAYBE move into own file?
 TemplateLoader.enable()
+  .register('routeInfo', async () => import('../../../ui/layout/routeInfo/routeInfo'))
   .register('docnotfound', async () => import('../../../ui/generic/docnotfound/docnotfound'))
   .register('disconnected', async () => import('../../../ui/generic/disconnected/disconnected'))
   .register('actionButton', async () => import('../../../ui/generic/actionbutton/actionbutton'))

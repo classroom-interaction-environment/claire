@@ -1,10 +1,30 @@
 import { WebApp } from 'meteor/webapp'
 import fs from 'node:fs/promises'
 import nodePath from 'node:path'
+import { createCollection } from '../../../../../infrastructure/factories/createCollection'
 
 const { express } = WebApp
 const ROOT = '/assets/app/theme/'
 const sourcePath = (name = 'default.css') => nodePath.join(process.cwd(), ROOT, name)
+
+const ThemeCollection = createCollection({
+  name: 'themes',
+  schema: {
+    name: {
+      type: String,
+      max: 140
+    },
+    content: {
+      type: String
+    },
+    createdBy: {
+      type: String
+    },
+    createdAt: {
+      type: String
+    }
+  }
+})
 
 /**
  * Updates the theme CSS file.

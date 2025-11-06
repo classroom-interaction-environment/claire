@@ -834,7 +834,7 @@
     "optionB": "Option B - Einen neuen Workflow anlegen (weiter Button klicken)",
     "createNewEntry": "Noch kein Eintrag vorhanden?",
     "task": {
-      "title": "Meine Aufgaben"
+      "title": "Aufgabenverwaltung"
     },
     "unit": {
       "title": "Eigenen Unterricht planen"
@@ -1064,7 +1064,7 @@
     "userId": "User-ID"
   },
   "prepare": {
-    "title": "Vorlagen/ Dokumente / Ablage",
+    "title": "Mustervorlagen",
     "createClass": "Kurs anlegen",
     "myClasses": "Meine Kurse"
   },

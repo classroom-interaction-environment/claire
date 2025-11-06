@@ -18,9 +18,12 @@ import { callMethod } from '../../controllers/document/callMethod'
 import { getCollection } from '../../../api/utils/getCollection'
 import { loadIntoCollection } from '../../../infrastructure/loading/loadIntoCollection'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
+import { createInvitationURLQuery } from '../../../contexts/classroom/invitations/url/createInvitationURLQuery'
+import { invitationPending } from '../../../contexts/classroom/invitations/validation/invitationPending'
+import { invitationComplete } from '../../../contexts/classroom/invitations/validation/invitationComplete'
+import { invitationExpired } from '../../../contexts/classroom/invitations/validation/invitationExpired'
 import '../../components/invitation/rowRenderer/rowRenderer'
 import './inviteUsers.html'
-import { createInvitationURLQuery } from '../../../contexts/classroom/invitations/url/createInvitationURLQuery'
 
 const API = Template.inviteUsers.setDependencies({
   contexts: [CodeInvitation, SchoolClass, Beamer]
@@ -117,7 +120,7 @@ Template.inviteUsers.helpers({
     return emailLink({ user, from, subject, body })
   },
   isExpired (invitationDoc) {
-    return CodeInvitation.helpers.isExpired(invitationDoc)
+    return invitationExpired(invitationDoc)
   },
   currentDoc () {
     const id = Template.getState('currentDoc')
@@ -127,12 +130,12 @@ Template.inviteUsers.helpers({
     return Template.getState('refreshDoc')
   },
   activeCodes (codes) {
-    return codes && codes.fetch().filter(doc => CodeInvitation.helpers.isPending(doc))
+    return codes && codes.fetch().filter(doc => invitationPending(doc))
   },
   expiredCodes (codes) {
-    return codes && codes.fetch().filter(doc => !CodeInvitation.helpers.isPending(doc)).sort((a, b) => {
-      const val1 = CodeInvitation.helpers.isComplete(a) ? 1 : 0
-      const val2 = CodeInvitation.helpers.isComplete(b) ? 1 : 0
+    return codes && codes.fetch().filter(doc => !invitationPending(doc)).sort((a, b) => {
+      const val1 = invitationComplete(a) ? 1 : 0
+      const val2 = invitationComplete(b) ? 1 : 0
       return val2 - val1
     })
   },
