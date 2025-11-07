@@ -3,7 +3,6 @@ import { UserUtils } from '../../system/accounts/users/UserUtils'
 import { i18n } from '../../../api/language/language'
 import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
-import { notMigrated } from '../../../infrastructure/functions/notMIgrated'
 import { loadLessonMaterial } from './methods/loadMaterial'
 
 /**

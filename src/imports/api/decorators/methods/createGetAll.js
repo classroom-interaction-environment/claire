@@ -42,7 +42,7 @@ const getRunFct = ({ name, isCurriculum }) => {
     // should be able to read all curriculum documents
 
     return async function ({ ids = [], skip = [] }) {
-      if (ids.length === 0) {
+      if (ids !== null && !ids?.length) {
         return []
       }
 

@@ -11,14 +11,14 @@ import { Group } from '../../group/Group'
  * @param options.unitId {string}
  * @return {number} number of updated documents
  */
-export const resetGroups = (options) => {
+export const resetGroups = async (options) => {
   check(options, Match.ObjectIncluding({
     unitId: String
   }))
 
   return {
-    updated: updateGroups(options),
-    removed: removeAdhocGroups(options)
+    updated: await updateGroups(options),
+    removed: await removeAdhocGroups(options)
   }
 }
 
@@ -26,12 +26,12 @@ const updateGroups = ({ unitId }) => {
   const query = { unitId, isAdhoc: { $ne: true } }
   const transform = { $set: { visible: [] } }
   const updateOptions = { multi: true }
-  return getCollection(Group.name).update(query, transform, updateOptions)
+  return getCollection(Group.name).updateAsync(query, transform, updateOptions)
 }
 
 const removeAdhocGroups = ({ unitId }) => {
   const query = { unitId, isAdhoc: true }
-  return getCollection(Group.name).remove(query)
+  return getCollection(Group.name).removeAsync(query)
 }
 
 export const removeGroups = (options) => {
@@ -41,5 +41,5 @@ export const removeGroups = (options) => {
 
   const { unitId } = options
   const query = { unitId }
-  return getCollection(Group.name).remove(query)
+  return getCollection(Group.name).removeAsync(query)
 }
