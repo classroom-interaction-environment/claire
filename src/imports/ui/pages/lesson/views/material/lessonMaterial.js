@@ -125,7 +125,9 @@ Template.lessonMaterial.onCreated(function () {
 
   instance.references = new ReactiveDict()
   const addReference = reference => {
+    console.debug('add ref?')
     if (!instance.references.get(reference.document)) {
+      console.debug('=> yes, add ref', reference)
       const refDoc = resolveMaterialReference(reference)
       if (!refDoc) {
         console.warn('could not resolve', reference.document)
@@ -151,7 +153,7 @@ Template.lessonMaterial.onCreated(function () {
     if (allRefs.size === 0) {
       return
     }
-
+    console.debug(allRefs)
     allRefs.forEach(ref => addReference(ref))
   })
 })

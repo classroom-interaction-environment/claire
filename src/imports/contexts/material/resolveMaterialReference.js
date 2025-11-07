@@ -32,11 +32,11 @@ export const resolveMaterialReference = (refObj, { preferLocal = false } = {}) =
   const MaterialCollection = getCollection(collection)
   const LocalCollection = getLocalCollection(collection)
   const resolvedDocument = preferLocal
-    ? MaterialCollection.findOne(document) || LocalCollection.findOne(document)
-    : MaterialCollection.findOne(document) || LocalCollection.findOne(document)
+    ? LocalCollection.findOne(document) ?? MaterialCollection.findOne(document)
+    : MaterialCollection.findOne(document) ?? LocalCollection.findOne(document)
 
   if (!resolvedDocument) {
-    console.warn('could not resolve document for ', collection, document)
+    console.warn('[resolveMaterialReference]: could not resolve document for ', collection, document)
     return null
   }
 

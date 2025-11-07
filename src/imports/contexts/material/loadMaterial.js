@@ -21,15 +21,16 @@ export const loadMaterial = async ({ source = {}, destination = {}, dependencies
     // if there is no material attached to this context, we can safely skip
     if (!materialDocIds || materialDocIds.length === 0) {
       // destination[contextName] = 0
-      return
+      console.warn('skipping empty material context', contextName)
+      continue
     }
 
     const materialCollection = getCollection(contextName)
     const materialQuery = {
       _id: { $in: source[contextName] }
     }
-
     const documents = await materialCollection.find(materialQuery).fetchAsync()
+    console.debug('[loadMaterial]:', contextName, 'documents;', documents.length)
 
     if (documents.length !== materialDocIds.length) {
       destination.notFound = destination.notFound || []

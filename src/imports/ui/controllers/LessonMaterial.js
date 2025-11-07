@@ -94,17 +94,11 @@ function subscribe (unitDoc, callback) {
 
 /**
  * Loads all phases + all material for this current unit via Meteor method.
+ * @async
  * @param unitDoc {Document} the current unit document
- * @param callback {Function} receive err/res response
  * @return {Object} an object containing all materials mapped
  */
-LessonMaterial.load = (unitDoc, callback) => {
-  load(unitDoc)
-    .then(result => callback(undefined, result))
-    .catch(error => callback(error))
-}
-
-async function load (unitDoc) {
+LessonMaterial.load = async (unitDoc) => {
   const unitId = unitDoc._id
   const data = await callMethod({
     name: Unit.methods.loadMaterial,
@@ -134,7 +128,7 @@ async function load (unitDoc) {
   })
 
   data.phases = phases
-
+console.debug({ data })
   return data
 }
 

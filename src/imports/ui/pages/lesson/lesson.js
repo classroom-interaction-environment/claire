@@ -182,9 +182,16 @@ Template.lesson.onCreated(function () {
       name: Unit.methods.get,
       args: { _id: unitId },
       failure: onError,
-      success: unitDoc => {
-        instance.state.set({ unitDoc })
-        loadTeacherMaterial(unitDoc, instance)
+      success: async unitDoc => {
+        if (unitDoc) {
+          instance.state.set({ unitDoc })
+        }
+        else {
+          instance.state.set({ docNotFound: true })
+        }
+        const material = await loadTeacherMaterial(unitDoc, instance)
+        const { unassociatedMaterial } = material
+        instance.state.set({ unassociatedMaterial, unitDoc: material.unitDoc })
         computation.stop()
       }
     })
@@ -302,31 +309,26 @@ Template.lesson.events({
   }
 })
 
-function loadTeacherMaterial (unitDoc, templateInstance) {
-  if (!unitDoc) {
-    return templateInstance.state.set('docNotFound', true)
+const loadTeacherMaterial = async (unitDoc) => {
+  const material = await LessonMaterial.load(unitDoc)
+  API.debug('material loaded', material)
+
+  // update the phases on the unit document
+  if (unitDoc.phases && unitDoc.phases.length > 0) {
+    unitDoc.phases = unitDoc.phases
+      .map(phaseId => {
+        const materialDocs = Material.getDocuments(Phase.name, phaseId)
+        const phaseDoc = materialDocs[0]
+        if (!phaseDoc) {
+          console.warn('expected phase doc by phaseId', phaseId, 'got', phaseDoc)
+        }
+        return phaseDoc
+      })
+      // there is sometimes the case that the value above results in a null value
+      // which completely crashes the further processing chain
+      .filter(phase => !!phase)
   }
 
-  LessonMaterial.load(unitDoc, (err, material) => {
-    API.debug('material loaded', err, material)
-
-    // update the phases on the unit document
-    if (unitDoc.phases && unitDoc.phases.length > 0) {
-      unitDoc.phases = unitDoc.phases
-        .map(phaseId => {
-          const materialDocs = Material.getDocuments(Phase.name, phaseId)
-          const phaseDoc = materialDocs[0]
-          if (!phaseDoc) {
-            console.warn('expected phase doc by phaseId', phaseId, 'got', phaseDoc)
-          }
-          return phaseDoc
-        })
-        // there is sometimes the case that the value above results in a null value
-        // which completely crashes the further processing chain
-        .filter(phase => !!phase)
-    }
-
-    const unassociatedMaterial = findUnassociatedMaterial(unitDoc)
-    templateInstance.state.set({ unassociatedMaterial, unitDoc })
-  })
+  const unassociatedMaterial = findUnassociatedMaterial(unitDoc)
+  return { unitDoc, unassociatedMaterial }
 }

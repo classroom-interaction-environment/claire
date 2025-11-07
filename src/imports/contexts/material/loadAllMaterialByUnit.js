@@ -14,6 +14,7 @@ export const loadAllMaterialByUnit = onServer(async (unitDoc) => {
   const unitMaterial = unitMaterialIds(unitDoc)
   const dependencies = {}
   const material = {}
+
   await loadMaterial({
     source: unitMaterial,
     destination: material,
