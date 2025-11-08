@@ -1,10 +1,12 @@
 import { onServer } from '../../utils/archUtils'
 import { Meteor } from 'meteor/meteor'
 import { getCollection } from '../../utils/getCollection'
+import { Lesson } from '../../../contexts/classroom/lessons/Lesson'
 
 export const createItemGetMethod = ({ name }) => {
   import { isMemberOfLesson } from '../../../contexts/classroom/lessons/runtime/isMemberOfLesson'
-
+  import { createDocGetter } from '../../utils/document/createDocGetter'
+  const getLessonDoc = createDocGetter({ name: Lesson.name })
   return {
     name: `${name}.methods.get`,
     schema: {
@@ -14,8 +16,8 @@ export const createItemGetMethod = ({ name }) => {
     },
     run: onServer(async function run ({ lessonId, taskId, itemId }) {
       const { userId } = this
-
-      if (!await isMemberOfLesson({ userId, lessonId })) {
+      const lessonDoc = await getLessonDoc(lessonId)
+      if (!await isMemberOfLesson({ userId, lessonDoc })) {
         throw new Meteor.Error('schoolClass.errors.noMember')
       }
 

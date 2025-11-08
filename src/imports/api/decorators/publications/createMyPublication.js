@@ -12,7 +12,7 @@ export const createMyPublication = function ({ name, publicFields, schema, isFil
         optional: true
       }
     }, schema),
-    run: onServer(function ({ limit, customFields = {} }) {
+    run: onServer(async function ({ limit, customFields = {} }) {
       const fsQuery = isFilesCollection ? { userId: this.userId } : { createdBy: this.userId }
       let query = Object.assign(customFields, fsQuery)
 
@@ -23,16 +23,16 @@ export const createMyPublication = function ({ name, publicFields, schema, isFil
       if (limit) projection.limit = limit
 
       const collection = getCollection(name)
-      const cursor = collection.find(query, projection)
+      const docs = await collection.find(query, projection).fetchAsync()
 
       // we often create documents as "fork" of originals, so we need to
       // publish the originals, too!
       const uniqueOriginals = new Set()
-      cursor.forEach(doc => {
+      for (const doc of docs) {
         if (typeof doc._original === 'string') {
           uniqueOriginals.add(doc._original)
         }
-      })
+      }
 
       // we need to merge the query with our new added ids
       const originals = Array.from(uniqueOriginals)

@@ -2,10 +2,12 @@ import { Meteor } from 'meteor/meteor'
 import { onServer } from '../../utils/archUtils'
 import { getCollection } from '../../utils/getCollection'
 import { createLog } from '../../log/createLog'
+import { Lesson } from '../../../contexts/classroom/lessons/Lesson'
 
 export const createByItemPublication = ({ name }) => {
   import { isMemberOfLesson } from '../../../contexts/classroom/lessons/runtime/isMemberOfLesson'
-
+  import { createDocGetter } from '../../utils/document/createDocGetter'
+  const getLessonDoc = createDocGetter({ name: Lesson.name, optional: false })
   log('[createByItemPublication]:', name)
   return {
     name: `${name}.publications.byItem`,
@@ -14,9 +16,10 @@ export const createByItemPublication = ({ name }) => {
       taskId: String,
       itemId: String
     },
-    run: onServer(function ({ lessonId, taskId, itemId }) {
+    run: onServer(async function ({ lessonId, taskId, itemId }) {
       const userId = this.userId
-      if (!isMemberOfLesson({ userId, lessonId })) {
+      const lessonDoc = await getLessonDoc(lessonId)
+      if (!await isMemberOfLesson({ userId, lessonDoc })) {
         const err = new Meteor.Error('schoolClass.errors.noMember')
         logError(err)
         throw err

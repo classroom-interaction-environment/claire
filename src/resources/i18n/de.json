@@ -238,7 +238,8 @@
     "insufficientRoles": "Es können nur Einladungen für Benutzer mit niedrigeren Rollen erstellt werden",
     "errors": {
       "invalidCode": "Code ist ungültig oder abgelaufen"
-    }
+    },
+    "alreadyClassMember": "Du bist bereits Mitglied dieses Kurses"
   },
   "safeConfirm": {
     "code": "Bitte bestätigen Sie den Vorgang durch Eingabe des folgenden Codes",

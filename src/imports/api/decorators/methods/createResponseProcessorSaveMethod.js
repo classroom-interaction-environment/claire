@@ -33,7 +33,7 @@ export const createResponseProcessorSaveMethod = function ({ name, schema }) {
         throw new Meteor.Error('errors.permissionDenied')
       }
 
-      return Collection.update(document._id, { $set: customFields })
+      return Collection.updateAsync(document._id, { $set: customFields })
     })
   }
 }

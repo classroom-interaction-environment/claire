@@ -47,7 +47,7 @@ export const saveTaskWorkingState = async ({ lessonId, taskId, groupId, complete
 
   if (groupId) {
     Features.ensure('groups')
-    groupDoc = groupId && getGroupDoc(groupId)
+    groupDoc = groupId && await getGroupDoc(groupId)
     ensureDocumentExists({
       document: groupDoc,
       name: Group.name,

@@ -4,7 +4,7 @@ import { StudentRoutes } from '../../../api/routes/student/StudentRoutes'
 import { studentContainer } from '../../../ui/containers/student/studentContainer'
 
 Router.setDefaultTarget(studentContainer)
-debugger
+
 Object.keys(StudentRoutes).forEach(key => {
   Routes[key] = StudentRoutes[key]
 })
