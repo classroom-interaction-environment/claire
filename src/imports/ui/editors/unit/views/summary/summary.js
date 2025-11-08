@@ -124,12 +124,13 @@ Template.uesummary.onCreated(function () {
 
   // the lesson material is separately loaded, once the material has all been
   // initialized and is ready
-  LessonMaterial.load(unitDoc, (err) => {
-    instance.state.set('materialComplete', true)
-    if (err) {
-      API.notify(err)
-    }
-  })
+  LessonMaterial.load(unitDoc)
+    .then(() => instance.state.set('materialComplete', true))
+    .catch(err => {
+      if (err) {
+        API.notify(err)
+      }
+    })
 
   instance.autorun(() => {
     const materialComplete = instance.state.get('materialComplete')

@@ -10,11 +10,12 @@ import { getQueryParam } from '../../../api/routes/params/getQueryParam'
 import { getCollection } from '../../../api/utils/getCollection'
 import { loadIntoCollection } from '../../../infrastructure/loading/loadIntoCollection'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
+import { callMethod } from '../../controllers/document/callMethod'
 import '../../components/color/selector/colorSelector'
 import '../../generic/print/print'
 import './navBeamer.css'
 import './navBeamer.html'
-import { callMethod } from '../../controllers/document/callMethod'
+import { i18n } from '../../../api/language/language'
 /*
  Beamer nav contains a nav menu to trigger global beamer actions.
  */
@@ -129,7 +130,7 @@ Template.navBeamer.onCreated(function onCreated () {
 Template.navBeamer.helpers({
   loadComplete () {
     const instance = Template.instance()
-    return instance.state.get('beamerDoc')
+    return i18n.initialized() && API.initComplete() && instance.state.get('beamerDoc') && instance.state.get('lessonsSubComplete')
   },
   active () {
 

@@ -159,7 +159,15 @@ Template.login.events({
       }
 
       templateInstance.state.set('loggingIn', false)
-      setTimeout(() => templateInstance.data.onSuccess(redirect), 500)
+
+      Tracker.autorun(c => {
+        if (!Meteor.user()) {
+          return
+        }
+
+        c.stop()
+        templateInstance.data.onSuccess(redirect)
+      })
     })
   },
   'click .enter-code-button' (event, templateInstance) {

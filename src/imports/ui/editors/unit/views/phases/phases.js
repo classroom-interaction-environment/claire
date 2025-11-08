@@ -110,14 +110,23 @@ Template.uephases.onCreated(function onPhasesCreated () {
       return
     }
 
-    LessonMaterial.load(unitDoc, result => {
-      instance.state.set('materialLoadComplete', true)
-    })
+    // the lesson material is separately loaded, once the material has all been
+    // initialized and is ready
+    LessonMaterial.load(unitDoc)
+      .then(() => instance.state.set('materialLoadComplete', true))
+      .catch(err => {
+        if (err) {
+          API.notify(err)
+        }
+      })
 
     if (originalUnitDoc) {
-      LessonMaterial.load(originalUnitDoc, result => {
-        API.debug(result)
-      })
+      LessonMaterial.load(originalUnitDoc)
+        .catch(err => {
+          if (err) {
+            API.notify(err)
+          }
+        })
     }
   })
 })

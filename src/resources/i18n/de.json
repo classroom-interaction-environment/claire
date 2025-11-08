@@ -246,6 +246,8 @@
   },
   "beamer": {
     "title": "Beamer",
+    "selectLesson": "Unterricht wählen",
+    "noLessons": "Kein Unterricht läuft aktuell",
     "controlBeamer": {
       "title": "Beamer kontrollieren",
       "end": "Beamer beenden"

@@ -16,7 +16,6 @@ import { getCollection } from '../../../../api/utils/getCollection'
 import lessonStudentLanguage from '../i18n/lessonStudentLanguage'
 import '../../../components/lesson/status/lessonStatus'
 import './lessons.html'
-import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 
 const warn = createLog({ name: 'Lessons', type: 'warn' })
 const API = Template.lessons.setDependencies({

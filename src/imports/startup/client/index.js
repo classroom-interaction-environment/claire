@@ -39,8 +39,10 @@ Tracker.autorun((computation) => {
       })
   }
 
-  if (!UserRoles.subscription.ready()) return
-
+  // we need to wait for Meteor.user
+  // because Meteor.userId is present before Meteor.user is ready
+  // and we may need some info from the user document to determine roles
+  if (!UserRoles.subscription.ready() || !Meteor.user()) return
   loadUserRoutes(userId)
     .catch(e => console.error(e))
     .then(role => {

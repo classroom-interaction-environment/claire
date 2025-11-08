@@ -62,14 +62,23 @@ Template.unitEditorGroupsView.onCreated(function () {
       failure: API.notify
     })
 
-    LessonMaterial.load(unitDoc, (err, material) => {
-      API.debug('material loaded', err, material)
-      const unassociatedMaterial = findUnassociatedMaterial(unitDoc)
-      instance.state.set({
-        materialLoaded: true,
-        unassociatedMaterial
+
+    // the lesson material is separately loaded, once the material has all been
+    // initialized and is ready
+    LessonMaterial.load(unitDoc)
+      .then((material) => {
+        API.debug('material loaded', material)
+        const unassociatedMaterial = findUnassociatedMaterial(unitDoc)
+        instance.state.set({
+          materialLoaded: true,
+          unassociatedMaterial
+        })
       })
-    })
+      .catch(err => {
+        if (err) {
+          API.notify(err)
+        }
+      })
 
     // subscriptions:
     // - my groups

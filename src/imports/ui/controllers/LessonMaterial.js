@@ -128,7 +128,6 @@ LessonMaterial.load = async (unitDoc) => {
   })
 
   data.phases = phases
-console.debug({ data })
   return data
 }
 

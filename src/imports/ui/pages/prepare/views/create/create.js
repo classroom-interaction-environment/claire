@@ -122,9 +122,8 @@ Template.createClass.onCreated(function () {
       materialInitialized = true
     }
 
-    LessonMaterial.load(unitDoc, (error, result) => {
-      if (error) return API.notify(error)
-
+    LessonMaterial.load(unitDoc)
+      .then((result) => {
       const unassociatedMaterial = findUnassociatedMaterial(unitDoc)
 
       instance.state.set({
@@ -132,6 +131,7 @@ Template.createClass.onCreated(function () {
         unassociatedMaterial: unassociatedMaterial,
         phaseLoaded: true
       })
+        .catch((error) => API.notify(error))
     })
   })
 })
