@@ -65,14 +65,20 @@
                 {{! phase-related groups and their linked material }}
                     {{#if hasGroups phase._id}}
                         {{#each group in (groups phase._id)}}
-                            <div class="d-flex bg-transparent border-0 mt-1">
+                            <div class="d-flex bg-transparent border-0 my-1">
 
                                 {{! group default info }}
-                                <div class="bg-primary text-white p-1 rounded w-25">
+                                <div class="bg-primary text-white p-3 rounded w-25">
                                     {{group.title}}
 
                                     {{#unless group.users.length}}
                                         {{> tooltip icon="exclamation-triangle" title=(i18n "group.noUsers")}}
+                                    {{else}}
+                                        <div class="block py-1">
+                                            {{#each role in (roles group)}}
+                                                <span class="badge bg-light text-dark">{{role}}</span>
+                                            {{/each}}
+                                        </div>
                                     {{/unless}}
                                 </div>
 

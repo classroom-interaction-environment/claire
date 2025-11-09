@@ -23,13 +23,13 @@ export const RichText = {
     }
   },
   form: async () => {
-    await import('trix/dist/trix')
+    await import('trix/dist/trix.esm.js')
     await import('trix/dist/trix.css')
     const loadAutoFormTrix = await import('meteor/jkuester:autoform-trix')
     return loadAutoFormTrix.default()
   },
   load: async () => {
-    await import('trix/dist/trix')
+    await import('trix/dist/trix.esm.js')
     await import('trix/dist/trix.css')
   }
 }

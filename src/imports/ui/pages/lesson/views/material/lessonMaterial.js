@@ -327,6 +327,15 @@ Template.lessonMaterial.helpers({
     if (typeof referenceId === 'string' && sendingToBeamerDoc.referenceId !== referenceId) return false
     if (typeof itemId === 'string' && sendingToBeamerDoc.itemId !== itemId) return false
     return true
+  },
+  roles (groupDoc) {
+    const roles = new Set()
+    groupDoc?.users?.forEach(userDoc => {
+      if (userDoc.role) {
+        roles.add(userDoc.role)
+      }
+    })
+    return Array.from(roles)
   }
 })
 
