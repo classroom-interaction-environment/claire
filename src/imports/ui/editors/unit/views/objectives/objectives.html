@@ -56,10 +56,10 @@
                 </div>
             {{/mbody}}
             {{#each objectiveDoc in objectivesToAdd}}
-                {{#unless unitHasObjective objectiveDoc._id}}
-                    <li class="list-group-item d-flex justify-content-between">
+                    <li class="list-group-item d-flex justify-content-between p-1 align-items-center">
                         {{> objective objectiveDoc}}
                         <span class="ms-3">
+                            {{#unless unitHasObjective objectiveDoc._id}}
                             {{> actionButton
                                     type="outline-secondary"
                                     class="ueobjectives-add-button"
@@ -67,13 +67,17 @@
                                     title=(i18n "actions.add")
                                     blocked=(submitting objectiveDoc._id)
                                     data-target=objectiveDoc._id}}
+                            {{else}}
+                                {{> actionButton
+                                        type="outline-danger"
+                                        class="ueobjectives-remove-button"
+                                        icon="times"
+                                        title=(i18n "actions.remove")
+                                        blocked=(submitting objectiveDoc._id)
+                                        data-target=objectiveDoc._id}}
+                            {{/unless}}
                         </span>
                     </li>
-                {{else}}
-                    <li class="list-group-item bg-light">
-                        {{> objective objectiveDoc}}
-                    </li>
-                {{/unless}}
             {{else}}
                 <div class="jumbotron">
                     <p>{{i18n 'editor.unit.allDocsAdded'}}</p>
