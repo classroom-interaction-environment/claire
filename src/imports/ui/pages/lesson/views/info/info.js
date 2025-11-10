@@ -1,10 +1,10 @@
-import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { LessonActions } from '../../../../controllers/LessonActions'
 import { LessonStates } from '../../../../../contexts/classroom/lessons/LessonStates'
 import { Lesson } from '../../../../../contexts/classroom/lessons/Lesson'
 import { confirmDialog } from '../../../../components/confirm/confirm'
 import { createLog } from '../../../../../api/log/createLog'
+import { getUsersCollection } from '../../../../../api/utils/getUsersCollection'
 import '../../../../renderer/user/list/userListRenderer'
 import '../../../../editors/groups/groupsEditor'
 import './info.html'
@@ -27,7 +27,7 @@ Template.lessonInfo.onCreated(function () {
     if (!classDoc) {
       return
     }
-    const students = Meteor.users.find({ _id: { $in: classDoc.students ?? [] } }).fetch()
+    const students = getUsersCollection().find({ _id: { $in: classDoc.students ?? [] } }).fetch()
     instance.state.set({ students })
   })
 })
@@ -48,6 +48,9 @@ Template.lessonInfo.helpers({
   },
   classDoc () {
     return Template.instance().data.classDoc
+  },
+  hasGroups () {
+
   },
   groupEditorAtts () {
     const instance = Template.instance()

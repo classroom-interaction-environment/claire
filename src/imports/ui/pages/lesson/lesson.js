@@ -39,7 +39,6 @@ const API = Template.lesson.setDependencies({
 
 const LessonCollection = getCollection(Lesson.name)
 const SchoolClassCollection = getCollection(SchoolClass.name)
-const UsersCollection = getLocalCollection(Users.name)
 
 Template.lesson.onCreated(function () {
   const onError = err => API.fatal(err)
@@ -146,27 +145,23 @@ Template.lesson.onCreated(function () {
 
     if (!classDoc) return
 
-    loadIntoCollection({
-      name: Users.methods.byClass,
+    API.subscribe({
+      name: Users.publications.byClass,
       args: { classId },
-      collection: UsersCollection,
-      failure: API.notify,
-      success: () => instance.state.set('usersReady', true)
-    })
-  })
-
-  // profile images
-
-  instance.autorun(() => {
-    const lessonDoc = instance.state.get('lessonDoc')
-    if (!lessonDoc) return
-
-    loadIntoCollection({
-      name: ProfileImages.methods.byClass,
-      args: { classId: lessonDoc.classId },
-      collection: getLocalCollection(ProfileImages.name),
-      failure: API.notify,
-      success: () => instance.state.set('profileImagesReady', true)
+      key: lessonSubKey,
+      callbacks: {
+        onError,
+        onReady () {
+          instance.state.set('usersReady', true)
+          loadIntoCollection({
+            name: ProfileImages.methods.byClass,
+            args: { classId },
+            collection: getLocalCollection(ProfileImages.name),
+            failure: API.notify,
+            success: () => instance.state.set('profileImagesReady', true)
+          })
+        }
+      }
     })
   })
 

@@ -1,6 +1,5 @@
 import { Template } from 'meteor/templating'
 import { Item } from '../../../../../../contexts/tasks/definitions/items/Item'
-import { Meteor } from 'meteor/meteor'
 import { ReactiveVar } from 'meteor/reactive-var'
 import { TaskResults } from '../../../../../../contexts/tasks/results/TaskResults'
 import { Files } from '../../../../../../contexts/files/Files'
@@ -9,6 +8,7 @@ import { $in } from '../../../../../../api/utils/query/inSelector'
 import { getCollection } from '../../../../../../api/utils/getCollection'
 import { getAllItemsInTask } from '../../../../../../contexts/tasks/getAllItemsInTask'
 import { dataTarget } from '../../../../../utils/dataTarget'
+import { getUsersCollection } from '../../../../../../api/utils/getUsersCollection'
 import { GroupMode } from '../../../../../../contexts/classroom/group/GroupMode'
 import './taskResulTable.html'
 
@@ -54,7 +54,7 @@ Template.taskResultTable.helpers({
   },
   users () {
     const userIds = Template.getState('userIds') || []
-    return cursor(() => Meteor.users.find({ _id: $in(userIds) }, {
+    return cursor(() => getUsersCollection().find({ _id: $in(userIds) }, {
       sort: {
         'presence.status': -1,
         lastName: 1
