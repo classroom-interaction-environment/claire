@@ -7,7 +7,6 @@ import { getCollection } from '../../../api/utils/getCollection'
 import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getSchemaField } from '../../../ui/utils/form/getSchemaField'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
-import { verifyInvitation } from './methods/verifyInvitation'
 import { getInvitationOffset } from './validation/getInvitationOffset'
 
 const mappedRoles = Object.values(UserUtils.roles).map(role => ({
@@ -418,12 +417,11 @@ CodeInvitation.methods.addToClass = {
   roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher, UserUtils.roles.student],
   schema: { code: String },
   run: onServerExec(function () {
-    import { Users } from '../../system/accounts/users/User'
-    import { createDocGetter } from '../../../api/utils/document/createDocGetter'
-
+    import { addUserToClassByCode } from './methods/addUserToClassByCode'
 
     return async function ({ code }) {
-
+      const { userId } = this
+      return addUserToClassByCode({ code, userId })
     }
   })
 }

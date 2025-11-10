@@ -2,7 +2,6 @@ import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
 import { SchoolClass } from '../../schoolclass/SchoolClass'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 import { getUsersCollection } from '../../../../api/utils/getUsersCollection'
-import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { isMemberOfClass } from '../../schoolclass/helpers/isMemberOfClass'
 import { Users } from '../../../system/accounts/users/User'
 import { CodeInvitation } from '../CodeInvitations'
@@ -17,7 +16,8 @@ const getCodeDoc  = createDocGetter({ name: CodeInvitation.name })
 
 export const addUserToClassByCode = async ({ code, userId }) => {
 // 1st validate code
-  const isValid = validateInvitation(code)
+  const codeDoc = await getCodeDoc({ code })
+  const isValid = validateInvitation(codeDoc)
   if (!isValid) {
     throw new PermissionDeniedError(CodeInvitation.errors.invalidCode)
   }
@@ -28,9 +28,6 @@ export const addUserToClassByCode = async ({ code, userId }) => {
     console.warn('warning adding unverified user', user._id)
     // throw new PermissionDeniedError('user.notVerified')
   }
-
-  const codeDoc = await getCodeDoc(code)
-  if (!codeDoc) throw new DocNotFoundError(code)
 
   // 3rd get class doc
   const { classId } = codeDoc
