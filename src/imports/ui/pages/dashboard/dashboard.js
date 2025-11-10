@@ -379,7 +379,6 @@ Template.dashboard.events({
   // ------------------------------------------------------------------------------------------------------
   'click .form-btn': async (event, templateInstance) => {
     event.preventDefault()
-
     const target = dataTarget(event, templateInstance)
     const classId = dataTarget(event, templateInstance, 'class')
     const lessonId = dataTarget(event, templateInstance, 'lesson')

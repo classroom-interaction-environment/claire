@@ -21,7 +21,7 @@
     },
     "password": {
       "min": {
-        "value": 8,
+        "value": 12,
         "rule": true
       },
       "max": {
@@ -36,16 +36,9 @@
       "icon": "lock",
       "confirm": true,
       "blacklist": [
-        "^\\d+$",
-        "^[a-zA-Z]+$",
         "^.*p(a|@|4)(s|5)+w(o|0)r(d|t).*$",
         "^.*h(e|3|a|4|@)llo.*$",
-        "^.*f(i|1)ck(e|3)n.*$",
-        "^.*1234.*$",
-        "^.*abcd.*$",
-        "^.*qwer.*$",
-        "^.*asdf.*$",
-        "^.*yxcv.*$"
+        "^.*f(i|1)ck(e|3)n.*$"
       ]
     }
   },

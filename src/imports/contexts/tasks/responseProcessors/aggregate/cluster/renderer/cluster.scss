@@ -1,3 +1,7 @@
+.break-only-space {
+    word-break: break-word;
+}
+
 .disable-cluster {
   pointer-events: none;
 }
@@ -128,10 +132,10 @@
 }
 
 .text-container {
-  height: 100px;
+  height: 10rem;
   overflow-x: auto;
   overflow-y: hidden;
-  width: 100px;
+  width: 10rem;
   z-index: 1032;
 }
 
@@ -140,15 +144,12 @@
 }
 
 .text-entry {
-  display: block;
   height: 100%;
   width: 100%;
 }
 
 .text {
-  display: block;
   font-size: 12px;
-  word-break: keep-all !important;
 }
 
 .no-select {

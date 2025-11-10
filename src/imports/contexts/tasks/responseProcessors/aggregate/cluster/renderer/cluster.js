@@ -132,7 +132,7 @@ Template.rpCluster.onRendered(function () {
         API.debug('resize element text', responseId)
         const container = instance.$(`.text-container[data-id="${responseId}"]`).get(0)
         const text = container.firstElementChild.firstElementChild
-        resizeText({ element: text, step: 2 })
+        resizeText({ element: text, step: 1 })
       })
     }, 300)
   })
@@ -156,7 +156,7 @@ Template.rpCluster.onRendered(function () {
 })
 
 const isOverflown = ({ clientHeight, scrollHeight }) => scrollHeight > clientHeight
-const resizeText = ({ element, elements, minSize = 10, maxSize = 512, step = 1, unit = 'px' }) => {
+const resizeText = ({ element, elements, minSize = 10, maxSize = 512, step = 0.5, unit = 'px' }) => {
   (elements || [element]).forEach(el => {
     let i = minSize
     let overflow = false
@@ -343,11 +343,17 @@ Template.rpCluster.events({
   'dblclick .text-container' (event, templateInstance) {
     const id = event.currentTarget.getAttribute('id') || event.currentTarget.getAttribute('data-id')
     const optionTarget = templateInstance.state.get('optionTarget')
+    const isTarget = id === optionTarget
     templateInstance.state.set({
-      optionTarget: id === optionTarget
+      optionTarget: isTarget
         ? null
         : id
     })
+    if (isTarget) {
+      setTimeout(() => {
+        updateLayout(templateInstance)
+      }, 100)
+    }
   }
 })
 
@@ -437,7 +443,7 @@ function updateLayout (templateInstance) {
     setTimeout(() => {
       templateInstance.$('.text-container').each((index, element) => {
         const text = element.firstElementChild.firstElementChild
-        resizeText({ element: text, step: 2 })
+        resizeText({ element: text, step: 1 })
       })
     }, 500)
   }
