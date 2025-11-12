@@ -1,12 +1,12 @@
 <template name="itemRenderer">
     {{#onLoaded complete=loadComplete}}
-        {{#with item this.itemId}}
-            <div class="item-form-container {{#if isFocus this.itemId}}shadow-sm{{/if}}">
-                {{#autoForm  id=(itemFormName this.itemId)
+        {{#let item=(getItem this.itemId)}}
+            <div class="item-form-container {{#if isFocus item.itemId}}shadow-sm{{/if}}">
+                {{#autoForm  id=(itemFormName item.itemId)
                              validation="blur"
                              type="normal"
-                             schema=(itemSchema this.itemId)
-                             doc=(value this.itemId)}}
+                             schema=(itemSchema item.itemId)
+                             doc=(value item.itemId)}}
                     <div>
                         <fieldset disabled="{{#if itemDisabled ../isEditable ../itemId ../groupMode}}disabled{{/if}}">
                             {{#each afFieldNames}}
@@ -32,29 +32,29 @@
                             {{/if}}
                         </fieldset>
                     </div>
-                    {{#if showSaveButton this}}
+                    {{#if showSaveButton item}}
                         <div class="d-block d-print-none">
-                            {{#unless submitting this.itemId}}
+                            {{#unless submitting item.itemId}}
                                 {{#if eq ../groupMode "merge"}}
                                     <button type="button"
                                             class="btn btn-sm w-100 btn-outline-secondary"
-                                            data-target="{{this.itemId}}" disabled>
+                                            data-target="{{item.itemId}}" disabled>
                                         <i class="fa fa-users"></i> {{i18n "group.editing"}}
                                     </button>
-                                {{else if saved this.itemId}}
+                                {{else if saved item.itemId}}
                                     <button type="button"
                                             class="btn btn-sm w-100 btn-outline-primary itemrenderer-edit-button"
-                                            data-target="{{this.itemId}}">
+                                            data-target="{{item.itemId}}">
                                         <i class="fa fa-edit"></i> {{i18n "actions.edit"}}
                                     </button>
-                                {{else if (itemHasValue this.itemId)}}
+                                {{else if (itemHasValue item.itemId)}}
                                     <button type="submit"
                                             class="btn btn-sm w-100 btn-primary itemrenderer-submit-button">
                                         <i class="fa fa-save"></i> {{i18n
                                             "actions.save"}}
                                     </button>
                                 {{/if}}
-                            {{else if (itemHasValue this.itemId)}}
+                            {{else if (itemHasValue item.itemId)}}
                                 <button type="submit"
                                         class="btn btn-primary w-100 itemrenderer-submit-button btn-sm"
                                         disabled>
@@ -70,7 +70,7 @@
                     {{/if}}
                     --}}
                 {{/autoForm}}
-                {{#if submitting this.itemId}}
+                {{#if submitting item.itemId}}
                     <div class="text-muted text-center">
                         {{> icon name="cog" pulse=true}}
                         {{i18n "actions.saving"}}
@@ -108,6 +108,6 @@
                     {{i18n "common.loading" }} - {{i18n "item.title"}}
                 </div>
             {{/with}}
-        {{/with}}
+        {{/let}}
     {{/onLoaded}}
 </template>

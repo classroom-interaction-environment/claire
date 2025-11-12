@@ -9,7 +9,6 @@ import { Schema } from '../../../api/schema/Schema'
 import { GroupMode } from '../../../contexts/classroom/group/GroupMode'
 import { getUsersCollection } from '../../../api/utils/getUsersCollection'
 import { getFullName } from '../../../api/accounts/emailTemplates/common'
-import { throttle } from '../../utils/performance/throttle'
 import './itemRenderer.scss'
 import './itemRenderer.html'
 
@@ -56,7 +55,7 @@ Template.itemRenderer.onCreated(function () {
       return
     }
 
-    const { onItemLoad, hasUnsavedData, itemId, page } = data
+    const { onItemLoad, hasUnsavedData, itemId, page, preview } = data
     const ctx = Item.get(data.meta)
     instance.state.set({ autoSave: ctx.save === 'auto' })
 
@@ -67,7 +66,8 @@ Template.itemRenderer.onCreated(function () {
     // (like preview mode, lessonId, taskId, etc.)
     // we use the build() function that every item has
     // by definition.
-    if (!rendererSchemas.has(itemId)) {
+    // In preview mode we always rebuild the schema
+    if (!rendererSchemas.has(itemId) || preview) {
       const buildSchema = ctx.build(data)
 
       if (typeof ctx.load === 'function') {
@@ -193,7 +193,7 @@ Template.itemRenderer.helpers({
   isPreview () {
     return Template.instance().data.preview
   },
-  item (itemId) {
+  getItem (itemId) {
     return items.get(itemId)
   },
   itemSchema (itemId) {

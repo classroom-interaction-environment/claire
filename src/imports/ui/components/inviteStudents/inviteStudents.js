@@ -288,7 +288,7 @@ Template.inviteStudents.events({
     const codeDoc = templateInstance.state.get('codeDoc')
 
     // if already expired etc. just show the new form
-    if (!codeDoc || CodeInvitation.helpers.isExpired(codeDoc) || CodeInvitation.helpers.isComplete(codeDoc)) {
+    if (!codeDoc || invitationExpired(codeDoc) || invitationComplete(codeDoc)) {
       return templateInstance.state.set('showForm', true)
     }
 

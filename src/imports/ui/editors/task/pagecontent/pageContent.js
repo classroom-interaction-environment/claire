@@ -24,7 +24,7 @@ import { getTaskContexts } from '../../../../contexts/tasks/getTaskContexts'
 import { getLocalCollection } from '../../../../infrastructure/collection/getLocalCollection'
 import { asyncTimeout } from '../../../../api/utils/asyncTimeout'
 import { getMaterialRenderer } from '../../../../api/material/getMaterialRenderer'
-
+import { getCurrentContent } from './helpers/getCurrentContent'
 import './pageContent.scss'
 import './pageContent.html'
 
@@ -55,18 +55,6 @@ const SchemaCache = {
     }
     return this.values[content][meta]
   }
-}
-
-const getCurrentContent = ({ task, currentIndex, header, footer }) => {
-  if (header) return task?.header?.content
-  if (footer) return task?.footer?.content
-
-  const content = task?.pages?.[currentIndex]?.content
-  if (!content) { return content }
-
-  return content.filter(element => {
-    return TaskDefinitions.helpers.isRegistered(element)
-  })
 }
 
 Template.taskPageContent.onCreated(function () {
@@ -275,22 +263,23 @@ Template.taskPageContent.helpers({
     SchemaCache.set(contentType, metaType, schemaInstance)
     return schemaInstance
   },
-  attributesDoc (contentObject) {
+  attributesDoc (preview, target) {
+    const contentObject = preview || target
     API.log(contentObject)
     const instance = Template.instance()
     const header = instance.state.get('header')
     const footer = instance.state.get('footer')
 
     if (header) {
-      return Object.assign({}, contentObject, { preview: true })
+      return Object.assign({}, contentObject, { preview: true, isEditable: true })
     }
 
     if (footer) {
-      return Object.assign({}, contentObject, { preview: true })
+      return Object.assign({}, contentObject, { preview: true, isEditable: true })
     }
 
     if (contentObject && Object.keys(contentObject).length > 2) {
-      return Object.assign({}, contentObject, { preview: true })
+      return Object.assign({}, contentObject, { preview: true, isEditable: true })
     }
 
     return null
@@ -610,19 +599,17 @@ Template.taskPageContent.events({
     templateInstance.$('#pageContentEditModal').modal('show')
   },
   'click .preview-attributes-form-button' (event, templateInstance) {
-    templateInstance.state.set('submitting', true)
-
+    templateInstance.state.set({ editPreview: null, submitting: true })
     const insertDoc = AutoForm.getFormValues('attributesForm').insertDoc
     if (!insertDoc) {
-      return templateInstance.state.set('editPreview', null)
+      return templateInstance.state.set({ submitting: null })
     }
 
     const editTarget = templateInstance.state.get('editTarget')
-    const editPreview = Object.assign({}, editTarget, insertDoc)
-    templateInstance.state.set('editPreview', editPreview)
+    const editPreview = { ...editTarget, ...insertDoc }
 
     setTimeout(() => {
-      templateInstance.state.set('submitting', null)
+      templateInstance.state.set({ editPreview, submitting: null })
     }, 300)
   },
   'click .save-attributes-form-button' (event, templateInstance) {

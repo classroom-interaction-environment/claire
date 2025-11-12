@@ -147,7 +147,7 @@
             {{> icon name="edit"}} {{i18n "editor.task.editContent"}}
         {{/mheader}}
         <div class="card-body taskeditor-item-area">
-            {{#with editTarget}}
+            {{#if editTarget}}
                 <div class="row">
 
                     {{! edit the entry in the right column }}
@@ -155,7 +155,7 @@
                         {{# caroForm
                                 id="attributesForm"
                                 schema=(attributesSchema editTarget.type editTarget.meta)
-                                doc=(attributesDoc editTarget)
+                                doc=(attributesDoc editPreview editTarget)
                                 blocked=submitting
                                 type="normal"}}
                         {{/caroForm}}
@@ -166,11 +166,13 @@
                         <legend class="my-4 text-primary fw-light">
                             {{i18n "common.preview"}}
                         </legend>
-                        {{#with editPreview}}
+                        {{#if editPreview}}
                             {{> TaskRendererFactory
                                     type=editTarget.type
-                                    attributes=(attributesDoc this)}}
-                        {{/with}}
+                                    attributes=(attributesDoc editPreview)}}
+                        {{else}}
+                            {{> loading type="data"}}
+                        {{/if}}
                     </div>
                 </div>
                 {{#if showSchema editTarget.id}}
@@ -180,7 +182,7 @@
                 {{/if}}
             {{else}}
                 {{> loading type="data"}}
-            {{/with}}
+            {{/if}}
         </div>
 
         {{#mfooter class="row"}}
