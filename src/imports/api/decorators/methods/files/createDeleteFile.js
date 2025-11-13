@@ -1,4 +1,3 @@
-import { Meteor } from 'meteor/meteor'
 import { PermissionDeniedError } from '../../../errors/types/PermissionDeniedError'
 import { DocNotFoundError } from '../../../errors/types/DocNotFoundError'
 import { getFilesCollection } from '../../../utils/getFilesCollection'
@@ -37,7 +36,7 @@ export const createDeleteFile = ({ filesContext }) => {
         throw new PermissionDeniedError('errors.notInRole', _id)
       }
 
-      const removed = await FilesCollection.remove({ _id })
+      const removed = await FilesCollection.removeAsync({ _id })
 
       log('removed', removed)
       return removed

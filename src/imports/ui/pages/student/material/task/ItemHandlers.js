@@ -106,14 +106,14 @@ ItemHandlers.onItemSubmit = ({ instance, onError }) =>
       args.groupMode = groupMode
     }
 
-    Meteor.call(TaskResults.methods.saveTask.name, args, delayedCallback(300, (err, taskResultDoc) => {
+    Meteor.call(TaskResults.methods.saveTask.name, args, (err, result) => {
       if (err) {
         onError(err)
         callback(err)
       }
-      taskResultDoc[itemId] = taskResultDoc.response
-      callback(null, taskResultDoc)
-    }))
+
+      callback(null, result)
+    })
   }
 
 ItemHandlers.onTaskPagePrev = ({ instance, onError }) => function onTaskPagePrev ({ page, maxPages, taskId }) {

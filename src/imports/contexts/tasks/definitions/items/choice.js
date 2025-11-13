@@ -151,7 +151,8 @@ export const ItemCheckBox = {
         type: Array,
         autoform: {
           noselect: true,
-          type: orientation === orientations.vertical.value ? 'select-checkbox' : 'select-checkbox-inline'
+          type: orientation === orientations.vertical.value ? 'select-checkbox' : 'select-checkbox-inline',
+          labelClass: 'my-2'
         }
       },
       [`${itemId}.$`]: {

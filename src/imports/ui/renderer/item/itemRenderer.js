@@ -11,6 +11,7 @@ import { getUsersCollection } from '../../../api/utils/getUsersCollection'
 import { getFullName } from '../../../api/accounts/emailTemplates/common'
 import './itemRenderer.scss'
 import './itemRenderer.html'
+import { debounce } from '../../../api/utils/debounce'
 
 export const itemRenderer = 'itemRenderer'
 
@@ -141,14 +142,13 @@ Template.itemRenderer.onCreated(function () {
 
     if (onItemSubmit) {
       states.set(itemId, ItemRendererState.submit)
-      onItemSubmit({ itemId, groupMode, insertDoc, updateDoc }, (err, itemDoc) => {
+      onItemSubmit({ itemId, groupMode, insertDoc, updateDoc }, (err, saveResult) => {
         setTimeout(() => {
-          if (err) {
+          if (err || !saveResult) {
             states.set(itemId, ItemRendererState.submissionFailed)
           }
-          if (itemDoc) {
+          else {
             states.set(itemId, ItemRendererState.saved)
-            values.set(itemId, itemDoc)
           }
         }, 500)
       })
@@ -250,9 +250,6 @@ Template.itemRenderer.helpers({
   itemDisabled (isEditable) {
     return !isEditable
   },
-  showSaveButton (item) {
-    return item.isEditable && !Template.getState('autoSave')
-  },
   error () {
     return Template.getState('error')
   },
@@ -262,26 +259,20 @@ Template.itemRenderer.helpers({
 })
 
 Template.itemRenderer.events({
+  'change [data-schema-key], input [data-schema-key], update [data-schema-key]': debounce((event, templateInstance) => {
+    console.debug('itemRenderer change detected, auto-saving...', event.type, event.currentTarget)
+    templateInstance.saveItem({
+      formId: event.currentTarget.id,
+      itemId: templateInstance.data.itemId
+    })
+  }, 1000),
   'click  .itemrenderer-edit-button' (event, templateInstance) {
     event.preventDefault()
     const itemId = templateInstance.$(event.currentTarget).data('target')
     states.set(itemId, ItemRendererState.editing)
   },
-  'blur .item-form-container' (event, templateInstance) {
-    templateInstance.state.set('focus', null)
-    templateInstance.saveItem({
-      formId: event.currentTarget.id,
-      itemId: templateInstance.data.itemId
-    })
-  },
-  'focus' (event, templateInstance) {
-    templateInstance.state.set('focus', templateInstance.data.itemId)
-  },
-  'submit form' (event, templateInstance) {
+  'submit form' (event) {
     event.preventDefault()
-    templateInstance.saveItem({
-      formId: event.currentTarget.id,
-      itemId: templateInstance.data.itemId
-    })
+    event.stopPropagation()
   }
 })

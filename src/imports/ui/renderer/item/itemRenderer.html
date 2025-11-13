@@ -1,7 +1,8 @@
 <template name="itemRenderer">
     {{#onLoaded complete=loadComplete}}
-        {{#let item=(getItem this.itemId)}}
-            <div class="item-form-container {{#if isFocus item.itemId}}shadow-sm{{/if}}">
+        {{#if (getItem itemId)}}
+        {{#let item=(getItem itemId)}}
+            <div class="item-form-container {{#if isFocus item.itemId}}shadow-sm{{/if}} py-4">
                 {{#autoForm  id=(itemFormName item.itemId)
                              validation="blur"
                              type="normal"
@@ -17,6 +18,7 @@
 
                                     {{> afQuickField
                                             name=this.name
+                                            class="item-input-field"
                                             options=afOptionsFromSchema
                                             data-item=../itemId
                                             data-group=../groupId
@@ -32,7 +34,7 @@
                             {{/if}}
                         </fieldset>
                     </div>
-                    {{#if showSaveButton item}}
+                    {{!-- #if showSaveButton item}}
                         <div class="d-block d-print-none">
                             {{#unless submitting item.itemId}}
                                 {{#if eq ../groupMode "merge"}}
@@ -63,28 +65,31 @@
                                 </button>
                             {{/unless}}
                         </div>
-                    {{/if}}
+                    {{/if --}}
                     {{!--
                     {{#if isEditable}}
 
                     {{/if}}
                     --}}
                 {{/autoForm}}
+                <div class="d-flex justify-content-center align-items-center">
                 {{#if submitting item.itemId}}
                     <div class="text-muted text-center">
                         {{> icon name="cog" pulse=true}}
                         {{i18n "actions.saving"}}
                     </div>
-                {{else}}
-                    {{#with value this.itemId}}
+                {{/if}}
+                    {{#if value this.itemId}}
+                      {{#let updatedValue=(value this.itemId)}}
                         <div class="text-muted text-center">
-                            <small>{{i18n 'item.savedAt'}} {{toLocaleDate this.updatedAt}}</small>
+                            <small>{{i18n 'item.savedAt'}} {{toLocaleDate updatedValue.updatedAt}}</small>
                             {{#if hasGroupMode ../groupMode}}
-                                <small>, {{i18n 'common.updatedBy'}} {{savedBy this.updatedBy}}</small>
+                                <small>, {{i18n 'common.updatedBy'}} {{savedBy updatedValue.updatedBy}}</small>
                             {{/if}}
                         </div>
-                    {{/with}}
-                {{/if}}
+                      {{/let}}
+                    {{/if}}
+                </div>
             </div>
         {{else}}
         {{!--
@@ -109,5 +114,6 @@
                 </div>
             {{/with}}
         {{/let}}
+        {{/if}}
     {{/onLoaded}}
 </template>

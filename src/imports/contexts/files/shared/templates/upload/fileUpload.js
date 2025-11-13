@@ -248,11 +248,13 @@ Template.afCustomFileUpload.onCreated(function () {
 
   instance.updateField = ({ id, value, remove = false, isMultiple = false }) => {
     const $input = instance.$(`#afFileHiddenInput-${id}`)
-
     if (!isMultiple) {
-      return (remove && $input.val() === value)
-        ? $input.val(null)
-        : $input.val(value)
+      const newValue = (remove && $input.val() === value)
+        ? null
+        : value
+      $input.val(newValue)
+      $input.trigger('input', newValue)
+      return newValue
     }
 
     const all = $input.val() || []
@@ -267,6 +269,7 @@ Template.afCustomFileUpload.onCreated(function () {
     }
 
     $input.val(JSON.stringify(all))
+    $input.trigger('input', all)
   }
 
   instance.autorun(() => {
@@ -479,6 +482,7 @@ Template.afCustomFileUpload.events({
       },
       failure: API.notify,
       success: () => {
+        templateInstance.$(`#afFileHiddenInput-${templateInstance.id}`).trigger('input')
         templateInstance.files.delete(stateId)
         templateInstance.updateField({
           id: templateInstance.id,
