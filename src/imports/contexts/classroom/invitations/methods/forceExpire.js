@@ -6,7 +6,7 @@ import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
 export const forceExpire = async ({ codeDocId, userId }) => {
   const opts = { checkOwner: ! await userIsAdmin(userId) }
   await createGetDoc(CodeInvitation, opts).call({ userId }, codeDocId)
-  return getCollection(CodeInvitation.name).updateAync({ _id: codeDocId }, {
+  return getCollection(CodeInvitation.name).updateAsync({ _id: codeDocId }, {
     $set: { invalid: true }
   })
 }

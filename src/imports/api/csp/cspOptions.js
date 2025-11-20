@@ -79,23 +79,23 @@ export function cspOptions (externalHostUrls = []) {
         objectSrc: [self],
         // these are just examples, configure to your needs, see
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/sandbox
-        sandbox: [
-          // allow-downloads-without-user-activation // experimental
-          'allow-same-origin',
-          'allow-downloads',
-          'allow-orientation-lock',
-          'allow-pointer-lock',
-          'allow-popups',
-          'allow-popups-to-escape-sandbox',
-          'allow-scripts',
-          'allow-forms',
-          'allow-modals',
-          'allow-presentation'
-          // 'allow-top-navigation',
-          // 'allow-storage-access-by-user-activation ', // experimental
-          // 'allow-top-navigation',
-          // 'allow-top-navigation-by-user-activation'
-        ],
+        // sandbox: [
+        //   // allow-downloads-without-user-activation // experimental
+        //   'allow-same-origin',
+        //   'allow-downloads',
+        //   'allow-orientation-lock',
+        //   'allow-pointer-lock',
+        //   'allow-popups',
+        //   'allow-popups-to-escape-sandbox',
+        //   'allow-scripts',
+        //   'allow-forms',
+        //   'allow-modals',
+        //   'allow-presentation'
+        //   // 'allow-top-navigation',
+        //   // 'allow-storage-access-by-user-activation ', // experimental
+        //   // 'allow-top-navigation',
+        //   // 'allow-top-navigation-by-user-activation'
+        // ],
         styleSrc: [self, unsafeInline],
         workerSrc: [self, blob]
       }

@@ -97,7 +97,7 @@ MaterialSubviews.create = ({ name }) => {
   // we need the list and main/preview renderer for each material type
   const previewRenderer = getMaterialRenderer(material, 'preview')
   const listRenderer = getMaterialRenderer(material, 'list')
-
+console.debug({ previewRenderer, listRenderer })
   // connect all functionality that is necessary to create forms
   // and load documents from the collections
   const loadMaterialFn = material.load || (doc => doc)

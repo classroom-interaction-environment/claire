@@ -1,23 +1,15 @@
 import { Template } from 'meteor/templating'
 import { DocumentFiles } from '../../DocumentFiles'
+import { hasThumbnail, getThumbnail } from '../helpers/thumbnail'
 import '../../../../../ui/components/download/downloadButton'
 import './documentFilesListRenderer.html'
-import { getFilesLink } from '../../../getFilesLink'
 
 Template.documentFilesListRenderer.helpers({
   collectionName () {
     return DocumentFiles.name
   },
-  hasThumbnail (fileObj) {
-    return fileObj?.versions?.thumbnail
-  },
-  getThumbnail (fileObj) {
-    return getFilesLink({
-      file: fileObj,
-      name: DocumentFiles.name,
-      version: 'thumbnail'
-    })
-  },
+  hasThumbnail,
+  getThumbnail,
   getIcon (extension) {
     switch (extension) {
       case 'pdf':

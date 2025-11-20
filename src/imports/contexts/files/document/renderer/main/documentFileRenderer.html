@@ -1,22 +1,14 @@
 <template name="documentFileRenderer">
-    {{#with getLink this}}
-        <div class="w-100 text-center">
-            <div class="py-2">{{../name}}</div>
-            {{#if ../isPDF}}
-                {{#unless fallback}}
-                <a href class="use-fallback d-block p-2 text-center">
-                    {{i18n "files.noPDF"}}
-                </a>
-                {{/unless}}
-                <div class="pdf-target"></div>
-                {{#if fallback}}
-                    {{> pdfViewer path=pdfUrl }}
-                {{/if}}
-            {{/if}}
-
-            {{> downloadButton collection=collectionName file=file showLabel=true showSize=true}}
-        </div>
-    {{else}}
-        {{> loading type="data" title=name}}
-    {{/with}}
+  <div class="w-100 text-center">
+    <div class="py-2">{{file.name}}</div>
+    <div class="pdf-target"></div>
+      {{#unless rendered}}
+          {{#if hasThumbnail file}}
+            <div>
+                {{> image src=(getThumbnail file) class="border border-light"}}
+            </div>
+          {{/if}}
+      {{/unless}}
+      {{> downloadButton inBrowser=true collection=collectionName file=file showLabel=true showSize=true}}
+  </div>
 </template>
