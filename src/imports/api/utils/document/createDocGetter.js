@@ -29,7 +29,9 @@ export const createDocGetter = function (options) {
 
   async function getDocument (query) {
     if (!['string', 'object'].includes(typeof query)) {
-      throw new DocNotFoundError('getDocument.invalidQuery', { name, query })
+      const details = { name, query }
+      const message = Meteor.isDevelopment ? `getDocument.invalidQuery (${JSON.stringify(details)})` : 'getDocument.invalidQuery'
+      throw new DocNotFoundError(message, details)
     }
 
     const document = await getCollection(name).findOneAsync(query)

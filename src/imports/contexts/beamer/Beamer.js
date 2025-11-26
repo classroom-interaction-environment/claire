@@ -98,7 +98,7 @@ onClientExec(function () {
    * @return {Promise<*>}
    */
   Beamer.doc.update = async (doc) => {
-    doc._id = doc._id || Beamer.doc.get()._id
+    doc._id = doc._id || Beamer.doc.get()?._id
     return callMethod({
       name: Beamer.methods.update.name,
       args: doc
@@ -111,12 +111,8 @@ onClientExec(function () {
    */
   Beamer.doc.isBeamerWindow = () => {
     const beamerDoc = Beamer.doc.get()
-    if (!beamerDoc || !beamerDoc.window) {
-      return false
-    }
-
-    const windowId = beamerDoc.window.id
-    return windowId === window.name
+    const windowId = beamerDoc?.window?.id
+    return windowId && windowId === window.name
   }
 
   /**
@@ -163,6 +159,12 @@ onClientExec(function () {
     return beamerDoc.ui.background
   }
 
+  /**
+   * Get or set the grid layout of the beamer
+   * @param value
+   * @param callback
+   * @return {Promise<{rowClass: string, label: string, value: string, colClass: string}|*|string|GridOptionsXY|GridOptionsTopLeft|GridOptionsBottomRight|GridOptionsWidthHeight|string>}
+   */
   Beamer.doc.grid = async (value, callback) => {
     const currentBeamerDoc = Beamer.doc.get()
 
@@ -192,6 +194,7 @@ onClientExec(function () {
         background: (currentBeamerDoc.ui.background || Beamer.defaultBackground)
       }
     }
+
     const res = await Beamer.doc.update(updateDoc)
     if (!res) {
       throw new Error('errors.docNotUpdated')
@@ -200,17 +203,33 @@ onClientExec(function () {
     return beamerDoc.ui.grid
   }
 
-  Beamer.doc.code = (invitationCode, callback) => {
+  /**
+   * Get or set the invitation code of the beamer
+   * @param invitationCode
+   * @param callback
+   * @return {*|{optional: boolean, type: String | StringConstructor}}
+   */
+  Beamer.doc.code = async (invitationCode) => {
     if (typeof invitationCode === 'undefined') {
       const doc = Beamer.doc.get()
       return doc && doc.invitationCode
     }
     else {
-      Beamer.doc.update({ invitationCode }, callback)
+      return Beamer.doc.update({ invitationCode })
     }
   }
 
-  Beamer.doc.material = ({ lessonId, referenceId, context, itemId, responseProcessor }, callback) => {
+  /**
+   * Add or remove material reference to the beamer document.
+   * @async
+   * @param lessonId
+   * @param referenceId
+   * @param context
+   * @param itemId
+   * @param responseProcessor
+   * @return {Promise<*>}
+   */
+  Beamer.doc.material = ({ lessonId, referenceId, context, itemId, responseProcessor }) => {
     check(lessonId, String)
     check(referenceId, String)
     check(context, String)
@@ -228,9 +247,17 @@ onClientExec(function () {
       references.push({ lessonId, referenceId, context, itemId, responseProcessor })
     }
     beamerDoc.references = references
-    return Beamer.doc.update({ _id: beamerDoc._id, references }, callback)
+    return Beamer.doc.update({ _id: beamerDoc._id, references })
   }
 
+  /**
+   * Check if material reference exists in the beamer document.
+   * @param lessonId
+   * @param referenceId
+   * @param itemId
+   * @param context
+   * @return {*|null}
+   */
   Beamer.doc.has = ({ lessonId, referenceId, itemId, context }) => {
     const beamerDoc = Beamer.doc.get()
     const references = beamerDoc.references || []
@@ -251,7 +278,7 @@ onClientExec(function () {
   Beamer.actions = {
     debug (value) {
     },
-    init (beamerLocation, {
+    async init (beamerLocation, {
       windowId,
       width,
       height,
@@ -287,10 +314,10 @@ onClientExec(function () {
       initTimer(ref)
       windowIdStore.set(id)
       windowUrlStore.set(beamerLocation)
-      Beamer.doc.update({ window: { id, url: beamerLocation } })
+      await Beamer.doc.update({ window: { id, url: beamerLocation } })
       return opened
     },
-    restore () {
+    async restore () {
       const beamerDoc = Beamer.doc.get()
       if (!beamerDoc || !beamerDoc.window) {
         Beamer.actions.unload()
@@ -308,14 +335,14 @@ onClientExec(function () {
       return Beamer.actions.init(windowUrl, { windowId })
     },
     open: openWindow,
-    unload (callback = fallbackCallback) {
+    async unload () {
       if (timerId) clearTimer()
       const existingWindow = windowRef.get()
       if (existingWindow && !existingWindow.closed) {
         // Firefox 46.0.1: scripts can not close windows, they had not opened
         existingWindow.close()
         if (!existingWindow.closed) {
-          callback(new Error('beamer.errors.expectedWindowClose'))
+          throw new Error('beamer.errors.expectedWindowClose')
         }
       }
 
@@ -324,10 +351,10 @@ onClientExec(function () {
       windowUrlStore.set(null)
       windowIdStore.set(null)
       if (windowId && windowId !== global.window.name) {
-        Beamer.doc.update({ window: { id: null, url: null } }, callback)
+        return Beamer.doc.update({ window: { id: null, url: null } })
       }
       else {
-        callback(null, true)
+        return true
       }
     },
     key () {

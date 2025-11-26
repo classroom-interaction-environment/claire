@@ -10,8 +10,7 @@ export const getCollection = function (contextOrName) {
   const collection = Mongo.Collection.get(name)
 
   if (!collection) {
-    const all = Mongo.Collection.getAll()
-    throw new Meteor.Error('errors.collectionNotFound', 'getCollection.notFoundByName', { name, all })
+    throw new Meteor.Error('errors.collectionNotFound', 'getCollection.notFoundByName', { name })
   }
 
   return collection

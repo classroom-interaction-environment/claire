@@ -26,7 +26,7 @@ const getGroupDoc = createDocGetter({ name: Group.name, optional: false })
  * @param progress
  * @return {*}
  */
-export const saveTaskWorkingState = async ({ lessonId, taskId, groupId, complete, page, progress, userId }) => {
+export const saveTaskWorkingState = async ({ lessonId, taskId, groupId, complete, page, progress, userId } = {}) => {
   const { lessonDoc } = await getDocsForMember({ userId, lessonId, isStudent: true })
 
   ensureDocumentExists({

@@ -1,6 +1,4 @@
-import { check } from 'meteor/check'
 import { getCollection } from '../../utils/getCollection'
-import { matchNonEmptyString } from '../../utils/check/matchNonEmptyString'
 import { Admin } from '../../../contexts/system/accounts/admin/Admin'
 
 /**
@@ -10,7 +8,7 @@ import { Admin } from '../../../contexts/system/accounts/admin/Admin'
  * @return {Promise<boolean>} true if the given user is part of the admin collection, false if not
  */
 export const userIsAdmin = async (userId) => {
-  check(userId, matchNonEmptyString)
+  if (!userId) return false
   const count = await getCollection(Admin.name).countDocuments({ userId })
   return count > 0
 }

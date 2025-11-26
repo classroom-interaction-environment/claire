@@ -9,6 +9,7 @@ import { getCollection } from '../../../../api/utils/getCollection'
 import { GroupMode } from '../../../classroom/group/GroupMode'
 import { getDocsForMember } from '../../../classroom/lessons/helpers/getDocsForMember'
 import { taskIsEditable } from '../../../classroom/lessons/helpers/taskIsEditable'
+import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 
 const checkTask = createDocGetter({ name: Task.name })
 const getGroupDoc = createDocGetter({ name: Group.name })
@@ -28,7 +29,7 @@ const getTaskResultDoc = createDocGetter({ name: TaskResults.name, optional: tru
 export const saveTaskResult = async ({ userId, lessonId, taskId, itemId, groupId, groupMode, response }) => {
   const { lessonDoc } = await getDocsForMember({ userId, lessonId, isStudent: true })
   if (!LessonStates.isRunning(lessonDoc)) {
-    throw new Meteor.Error('errors.permissionDenied', LessonErrors.unexpectedState)
+    throw new PermissionDeniedError(LessonErrors.unexpectedState, { lessonId })
   }
 
   await checkTask(taskId)
@@ -40,13 +41,13 @@ export const saveTaskResult = async ({ userId, lessonId, taskId, itemId, groupId
     groupDoc = await getGroupDoc(groupId)
 
     if (!groupDoc.users.some(entry => entry.userId === userId)) {
-      throw new Meteor.Error('errors.permissionDenied', 'group.notAMember', { groupId, userId })
+      throw new PermissionDeniedError('group.notAMember', { lessonId, taskId, groupId, userId })
     }
   }
 
   // check if we can even edit the task
   if (!taskIsEditable({ lessonDoc, taskId, groupDoc })) {
-    throw new Meteor.Error('errors.permissionDenied', TaskResults.errors.notEditable)
+    throw new PermissionDeniedError(TaskResults.errors.notEditable, { lessonId, taskId, userId })
   }
 
   const createdBy = userId

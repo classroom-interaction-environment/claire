@@ -5,6 +5,7 @@ import { onServer } from '../../api/utils/archUtils'
 import { backgroundColors } from './backgroundColors'
 import { gridLayouts } from './gridLayouts'
 import { Hierarchy } from '../../api/accounts/roles/Hierarchy'
+import { PermissionDeniedError } from '../../api/errors/types/PermissionDeniedError'
 
 export const Beamer = {
   name: 'beamer',
@@ -120,7 +121,7 @@ Beamer.methods.insert = {
     const BeamerCollection = getCollection(Beamer.name)
 
     if (await BeamerCollection.findOneAsync({ createdBy: this.userId })) {
-      throw new Meteor.Error('errors.docAlreadyExists')
+      throw new PermissionDeniedError('errors.docAlreadyExists')
     }
 
     const ui = {
@@ -128,7 +129,8 @@ Beamer.methods.insert = {
       grid: Beamer.defaultGridlayout
     }
 
-    return BeamerCollection.insertAsync({ createdBy: this.userId, references: [], ui })
+    const docId = await BeamerCollection.insertAsync({ createdBy: this.userId, references: [], ui })
+    return BeamerCollection.findOneAsync(docId)
   })
 }
 

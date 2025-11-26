@@ -18,8 +18,8 @@ let getClassDoc
 export const getDocsForMember = async ({ userId, lessonId, isStudent = false }) => {
   if (!getLessonDoc) getLessonDoc = createDocGetter({ name: Lesson.name })
   if (!getClassDoc) getClassDoc = createDocGetter({ name: SchoolClass.name })
-  const lessonDoc = await getLessonDoc(lessonId)
-  const classDoc = await getClassDoc(lessonDoc.classId)
+  const lessonDoc = await getLessonDoc(lessonId ?? '')
+  const classDoc = await getClassDoc(lessonDoc?.classId ?? '')
 
   if (isStudent) {
     await checkIsMember({ classDoc, userId })
