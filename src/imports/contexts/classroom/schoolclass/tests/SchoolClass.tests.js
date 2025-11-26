@@ -18,11 +18,10 @@ import { LessonRuntime } from '../../lessons/runtime/LessonRuntime'
 import { Unit } from '../../../curriculum/curriculum/unit/Unit'
 import { Phase } from '../../../curriculum/curriculum/phase/Phase'
 import { addStudent } from '../methods/addStudent'
-
-const { isStudent } = SchoolClass.helpers
-const { isTeacher } = SchoolClass.helpers
-const { isMember } = SchoolClass.helpers
-const { removeStudent } = SchoolClass.helpers
+import { isStudent } from '../helpers/isStudent'
+import { isTeacher } from '../helpers/isTeacher'
+import { isMember } from '../helpers/isMember'
+import { removeStudent } from '../methods/removeStudent'
 
 describe(SchoolClass.name, function () {
   let SchoolClassCollection
@@ -42,7 +41,7 @@ describe(SchoolClass.name, function () {
   })
 
   describe('helpers', function () {
-    describe(SchoolClass.helpers.isStudent.name, function () {
+    describe(isStudent.name, function () {
       it('throws if no classdoc is given', function () {
         expect(() => isStudent()).to.throw(DocNotFoundError.name)
       })
@@ -56,7 +55,7 @@ describe(SchoolClass.name, function () {
         expect(isStudent({ classDoc, userId: Random.id() })).to.equal(false)
       })
     })
-    describe(SchoolClass.helpers.isTeacher.name, function () {
+    describe(isTeacher.name, function () {
       it('throws if no classdoc is given', function () {
         expect(() => isTeacher()).to.throw(DocNotFoundError.name, 'classDoc')
       })
@@ -76,7 +75,7 @@ describe(SchoolClass.name, function () {
       })
     })
 
-    describe(SchoolClass.helpers.isMember.name, function () {
+    describe(isMember.name, function () {
       it('throws if no classdoc is given', function () {
         expect(() => isMember()).to.throw(DocNotFoundError.name, 'classDoc')
       })
@@ -149,7 +148,7 @@ describe(SchoolClass.name, function () {
           expect(updatedClass.students).to.deep.equal([studentId])
         })
       })
-      describe(SchoolClass.helpers.removeStudent.name, function () {
+      describe(removeStudent.name, function () {
         it('throws if no classdoc is found', function () {
           stub(InvocationChecker, InvocationChecker.ensureMethodInvocation.name, () => undefined)
           const removeDoc = { userId: Random.id(), classId: Random.id() }

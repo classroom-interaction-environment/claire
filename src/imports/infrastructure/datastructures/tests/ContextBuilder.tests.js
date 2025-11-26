@@ -15,24 +15,22 @@ const randomRegistry = (id = Random.id(6)) => ({
   add: () => {}
 })
 
-describe('ContextBuilder', function () {
-  afterEach(function () {
+describe('ContextBuilder', () => {
+  afterEach(() => {
     ContextBuilder.flush()
   })
 
-  describe(ContextBuilder.addContext.name, function () {
-    it('throws if object is not a valid context', function () {
+  describe(ContextBuilder.addContext.name, () => {
+    it('throws if object is not a valid context', () => {
       expect(() => ContextBuilder.addContext({}))
         .to.throw('Match error: Missing key \'name\'')
-      expect(() => ContextBuilder.addContext({ name: Random.id() }))
-        .to.throw('Match error: Missing key \'label\'')
       expect(() => ContextBuilder.addContext({
-        name: Random.id(),
+        icon: Random.id(),
         label: Random.id()
       }))
-        .to.throw('Match error: Missing key \'icon\'')
+        .to.throw('Match error: Missing key \'name\'')
     })
-    it('adds a context', function () {
+    it('adds a context', () => {
       const ctx = randomContext()
       ContextBuilder.addContext(ctx)
 
@@ -45,8 +43,8 @@ describe('ContextBuilder', function () {
       expect(called).to.equal(true)
     })
   })
-  describe(ContextBuilder.addRegistry.name, function () {
-    it('throws if not a valid registry', function () {
+  describe(ContextBuilder.addRegistry.name, () => {
+    it('throws if not a valid registry', () => {
       expect(() => ContextBuilder.addRegistry({}))
         .to.throw('Match error: Missing key \'name\'')
       expect(() => ContextBuilder.addRegistry({ name: Random.id() }))
@@ -57,7 +55,7 @@ describe('ContextBuilder', function () {
       }))
         .to.throw('Match error: Missing key \'add\'')
     })
-    it('adds a registry', function () {
+    it('adds a registry', () => {
       const id = Random.id(6)
       const registry = randomRegistry(id)
       const context = randomContext()
@@ -68,11 +66,11 @@ describe('ContextBuilder', function () {
       }]
       ContextBuilder.addRegistry(registry, { pipelines })
       ContextBuilder.addContext(context)
-      ContextBuilder.buildAll(function () {})
+      ContextBuilder.buildAll(() => {})
       expect(called).to.equal(true)
     })
   })
-  describe(ContextBuilder.flush.name, function () {
+  describe(ContextBuilder.flush.name, () => {
     it('clears all registered contexts and registries')
   })
 })

@@ -37,7 +37,7 @@ export const ContextBuilder = {}
  * @param context {Object} a context instance
  * @return {ContextBuilder} self for chaining
  */
-ContextBuilder.addContext = function addContext (context) {
+ContextBuilder.addContext = (context) => {
   check(context, Match.ObjectIncluding(isContext()))
 
   if (!contextMap.has(context.name)) {

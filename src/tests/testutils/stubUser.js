@@ -3,13 +3,13 @@ import { Roles } from 'meteor/alanning:roles'
 import { stub, restore, isStubbed } from './stub'
 import { getUsersCollection } from '../../imports/api/utils/getUsersCollection'
 
-export const stubUser = function (userObj, userId, roles, institution) {
+export const stubUser = async (userObj, userId, roles, institution) => {
   const userIsDefined = typeof userObj !== 'undefined'
   const UsersCollection = getUsersCollection()
 
   if (userIsDefined) {
     if (userObj !== null) {
-      UsersCollection.upsert({ _id: userObj._id }, { $set: { ...userObj } })
+      await UsersCollection.upsertAsync({ _id: userObj._id }, { $set: { ...userObj } })
       stub(Meteor, 'userId', () => userObj._id)
     }
 
@@ -38,7 +38,7 @@ export const stubUser = function (userObj, userId, roles, institution) {
   return userObj ? userObj._id : userId
 }
 
-export const unstubUser = (user, userId) => {
+export const unstubUser = async (user, userId) => {
   let _id
 
   if (user && isStubbed(Meteor, 'user')) {
@@ -51,6 +51,6 @@ export const unstubUser = (user, userId) => {
     restore(Meteor, 'userId')
   }
 
-  getUsersCollection().remove(_id)
+  await getUsersCollection().removeAsync(_id)
   restore(Roles, 'userIsInRole')
 }

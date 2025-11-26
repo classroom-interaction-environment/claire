@@ -1,5 +1,4 @@
 /* eslint-env mocha */
-import { LessonRuntime } from '../runtime/LessonRuntime'
 import { Beamer } from '../../../beamer/Beamer'
 import { TaskResults } from '../../../tasks/results/TaskResults'
 import { Random } from 'meteor/random'
@@ -20,6 +19,9 @@ import { VideoFiles } from '../../../files/video/VideoFiles'
 import { stub, restoreAll } from '../../../../../tests/testutils/stub'
 import { Group } from '../../group/Group'
 import { createGroupDoc } from '../../../../../tests/testutils/doc/createGroupDoc'
+import { resetBeamer } from '../runtime/resetBeamer'
+import { removeDocuments } from '../runtime/removeDocuments'
+import { resetGroups } from '../runtime/resetGroups'
 
 const randomReferences = (beamerDoc, lessonId) => {
   const rand = Math.floor(Math.random() * 53)
@@ -47,7 +49,7 @@ const randomReferences = (beamerDoc, lessonId) => {
   return { lessonRefs, nonLessonRefs }
 }
 
-describe(LessonRuntime.name, function () {
+describe('lesson runtime helpers', () => {
   // remove runtimedocs related
 
   // TODO 1.0
@@ -71,7 +73,7 @@ describe(LessonRuntime.name, function () {
   let BeamerCollection
   let GroupCollection
 
-  before(function () {
+  before(() => {
     [TaskResultCollection, ImageFilesCollection, AudioFilesColection, DocumentFilesCollection, VideoFilesCollection, TaskWorkingStateCollection, ClusterCollection, BeamerCollection, , GroupCollection] = mockCollections(
       [TaskResults, noSchema],
       [ImageFiles, forFiles],
@@ -86,29 +88,29 @@ describe(LessonRuntime.name, function () {
     )
   })
 
-  afterEach(function () {
+  afterEach(() => {
     restoreAll()
     clearAllCollections()
   })
 
-  after(function () {
+  after(() => {
     restoreAllCollections()
   })
 
-  describe(LessonRuntime.resetBeamer.name, function () {
-    it('returns -1, if no beamer doc exists for given query', function () {
+  describe(resetBeamer.name,  () => {
+    it('returns -1, if no beamer doc exists for given query', () => {
       const query = { lessonId: Random.id(), userId: Random.id() }
-      expect(LessonRuntime.resetBeamer(query)).to.equal(-1)
+      expect(resetBeamer(query)).to.equal(-1)
     })
 
-    it('returns 0 if there are no references on the beamer doc', function () {
+    it('returns 0 if there are no references on the beamer doc', () => {
       const query = { lessonId: Random.id(), userId: Random.id() }
       BeamerCollection.insert({ createdBy: query.userId, ui: {}, references: [] })
 
-      expect(LessonRuntime.resetBeamer(query)).to.equal(0)
+      expect(resetBeamer(query)).to.equal(0)
     })
 
-    it('returns 0 if there are references but not related to the lessonId', function () {
+    it('returns 0 if there are references but not related to the lessonId', () => {
       const query = { lessonId: Random.id(), userId: Random.id() }
       const beamerDocId = BeamerCollection.insert({
         createdBy: query.userId,
@@ -116,14 +118,14 @@ describe(LessonRuntime.name, function () {
         references: [{ lessonId: Random.id(), referenceId: Random.id(), context: Random.id() }]
       })
 
-      const diff = LessonRuntime.resetBeamer(query)
+      const diff = resetBeamer(query)
       expect(diff).to.equal(0)
 
       const beamerDoc = BeamerCollection.findOne(beamerDocId)
       expect(beamerDoc.references.length).to.equal(1) // expect no removes
     })
 
-    it('returns the diff if there are references related to the lessonId', function () {
+    it('returns the diff if there are references related to the lessonId', () => {
       const query = { lessonId: Random.id(), userId: Random.id() }
       const insertDoc = { createdBy: query.userId, ui: {}, references: [] }
       const { lessonRefs, nonLessonRefs } = randomReferences(insertDoc, query.lessonId)
@@ -136,7 +138,7 @@ describe(LessonRuntime.name, function () {
       const beamerDocId = BeamerCollection.insert(insertDoc)
 
       // we expect this method to return the number of refs that have been removed
-      const actualDiff = LessonRuntime.resetBeamer(query)
+      const actualDiff = resetBeamer(query)
       expect(actualDiff).to.equal(lessonRefs)
 
       // expect lessonId docs are removed
@@ -149,12 +151,12 @@ describe(LessonRuntime.name, function () {
     })
   })
 
-  describe(LessonRuntime.removeDocuments.name, function () {
-    it('removes no documents if there are no docs for a given lesson', function () {
-      const removed = LessonRuntime.removeDocuments({ lessonId: Random.id() })
+  describe(removeDocuments.name, () => {
+    it('removes no documents if there are no docs for a given lesson', () => {
+      const removed = removeDocuments({ lessonId: Random.id() })
       Object.values(removed).forEach(removedCount => expect(removedCount).to.equal(0))
     })
-    it('removed documents, if there are docs for a given lesson', function () {
+    it('removed documents, if there are docs for a given lesson', () => {
       const lessonId = Random.id()
       TaskResultCollection.insert({ lessonId })
       TaskWorkingStateCollection.insert({ lessonId })
@@ -178,7 +180,7 @@ describe(LessonRuntime.name, function () {
         return VideoFilesCollection.remove(query)
       })
 
-      const removed = LessonRuntime.removeDocuments({ lessonId })
+      const removed = removeDocuments({ lessonId })
       Object.entries(removed).forEach(([context, removedCount]) => {
         const remainCount = getCollection(context).find().count()
         expect(removedCount).to.equal(1)
@@ -187,22 +189,22 @@ describe(LessonRuntime.name, function () {
     })
   })
 
-  describe(LessonRuntime.resetGroups.name, function () {
-    it('throws on incomplete args', function () {
-      expect(() => LessonRuntime.resetGroups({})).to.throw('Match error: Missing key \'unitId\'')
+  describe(resetGroups.name, () => {
+    it('throws on incomplete args', () => {
+      expect(() => resetGroups({})).to.throw('Match error: Missing key \'unitId\'')
     })
-    it('removes all ad-hoc groups', function () {
+    it('removes all ad-hoc groups', () => {
       const unitId = Random.id()
       const removeGroupId = GroupCollection.insert(createGroupDoc({ unitId, title: 'to remove', isAdhoc: true }))
       const otherGroupId = GroupCollection.insert(createGroupDoc({ unitId, title: 'other', isAdhoc: false }))
       expect(GroupCollection.find().count()).to.equal(2)
-      const result = LessonRuntime.resetGroups({ unitId })
+      const result = resetGroups({ unitId })
       expect(result).to.deep.equal({ removed: 1, updated: 1 })
       expect(GroupCollection.find(removeGroupId).count()).to.equal(0)
       expect(GroupCollection.find(otherGroupId).count()).to.equal(1)
       expect(GroupCollection.find().count()).to.equal(1)
     })
-    it('resets groups that are defined on a unit-level', function () {
+    it('resets groups that are defined on a unit-level', () => {
       const lessonId = Random.id()
       const unitId = Random.id()
       const updateGroupId = GroupCollection.insert(createGroupDoc({
@@ -220,7 +222,7 @@ describe(LessonRuntime.name, function () {
       const otherDoc = GroupCollection.findOne(otherGroupId)
 
       expect(GroupCollection.find().count()).to.equal(2)
-      const result = LessonRuntime.resetGroups({ lessonId, unitId })
+      const result = resetGroups({ lessonId, unitId })
       expect(result).to.deep.equal({ removed: 0, updated: 1 })
       expect(GroupCollection.findOne(updateGroupId)).to.deep.equal({
         _id: updateGroupId,

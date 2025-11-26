@@ -65,7 +65,7 @@ jkuester:userpresence@2.0.0
 jquery@3.0.2
 lai:collection-extensions@1.0.0
 leaonline:collection-factory@2.1.0
-leaonline:grid-factory@1.5.0
+leaonline:grid-factory@1.6.0
 leaonline:method-factory@2.0.2
 leaonline:publication-factory@2.0.0
 leaonline:ratelimit-factory@2.0.0

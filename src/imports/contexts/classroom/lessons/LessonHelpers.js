@@ -4,6 +4,9 @@ import { createDocGetter } from '../../../api/utils/document/createDocGetter'
 import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
 import { isMemberOfClass } from '../schoolclass/helpers/isMemberOfClass'
 import { deprecate } from '../../../infrastructure/functions/deprecate'
+import { isTeacher } from '../schoolclass/helpers/isTeacher'
+import { isStudent } from '../schoolclass/helpers/isStudent'
+import { isOwner } from '../schoolclass/helpers/isOwner'
 
 const getLessonDoc = createDocGetter(Lesson)
 const getClassDoc = createDocGetter(SchoolClass)
@@ -18,7 +21,7 @@ export const LessonHelpers = {}
  * @param taskId
  * @return {*|boolean}
  */
-LessonHelpers.taskIsEditable = function taskIsEditable ({ lessonDoc = {}, taskId, groupDoc = {} }) {
+LessonHelpers.taskIsEditable = ({ lessonDoc = {}, taskId, groupDoc = {} }) => {
   const isEditable = ref => ref._id === taskId
   return (lessonDoc.visibleStudent || []).some(isEditable) || (groupDoc.visible || []).some(isEditable)
 }
@@ -30,8 +33,8 @@ LessonHelpers.taskIsEditable = function taskIsEditable ({ lessonDoc = {}, taskId
  * @returns {classDoc}
  */
 
-LessonHelpers.getClassDocIfStudent = function getClassDocIfStudent ({ userId, classId }) {
-  const classDoc = getClassDoc(classId)
+LessonHelpers.getClassDocIfStudent = async ({ userId, classId }) => {
+  const classDoc = await getClassDoc(classId)
 
   if (!isMemberOfClass({ classDoc, userId })) {
     throw new PermissionDeniedError(SchoolClass.errors.notMember, { userId, classId })
@@ -48,10 +51,10 @@ LessonHelpers.getClassDocIfStudent = function getClassDocIfStudent ({ userId, cl
  * @param returnDocs
  * @return {boolean}
  */
-LessonHelpers.isMemberOfLesson = function isMemberOfLesson ({ userId, lessonId } = {}, { returnDocs = false } = {}) {
-  const lessonDoc = getLessonDoc(lessonId)
+LessonHelpers.isMemberOfLesson = async ({ userId, lessonId } = {}, { returnDocs = false } = {}) => {
+  const lessonDoc = await getLessonDoc(lessonId)
   const { classId } = lessonDoc
-  const classDoc = classId && getClassDoc(classId)
+  const classDoc = classId && await  getClassDoc(classId)
   return isMemberOfClass({ classDoc, userId })
 }
 
@@ -67,16 +70,16 @@ LessonHelpers.isMemberOfClass = deprecate(isMemberOfClass, 'LessonHelpers.isMemb
  * @param lessonId the id of the lesson document
  * @return {boolean} true if creator of lesson or class or member of class teachers
  */
-LessonHelpers.isTeacher = function isTeacher ({ userId, lessonId }, { returnDocs = false } = {}) {
-  const lessonDoc = getLessonDoc(lessonId)
+LessonHelpers.isTeacher = async ({ userId, lessonId }, { returnDocs = false } = {}) => {
+  const lessonDoc = await getLessonDoc(lessonId)
   if (lessonDoc.createdBy === userId) return true
 
   const { classId } = lessonDoc
-  const classDoc = getClassDoc(classId)
-  const isTeacher = SchoolClass.helpers.isTeacher({ classDoc, userId })
+  const classDoc = await getClassDoc(classId)
+  const userIsTeacher = isTeacher(userId, classDoc) || isOwner(userId, classDoc)
   return returnDocs
-    ? isTeacher && { lessonDoc, classDoc }
-    : isTeacher
+    ? userIsTeacher && { lessonDoc, classDoc }
+    : userIsTeacher
 }
 
 /**
@@ -85,7 +88,7 @@ LessonHelpers.isTeacher = function isTeacher ({ userId, lessonId }, { returnDocs
  * @param returnDocs
  * @return {*}
  */
-LessonHelpers.isStudentOfLesson = function isStudentOfLesson ({ userId, lessonId }, { returnDocs = false } = {}) {
+LessonHelpers.isStudentOfLesson = async ({ userId, lessonId }, { returnDocs = false } = {}) => {
   const lessonDoc = getLessonDoc(lessonId)
   const { classId } = lessonDoc
   const classDoc = getClassDoc(classId)
@@ -104,10 +107,10 @@ LessonHelpers.isStudentOfLesson = function isStudentOfLesson ({ userId, lessonId
  */
 
 LessonHelpers.docsForTeacher = async ({ userId, lessonId }) => {
-  const lessonDoc = getLessonDoc(lessonId)
-  const classDoc = getClassDoc(lessonDoc.classId)
+  const lessonDoc = await getLessonDoc(lessonId)
+  const classDoc = await getClassDoc(lessonDoc.classId)
 
-  if (!SchoolClass.helpers.isTeacher({ classDoc, userId })) {
+  if (!isTeacher(userId, classDoc)) {
     throw new PermissionDeniedError(SchoolClass.errors.notTeacher, { userId, lessonId })
   }
   return { lessonDoc, classDoc }
@@ -120,10 +123,10 @@ LessonHelpers.docsForTeacher = async ({ userId, lessonId }) => {
  * @return {{lessonDoc: *, classDoc: *}}
  */
 
-LessonHelpers.docsForStudent = function docsForStudent ({ userId, lessonId }) {
-  const lessonDoc = getLessonDoc(lessonId)
-  const classDoc = getClassDoc(lessonDoc.classId)
-  if (!SchoolClass.helpers.isStudent({ classDoc, userId })) {
+LessonHelpers.docsForStudent = async ({ userId, lessonId }) => {
+  const lessonDoc = await getLessonDoc(lessonId)
+  const classDoc = await getClassDoc(lessonDoc.classId)
+  if (!isStudent(userId, classDoc)) {
     throw new PermissionDeniedError(SchoolClass.errors.notMember)
   }
   return { lessonDoc, classDoc }

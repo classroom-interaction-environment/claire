@@ -56,8 +56,7 @@ export const buildPipeline = createPipeline('build', (context, api, options) => 
       onError (error) {
         // TODO add to error log collection
         console.error(error)
-      },
-      debug: debug || context.debug // to allow individual debugging
+      }
     })
   }
 

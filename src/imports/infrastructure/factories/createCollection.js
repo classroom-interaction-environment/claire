@@ -5,7 +5,7 @@ import { FactoryCollection } from './FactoryCollection'
 const schemaFactory = Schema.create
 const collectionFactory = createCollectionFactory({ schemaFactory, custom: FactoryCollection })
 
-export const createCollection = function ({ name, schema, isFilesCollection, debug, explicit, preventHooks, noDefaultSchema }, { connection, idGeneration, transform, defineMutationMethods } = {}) {
+export const createCollection = ({ name, schema, isFilesCollection, debug, explicit, preventHooks, noDefaultSchema }, { connection, idGeneration, transform, defineMutationMethods } = {}) => {
   const collectionSchema = noDefaultSchema
     ? schema
     : Object.assign({}, Schema.getDefault(), schema)

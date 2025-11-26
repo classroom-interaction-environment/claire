@@ -1,13 +1,7 @@
 import { Mongo } from 'meteor/mongo'
 import { Schema } from '../../imports/api/schema/Schema'
-import Collection2 from 'meteor/aldeed:collection2'
 import { Random } from 'meteor/random'
 import { FilesCollection } from 'meteor/ostrio:files'
-
-// XXX: backwards compat for pre 4.0 collection2
-if (Collection2 && typeof Collection2.load === 'function') {
-  Collection2.load()
-}
 
 const originals = new Map()
 
@@ -65,20 +59,25 @@ export const restoreCollection = ({ name }) => {
   return collection && originals.delete(name)
 }
 
-export const restoreAllCollections = () => {
-  clearAllCollections()
+export const restoreAllCollections = async () => {
+  await clearAllCollections()
   originals.clear()
 }
 
-const clearCollection = ({ name }) => {
+const clearCollection = async ({ name }) => {
   const collection = originals.get(name)
-  return collection && collection.remove({})
+  return collection && collection.removeAsync({})
 }
 
-export const clearCollections = (...contexts) => {
-  return contexts.map(c => clearCollection(c))
+export const clearCollections = async (...contexts) => {
+  for (const c of contexts) {
+    await clearCollection(c)
+  }
 }
 
-export const clearAllCollections = () => {
-  originals.forEach(collection => collection.remove({}))
+export const clearAllCollections = async () => {
+  const all = Array.from(originals.values())
+  for (const collection of all) {
+      await collection.removeAsync({})
+  }
 }

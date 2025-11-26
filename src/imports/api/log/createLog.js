@@ -33,15 +33,18 @@ const internal = {
  * Returns a no-op function if devOnly is true but app is in prod mode
  * @param name {string}
  * @param type {'log'|'info'|'debug'|'warn'|'error'}
- * @param devOnly {boolean=false}
+ * @param devOnly {boolean=false} only prints in development mode
+ * @param inTests {boolean=false} if true, forces log creation even in test mode
  * @return {function}
  */
-export const createLog = ({ name, type = 'log', devOnly = false }) => {
+export const createLog = ({ name, type = 'log', devOnly = false, inTests = false }) => {
   if (!Object.prototype.hasOwnProperty.call(internal, type)) {
     throw new TypeError(`Unsupported log type ${type}.`)
   }
 
-  if (devOnly && !isDevelopment) { return noOp }
+  const excludeFromTest = !inTests && Meteor.isTest
+  const excludeFromProd = devOnly && !isDevelopment
+  if (excludeFromTest || excludeFromProd) { return noOp }
 
   const logProp = internal[type]
 

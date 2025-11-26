@@ -6,8 +6,8 @@ import { createFilesCollection } from '../../../infrastructure/factories/createF
 import { isSupportedObject } from '../../../api/utils/isSupportedObject'
 import { isFilesContext } from '../../../contexts/files/isFilesContext'
 
-export const buildPipeline = createPipeline('build', function (context, api, options) {
-  const { collection, filesCollection, debug } = options
+export const buildPipeline = createPipeline('build', (context, api, options) => {
+  const { collection, filesCollection } = options
   const products = {
     collection: null,
     filesCollection: null
@@ -30,7 +30,6 @@ export const buildPipeline = createPipeline('build', function (context, api, opt
       extensions: files.extensions,
       validateUser: getUserCheck(),
       usePartialResponse: files.usePartialResponse,
-      debug: debug
     })
   }
 

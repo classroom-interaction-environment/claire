@@ -13,11 +13,11 @@ import { Users } from '../../../imports/contexts/system/accounts/users/User'
 import { DocNotFoundError } from '../../../imports/api/errors/types/DocNotFoundError'
 import { getUsersCollection } from '../../../imports/api/utils/getUsersCollection'
 
-export const stubClassDoc = classDoc => stub(getCollection(SchoolClass.name), 'findOne', () => classDoc)
-export const stubLessonDoc = lessonDoc => stub(getCollection(Lesson.name), 'findOne', () => lessonDoc)
-export const stubUnitDoc = unitDoc => stub(getCollection(Unit.name), 'findOne', () => unitDoc)
-export const stubUserDoc = ({ userId }) => stub(getCollection(Users.name), 'findOne', () => ({ _id: userId }))
-export const stubTaskDoc = taskDoc => stub(getCollection(Task.name), 'findOne', () => taskDoc)
+export const stubClassDoc = classDoc => stub(getCollection(SchoolClass.name), 'findOneAsync', async () => classDoc)
+export const stubLessonDoc = lessonDoc => stub(getCollection(Lesson.name), 'findOneAsync', async () => lessonDoc)
+export const stubUnitDoc = unitDoc => stub(getCollection(Unit.name), 'findOneAsync', async () => unitDoc)
+export const stubUserDoc = ({ userId }) => stub(getCollection(Users.name), 'findOneAsync', async () => ({ _id: userId }))
+export const stubTaskDoc = taskDoc => stub(getCollection(Task.name), 'findOneAsync', async () => taskDoc)
 export const stubAdmin = value => stub(UserUtils, 'isAdmin', () => value)
 
 export const checkLesson = (fct, stateFct, fields = { lessonId: '_id' }) => {

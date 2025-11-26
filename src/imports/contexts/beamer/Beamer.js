@@ -1,236 +1,16 @@
-import { Meteor } from 'meteor/meteor'
-import { check, Match } from 'meteor/check'
-import { ReactiveVar } from 'meteor/reactive-var'
-import { UserUtils } from '../system/accounts/users/UserUtils'
+import { Beamer } from './BeamerCommon'
+import { onClientExec } from '../../api/utils/archUtils'
+import { callMethod } from '../../ui/controllers/document/callMethod'
 import { getCollection } from '../../api/utils/getCollection'
-import { isomporph, onClientExec, onServer } from '../../api/utils/archUtils'
-import { openWindow } from '../../ui/utils/browser/windowUtils'
-
-const backgroundColors = {
-  secondary: {
-    value: 'secondary',
-    label: 'colors.secondary',
-    className: 'secondary',
-    text: 'dark',
-    nav: 'dark'
-  },
-  white: {
-    value: 'white',
-    label: 'colors.white',
-    className: 'white',
-    nav: 'light',
-    text: 'dark'
-  },
-  light: {
-    value: 'light',
-    label: 'colors.light',
-    className: 'light',
-    nav: 'light',
-    text: 'dark'
-  },
-  dark: {
-    value: 'dark',
-    label: 'colors.dark',
-    className: 'dark',
-    nav: 'dark',
-    text: 'light'
-  }
-}
-
-const gridLayouts = {
-  rows: {
-    value: 'rows',
-    label: 'gridLayout.rows',
-    rowClass: 'row w-100',
-    colClass: 'col-12 w-100'
-  },
-  cols2: {
-    value: 'cols2',
-    label: 'gridLayout.cols2',
-    rowClass: 'row',
-    colClass: 'col-6'
-  },
-  cols3: {
-    value: 'cols3',
-    label: 'gridLayout.cols3',
-    rowClass: 'row',
-    colClass: 'col-4'
-  },
-  cols4: {
-    value: 'cols4',
-    label: 'gridLayout.cols4',
-    rowClass: 'row',
-    colClass: 'col-3'
-  }
-}
-
-export const Beamer = {
-  name: 'beamer',
-  label: 'beamer.title',
-  icon: 'tv',
-  noDefaultSchema: true,
-  isSystem: true,
-  isClassroom: true,
-  defaultBackground: backgroundColors.light.value,
-  defaultGridlayout: gridLayouts.rows.value,
-  ui: {
-    backgroundColors,
-    gridLayouts
-  },
-  methods: {},
-  publications: {
-    my: {
-      name: 'beamer.publications.my',
-      schema: {},
-      run: onServer(function () {
-        return getCollection(Beamer.name).find({ createdBy: this.userId }, { limit: 1 })
-      })
-    }
-  },
-  helpers: {},
-  inject: {}
-}
-
-Beamer.schema = {
-  createdBy: {
-    type: String
-  },
-  invitationCode: {
-    type: String,
-    optional: true
-  },
-  references: {
-    type: Array,
-    label: 'beamer.references',
-    optional: true
-  },
-  'references.$': {
-    type: Object,
-    label: 'common.entry'
-  },
-  'references.$.lessonId': {
-    type: String,
-    label: 'lesson.title'
-  },
-  'references.$.referenceId': {
-    type: String,
-    label: 'beamer.reference'
-  },
-  'references.$.context': {
-    type: String,
-    label: 'beamer.context'
-  },
-  'references.$.itemId': {
-    type: String,
-    optional: true
-  },
-  'references.$.responseProcessor': {
-    type: String,
-    optional: true
-  },
-  headline: {
-    type: String,
-    optional: true,
-    label: 'beamer.headline'
-  },
-  instruction: {
-    type: String,
-    optional: true,
-    label: 'beamer.instruction'
-  },
-  countDown: {
-    type: Date,
-    label: 'beamer.countDown',
-    optional: true
-  },
-  hideOnCountdownEnd: {
-    type: Boolean,
-    label: 'beamer.hideOnCountdownEnd',
-    optional: true
-  },
-  ui: {
-    type: Object,
-    optional: true
-  },
-  'ui.background': {
-    type: String,
-    optional: true,
-    allowedValues: Object.keys(backgroundColors)
-  },
-  'ui.grid': {
-    type: String,
-    optional: true,
-    allowedValues: Object.keys(gridLayouts)
-  },
-  window: {
-    type: Object,
-    optional: true
-  },
-  'window.id': {
-    type: String,
-    optional: true
-  },
-  'window.url': {
-    type: String,
-    optional: true
-  }
-}
-
-Beamer.methods.insert = {
-  name: 'beamer.methods.insert',
-  schema: {},
-  roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher],
-  numRequests: 1,
-  timeInterval: 50000,
-  run: onServer(async function () {
-    const BeamerCollection = getCollection(Beamer.name)
-
-    if (await BeamerCollection.findOneAsync({ createdBy: this.userId })) {
-      throw new Meteor.Error('errors.docAlreadyExists')
-    }
-
-    const ui = {
-      background: Beamer.defaultBackground,
-      grid: Beamer.defaultGridlayout
-    }
-
-    return BeamerCollection.insertAsync({ createdBy: this.userId, references: [], ui })
-  })
-}
-
-Beamer.methods.update = {
-  name: 'beamer.methods.update',
-  schema: (function () {
-    const updateSchema = Object.assign({}, { _id: String }, Beamer.schema)
-    delete updateSchema.createdBy
-    return updateSchema
-  })(),
-  roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher],
-  numRequests: 100,
-  timeInterval: 5000,
-  run: onServer(async function (updateDoc) {
-    const modifier = Object.assign({}, updateDoc)
-    const BeamerCollection = getCollection(Beamer.name)
-    const { _id } = modifier
-    const beamerDoc = await BeamerCollection.findOneAsync(_id)
-
-    if (!beamerDoc) {
-      throw new Meteor.Error('errors.docNotFound', _id)
-    }
-    if (beamerDoc.createdBy !== this.userId) {
-      throw new Error('errors.permissionDenied')
-    }
-
-    delete modifier._id
-    return BeamerCollection.updateAsync(_id, { $set: modifier })
-  })
-}
 
 onClientExec(function () {
+  import { check, Match } from 'meteor/check'
+  import { ReactiveVar } from 'meteor/reactive-var'
+  import { openWindow } from '../../ui/utils/browser/windowUtils'
   const beamerReady = new ReactiveVar(false)
   const windowRef = new ReactiveVar(null)
-  const windowId = new ReactiveVar(null)
-  const windowUrl = new ReactiveVar(null)
+  const windowIdStore = new ReactiveVar(null)
+  const windowUrlStore = new ReactiveVar(null)
   let timerId
 
   const fallbackCallback = (err) => {
@@ -281,6 +61,17 @@ onClientExec(function () {
 
   Beamer.doc = {}
 
+  /**
+   * Get the Beamer document
+   * @return {*}
+   */
+  Beamer.doc.get = () => getCollection(Beamer.name).findOne()
+
+  /**
+   * Get or set the Beamer ready state (reactive)
+   * @param value
+   * @return {*}
+   */
   Beamer.doc.ready = (value) => {
     if (typeof value === 'undefined') {
       return beamerReady.get()
@@ -290,30 +81,52 @@ onClientExec(function () {
     }
   }
 
-  Beamer.doc.create = (callback) => {
-    Meteor.call(Beamer.methods.insert.name, {}, callback)
+  /**
+   * Create a new Beamer document if none exists
+   * @return {Promise<*>}
+   */
+  Beamer.doc.create = async () => {
+    return callMethod({
+      name: Beamer.methods.insert,
+      args: {}
+    })
   }
 
-  Beamer.doc.get = isomporph({
-    server: () => () => getCollection(Beamer.name).findOneAsync(),
-    client: () => () => getCollection(Beamer.name).findOne()
-  })
-
-  Beamer.doc.update = (beamerDoc, callback = fallbackCallback) => {
-    check(callback, Match.Maybe(Function))
-    beamerDoc._id = beamerDoc._id || Beamer.doc.get()._id
-    Meteor.call(Beamer.methods.update.name, beamerDoc, callback)
+  /**
+   * Update the Beamer document
+   * @param doc {object}
+   * @return {Promise<*>}
+   */
+  Beamer.doc.update = async (doc) => {
+    doc._id = doc._id || Beamer.doc.get()._id
+    return callMethod({
+      name: Beamer.methods.update.name,
+      args: doc
+    })
   }
 
+  /**
+   * Check if the current window is the beamer window
+   * @return {boolean}
+   */
   Beamer.doc.isBeamerWindow = () => {
     const beamerDoc = Beamer.doc.get()
-    if (!beamerDoc || !beamerDoc.window) return false
+    if (!beamerDoc || !beamerDoc.window) {
+      return false
+    }
 
     const windowId = beamerDoc.window.id
     return windowId === window.name
   }
 
-  Beamer.doc.background = (value, callback) => {
+  /**
+   * Get or set the background color of the beamer
+   * @param value
+   * @param callback
+   * @async
+   * @return {*|{nav: string, className: string, label: string, text: string, value: string}}
+   */
+  Beamer.doc.background = async (value, callback) => {
     const currentBeamerDoc = Beamer.doc.get()
 
     // returns a default if no doc exists yet
@@ -342,15 +155,15 @@ onClientExec(function () {
         grid: (currentBeamerDoc.ui.grid || Beamer.defaultGridlayout)
       }
     }
-    Beamer.doc.update(updateDoc, (err, res) => {
-      if (err) return callback(err)
-      if (!res) return new Error('errors.docNotUpdated')
-      const beamerDoc = Beamer.doc.get()
-      callback(undefined, beamerDoc.ui.background)
-    })
+    const res = await Beamer.doc.update(updateDoc)
+    if (!res) {
+      throw new Error('errors.docNotUpdated')
+    }
+    const beamerDoc = Beamer.doc.get()
+    return beamerDoc.ui.background
   }
 
-  Beamer.doc.grid = (value, callback) => {
+  Beamer.doc.grid = async (value, callback) => {
     const currentBeamerDoc = Beamer.doc.get()
 
     // returns a default if no doc exists yet
@@ -379,12 +192,12 @@ onClientExec(function () {
         background: (currentBeamerDoc.ui.background || Beamer.defaultBackground)
       }
     }
-    Beamer.doc.update(updateDoc, (err, res) => {
-      if (err) return callback(err)
-      if (!res) return new Error('errors.docNotUpdated')
-      const beamerDoc = Beamer.doc.get()
-      callback(undefined, beamerDoc.ui.grid)
-    })
+    const res = await Beamer.doc.update(updateDoc)
+    if (!res) {
+      throw new Error('errors.docNotUpdated')
+    }
+    const beamerDoc = Beamer.doc.get()
+    return beamerDoc.ui.grid
   }
 
   Beamer.doc.code = (invitationCode, callback) => {
@@ -415,7 +228,7 @@ onClientExec(function () {
       references.push({ lessonId, referenceId, context, itemId, responseProcessor })
     }
     beamerDoc.references = references
-    Beamer.doc.update({ _id: beamerDoc._id, references }, callback)
+    return Beamer.doc.update({ _id: beamerDoc._id, references }, callback)
   }
 
   Beamer.doc.has = ({ lessonId, referenceId, itemId, context }) => {
@@ -431,9 +244,23 @@ onClientExec(function () {
     }
   }
 
+  /**
+   * CLient side actions to interact with the beamer
+   * @type {object}
+   */
   Beamer.actions = {
-    debug (value) {},
-    init (beamerLocation, { windowId, width, height, left, top, menubar = false, status = false, titlebar = false } = {}) {
+    debug (value) {
+    },
+    init (beamerLocation, {
+      windowId,
+      width,
+      height,
+      left,
+      top,
+      menubar = false,
+      status = false,
+      titlebar = false
+    } = {}) {
       check(beamerLocation, String)
 
       // beamerLocation could be for example Routes.present.path()
@@ -458,8 +285,8 @@ onClientExec(function () {
 
       windowRef.set(ref)
       initTimer(ref)
-      windowId.set(id)
-      windowUrl.set(beamerLocation)
+      windowIdStore.set(id)
+      windowUrlStore.set(beamerLocation)
       Beamer.doc.update({ window: { id, url: beamerLocation } })
       return opened
     },
@@ -492,11 +319,11 @@ onClientExec(function () {
         }
       }
 
-      const _windowId = windowId.get()
+      const windowId = windowIdStore.get()
       windowRef.set(null)
-      windowUrl.set(null)
-      windowId.set(null)
-      if (_windowId && _windowId !== global.window.name) {
+      windowUrlStore.set(null)
+      windowIdStore.set(null)
+      if (windowId && windowId !== global.window.name) {
         Beamer.doc.update({ window: { id: null, url: null } }, callback)
       }
       else {
@@ -504,10 +331,10 @@ onClientExec(function () {
       }
     },
     key () {
-      return windowId.get()
+      return windowIdStore.get()
     },
     url () {
-      return windowUrl.get()
+      return windowUrlStore.get()
     },
     timerId () {
       return timerId
@@ -517,3 +344,5 @@ onClientExec(function () {
     }
   }
 })
+
+export { Beamer }

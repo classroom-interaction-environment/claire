@@ -1,3 +1,4 @@
+import 'meteor/aldeed:collection2/static';
 import { onClientExec, onServerExec } from '../imports/api/utils/archUtils'
 import { initLanguage } from '../imports/api/language/initLanguage'
 

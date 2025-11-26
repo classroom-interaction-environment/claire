@@ -16,14 +16,12 @@ onServerExec(function () {
     defaultBucket: Meteor.settings.files.bucketName,
     createObjectId: createObjectId,
     fs: fs,
-    debug: false
   })
 })
 
 onClientExec(function () {
   createFilesCollection = createGridFilesFactory({
     i18nFactory: (...args) => i18n.get(...args),
-    debug: false
   })
 })
 

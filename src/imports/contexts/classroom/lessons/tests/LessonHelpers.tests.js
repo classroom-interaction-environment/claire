@@ -11,170 +11,183 @@ import { Task } from '../../../curriculum/curriculum/task/Task'
 import { expect } from 'chai'
 import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { stubClassDoc } from '../../../../../tests/testutils/doc/stubDocs'
+import { expectThrow } from '../../../../../tests/testutils/expectThrow'
 
-describe('LessonHelpers', function () {
+describe('LessonHelpers', () => {
   let LessonCollection
   let SchoolClassCollection
 
-  beforeEach(function () {
+  beforeEach(() => {
     [LessonCollection, SchoolClassCollection] = mockCollections(Lesson, SchoolClass, Unit, Phase, Task, Users)
   })
 
-  afterEach(function () {
+  afterEach(async () => {
     restoreAll()
-    clearCollections(Users, Lesson, Unit, SchoolClass, Phase, Task)
+    await clearCollections(Users, Lesson, Unit, SchoolClass, Phase, Task)
   })
 
-  after(function () {
-    restoreAllCollections()
+  after(async () => {
+    await restoreAllCollections()
   })
 
-  describe(LessonHelpers.getClassDocIfStudent.name, function () {
+  describe(LessonHelpers.getClassDocIfStudent.name, () => {
     const { getClassDocIfStudent } = LessonHelpers
 
-    it('throws if user does not exists', function () {
+    it('throws if user does not exists', async () => {
       const userId = Random.id()
       const classId = Random.id()
       const classDoc = { _id: classId, students: [Random.id()], createdBy: Random.id() }
-      stubClassDoc(classDoc)
-      expect(() => getClassDocIfStudent({ userId, classId }))
-        .to.throw('schoolClass.notMember')
-        .with.property('details')
-        .with.property('userId', userId)
+      await stubClassDoc(classDoc)
+      await expectThrow({
+        fn: () => getClassDocIfStudent({ userId, classId }),
+        reason: 'schoolClass.notMember',
+        details: { classId, userId }
+      })
     })
-    it('throws if class does not exists', function () {
+    it('throws if class does not exists', async () => {
       const userId = Random.id()
       const classId = Random.id()
-      expect(() => getClassDocIfStudent({ userId, classId }))
-        .to.throw('getDocument.docUndefined')
-        .with.property('details')
-        .with.property('query', classId)
+      await expectThrow({
+        fn: () => getClassDocIfStudent({ userId, classId }),
+        reason: 'getDocument.docUndefined',
+        details: { name: SchoolClass.name, query: classId }
+      })
     })
-    it('throws is user is not student', function () {
+    it('throws is user is not student', async () => {
       const userId = Random.id()
       const classId = Random.id()
-      stubClassDoc({ _id: classId, students: [] })
-      expect(() => getClassDocIfStudent({ userId, classId })).to.throw(SchoolClass.errors.notMember)
+      await stubClassDoc({ _id: classId, students: [] })
+      await expectThrow({
+        fn: () => getClassDocIfStudent({ userId, classId }),
+        reason: SchoolClass.errors.notMember,
+        details: { classId, userId }
+      })
     })
-    it('returns the doc otherwise', function () {
+    it('returns the doc otherwise', async () => {
       const userId = Random.id()
       const classId = Random.id()
       const classDoc = { _id: classId, students: [userId] }
-      stubClassDoc(classDoc)
-      const actualClassDoc = getClassDocIfStudent({ userId, classId })
+      await stubClassDoc(classDoc)
+      const actualClassDoc = await getClassDocIfStudent({ userId, classId })
       expect(actualClassDoc).to.deep.equal(classDoc)
     })
   })
-  describe(LessonHelpers.isMemberOfLesson.name, function () {
+  describe(LessonHelpers.isMemberOfLesson.name, () => {
     const { isMemberOfLesson } = LessonHelpers
 
-    it('throws if user does not exists', function () {
-      const userId = Random.id()
-      expect(() => isMemberOfLesson({ userId })).to.throw(DocNotFoundError.name, 'user.notFound')
-    })
-    it('throws if lesson does not exists', function () {
+    it('throws if lesson does not exists', async () => {
       const userId = Random.id()
       const lessonId = Random.id()
-      expect(() => isMemberOfLesson({ userId, lessonId }))
-        .to.throw('getDocument.docUndefined')
-        .with.property('details')
-        .with.property('query', lessonId)
+      await expectThrow({
+        fn: () => isMemberOfLesson({ userId, lessonId }),
+        reason: 'getDocument.docUndefined',
+        details: { name: Lesson.name, query: lessonId }
+      })
     })
-    it('throws class doc does not exists', function () {
+    it('throws, if class doc does not exists', async () => {
       const userId = Random.id()
       const lessonId = Random.id()
       const classId = Random.id()
-      stub(LessonCollection, 'findOne', () => ({ _id: lessonId, classId }))
-      stub(SchoolClassCollection, 'findOne', () => undefined)
-      expect(() => isMemberOfLesson({ userId, lessonId }))
-        .to.throw('getDocument.docUndefined')
-        .with.property('details')
-        .with.property('query', classId)
+      stub(LessonCollection, 'findOneAsync', async () => ({ _id: lessonId, classId }))
+      stub(SchoolClassCollection, 'findOneAsync', async () => undefined)
+      await expectThrow({
+        fn: () => isMemberOfLesson({ userId, lessonId }),
+        reason: 'getDocument.docUndefined',
+        details: { name: SchoolClass.name, query: classId }
+      })
     })
-    it('returns true if the given user is student of the lesson / class', function () {
+    it('returns true if the given user is student of the lesson / class', async () => {
       const userId = Random.id()
       const lessonId = Random.id()
       const classId = Random.id()
       const classDoc = { _id: classId, students: [userId] }
-      stub(LessonCollection, 'findOne', () => ({ _id: lessonId, classId }))
-      stub(SchoolClassCollection, 'findOne', () => classDoc)
-      expect(isMemberOfLesson({ userId, lessonId })).to.equal(true)
+      stub(LessonCollection, 'findOneAsync', async () => ({ _id: lessonId, classId }))
+      stub(SchoolClassCollection, 'findOneAsync', async () => classDoc)
+      expect(await isMemberOfLesson({ userId, lessonId })).to.equal(true)
     })
-    it('returns true if the given user is teacher of the lesson / class', function () {
+    it('returns true if the given user is teacher of the lesson / class', async () => {
       const userId = Random.id()
       const lessonId = Random.id()
       const classId = Random.id()
       const classDoc = { _id: classId, teachers: [userId] }
-      stub(LessonCollection, 'findOne', () => ({ _id: lessonId, classId }))
-      stub(SchoolClassCollection, 'findOne', () => classDoc)
-      expect(isMemberOfLesson({ userId, lessonId })).to.equal(true)
+      stub(LessonCollection, 'findOneAsync', async () => ({ _id: lessonId, classId }))
+      stub(SchoolClassCollection, 'findOneAsync', async () => classDoc)
+      expect(await isMemberOfLesson({ userId, lessonId })).to.equal(true)
     })
-    it('returns true if the given user is owner of the class', function () {
+    it('returns true if the given user is owner of the class', async () => {
       const userId = Random.id()
       const lessonId = Random.id()
       const classId = Random.id()
       const classDoc = { _id: classId, createdBy: userId }
-      stub(LessonCollection, 'findOne', () => ({ _id: lessonId, classId }))
-      stub(SchoolClassCollection, 'findOne', () => classDoc)
-      expect(isMemberOfLesson({ userId, lessonId })).to.equal(true)
+      stub(LessonCollection, 'findOneAsync', async () => ({ _id: lessonId, classId }))
+      stub(SchoolClassCollection, 'findOneAsync', async () => classDoc)
+      expect(await isMemberOfLesson({ userId, lessonId })).to.equal(true)
     })
-    it('returns false if the given user is not member of the lesson', function () {
+    it('returns false if the given user is not member of the lesson', async () => {
       const userId = Random.id()
       const lessonId = Random.id()
       const classdoc = { _id: Random.id() }
-      stub(LessonCollection, 'findOne', () => ({ _id: lessonId }))
-      stub(SchoolClassCollection, 'findOne', () => classdoc)
-      expect(isMemberOfLesson({ userId, lessonId })).to.equal(false)
+      stub(LessonCollection, 'findOneAsync', async () => ({ _id: lessonId }))
+      stub(SchoolClassCollection, 'findOneAsync', async () => classdoc)
+      expect(await isMemberOfLesson({ userId, lessonId })).to.equal(false)
     })
   })
-  describe(LessonHelpers.isTeacher.name, function () {
+  describe(LessonHelpers.isTeacher.name, () => {
     const { isTeacher } = LessonHelpers
-    it('throws if there is no lessonDoc', function () {
+    it('throws if there is no lessonDoc', async () => {
       const defDoc = { userId: Random.id(), lessonId: Random.id() }
-      expect(() => isTeacher(defDoc)).to.throw(DocNotFoundError.name, defDoc.lessonId, Lesson.name)
+      await expectThrow({
+        fn: () => isTeacher(defDoc),
+        name: DocNotFoundError.name,
+        details: { name: Lesson.name, query: defDoc.lessonId }
+      })
     })
-    it('throws if there is no linked classDoc', function () {
+    it('throws if there is no linked classDoc', async () => {
       const userId = Random.id()
       const classId = Random.id()
       const unit = Random.id()
-      const lessonDocId = LessonCollection.insert({ createdBy: Random.id(), classId, unit })
+      const lessonDocId = await LessonCollection.insertAsync({ createdBy: Random.id(), classId, unit })
       const defDoc = { userId, lessonId: lessonDocId }
-      expect(() => isTeacher(defDoc)).to.throw(DocNotFoundError.name, classId, SchoolClass.name)
+      await expectThrow({
+        fn: () => isTeacher(defDoc),
+        name: DocNotFoundError.name,
+        details: { name: SchoolClass.name, query: classId }
+      })
     })
-    it('returns true if the user creator of the lesson', function () {
+    it('returns true if the user creator of the lesson', async () => {
       const userId = Random.id()
       const unit = Random.id()
-      const lessonId = LessonCollection.insert({ createdBy: userId, classId: Random.id(), unit })
+      const lessonId = await LessonCollection.insertAsync({ createdBy: userId, classId: Random.id(), unit })
       const defDoc = { userId, lessonId }
-      expect(isTeacher(defDoc)).to.equal(true)
+      expect(await isTeacher(defDoc)).to.equal(true)
     })
-    it('returns true if the user is in teachers of the class', function () {
+    it('returns true if the user is in teachers of the class', async () => {
       const userId = Random.id()
       const unit = Random.id()
-      const classId = SchoolClassCollection.insert({ createdBy: Random.id(), title: Random.id(), teachers: [userId] })
-      const lessonId = LessonCollection.insert({ createdBy: Random.id(), classId, unit })
+      const classId = await SchoolClassCollection.insertAsync({ createdBy: Random.id(), title: Random.id(), teachers: [userId] })
+      const lessonId = await LessonCollection.insertAsync({ createdBy: Random.id(), classId, unit })
       const defDoc = { userId, lessonId }
-      expect(isTeacher(defDoc)).to.equal(true)
+      expect(await isTeacher(defDoc)).to.equal(true)
     })
-    it('returns true if the user is creator of the class', function () {
+    it('returns true if the user is creator of the class', async () => {
       const userId = Random.id()
       const unit = Random.id()
-      const classId = SchoolClassCollection.insert({ createdBy: userId, title: Random.id(), teachers: [Random.id()] })
-      const lessonId = LessonCollection.insert({ createdBy: Random.id(), classId, unit })
+      const classId = await SchoolClassCollection.insertAsync({ createdBy: userId, title: Random.id(), teachers: [Random.id()] })
+      const lessonId = await LessonCollection.insertAsync({ createdBy: Random.id(), classId, unit })
       const defDoc = { userId, lessonId }
-      expect(isTeacher(defDoc)).to.equal(true)
+      expect(await isTeacher(defDoc)).to.equal(true)
     })
-    it('returns false otherwise', function () {
+    it('returns false otherwise', async () => {
       const userId = Random.id()
       const unit = Random.id()
-      const classId = SchoolClassCollection.insert({
+      const classId = await SchoolClassCollection.insertAsync({
         createdBy: Random.id(),
         title: Random.id(),
         teachers: [Random.id()]
       })
-      const lessonId = LessonCollection.insert({ createdBy: Random.id(), classId, unit })
+      const lessonId = await LessonCollection.insertAsync({ createdBy: Random.id(), classId, unit })
       const defDoc = { userId, lessonId }
-      expect(isTeacher(defDoc)).to.equal(false)
+      expect(await isTeacher(defDoc)).to.equal(false)
     })
   })
 })
