@@ -5,6 +5,8 @@ import { getCollection } from '../../../../api/utils/getCollection'
 import { removeLesson } from '../../lessons/methods/removeLesson'
 import { getClassDoc } from '../helpers/getClassDoc'
 import { canDeleteClass } from '../helpers/canDeleteClass'
+import { noop } from '../../../../utils/noop'
+import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 
 /**
  * Removes a class by given _id and userId. The user must be externally validated!
@@ -13,12 +15,12 @@ import { canDeleteClass } from '../helpers/canDeleteClass'
  * @param log {function=}
  * @return {Promise<number>}
  */
-export const removeClass = async ({ classId, userId, log = (() => {}) }) => {
+export const removeClass = async ({ classId, userId, log = noop }) => {
   const schoolClassDoc = await getClassDoc({ classId, teacherId: userId })
 
   // check if user is even allowed to delete
   if (!await canDeleteClass(userId, schoolClassDoc)) {
-    throw new Error('errors.permissionDenied', 'errors.notOwnerOrAdmin')
+    throw new PermissionDeniedError('errors.notOwnerOrAdmin')
   }
 
   // first remove all content, created during this lesson

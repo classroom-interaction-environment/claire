@@ -25,7 +25,7 @@ export const createDocRemover = (options) => {
 
       // count documents to be removed and skip early
       // if there are no docs by given query
-      const count = await Collection.countDocuments(query)
+      const count = await (isFilesCollection ? Collection.collection : Collection).countDocuments(query)
       if (count === 0) {
         return 0
       }

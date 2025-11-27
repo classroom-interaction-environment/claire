@@ -15,20 +15,21 @@ const removeAllMaterial = createRemoveAllMaterial({ isCurriculum: false })
  * Removes / deletes a lesson by a given _id. Removes all related documents, too.
  *
  * @param lessonId {string} the _id of the lesson to be deleted
+ * @param lessonDoc {object} the _id of the lesson to be deleted
  * @param userId {string} the user of which in behalf to call
  * @param log {function=} optional log to be passed
- * @return {{
+ * @return {Promise<{
  *     lessonRemoved: number,
  *     unitRemoved: number,
  *     phasesRemoved: number,
  *     materialRemoved: number,
  *     runtimeDocsRemoved: number,
  *     beamerRemoved: number
- * }}
+ * }>}
  */
-export const removeLesson = async ({ userId, lessonId, log = noop }) => {
+export const removeLesson = async ({ userId, lessonId, lessonDoc, log = noop }) => {
   log('get lesson doc')
-  const { lessonDoc } = await getDocsForMember({ lessonId, userId })
+  const doc = lessonDoc ? lessonDoc : (await getDocsForMember({ lessonId, userId })).lessonDoc
   const result = {
     lessonRemoved: 0,
     unitRemoved: 0,
@@ -39,6 +40,8 @@ export const removeLesson = async ({ userId, lessonId, log = noop }) => {
     groupsRemoved: 0
   }
 
+  lessonId = doc._id
+
   log('remove runtime docs', { lessonId, userId })
   result.runtimeDocsRemoved = await removeDocuments({ lessonId, userId })
   result.beamerRemoved = await resetBeamer({ lessonId, userId })
@@ -46,7 +49,7 @@ export const removeLesson = async ({ userId, lessonId, log = noop }) => {
   // XXX: there are cases where the unit doc is
   // removed and we need to remove the lesson but omit the unit doc
   // which is why it's optional
-  const unitDoc = await getCollection(Unit.name).findOneAsync({ _id: lessonDoc.unit })
+  const unitDoc = await getCollection(Unit.name).findOneAsync({ _id: doc.unit })
   log('has unitDoc?', unitDoc ? unitDoc._id : false)
 
   if (unitDoc) {

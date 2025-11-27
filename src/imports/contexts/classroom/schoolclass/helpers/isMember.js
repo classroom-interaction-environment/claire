@@ -8,7 +8,7 @@ import { isStudent } from './isStudent'
  * @param createdBy
  * @param teachers
  * @param students
- * @return {*|boolean}
+ * @return {boolean}
  */
-export const isMember = (userId, { createdBy, teachers, students }) =>
+export const isMember = (userId, { createdBy, teachers, students } = {}) =>
   isOwner(userId, { createdBy }) || isTeacher(userId, { teachers }) || isStudent(userId, { students })

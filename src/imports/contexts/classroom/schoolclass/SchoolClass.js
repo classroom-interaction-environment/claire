@@ -189,7 +189,7 @@ SchoolClass.methods.update = {
       const doc = await SchoolClassCollection.findOneAsync(_id)
 
       // only admin can update non-owned docs
-      checkEditPermission({ doc, userId })
+      await checkEditPermission({ doc, userId })
 
       if (await SchoolClassCollection.countDocuments({ title, createdBy: this.userId }) > 0) {
         throw new Meteor.Error('create.error', 'schoolClass.exists', {

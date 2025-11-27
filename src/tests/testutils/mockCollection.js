@@ -9,11 +9,11 @@ Mongo.Collection.get = (name) => {
   return originals.get(name)
 }
 
-export const mockCollection = ({ name, schema } = {}, {
+export const mockCollection = ({ name, schema, isFilesCollection } = {}, {
   noSchema = false,
   noDefaults = false,
   override = false,
-  isFilesCollection = false
+  isFilesCollection:explicitFilesCollection = false
 } = {}) => {
   let collection = Mongo.Collection.get(name)
 
@@ -25,7 +25,7 @@ export const mockCollection = ({ name, schema } = {}, {
     return collection
   }
 
-  else if (isFilesCollection) {
+  else if (isFilesCollection || explicitFilesCollection) {
     const filesCollection = new FilesCollection({ collectionName: Random.id() })
     collection = filesCollection.collection
   }
@@ -59,6 +59,10 @@ export const restoreCollection = ({ name }) => {
   return collection && originals.delete(name)
 }
 
+/**
+ * Restores all mocked collections by clearing their data and removing them from the originals map.
+ * @return {Promise<void>}
+ */
 export const restoreAllCollections = async () => {
   await clearAllCollections()
   originals.clear()

@@ -50,7 +50,7 @@ describe(Group.name, () => {
         fn: () => fn.call(env, { [idName]: _id }),
         error: PermissionDeniedError.name,
         reason,
-        details: { _id, userId }
+        details: { [idName]: _id, userId }
       })
     })
   }
@@ -92,7 +92,7 @@ describe(Group.name, () => {
       const getUsers = Group.methods.users.run
 
       checkExists(getUsers, { idName: 'groupId' })
-      checkPermission(getUsers, { idName: 'groupId', reason: 'notAMember' })
+      checkPermission(getUsers, { idName: 'groupId', reason: 'group.notAMember' })
 
       it('returns all members of the group with restricted fields if user is member', async () => {
         const u1 = await UsersCollection.insertAsync({
