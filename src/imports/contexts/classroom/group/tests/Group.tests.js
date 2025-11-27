@@ -9,99 +9,93 @@ import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 import { Admin } from '../../../system/accounts/admin/Admin'
 import { collectPublication } from '../../../../../tests/testutils/collectPublication'
+import { expectThrow } from '../../../../../tests/testutils/expectThrow'
+import { count } from '../../../../utils/count'
 
-describe(Group.name, function () {
+describe(Group.name, () => {
   let GroupCollection
   let UsersCollection
 
-  before(function () {
+  before(() => {
     [GroupCollection, UsersCollection] = mockCollections(Group, Users, Admin)
   })
 
-  afterEach(function () {
-    clearCollections(Group, Users)
+  afterEach(async () => {
+    await clearCollections(Group, Users)
   })
 
-  after(function () {
-    restoreAllCollections()
+  after(async () => {
+    await restoreAllCollections()
   })
 
-  const checkExists = (fn) => {
-    it('throws if the group does not exist', function () {
+  const checkExists = (fn, { env = {}, idName = '_id' } = {}) => {
+    it('throws if the group does not exist', async () => {
       const _id = Random.id()
-      const thrown = expect(() => fn({ _id }))
-        .to.throw(DocNotFoundError.name)
-      thrown.with.property('reason', 'getDocument.docUndefined')
-      thrown.with.deep.property('details', { query: { _id }, name: Group.name })
+      await expectThrow({
+        fn: () => fn.call(env, { [idName]: _id }),
+        error: DocNotFoundError.name,
+        reason: 'getDocument.docUndefined',
+        details: { query: { _id }, name: Group.name }
+      })
     })
   }
 
-  const checkPermission = (fn) => {
-    it('throws if the user has no permission to edit the group', function () {
+  const checkPermission = (fn, { idName = '_id', reason = 'errors.noPermission' } = {}) => {
+    it('throws if the user has no permission to edit the group', async () => {
       const groupDoc = createGroupDoc()
       const userId = Random.id()
       const env = { userId }
-      const _id = GroupCollection.insert(groupDoc)
-      const thrown = expect(() => fn.call(env, { _id }))
-        .to.throw(PermissionDeniedError.name)
-      thrown.with.property('reason', 'errors.noPermission')
-      thrown.with.deep.property('details', { _id, userId })
+      const _id = await GroupCollection.insertAsync(groupDoc)
+      await expectThrow({
+        fn: () => fn.call(env, { [idName]: _id }),
+        error: PermissionDeniedError.name,
+        reason,
+        details: { _id, userId }
+      })
     })
   }
 
-  describe('methods', function () {
-    describe(Group.methods.save.name, function () {
+  describe('methods', () => {
+    describe(Group.methods.save.name, () => {
       const saveGroup = Group.methods.save.run
 
       checkExists(saveGroup)
       checkPermission(saveGroup)
 
-      it('creates a new group doc', function () {
+      it('creates a new group doc', async () => {
+        const env = {}
         const groupDoc = createGroupDoc({ title: 'foobar' })
-        expect(GroupCollection.find().count()).to.equal(0)
-        const groupId = saveGroup(groupDoc)
-        expect(GroupCollection.find().count()).to.equal(1)
-        const { _id, ...savedDoc } = GroupCollection.findOne(groupId)
+        expect(await count(GroupCollection)).to.equal(0)
+        const groupId = saveGroup.call(env, groupDoc)
+        expect(await count(GroupCollection)).to.equal(1)
+        const { _id, ...savedDoc } = await GroupCollection.findOneAsync(groupId)
         expect(savedDoc).to.deep.equal(groupDoc)
       })
 
-      it('updates a group doc', function () {
+      it('updates a group doc', async () => {
         const userId = Random.id()
         const groupDoc = createGroupDoc({ createdBy: userId })
         const env = { userId }
-        const groupId = GroupCollection.insert(groupDoc)
+        const groupId = await GroupCollection.insertAsync(groupDoc)
         delete groupDoc._id
         delete groupDoc.title
 
-        const updated = saveGroup.call(env, { _id: groupId, title: 'foobar' })
+        const updated = await saveGroup.call(env, { _id: groupId, title: 'foobar' })
         expect(updated).to.equal(1)
 
-        const { _id, title, ...savedDoc } = GroupCollection.findOne(groupId)
+        const { _id, title, ...savedDoc } = await GroupCollection.findOneAsync(groupId)
         expect(title).to.equal('foobar')
         expect(savedDoc).to.deep.equal(groupDoc)
       })
     })
-    describe(Group.methods.users.name, function () {
+    describe(Group.methods.users.name, () => {
       const getUsers = Group.methods.users.run
 
-      it('throws if the group does not exist', function () {
-        const _id = Random.id()
-        const thrown = expect(() => getUsers({ groupId: _id }))
-          .to.throw(DocNotFoundError.name)
-        thrown.with.property('reason', 'getDocument.docUndefined')
-        thrown.with.deep.property('details', { query: { _id }, name: Group.name })
-      })
-      it('throws if not a member and not owner', function () {
-        const userId = Random.id()
-        const groupDoc = createGroupDoc()
-        const groupId = GroupCollection.insert(groupDoc)
-        const thrown = expect(() => getUsers.call({ userId }, { groupId }))
-          .to.throw(PermissionDeniedError.name)
-        thrown.with.property('reason', 'group.notAMember')
-        thrown.with.deep.property('details', { groupId, userId })
-      })
-      it('returns all members of the group with restricted fields if user is member', function () {
-        const u1 = UsersCollection.insert({
+      checkExists(getUsers, { idName: 'groupId' })
+      checkPermission(getUsers, { idName: 'groupId', reason: 'notAMember' })
+
+      it('returns all members of the group with restricted fields if user is member', async () => {
+        const u1 = await UsersCollection.insertAsync({
           username: 'jane',
           firstName: 'jane',
           lastName: 'doe',
@@ -109,7 +103,7 @@ describe(Group.name, function () {
           presence: { status: 'offline' },
           services: {}
         })
-        const u2 = UsersCollection.insert({
+        const u2 = await UsersCollection.insertAsync({
           username: 'john',
           firstName: 'john',
           lastName: 'doe',
@@ -120,76 +114,76 @@ describe(Group.name, function () {
         const allUsers = [u1, u2]
         const createdBy = Random.id()
         const groupDoc = createGroupDoc({ createdBy, users: allUsers.map(userId => ({ userId })) })
-        const groupId = GroupCollection.insert(groupDoc)
+        const groupId = await GroupCollection.insertAsync(groupDoc)
 
-        allUsers.forEach(userId => {
-          const users = getUsers.call({ userId }, { groupId })
+        for (const userId of allUsers) {
+          const users = await getUsers.call({ userId }, { groupId })
           expect(users.length).to.equal(allUsers.length - 1) // except callee user
           expect(users[0]._id).to.not.equal(userId)
-          const userDoc = UsersCollection.findOne(users[0]._id)
+          const userDoc = await UsersCollection.findOneAsync(users[0]._id)
           delete userDoc.username
           delete userDoc.emails
           delete userDoc.services
           expect(users[0]).to.deep.equal(userDoc)
-        })
+        }
 
         // teacher gets all users
-        const allMembers = getUsers.call({ userId: createdBy }, { groupId })
+        const allMembers = await getUsers.call({ userId: createdBy }, { groupId })
         expect(allMembers.length).to.equal(allUsers.length)
       })
     })
-    describe(Group.methods.update.name, function () {
+    describe(Group.methods.update.name, () => {
       const updateGroup = Group.methods.update.run
       checkExists(updateGroup)
       checkPermission(updateGroup)
-      it('updates a group doc', function () {
+      it('updates a group doc', async () => {
         const userId = Random.id()
         const groupDoc = createGroupDoc({ createdBy: userId })
         const env = { userId }
-        const groupId = GroupCollection.insert(groupDoc)
+        const groupId = await GroupCollection.insertAsync(groupDoc)
         delete groupDoc._id
         delete groupDoc.title
 
-        const updated = updateGroup.call(env, { _id: groupId, title: 'foobar' })
+        const updated = await updateGroup.call(env, { _id: groupId, title: 'foobar' })
         expect(updated).to.equal(1)
 
-        const { _id, title, ...savedDoc } = GroupCollection.findOne(groupId)
+        const { _id, title, ...savedDoc } = await GroupCollection.findOneAsync(groupId)
         expect(title).to.equal('foobar')
         expect(savedDoc).to.deep.equal(groupDoc)
       })
     })
-    describe(Group.methods.delete.name, function () {
+    describe(Group.methods.delete.name, () => {
       const deleteGroup = Group.methods.delete.run
       checkExists(deleteGroup)
       checkPermission(deleteGroup)
-      it('deletes a group doc', function () {
+      it('deletes a group doc', async () => {
         const userId = Random.id()
         const groupDoc = createGroupDoc({ createdBy: userId })
         const env = { userId }
-        const groupId = GroupCollection.insert(groupDoc)
+        const groupId = await GroupCollection.insertAsync(groupDoc)
         delete groupDoc._id
         delete groupDoc.title
 
-        const removed = deleteGroup.call(env, { _id: groupId })
+        const removed = await deleteGroup.call(env, { _id: groupId })
         expect(removed).to.equal(1)
-        expect(GroupCollection.findOne(groupId)).to.deep.equal(undefined)
+        expect(await GroupCollection.findOneAsync(groupId)).to.deep.equal(undefined)
       })
     })
-    describe(Group.methods.toggleMaterial.name, function () {
+    describe(Group.methods.toggleMaterial.name, () => {
       const toggleGroup = Group.methods.toggleMaterial.run
       checkExists(toggleGroup)
       checkPermission(toggleGroup)
-      it('makes invisible material visible', function () {
+      it('makes invisible material visible', async () => {
         const userId = Random.id()
         const materialId = Random.id()
         const contextName = 'foobar'
         const groupProps = { createdBy: userId, material: [materialId] }
         const groupInput = createGroupDoc(groupProps)
         const env = { userId }
-        const groupId = GroupCollection.insert(groupInput)
-        toggleGroup.call(env, { _id: groupId, materialId, contextName })
+        const groupId = await GroupCollection.insertAsync(groupInput)
+        await toggleGroup.call(env, { _id: groupId, materialId, contextName })
 
-        const groupDoc = GroupCollection.findOne(groupId)
+        const groupDoc = await GroupCollection.findOneAsync(groupId)
         expect(groupDoc).to.deep.equal({
           _id: groupId,
           createdBy: userId,
@@ -207,7 +201,7 @@ describe(Group.name, function () {
           ]
         })
       })
-      it('makes visible material invisible', function () {
+      it('makes visible material invisible', async () => {
         const userId = Random.id()
         const materialId = Random.id()
         const contextName = 'foobar'
@@ -218,10 +212,10 @@ describe(Group.name, function () {
         }
         const groupInput = createGroupDoc(groupProps)
         const env = { userId }
-        const groupId = GroupCollection.insert(groupInput)
-        toggleGroup.call(env, { _id: groupId, materialId, contextName })
+        const groupId = await GroupCollection.insertAsync(groupInput)
+        await toggleGroup.call(env, { _id: groupId, materialId, contextName })
 
-        const groupDoc = GroupCollection.findOne(groupId)
+        const groupDoc = await GroupCollection.findOneAsync(groupId)
         expect(groupDoc).to.deep.equal({
           _id: groupId,
           createdBy: userId,
@@ -235,87 +229,89 @@ describe(Group.name, function () {
         })
       })
     })
-    describe(Group.methods.get.name, function () {
+    describe(Group.methods.get.name, () => {
       const getGroups = Group.methods.get.run
 
-      it('returns an empty Array  for empty or unknown ids', function () {
-        expect(getGroups({ ids: [] })).to.deep.equal([])
-        expect(getGroups({ ids: [Random.id()] })).to.deep.equal([])
-        const groupId = GroupCollection.insert(createGroupDoc())
-        // case if user does not own the docs
-        expect(getGroups({ ids: [groupId] })).to.deep.equal([])
-      })
-      it('returns given group docs', function () {
+      it('returns an empty Array  for empty or unknown ids', async () => {
         const userId = Random.id()
         const env = { userId }
-        const groupId = GroupCollection.insert(createGroupDoc({ createdBy: userId }))
-        expect(getGroups.call(env, { ids: [groupId] })).to.deep.equal([GroupCollection.findOne(groupId)])
+        expect(await getGroups.call(env, { ids: [] })).to.deep.equal([])
+        expect(await getGroups.call(env, { ids: [Random.id()] })).to.deep.equal([])
+        const groupId = await GroupCollection.insertAsync(createGroupDoc())
+        // case if user does not own the docs
+        expect(await getGroups.call(env, { ids: [groupId] })).to.deep.equal([])
+      })
+      it('returns given group docs', async () => {
+        const userId = Random.id()
+        const env = { userId }
+        const groupId = await GroupCollection.insertAsync(createGroupDoc({ createdBy: userId }))
+        expect(await getGroups.call(env, { ids: [groupId] })).to.deep.equal([await GroupCollection.findOneAsync(groupId)])
       })
     })
   })
 
-  describe('publications', function () {
+  describe('publications', () => {
     const myGroupsPub = Group.publications.my.run
     const singleGroupPub = Group.publications.single.run
 
-    describe(Group.publications.my.name, function () {
-      it('returns no docs if user is neither owner, nor member', function () {
+    describe(Group.publications.my.name, () => {
+      it('returns no docs if user is neither owner, nor member', async () => {
         const userId = Random.id()
-        GroupCollection.insert(createGroupDoc())
-        const pub = collectPublication(myGroupsPub.call({ userId }))
+        await GroupCollection.insertAsync(createGroupDoc())
+        const pub = await collectPublication(await myGroupsPub.call({ userId }))
         expect(pub.length).to.equal(0)
       })
-      it('returns all group docs that user has created', function () {
+      it('returns all group docs that user has created', async () => {
         const userId = Random.id()
-        const groupId = GroupCollection.insert(createGroupDoc({ createdBy: userId }))
-        const pub = collectPublication(myGroupsPub.call({ userId }))
+        const groupId = await GroupCollection.insertAsync(createGroupDoc({ createdBy: userId }))
+        const pub = await collectPublication(await myGroupsPub.call({ userId }))
         expect(pub.length).to.equal(1)
         expect(pub[0]._id).to.equal(groupId)
       })
-      it('returns all group docs that user is member', function () {
+      it('returns all group docs that user is member', async () => {
         const userId = Random.id()
-        const groupId = GroupCollection.insert(createGroupDoc({ users: [{ userId }] }))
-        const pub = collectPublication(myGroupsPub.call({ userId }))
+        const groupId = await GroupCollection.insertAsync(createGroupDoc({ users: [{ userId }] }))
+        const pub = await collectPublication(await myGroupsPub.call({ userId }))
         expect(pub.length).to.equal(1)
         expect(pub[0]._id).to.equal(groupId)
       })
-      it('filters group docs by classId', function () {
+      it('filters group docs by classId', async () => {
         const userId = Random.id()
         const classId = Random.id()
-        GroupCollection.insert(createGroupDoc({ users: [{ userId }] }))
-        const groupId = GroupCollection.insert(createGroupDoc({ users: [{ userId }], classId }))
-        const pub = collectPublication(myGroupsPub.call({ userId }, { classId }))
+        await GroupCollection.insertAsync(createGroupDoc({ users: [{ userId }] }))
+        const groupId = await GroupCollection.insertAsync(createGroupDoc({ users: [{ userId }], classId }))
+        const pub = await collectPublication(await myGroupsPub.call({ userId }, { classId }))
         expect(pub.length).to.equal(1)
         expect(pub[0]._id).to.equal(groupId)
       })
-      it('filters group docs by unitId', function () {
+      it('filters group docs by unitId', async () => {
         const userId = Random.id()
         const unitId = Random.id()
-        GroupCollection.insert(createGroupDoc({ createdBy: userId }))
-        const groupId = GroupCollection.insert(createGroupDoc({ users: [{ userId }], unitId }))
-        const pub = collectPublication(myGroupsPub.call({ userId }, { unitId }))
+        await GroupCollection.insertAsync(createGroupDoc({ createdBy: userId }))
+        const groupId = await GroupCollection.insertAsync(createGroupDoc({ users: [{ userId }], unitId }))
+        const pub = await collectPublication(await myGroupsPub.call({ userId }, { unitId }))
         expect(pub.length).to.equal(1)
         expect(pub[0]._id).to.equal(groupId)
       })
     })
-    describe(Group.publications.single.name, function () {
-      it('returns no docs if no _id matches', function () {
+    describe(Group.publications.single.name, () => {
+      it('returns no docs if no _id matches', async () => {
         const userId = Random.id()
         const groupId = Random.id()
-        GroupCollection.insert(createGroupDoc({ users: [{ userId }] }))
-        const pub = collectPublication(singleGroupPub.call({ userId }, { groupId }))
+        await GroupCollection.insertAsync(createGroupDoc({ users: [{ userId }] }))
+        const pub = await collectPublication(singleGroupPub.call({ userId }, { groupId }))
         expect(pub.length).to.equal(0)
       })
-      it('returns no docs if user is not member', function () {
+      it('returns no docs if user is not member', async () => {
         const userId = Random.id()
-        const groupId = GroupCollection.insert(createGroupDoc())
-        const pub = collectPublication(singleGroupPub.call({ userId }, { groupId }))
+        const groupId = await GroupCollection.insertAsync(createGroupDoc())
+        const pub = await collectPublication(singleGroupPub.call({ userId }, { groupId }))
         expect(pub.length).to.equal(0)
       })
-      it('returns a group doc by _id if the student is member', function () {
+      it('returns a group doc by _id if the student is member', async () => {
         const userId = Random.id()
-        const groupId = GroupCollection.insert(createGroupDoc({ users: [{ userId }] }))
-        const pub = collectPublication(singleGroupPub.call({ userId }, { groupId }))
+        const groupId = await GroupCollection.insertAsync(createGroupDoc({ users: [{ userId }] }))
+        const pub = await collectPublication(singleGroupPub.call({ userId }, { groupId }))
         expect(pub.length).to.equal(1)
         expect(pub[0]._id).to.equal(groupId)
       })
