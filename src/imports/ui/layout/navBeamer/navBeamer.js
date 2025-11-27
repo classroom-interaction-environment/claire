@@ -170,18 +170,22 @@ Template.navBeamer.events({
     templateInstance.state.set('onModal', type)
     templateInstance.$('#beamer-select-modal').modal('show')
   },
-  'click .color-selector-target' (event, templateInstance) {
+  'click .color-selector-target': async function (event, templateInstance) {
     event.preventDefault()
     const background = dataTarget(event, templateInstance)
-    Beamer.doc.background(background, (err /*, res */) => {
-      if (err) return API.notify(err)
-    })
+    try {
+      await Beamer.doc.background(background)
+    } catch (err) {
+      API.notify(err)
+    }
   },
-  'click .grid-selector-target' (event, templateInstance) {
+  'click .grid-selector-target': async function (event, templateInstance) {
     event.preventDefault()
     const value = dataTarget(event, templateInstance, 'value')
-    Beamer.doc.grid(value, (err /*, res */) => {
-      if (err) return API.notify(err)
-    })
+    try {
+      await Beamer.doc.grid(value)
+    } catch (err) {
+      API.notify(err)
+    }
   }
 })

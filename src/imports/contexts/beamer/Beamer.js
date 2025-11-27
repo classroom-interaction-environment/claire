@@ -30,7 +30,7 @@ onClientExec(function () {
     const checkChild = () => {
       if (windowRef.closed) {
         clearTimer()
-        Beamer.actions.unload()
+        Beamer.actions.unload().catch(console.error)
       }
     }
     timerId = setInterval(checkChild, 500)
@@ -118,11 +118,10 @@ onClientExec(function () {
   /**
    * Get or set the background color of the beamer
    * @param value
-   * @param callback
    * @async
    * @return {*|{nav: string, className: string, label: string, text: string, value: string}}
    */
-  Beamer.doc.background = async (value, callback) => {
+  Beamer.doc.background = async (value) => {
     const currentBeamerDoc = Beamer.doc.get()
 
     // returns a default if no doc exists yet
@@ -162,10 +161,9 @@ onClientExec(function () {
   /**
    * Get or set the grid layout of the beamer
    * @param value
-   * @param callback
    * @return {Promise<{rowClass: string, label: string, value: string, colClass: string}|*|string|GridOptionsXY|GridOptionsTopLeft|GridOptionsBottomRight|GridOptionsWidthHeight|string>}
    */
-  Beamer.doc.grid = async (value, callback) => {
+  Beamer.doc.grid = async (value) => {
     const currentBeamerDoc = Beamer.doc.get()
 
     // returns a default if no doc exists yet
@@ -206,7 +204,6 @@ onClientExec(function () {
   /**
    * Get or set the invitation code of the beamer
    * @param invitationCode
-   * @param callback
    * @return {*|{optional: boolean, type: String | StringConstructor}}
    */
   Beamer.doc.code = async (invitationCode) => {
@@ -320,7 +317,7 @@ onClientExec(function () {
     async restore () {
       const beamerDoc = Beamer.doc.get()
       if (!beamerDoc || !beamerDoc.window) {
-        Beamer.actions.unload()
+        await Beamer.actions.unload()
         return { ref: undefined, id: undefined }
       }
 
@@ -328,7 +325,7 @@ onClientExec(function () {
       const windowUrl = beamerDoc.window.url
 
       if (!windowId || !windowUrl || windowId === global.window.name) {
-        Beamer.actions.unload()
+        await Beamer.actions.unload()
         return { ref: undefined, id: undefined }
       }
 

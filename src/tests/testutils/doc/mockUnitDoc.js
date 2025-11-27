@@ -26,7 +26,7 @@ import { Random } from 'meteor/random'
  * @param collection {Mongo.Collection=}
  * @returns {object}
  */
-export const mockUnitDoc = (options = {}, collection) => {
+export const mockUnitDoc = async (options = {}, collection) => {
   const unitDoc = {
     _id: options._id ?? Random.id(),
     title: options.title ?? Random.id(6),
@@ -54,7 +54,7 @@ export const mockUnitDoc = (options = {}, collection) => {
   }
 
   if (collection) {
-    collection.insert(unitDoc)
+    await collection.insertAsync(unitDoc)
   }
 
   return unitDoc

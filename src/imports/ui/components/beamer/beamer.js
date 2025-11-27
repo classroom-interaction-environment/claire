@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating'
 import { Beamer } from '../../../contexts/beamer/Beamer'
 import { Routes } from '../../../api/routes/Routes'
 import './beamer.html'
+import { asyncTimeout } from '../../../api/utils/asyncTimeout'
 
 Template.beamer.helpers({
   beamerIsActive () {
@@ -10,7 +11,7 @@ Template.beamer.helpers({
 })
 
 Template.beamer.events({
-  'click .global-beamer-button' (event, templateInstance) {
+  'click .global-beamer-button': async function(event, templateInstance) {
     event.preventDefault()
     if (Beamer.status()) {
       templateInstance.$('#beamerControlDialog').modal('show')
@@ -18,7 +19,8 @@ Template.beamer.events({
     else {
       const lessonId = templateInstance.data.lessonId
       const location = Routes.present.path({ lessonId })
-      setTimeout(() => Beamer.actions.init(location), 500)
+      await asyncTimeout(500)
+      await Beamer.actions.init(location)
     }
   }
 })

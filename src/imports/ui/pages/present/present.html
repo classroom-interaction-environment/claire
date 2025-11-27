@@ -33,7 +33,7 @@
                 <div class="{{rowClass}} mt-5">
                     {{#each reference in this}}
                         <div class="{{colClass}} mb-4">
-                            <div class="card bg-transparent h-100">
+                            <div class="card shadow-sm bg-transparent h-100">
 
                                 {{! material Icon and title }}
                                 <div class="card-header d-flex justify-content-between bg-transparent border-0 align-items-center">
@@ -117,9 +117,9 @@
 
                                 {{! material content }}
 
-                                <div class="card-body bg-transparent text-center h-100 p-0">
+                                <div class="card-body bg-transparent text-center">
                                     {{#with getItem reference.itemId}}
-                                        <p class="text-start">{{this.data.label}}</p>
+                                        <p class="text-start fw-semibold">{{this.data.label}}</p>
                                     {{/with}}
 
                                     {{#if reference.itemId}}

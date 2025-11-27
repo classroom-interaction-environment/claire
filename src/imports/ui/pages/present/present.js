@@ -25,7 +25,7 @@ import { getFileType } from '../../../api/files/getFileType'
 import { loadIntoCollection } from '../../../infrastructure/loading/loadIntoCollection'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
 import { getMaterialContexts } from '../../../contexts/material/initMaterial'
-
+import { backgroundColors } from '../../../contexts/beamer/backgroundColors'
 import '../../components/invitation/coderender/coderenderer'
 import '../../generic/tooltip/tooltip'
 import './present.html'
@@ -51,9 +51,7 @@ Template.present.onCreated(function () {
   // ----------------------------------------------------------------------------
   instance.autorun(() => {
     if (!Meteor.userId()) return
-
     const beamerDoc = Beamer.doc.get()
-
     if (beamerDoc) {
       instance.state.set('beamerComplete', true)
     }
@@ -367,8 +365,8 @@ Template.present.onRendered(function () {
     if (!beamerDoc) return
     const bgRef = beamerDoc && beamerDoc.ui.background
     const colorState = bgRef
-      ? Beamer.ui.backgroundColors[bgRef]
-      : Beamer.ui.backgroundColors.light
+      ? backgroundColors[bgRef]
+      : backgroundColors.light
 
     const $main = global.$('.main-beamer-container')
     if (instance.bgCache || instance.tcCache) {
@@ -402,12 +400,12 @@ Template.present.helpers({
   background () {
     return Beamer.doc.background()
   },
-  colClass () {
-    const layout = Beamer.doc.grid()
+  async colClass () {
+    const layout = await Beamer.doc.grid()
     return layout && layout.colClass
   },
-  rowClass () {
-    const layout = Beamer.doc.grid()
+  async rowClass () {
+    const layout = await Beamer.doc.grid()
     return layout && layout.rowClass
   },
   beamerDoc () {
@@ -475,11 +473,11 @@ Template.present.helpers({
 })
 
 Template.present.events({
-  'click .remove-code-button' (event) {
+  'click .remove-code-button': async function (event) {
     event.preventDefault()
-    Beamer.doc.code(null)
+    await Beamer.doc.code(null)
   },
-  'click .remove-reference-button' (event, templateInstance) {
+  'click .remove-reference-button': async function (event, templateInstance) {
     event.preventDefault()
     const context = dataTarget(event, templateInstance, 'context')
     const lessonId = dataTarget(event, templateInstance, 'lesson')
@@ -489,15 +487,18 @@ Template.present.events({
     const contentId = createMaterialId(lessonId, referenceId, itemId)
     templateInstance.state.set('unloading', contentId)
 
-    Beamer.doc.material({
-      referenceId,
-      context,
-      lessonId,
-      itemId
-    }, (err) => {
-      if (err) return API.notify(err)
+    try {
+      await Beamer.doc.material({
+        referenceId,
+        context,
+        lessonId,
+        itemId
+      })
+    }catch (err) {
+      API.notify(err)
+    } finally {
       templateInstance.state.set('unloading', null)
-    })
+    }
   },
 
   // we allow renderers to define custom top-level actions (like edit, save)
@@ -520,7 +521,7 @@ Template.present.events({
     ResponseProcessorAPI.callAction(actionId, id, event, templateInstance)
   },
   // we allow users to change the
-  'click .select-rp-button' (event, templateInstance) {
+  'click .select-rp-button': async function (event, templateInstance) {
     event.preventDefault()
 
     const itemId = dataTarget(event, templateInstance, 'item')
@@ -535,8 +536,10 @@ Template.present.events({
     const updateDoc = { _id: beamerDoc._id, references: beamerDoc.references }
     updateDoc.references[index].responseProcessor = responseProcessor
 
-    Beamer.doc.update(updateDoc, (err) => {
-      if (err) return API.notify(err)
-    })
+    try {
+      await Beamer.doc.update(updateDoc)
+    } catch (err) {
+      API.notify(err)
+    }
   }
 })

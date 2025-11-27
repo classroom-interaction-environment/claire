@@ -246,7 +246,7 @@ Template.inviteUsers.events({
       templateInstance.$('#createInvitationModal').modal('show')
     }, 300)
   },
-  'click .create-qr-button' (event, templateInstance) {
+  'click .create-qr-button': async function (event, templateInstance) {
     event.preventDefault()
     const code = dataTarget(event, templateInstance)
     templateInstance.state.set('codeToBeamer', code)
@@ -254,14 +254,13 @@ Template.inviteUsers.events({
     const updateCode = beamerDoc.invitationCode === code
       ? null
       : code
-    Beamer.doc.code(updateCode, delayedCallback(300, (err) => {
+    try {
+      await Beamer.doc.code(updateCode)
+      API.notify(true)
+    } catch (err) {
+      API.notify(err)
+    } finally {
       templateInstance.state.set('codeToBeamer', null)
-      if (err) {
-        API.notify(err)
-      }
-      else {
-        API.notify()
-      }
-    }))
+    }
   }
 })

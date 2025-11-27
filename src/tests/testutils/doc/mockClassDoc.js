@@ -1,6 +1,6 @@
 import { Random } from 'meteor/random'
 
-export const mockClassDoc = (options, collection) => {
+export const mockClassDoc = async (options, collection) => {
   const classDoc = {
     _id: options._id ?? Random.id(),
     title: options.title ?? Random.id(),
@@ -11,7 +11,7 @@ export const mockClassDoc = (options, collection) => {
   }
 
   if (collection) {
-    collection.insert(classDoc)
+    await collection.insertAsync(classDoc)
   }
 
   return classDoc

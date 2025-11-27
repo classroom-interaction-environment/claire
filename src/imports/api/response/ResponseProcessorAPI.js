@@ -13,6 +13,7 @@ import { Beamer } from '../../contexts/beamer/Beamer'
 import { Item } from '../../contexts/tasks/definitions/items/Item'
 import { ResponseDataTypes } from '../plugins/ResponseDataTypes'
 import { createMaterialId } from '../material/createMaterialId'
+import { noop } from '../../utils/noop'
 
 /**
  * Use to interact with ResponseProcessors. Since RP can be very different in
@@ -106,13 +107,13 @@ ResponseProcessorAPI.create = (itemData, templateInstance) => {
           actionHandlers.set(actionId, actionHandler)
         }
       },
-      document: context.schema && (({ groupId }) => {
+      document: context.schema ? (({ groupId } = {}) => {
         const query = { lessonId, taskId, itemId }
         if (groupId) {
           query.groupId = groupId
         }
         return getCollection(context.name).findOne(query)
-      }),
+      }) : noop,
       onResize: function (callback) {
         resizeListeners.set(actionId, callback)
       },

@@ -17,7 +17,7 @@ Template.beamerDialog.helpers({
   },
   beamerBackground () {
     const background = Beamer.doc.background()
-    return background && `h-100 bg-${background.className} text-${background.text}`
+    return background && ` h-100 bg-${background.className} text-${background.text}`
   },
   presentLoaded () {
 
@@ -62,16 +62,15 @@ Template.beamerDialog.events({
     const location = Routes.present.path()
     setTimeout(() => Beamer.actions.init(location), 500)
   },
-  'click .end-beamer-button' (event, templateInstance) {
+  'click .end-beamer-button': async function (event, templateInstance) {
     event.preventDefault()
-    Beamer.actions.unload((err) => {
-      if (err) {
-        API.notify(err)
-      }
-      else {
-        API.notify(true)
-        templateInstance.$('#beamerControlDialog').modal('hide')
-      }
-    })
+    try {
+      await Beamer.actions.unload()
+      API.notify(true)
+    } catch (err) {
+      API.notify(err)
+    } finally {
+      templateInstance.$('#beamerControlDialog').modal('hide')
+    }
   }
 })

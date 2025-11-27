@@ -9,6 +9,7 @@ import { isMember } from '../../schoolclass/helpers/isMember'
 /**
  * Gets all associated units by a given set of lessons (via lesson ids)
  * @param lessonIds
+ * @param userId
  * @return {*}
  */
 export const unitsByLesson = async ({ lessonIds, userId }) => {

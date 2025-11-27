@@ -301,21 +301,20 @@ Template.inviteStudents.events({
       templateInstance.state.set('showForm', true)
     }))
   },
-  'click .code-to-beamer-button' (event, templateInstance) {
+  'click .code-to-beamer-button': async function (event, templateInstance) {
     event.preventDefault()
     templateInstance.state.set('updateBeamer', true)
     const code = dataTarget(event, templateInstance, 'code')
     const beamerDoc = Beamer.doc.get()
 
     const invitationCode = beamerDoc.invitationCode === code ? null : code
-    Beamer.doc.code(invitationCode, delayedCallback(300, (err) => {
+    try {
+      await Beamer.doc.code(invitationCode)
+      API.notify(true)
+    } catch (err) {
+      API.notify(err)
+    } finally {
       templateInstance.state.set('updateBeamer', false)
-      if (err) {
-        API.notify(err)
-      }
-      else {
-        API.notify(true)
-      }
-    }))
+    }
   }
 })
