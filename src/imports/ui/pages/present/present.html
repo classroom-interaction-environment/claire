@@ -7,7 +7,7 @@
             {{#if this.invitationCode}}
                 <div class="row mt-5 h-100">
                     <div class="col">
-                        <div class="card bg-transparent">
+                        <div class="card bg-transparent fade-in-500">
                             <div class="card-header d-flex justify-content-between bg-transparent">
                                 <h5>{{i18n "codeInvitation.qrCode"}}</h5>
                                 {{! todo use actionButton }}
@@ -33,7 +33,7 @@
                 <div class="{{rowClass}} mt-5">
                     {{#each reference in this}}
                         <div class="{{colClass}} mb-4">
-                            <div class="card shadow-sm bg-transparent h-100">
+                            <div class="card fade-in-500 shadow-sm bg-transparent h-100">
 
                                 {{! material Icon and title }}
                                 <div class="card-header d-flex justify-content-between bg-transparent border-0 align-items-center">

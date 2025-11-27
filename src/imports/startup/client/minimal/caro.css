@@ -257,3 +257,13 @@ input[type='checkbox'] + label {
 .btn:disabled {
   opacity: 0.25 !important;
 }
+
+.fade-in-500 {
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+

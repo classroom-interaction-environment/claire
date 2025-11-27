@@ -6,7 +6,7 @@
  * @param immediate
  * @return {(function(...[*]): void)|*}
  */
-export const debounce = (func, wait, immediate) => {
+export const debounce = (func, wait, immediate = false) => {
   let timeout;
   // keep fn bindable
   return function (...args) {

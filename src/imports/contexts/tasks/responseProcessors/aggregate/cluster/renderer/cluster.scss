@@ -15,6 +15,10 @@
   z-index: 1099;
 }
 
+.preview-root {
+  cursor: pointer;
+}
+
 .cluster-spawn {
   height: 80px;
   position: relative;
@@ -34,6 +38,7 @@
   position: absolute;
   top: 0;
   touch-action: none;
+  animation: fadeIn 0.7s ease-in-out;
 }
 
 .draggable-transition {
@@ -123,6 +128,7 @@
   overflow: hidden;
   width: auto;
   word-wrap: normal;
+  padding: 18px !important;
 }
 
 .fit {
@@ -132,10 +138,9 @@
 }
 
 .text-container {
-  height: 10rem;
+  max-width: 75vw;
   overflow-x: auto;
   overflow-y: hidden;
-  width: 10rem;
   z-index: 1032;
 }
 
@@ -149,7 +154,7 @@
 }
 
 .text {
-  font-size: 12px;
+  font-size: 24px;
 }
 
 .no-select {

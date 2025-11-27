@@ -7,6 +7,9 @@ import {
 
 import './cluster.scss'
 import './cluster.html'
+import { Beamer } from '../../../../../beamer/Beamer'
+import { debounce } from '../../../../../../api/utils/debounce'
+import { rgbToHex } from '../../../../../../ui/utils/color/rgbToHex'
 
 const API = Template.rpCluster.setDependencies({
   contexts: [Cluster],
@@ -18,6 +21,8 @@ Template.rpCluster.onCreated(function () {
   instance.state.set('values', [])
   instance.state.set('quadrants', [])
   instance.state.set('quadrantEdit', -1)
+  instance.state.set('fontSize', 24)
+  instance.state.set('bgColor', 'light')
 
   instance.initialized = false
 
@@ -43,6 +48,15 @@ Template.rpCluster.onCreated(function () {
     })
 
     instance.state.set('values', results)
+  })
+
+  instance.autorun(() => {
+    const beamerDoc = Beamer.doc.get()
+    if (!beamerDoc) return
+    const bgColor = beamerDoc.ui?.background
+    if (bgColor) {
+      instance.state.set({ bgColor })
+    }
   })
 
   instance.autorun(() => {
@@ -119,23 +133,23 @@ Template.rpCluster.onRendered(function () {
     onEnd
   })
 
-  instance.autorun(() => {
-    const values = instance.state.get('values')
-    const edit = instance.state.get('edit')
-    if (!edit || !values?.length) {
-      return
-    }
-
-    setTimeout(() => {
-      values.forEach(value => {
-        const { responseId } = value
-        API.debug('resize element text', responseId)
-        const container = instance.$(`.text-container[data-id="${responseId}"]`).get(0)
-        const text = container.firstElementChild.firstElementChild
-        resizeText({ element: text, step: 1 })
-      })
-    }, 300)
-  })
+  // instance.autorun(() => {
+  //   const values = instance.state.get('values')
+  //   const edit = instance.state.get('edit')
+  //   if (!edit || !values?.length) {
+  //     return
+  //   }
+  //
+  //   setTimeout(() => {
+  //     values.forEach(value => {
+  //       const { responseId } = value
+  //       API.debug('resize element text', responseId)
+  //       const container = instance.$(`.text-container[data-id="${responseId}"]`).get(0)
+  //       const text = container.firstElementChild.firstElementChild
+  //       resizeText({ element: text, step: 1 })
+  //     })
+  //   }, 300)
+  // })
 
   instance.autorun(() => {
     const edit = instance.state.get('edit')
@@ -174,11 +188,17 @@ const resizeText = ({ element, elements, minSize = 10, maxSize = 512, step = 0.5
   })
 }
 
-const defaultBg = '#a9a9a9'
+const defaultBg = '#4a4a4a'
 
 Template.rpCluster.helpers({
   defaultBg () {
     return defaultBg
+  },
+  bg () {
+    return Template.getState('bgColor')
+  },
+  fontSize () {
+    return Template.getState('fontSize')
   },
   itemTitle () {
     return Template.instance().data.title
@@ -209,6 +229,7 @@ Template.rpCluster.helpers({
     return Template.getState('saving')
   },
   isCurrentDraggable (id) {
+    console.debug('isCurrentDraggable', id, Template.getState('draggableId'))
     return Template.getState('draggableId') === id
   },
   isTargetElement (id) {
@@ -217,24 +238,12 @@ Template.rpCluster.helpers({
   isOptionTarget (id) {
     return id && Template.getState('optionTarget') === id
   },
-  color (elementId) {
-    const elmnt = document.getElementById(elementId)
-    if (!elmnt) return
-    const computedStyle = window.getComputedStyle(elmnt)
-    const directStyle = elmnt.style.backgroundColor
-    return directStyle || computedStyle.backgroundColor || defaultBg
+  color () {
+    return Template.getState('options').c
   }
 })
 
 Template.rpCluster.events({
-  'change #color-input' (event, templateInstance) {
-    const elementId = event.target.getAttribute('data-element')
-    const element = templateInstance.$(document.getElementById(elementId))
-    element.data('c', event.target.value)
-    element.css('background-color', event.target.value)
-    templateInstance.state.set('optionTarget', null)
-    setTimeout(() => saveCluster({ templateInstance }), 500)
-  },
   'click #add-cluster-category-button' (event, templateInstance) {
     event.preventDefault()
 
@@ -340,6 +349,10 @@ Template.rpCluster.events({
     const maxZ = Math.max.apply(null, mapped)
     event.currentTarget.style.zIndex = maxZ + 1
   },
+  'click .preview-root' (event, templateInstance) {
+    event.preventDefault()
+    templateInstance.state.set('edit', true)
+  },
   'dblclick .text-container' (event, templateInstance) {
     const id = event.currentTarget.getAttribute('id') || event.currentTarget.getAttribute('data-id')
     const optionTarget = templateInstance.state.get('optionTarget')
@@ -353,7 +366,32 @@ Template.rpCluster.events({
       setTimeout(() => {
         updateLayout(templateInstance)
       }, 100)
+    } else {
+      // load current data doc
+      const clusterDoc = templateInstance.state.get('clusterDoc')
+      const options = clusterDoc.elements.find(el => el.id === id) || {}
+      console.debug(options.c)
+      if (options.c && options.c.startsWith('rgb(')) {
+        options.c = rgbToHex(...(options.c.match(/\d+/g).map(Number)))
+      }
+      templateInstance.state.set({ options })
     }
+  },
+  'input #font-size-range': debounce(function (event, templateInstance) {
+    const fontSize = Number.parseInt(event.target.value, 10)
+    templateInstance.state.set({ fontSize })
+  }, 10),
+  'input #color-input': debounce(function (event, templateInstance) {
+    const elementId = event.target.getAttribute('data-element')
+    const element = templateInstance.$(document.getElementById(elementId))
+    element.data('c', event.target.value)
+    element.css('background-color', event.target.value)
+  }, 30),
+  'blur .entry-options' (event, templateInstance) {
+    templateInstance.state.set('optionTarget', null)
+    templateInstance.state.set('options', null)
+    saveCluster({ templateInstance })
+    updateLayout(templateInstance)
   }
 })
 
@@ -439,12 +477,12 @@ function updateLayout (templateInstance) {
     }
   })
 
-  if (templateInstance.state.get('edit')) {
-    setTimeout(() => {
-      templateInstance.$('.text-container').each((index, element) => {
-        const text = element.firstElementChild.firstElementChild
-        resizeText({ element: text, step: 1 })
-      })
-    }, 500)
-  }
+  // if (templateInstance.state.get('edit')) {
+  //   setTimeout(() => {
+  //     templateInstance.$('.text-container').each((index, element) => {
+  //       const text = element.firstElementChild.firstElementChild
+  //       resizeText({ element: text, step: 1 })
+  //     })
+  //   }, 500)
+  // }
 }
