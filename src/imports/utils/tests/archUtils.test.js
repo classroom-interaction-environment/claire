@@ -1,7 +1,7 @@
 /* global describe it beforeEach */
 import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
-import { onServerExec, onServer, onClient, onClientExec } from '../../api/utils/archUtils'
+import { onServerExec, onServer, onClient, onClientExec, auto, ensureClient, ensureServer, isomporph } from '../../api/utils/archUtils'
 import { expect } from 'chai'
 
 describe('archUtils', function () {
@@ -74,6 +74,63 @@ describe('archUtils', function () {
         const actual = onServerExec(exec)
         expect(actual).to.equal(undefined)
         expect(executed).to.equal(false)
+      })
+    }
+  })
+
+  describe(auto.name, function () {
+    it('always executes a function', function () {
+      const actual = auto(exec)
+      expect(actual).to.equal(value)
+      expect(executed).to.equal(true)
+    })
+  })
+
+  describe(isomporph.name, function () {
+    const clientValue = Random.id()
+    const serverValue = Random.id()
+
+    const isomorphicFunc = isomporph({
+      client: () => () => clientValue,
+      server: () => () => serverValue
+    })
+
+    if (Meteor.isClient) {
+      it('executes the client function on client', function () {
+        const actual = isomorphicFunc()
+        expect(actual).to.equal(clientValue)
+      })
+    }
+    if (Meteor.isServer) {
+      it('executes the server function on server', function () {
+        const actual = isomorphicFunc()
+        expect(actual).to.equal(serverValue)
+      })
+    }
+  })
+
+  describe(ensureClient.name, function () {
+    if (Meteor.isClient) {
+      it('does not throw on client', function () {
+        expect(() => ensureClient()).to.not.throw()
+      })
+    }
+    if (Meteor.isServer) {
+      it('throws on server', function () {
+        expect(() => ensureClient()).to.throw(/Scope is expected to be client-only!/)
+      })
+    }
+  })
+
+  describe(ensureServer.name, function () {
+    if (Meteor.isServer) {
+      it('does not throw on server', function () {
+        expect(() => ensureServer()).to.not.throw()
+      })
+    }
+    if (Meteor.isClient) {
+      it('throws on client', function () {
+        expect(() => ensureServer()).to.throw(/Scope is expected to be server-only!/)
       })
     }
   })

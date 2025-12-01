@@ -14,13 +14,13 @@ export const removeAdmin = async (userId) => {
   check(userId, matchNonEmptyString)
 
   if (!await userExists({ userId })) {
-    throw new Meteor.Error('removeAdmin.failed', 'errors.userNotFound', userId)
+    throw new Meteor.Error('removeAdmin.failed', 'removeAdmin.userNotFound', { userId })
   }
 
   const AdminCollection = getCollection(Admin.name)
 
   if (await AdminCollection.countDocuments({ userId }) === 0) {
-    throw new Meteor.Error('removeAdmin.failed', 'removeAdmin.notAdmin', userId)
+    throw new Meteor.Error('removeAdmin.failed', 'removeAdmin.notAdmin', { userId })
   }
 
   return AdminCollection.removeAsync({ userId })

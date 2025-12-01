@@ -7,29 +7,30 @@ import { clearCollections, mockCollections, restoreAllCollections } from '../../
 import { Admin } from '../../../../contexts/system/accounts/admin/Admin'
 import { Users } from '../../../../contexts/system/accounts/users/User'
 
-describe(userExists.name, function () {
-  before(function () {
+describe(userExists.name, () => {
+  before(() => {
     mockCollections(Admin, Users)
   })
 
-  afterEach(function () {
-    clearCollections()
+  afterEach(async () => {
+    await clearCollections()
   })
 
-  after(function () {
-    restoreAllCollections()
+  after(async () => {
+    await restoreAllCollections()
   })
 
-  it('returns false if no user exists for given id', function () {
-    expect(userExists({})).to.equal(false)
-    expect(userExists({ userId: '' })).to.equal(false)
-    expect(userExists({ userId: Random.id() })).to.equal(false)
+  it('returns false if no user exists for given id', async () => {
+    const values = [null, undefined, 0, -1, 1, '', 'invalid-id', [], {}, { someKey: 'someValue' }, Random.id(), { userId: Random.id() }]
+    for (const val of values) {
+      expect(await userExists(val)).to.equal(false)
+    }
   })
 
-  it('returns true if the user exists', function () {
+  it('returns true if the user exists', async () => {
     const _id = Random.id()
-    stubUser({ _id })
-    expect(userExists({ userId: _id })).to.equal(true)
-    unstubUser(true, true)
+    await stubUser({ _id })
+    expect(await userExists({ userId: _id })).to.equal(true)
+    await unstubUser(true, true)
   })
 })

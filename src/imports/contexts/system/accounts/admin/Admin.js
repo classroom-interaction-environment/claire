@@ -15,23 +15,7 @@ export const Admin = {
 
 Admin.schema = {
   userId: {
-    type: String,
-
-    /**
-     * Checks, if a user exists by given userId
-     * @return {string|undefined}
-     */
-
-    custom: auto(function () {
-      import { userExists } from '../../../../api/accounts/user/userExists'
-
-      return async function () {
-        const userId = this.value
-        if (!await userExists({ userId })) {
-          return 'admin.userDoesNotExist'
-        }
-      }
-    })
+    type: String
   }
 }
 
@@ -54,7 +38,7 @@ Admin.methods.reinvite = {
 
     return async function ({ userId }) {
       if (!await userExists({ userId })) {
-        throw new Meteor.Error('errors.docNotFound', 'errors.userNotExists', userId)
+        throw new Meteor.Error('errors.docNotFound', 'errors.userNotExists', { userId })
       }
 
       return Accounts.sendEnrollmentEmail(userId)
@@ -186,16 +170,17 @@ Admin.methods.updateRole = {
     import { Users } from '../users/User'
 
     return async function ({ userId, role, group }) {
-      if (this.userId === userId) {
-        throw new Meteor.Error('admin.updateRoleFailed', 'admin.noOwnRolesChangeAllowed', { userId })
+      const adminId = this.userId
+      if (adminId === userId) {
+        throw new Meteor.Error('admin.updateRoleFailed', 'admin.noOwnRolesChangeAllowed', { adminId, userId })
       }
 
       if (!await userExists({ userId })) {
-        throw new Meteor.Error('admin.updateRoleFailed', Admin.errors.USER_NOT_FOUND, { userId })
+        throw new Meteor.Error('admin.updateRoleFailed', Admin.errors.USER_NOT_FOUND, { adminId, userId })
       }
 
       if (!UserUtils.roleExists(role)) {
-        throw new Meteor.Error('admin.updateRoleFailed', 'roles.unknownRole', { userId, role, group })
+        throw new Meteor.Error('admin.updateRoleFailed', 'roles.unknownRole', { adminId, userId, role, group })
       }
 
       await Roles.setUserRolesAsync(userId, [role], group)
@@ -212,7 +197,7 @@ Admin.methods.updateRole = {
       }
 
       if (!await Roles.userIsInRoleAsync(userId, role, group)) {
-        throw new Meteor.Error('admin.updateRoleFailed', 'roles.notAssigned', { userId, role, group })
+        throw new Meteor.Error('admin.updateRoleFailed', 'roles.notAssigned', { adminId, userId, role, group })
       }
 
       return getCollection(Users.name).updateAsync(userId, { $set: { role } })

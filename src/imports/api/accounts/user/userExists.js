@@ -2,11 +2,18 @@ import { getUsersCollection } from '../../utils/getUsersCollection'
 
 /**
  *
- * @param userId {string=}
- * @param email {string=}
+ * @param options {object}
+ * @param options.userId {string=}
+ * @param options.email {string=}
  * @return {Promise<boolean>}
  */
-export const userExists = async ({ userId, email } = {}) => {
+export const userExists = async (options = {}) => {
+  if (!options) return false
+
+  const { userId, email } = options
+  if (!userId && !email) {
+    return false
+  }
   let query
 
   if (userId) {

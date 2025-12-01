@@ -21,6 +21,8 @@ import { UserUtils } from '../UserUtils'
 import { mockClassDoc } from '../../../../../../tests/testutils/doc/mockClassDoc'
 import { PermissionDeniedError } from '../../../../../api/errors/types/PermissionDeniedError'
 import { DocNotFoundError } from '../../../../../api/errors/types/DocNotFoundError'
+import { expectThrow } from '../../../../../../tests/testutils/expectThrow'
+import { invitationComplete } from '../../../../classroom/invitations/validation/invitationComplete'
 
 const createRegisterDoc = ({
   code = Random.id(),
@@ -32,145 +34,144 @@ const createRegisterDoc = ({
   code, email, firstName, lastName, institution
 })
 
-describe('Users', function () {
+describe('Users', () => {
   let SchoolClassCollection
   let CodeInvitationCollection
   let UsersCollection
 
-  before(function () {
+  before(() => {
     [SchoolClassCollection, CodeInvitationCollection, UsersCollection] = mockCollections(SchoolClass, CodeInvitation, Users, Admin)
   })
 
-  afterEach(function () {
+  afterEach(async () => {
     restoreAll()
-    clearAllCollections()
+    await clearAllCollections()
   })
 
-  after(function () {
-    restoreAllCollections()
+  after(async () => {
+    await restoreAllCollections()
   })
 
-  onServerExec(function () {
-    describe('helpers', function () {
-      describe(Users.helpers.verify.name, function () {
+  onServerExec(() => {
+    describe('helpers', () => {
+      describe(Users.helpers.verify.name, () => {
         const verifyUser = Users.helpers.verify
 
-        it('throws if the user is not found', function () {
+        it('throws if the user is not found', () => {
           expect(() => verifyUser()).to.throw('errors.userNotFound')
         })
-        it('throws if the user has no email', function () {
+        it('throws if the user has no email', () => {
           expect(() => verifyUser({})).to.throw('errors.noEmailFound')
           expect(() => verifyUser({ emails: [] })).to.throw('errors.noEmailFound')
           expect(() => verifyUser({ emails: [{}] })).to.throw('errors.noEmailFound')
         })
-        it('returns false if the user is not verified', function () {
+        it('returns false if the user is not verified', () => {
           expect(verifyUser({ emails: [{ address: Random.id() }] })).to.equal(false)
           expect(verifyUser({ emails: [{ address: Random.id(), verified: false }] })).to.equal(false)
         })
-        it('returns true if the user is verified', function () {
+        it('returns true if the user is verified', () => {
           expect(verifyUser({ emails: [{ address: Random.id(), verified: true }] })).to.equal(true)
         })
       })
     })
 
-    describe('methods', function () {
-      const registerWithCode = (...args) => Users.methods.registerWithCode.run(...args)
+    describe('methods', () => {
+      const registerWithCode = Users.methods.registerWithCode.run
 
-      describe(Users.methods.registerWithCode.name, function () {
-        it('throws on an invalid code', function () {
+      describe(Users.methods.registerWithCode.name, () => {
+        it('throws on an invalid code', async () => {
           const doc = createRegisterDoc()
-          expect(() => registerWithCode(doc))
-            .to.throw('codeRegister.failed')
-            .with.property('reason', 'codeRegister.codeInvalid')
+          await expectThrow({
+            fn: () => registerWithCode.call({}, doc),
+            error: 'codeRegister.failed',
+            reason: 'codeRegister.codeInvalid'
+          })
         })
-        it('throws if a user exists already by given email', function () {
+        it('throws if a user exists already by given email', async () => {
           const registerDoc = createRegisterDoc()
-          UsersCollection.insert({ emails: [{ address: registerDoc.email }] })
-
-          stub(CodeInvitation.helpers, CodeInvitation.helpers.validate.name, () => true)
-          expect(() => registerWithCode(registerDoc))
-            .to.throw('codeRegister.failed')
-            .with.property('reason', 'codeRegister.emailExists')
+          await UsersCollection.insertAsync({ emails: [{ address: registerDoc.email }] })
+          await expectThrow({
+            fn: () => registerWithCode.call({}, registerDoc),
+            error: 'codeRegister.failed',
+            reason: 'codeRegister.emailExists'
+          })
         })
-        it('throws if the account creation failed', function () {
+        it('throws if the account creation failed', async () => {
           const registerDoc = createRegisterDoc()
-          CodeInvitationCollection.insert({
+          await CodeInvitationCollection.insertAsync({
             ...registerDoc,
             expires: 2,
             maxUsers: 2,
             role: UserUtils.roles.teacher
           })
-          stub(CodeInvitation.helpers, CodeInvitation.helpers.validate.name, () => true)
-          stub(CodeInvitation.helpers, CodeInvitation.helpers.getCodeDoc.name, () => undefined)
-          stub(UserFactory, 'create', () => {
+          stub(UserFactory, 'create',async () => {
             throw new Meteor.Error('error', 'expectedErrorReason')
           })
-          stub(Accounts, 'createUser', () => null)
+          stub(Accounts, 'createUserAsync', () => null)
 
-          expect(() => registerWithCode(registerDoc))
-            .to.throw('codeRegister.failed')
-            .with.property('reason', 'expectedErrorReason')
+          await expectThrow({
+            fn: () => registerWithCode.call({}, registerDoc),
+            error: 'codeRegister.failed',
+            reason: 'codeRegister.expectedErrorReason'
+          })
+
         })
-        it('throws if adding user to the class fails', function () {
+        it('throws if adding user to the class fails', async () => {
           const codeDoc = createCodeDoc()
           CodeInvitationCollection.insert(codeDoc)
           const registerDoc = createRegisterDoc({ code: codeDoc.code, firstName: 'John', lastName: 'Doe' })
 
-          stub(CodeInvitation.helpers, CodeInvitation.helpers.validate.name, () => true)
-          stub(CodeInvitation.helpers, CodeInvitation.helpers.addUserToInvitation.name, () => 1)
-          stub(UserFactory, UserFactory.create.name, () => Random.id())
+          stub(UserFactory, UserFactory.create.name, async () => Random.id())
 
-          const thrown = expect(() => registerWithCode(registerDoc))
+          const thrown = expect(() => registerWithCode.call({}, registerDoc))
             .to.throw('codeRegister.failed')
           thrown.with.property('reason', 'codeRegister.studentNotAdded')
           thrown.with.deep.property('details', { classId: codeDoc.classId, studentAdded: false })
         })
 
-        const validRegistration = ({ codeDocArgs } = {}) => {
+        const validRegistration = async ({ codeDocArgs } = {}) => {
           const codeDoc = createCodeDoc(codeDocArgs)
           delete codeDoc.classId
-          const codeDocId = CodeInvitationCollection.insert(codeDoc)
+          const codeDocId = await CodeInvitationCollection.insertAsync(codeDoc)
           const registerDoc = createRegisterDoc({ code: codeDoc.code, firstName: 'John', lastName: 'Doe' })
 
-          stub(CodeInvitation.helpers, CodeInvitation.helpers.validate.name, () => true)
-          stub(CodeInvitation.helpers, CodeInvitation.helpers.getCodeDoc.name, () => codeDoc)
-          stub(Roles, 'addUsersToRoles', () => true)
-          stub(Roles, 'userIsInRole', () => true)
-          stub(Accounts, 'createUser', ({ email }) => {
-            return UsersCollection.insert({ emails: [{ address: email }] })
+          stub(Roles, 'addUsersToRolesAsync', async () => true)
+          stub(Roles, 'userIsInRoleAsync', async () => true)
+          stub(Accounts, 'createUserAsync', async ({ email }) => {
+            return UsersCollection.insertAsync({ emails: [{ address: email }] })
           })
           stub(Accounts, 'sendEnrollmentEmail', () => true)
           stub(Accounts, 'sendVerificationEmail', () => true)
 
-          const userId = registerWithCode(registerDoc)
+          const userId = registerWithCode.call({}, registerDoc)
           expect(UsersCollection.find(userId).count()).to.equal(1)
 
           return { codeDocId, userId, registerDoc }
         }
 
-        it('registers a user', function () {
-          validRegistration()
+        it('registers a user', async () => {
+          await validRegistration()
         })
-        it('invalidates the codeDoc after registration', function () {
-          const { codeDocId } = validRegistration()
-          const afterRegisterCodeDoc = CodeInvitationCollection.findOne(codeDocId)
-          expect(CodeInvitation.helpers.isComplete(afterRegisterCodeDoc)).to.equal(true)
+        it('invalidates the codeDoc after registration', async () => {
+          const { codeDocId } = await validRegistration()
+          const afterRegisterCodeDoc = await CodeInvitationCollection.findOneAsync(codeDocId)
+          expect(invitationComplete(afterRegisterCodeDoc)).to.equal(true)
         })
-        it('always uses role and institution from codeDoc', function () {
+        it('always uses role and institution from codeDoc', async () => {
           const codeDocArgs = {
             role: UserUtils.roles.curriculum,
             institution: 'Other school'
           }
-          const { userId, codeDocId, registerDoc } = validRegistration({ codeDocArgs })
-          const user = UsersCollection.findOne(userId)
-          const codeDoc = CodeInvitationCollection.findOne(codeDocId)
+          const { userId, codeDocId, registerDoc } =await validRegistration({ codeDocArgs })
+          const user = await UsersCollection.findOneAsync(userId)
+          const codeDoc = await CodeInvitationCollection.findOneAsync(codeDocId)
 
           expect(user.role).to.equal(codeDoc.role)
           expect(user.role).to.not.equal(registerDoc.role)
           expect(user.institution).to.equal(codeDoc.institution)
           expect(user.institution).to.not.equal(registerDoc.institution)
         })
-        it('allows to use firstName and lastName in favour from user input', function () {
+        it('allows to use firstName and lastName in favour from user input', () => {
           const codeDocArgs = {
             firstName: 'Jane',
             lastName: 'Done'
@@ -184,10 +185,10 @@ describe('Users', function () {
           expect(user.lastName).to.equal(registerDoc.lastName)
         })
       })
-      describe(Users.methods.checkResetpasswordToken.name, function () {
+      describe(Users.methods.checkResetpasswordToken.name, () => {
         const checkResetPasswordToken = Users.methods.checkResetpasswordToken.run
 
-        it('throws if the given user is not found', function () {
+        it('throws if the given user is not found', () => {
           const email = Random.id()
           const thrown = expect(() => checkResetPasswordToken({
             token: Random.id(),
@@ -198,7 +199,7 @@ describe('Users', function () {
           thrown.with.property('reason', 'user.userNotFound')
           thrown.with.deep.property('details', { email })
         })
-        it('throws if the token is the token is missing', function () {
+        it('throws if the token is the token is missing', () => {
           const email = Random.id()
           const userDoc = { email }
           UsersCollection.insert({
@@ -219,7 +220,7 @@ describe('Users', function () {
           thrown.with.property('reason', 'user.tokenInvalid')
           thrown.with.deep.property('details', { email })
         })
-        it('throws if the reason is not valid', function () {
+        it('throws if the reason is not valid', () => {
           const email = 'me@example.com'
           const userId = UsersCollection.insert({ emails: [{ address: email }], services: { password: {} } })
           const tokenId = Random.id()
@@ -237,7 +238,7 @@ describe('Users', function () {
           thrown.with.property('reason', 'user.reasonInvalid')
           thrown.with.deep.property('details', { reason })
         })
-        it('throws if the date is already expired', function () {
+        it('throws if the date is already expired', () => {
           const email = Random.id()
           const userId = UsersCollection.insert({ emails: [{ address: email }], services: { password: {} } })
           const tokenId = Random.id()
@@ -261,7 +262,7 @@ describe('Users', function () {
 
           thrown.with.property('reason', 'user.tokenExpired')
         })
-        it('returns true if the token is valid', function () {
+        it('returns true if the token is valid', () => {
           const email = Random.id()
           const userId = UsersCollection.insert({ emails: [{ address: email }], services: { password: {} } })
           const tokenId = Random.id()
@@ -285,12 +286,12 @@ describe('Users', function () {
         })
       })
 
-      describe(Users.methods.getUser.name, function () {
+      describe(Users.methods.getUser.name, () => {
         const getUser = Users.methods.getUser.run
         const _id = Random.id()
         let user
 
-        beforeEach(function () {
+        beforeEach(() => {
           user = {
             _id: _id,
             emails: [{ address: `${Random.id()}@domain.tld` }],
@@ -305,16 +306,16 @@ describe('Users', function () {
           }
         })
 
-        afterEach(function () {
+        afterEach(() => {
           restoreAll()
         })
 
-        it('throws if the given user does not exists', function () {
+        it('throws if the given user does not exists', () => {
           const thrown = expect(() => getUser({})).to.throw('user.invalidUser')
           thrown.with.property('reason', 'user.notFound')
           thrown.with.property('details', undefined)
         })
-        it('returns a near full user for oneself', function () {
+        it('returns a near full user for oneself', () => {
           UsersCollection.insert(user)
 
           const actualUser = getUser.call({ userId: user._id }, { _id })
@@ -325,7 +326,7 @@ describe('Users', function () {
           expect(actualUser.emails).to.deep.equal(user.emails)
           expect(actualUser.presence).to.deep.equal({ online: true })
         })
-        it('returns a limited user for others', function () {
+        it('returns a limited user for others', () => {
           UsersCollection.insert(user)
 
           const actualUser = getUser.call({ userId: Random.id() }, { _id })
@@ -338,14 +339,14 @@ describe('Users', function () {
         })
       })
 
-      describe(Users.methods.resendVerificationMail.name, function () {
+      describe(Users.methods.resendVerificationMail.name, () => {
         const resend = Users.methods.resendVerificationMail.run
 
-        it('fails silent if the user not exists', function () {
+        it('fails silent if the user not exists', () => {
           const sent = resend({ userId: Random.id() })
           expect(sent).to.equal(undefined)
         })
-        it('fails silent if the user is already verified', function () {
+        it('fails silent if the user is already verified', () => {
           const user = {
             _id: Random.id(),
             emails: [{
@@ -358,7 +359,7 @@ describe('Users', function () {
           const sent = resend({ userId: user._id })
           expect(sent).to.equal(undefined)
         })
-        it('sends a verification mail to the given user', function () {
+        it('sends a verification mail to the given user', () => {
           const user = {
             _id: Random.id(),
             emails: [{
@@ -376,14 +377,14 @@ describe('Users', function () {
         })
       })
 
-      describe(Users.methods.sendResetPasswordEmail.name, function () {
+      describe(Users.methods.sendResetPasswordEmail.name, () => {
         const send = Users.methods.sendResetPasswordEmail.run
 
-        it('fails silent if the user not exists by email', function () {
+        it('fails silent if the user not exists by email', () => {
           const sent = send({ email: Random.id() })
           expect(sent).to.equal(undefined)
         })
-        it('sends a password-reset mail to the given user', function () {
+        it('sends a password-reset mail to the given user', () => {
           const email = Random.id()
           const userId = UsersCollection.insert({ emails: [{ address: email }] })
           stub(Accounts, 'sendResetPasswordEmail', () => userId)
@@ -392,10 +393,10 @@ describe('Users', function () {
         })
       })
 
-      describe(Users.methods.updateProfile.name, function () {
+      describe(Users.methods.updateProfile.name, () => {
         const update = Users.methods.updateProfile.run
 
-        it('updates the current user\'s profile', function () {
+        it('updates the current user\'s profile', () => {
           const userId = UsersCollection.insert({ firstName: 'John', lastName: 'Doe', profileImage: Random.id() })
           const userDoc = UsersCollection.findOne(userId)
           const updateDoc = {
@@ -416,10 +417,10 @@ describe('Users', function () {
         })
       })
 
-      describe(Users.methods.updateUI.name, function () {
+      describe(Users.methods.updateUI.name, () => {
         const update = Users.methods.updateUI.run
 
-        it('it updates the users ui', function () {
+        it('it updates the users ui', () => {
           const user = { ui: { fluid: undefined } }
           const userId = UsersCollection.insert(user)
 
@@ -432,7 +433,7 @@ describe('Users', function () {
           expect(updatedUser.ui.fluid).to.not.equal(user.ui.fluid)
         })
 
-        it('creates a new ui namespace on the user if it does not exist', function () {
+        it('creates a new ui namespace on the user if it does not exist', () => {
           const user = {}
           const userId = UsersCollection.insert(user)
 
@@ -447,10 +448,10 @@ describe('Users', function () {
         })
       })
 
-      describe(Users.methods.userIsAvailable.name, function () {
+      describe(Users.methods.userIsAvailable.name, () => {
         const userIsAvailable = Users.methods.userIsAvailable.run
 
-        it('returns if a user exists by mail', function () {
+        it('returns if a user exists by mail', () => {
           const email = Random.id()
           UsersCollection.insert({ emails: [{ address: email }] })
           expect(userIsAvailable({ email })).to.equal(false)
@@ -459,22 +460,22 @@ describe('Users', function () {
       })
     })
 
-    describe('publications', function () {
-      afterEach(function () {
+    describe('publications', () => {
+      afterEach(() => {
         restoreAll()
       })
 
-      describe(Users.publications.byClass.name, function () {
+      describe(Users.publications.byClass.name, () => {
         const byClass = Users.publications.byClass.run
 
-        it('throws if there is no class by given classId', function () {
+        it('throws if there is no class by given classId', () => {
           const classId = Random.id()
           const thrown = expect(() => byClass({ classId }))
             .to.throw(DocNotFoundError.name)
           thrown.with.property('reason', 'getDocument.docUndefined')
           thrown.with.deep.property('details', { name: SchoolClass.name, query: classId })
         })
-        it('throws if the current user is not not owner and also not a member of the class', function () {
+        it('throws if the current user is not not owner and also not a member of the class', () => {
           const classDoc = mockClassDoc({}, SchoolClassCollection)
           const classId = classDoc._id
           const userId = Random.id()
@@ -483,7 +484,7 @@ describe('Users', function () {
           thrown.with.property('reason', 'schoolClass.notMember')
           thrown.with.deep.property('details', { userId, classId })
         })
-        it('returns all users of a class if the user is owner', function () {
+        it('returns all users of a class if the user is owner', () => {
           const userId = Random.id()
           const studentDoc = { _id: Random.id(), username: Random.id(), presence: {}, services: {} }
           UsersCollection.insert(studentDoc)
@@ -500,7 +501,7 @@ describe('Users', function () {
           expect(users[0].presence).to.deep.equal({})
           expect(users[0].services).to.equal(undefined)
         })
-        it('returns all users of a class if the user is member', function () {
+        it('returns all users of a class if the user is member', () => {
           const teacherId = Random.id()
           const studentDoc = { _id: Random.id(), username: Random.id(), presence: {}, services: {} }
           UsersCollection.insert(studentDoc)

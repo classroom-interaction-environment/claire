@@ -5,8 +5,8 @@ import { expect } from 'chai'
 import { FilesCollection } from 'meteor/ostrio:files'
 import { buildPipeline } from './buildPipeline'
 
-describe(buildPipeline.name, function () {
-  it('creates a new collection if defined', function () {
+describe(buildPipeline.name, () => {
+  it('creates a new collection if defined', () => {
     const options = {
       collection: true
     }
@@ -22,7 +22,7 @@ describe(buildPipeline.name, function () {
     expect(products.collection instanceof Mongo.Collection).to.equal(true)
     expect(products.filesCollection).to.equal(null)
   })
-  it('creates a files collection if defined', function () {
+  it('creates a files collection if defined', () => {
     const options = {
       filesCollection: true
     }

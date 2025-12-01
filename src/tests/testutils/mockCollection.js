@@ -13,7 +13,7 @@ export const mockCollection = ({ name, schema, isFilesCollection } = {}, {
   noSchema = false,
   noDefaults = false,
   override = false,
-  isFilesCollection:explicitFilesCollection = false
+  isFilesCollection: explicitFilesCollection = false
 } = {}) => {
   let collection = Mongo.Collection.get(name)
 

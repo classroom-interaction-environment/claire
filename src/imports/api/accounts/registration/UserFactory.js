@@ -44,7 +44,7 @@ UserFactory.create = async ({ email, password, role, firstName, lastName, instit
 
   // throws if a user with the given email already exists
   if (await userExists({ email })) {
-    throw new Meteor.Error('createUser.failed', 'user.emailUsed', email)
+    throw new Meteor.Error('createUser.failed', 'user.emailUsed', { email })
   }
 
   // creates a new user for given email address
@@ -55,10 +55,17 @@ UserFactory.create = async ({ email, password, role, firstName, lastName, instit
     createOptions.password = password
   }
 
-  const userId = await Accounts.createUserAsync(createOptions)
+  let userId
+
+  try {
+    userId = await Accounts.createUserAsync(createOptions)
+  } catch {
+    await rollbackAccount(userId)
+    throw new Meteor.Error('createUser.failed', 'createUser.notCreated', { email })
+  }
 
   if (!userId) {
-    throw new Meteor.Error('createUser.failed', 'createUser.notCreated', email)
+    throw new Meteor.Error('createUser.failed', 'createUser.notCreated', { email })
   }
 
   // updates the user profile with the minimal defaults
@@ -84,7 +91,7 @@ UserFactory.create = async ({ email, password, role, firstName, lastName, instit
 
   if (!profileUpdated) {
     await rollbackAccount(userId)
-    throw new Meteor.Error('createUser.failed', 'createUser.profileNotUpdated', email)
+    throw new Meteor.Error('createUser.failed', 'createUser.profileNotUpdated', { email })
   }
 
   debug('add user to roles', userId, [role], institution)
@@ -93,7 +100,7 @@ UserFactory.create = async ({ email, password, role, firstName, lastName, instit
   const isInRole = await Roles.userIsInRoleAsync(userId, [role], institution)
   if (!isInRole) {
     await rollbackAccount(userId)
-    throw new Meteor.Error('createUser.failed', 'createUser.rolesNotAdded', email)
+    throw new Meteor.Error('createUser.failed', 'createUser.rolesNotAdded', { email })
   }
 
   return userId

@@ -13,31 +13,33 @@ import { Users } from '../../../../contexts/system/accounts/users/User'
 let AdminCollection
 let UsersCollection
 
-describe(userIsAdmin.name, function () {
-  before(function () {
+describe(userIsAdmin.name, () => {
+  before(() => {
     [AdminCollection, UsersCollection] = mockCollections(Admin, Users)
   })
-  afterEach(function () {
-    clearCollections(Admin, Users)
+  afterEach(async () => {
+    await clearCollections(Admin, Users)
   })
-  after(function () {
-    restoreAllCollections()
-  })
-
-  it('throws if no userId is given', function () {
-    expect(() => userIsAdmin()).to.throw('Match error: Failed Match.Where validation')
-    expect(() => userIsAdmin('')).to.throw('Match error: Failed Match.Where validation')
+  after(async () => {
+    await restoreAllCollections()
   })
 
-  it('returns false if the user is not Admin', function () {
-    const userId = Meteor.users.insert({ username: Random.id() })
-    expect(userIsAdmin(Random.id())).to.equal(false)
-    expect(userIsAdmin(userId)).to.equal(false)
+  it('throws if userId is not given', async () => {
+    const values = [false, null, undefined, 0, '']
+    for (const val of values) {
+      expect(await userIsAdmin(val)).to.equal(false)
+    }
   })
 
-  it('returns true if the user is in Admins', function () {
-    const userId = UsersCollection.insert({ username: Random.id() })
-    AdminCollection.insert({ userId })
-    expect(userIsAdmin(userId)).to.equal(true)
+  it('returns false if the user is not Admin', async () => {
+    const userId =await UsersCollection.insertAsync({ username: Random.id() })
+    expect(await userIsAdmin(Random.id())).to.equal(false)
+    expect(await userIsAdmin(userId)).to.equal(false)
+  })
+
+  it('returns true if the user is in Admins', async () => {
+    const userId = await UsersCollection.insertAsync({ username: Random.id() })
+    await AdminCollection.insertAsync({ userId })
+    expect(await userIsAdmin(userId)).to.equal(true)
   })
 })

@@ -1,11 +1,10 @@
-import { Meteor } from 'meteor/meteor'
 import { createLog } from '../log/createLog'
 import { userIsCurriculum } from '../accounts/userIsCurriculum'
 import { userExists } from '../accounts/user/userExists'
 
 const debug = createLog({ name: 'validateUser', type: 'debug' })
 
-export const getUserCheck = function () {
+export const getUserCheck = () => {
   return async (user, file, type) => {
     const userId = user?._id
     debug('for', file.name, type, user?.emails, userId)

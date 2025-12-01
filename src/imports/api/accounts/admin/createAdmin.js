@@ -3,6 +3,7 @@ import { check } from 'meteor/check'
 import { getCollection } from '../../utils/getCollection'
 import { matchNonEmptyString } from '../../utils/check/matchNonEmptyString'
 import { Admin } from '../../../contexts/system/accounts/admin/Admin'
+import { userExists } from '../user/userExists'
 
 /**
  * Adds a user by user id to the Admins collection.
@@ -13,6 +14,10 @@ import { Admin } from '../../../contexts/system/accounts/admin/Admin'
 
 export const createAdmin = async (newAdminId) => {
   check(newAdminId, matchNonEmptyString)
+
+  if (!await userExists({ userId: newAdminId })) {
+    throw new Meteor.Error('createAdmin.failed', 'createAdmin.userNotFound', { adminId: newAdminId })
+  }
 
   const AdminCollection = getCollection(Admin.name)
 

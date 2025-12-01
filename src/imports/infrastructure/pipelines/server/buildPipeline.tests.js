@@ -5,9 +5,10 @@ import { FilesCollection } from 'meteor/ostrio:files'
 import { expect } from 'chai'
 import { buildPipeline } from './buildPipeline'
 import { collectPublication } from '../../../../tests/testutils/collectPublication'
+import { expectThrow } from '../../../../tests/testutils/expectThrow'
 
-describe(buildPipeline.name, function () {
-  it('it creates a collection if defined', function () {
+describe('buildPipeline (server)', () => {
+  it('it creates a collection if defined', () => {
     const options = {
       collection: true
     }
@@ -23,7 +24,7 @@ describe(buildPipeline.name, function () {
     expect(products.collection instanceof Mongo.Collection).to.equal(true)
     expect(products.filesCollection).to.equal(null)
   })
-  it('it creates a filesCollection if defined', function () {
+  it('it creates a filesCollection if defined', () => {
     const options = { filesCollection: true }
     const context = {
       name: Random.id(6),
@@ -38,7 +39,7 @@ describe(buildPipeline.name, function () {
     expect(products.filesCollection).to.be.instanceof(FilesCollection)
     expect(products.collection).to.equal(null)
   })
-  it('it creates methods if defined', function () {
+  it('it creates methods if defined', async () => {
     const options = { methods: true }
 
     const ctxName = Random.id(6)
@@ -62,10 +63,13 @@ describe(buildPipeline.name, function () {
     const products = buildPipeline(context, options)
     const method = products.methods[0]
 
-    expect(method._execute({ userId }, { title })).to.equal(true)
-    expect(() => method._execute({ userId }, {})).to.throw('Title is required.')
+    expect(await method._execute({ userId }, { title })).to.equal(true)
+    await expectThrow({
+      fn: () => method._execute({ userId }, {}),
+      message: 'Title is required.'
+    })
   })
-  it('it creates publications if defined', function () {
+  it('it creates publications, if defined', async () => {
     const options = {
       publications: true,
       collection: true
@@ -94,9 +98,9 @@ describe(buildPipeline.name, function () {
     const products = buildPipeline(context, options)
     const Collection = products.collection
     const publication = products.publications[0]
-    const docId = Collection.insert({ title })
-    const cursor = publication()
-    const docs = collectPublication(cursor)
+    const docId = await Collection.insertAsync({ title })
+    const cursor = await publication()
+    const docs = await collectPublication(cursor)
 
     expect(docs.length).to.equal(1)
     expect(docs[0]._id).to.equal(docId)

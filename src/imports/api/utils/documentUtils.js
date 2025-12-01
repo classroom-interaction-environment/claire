@@ -5,6 +5,7 @@ import { getCollection } from './getCollection'
 import { DocNotFoundError } from '../errors/types/DocNotFoundError'
 import { UnexpectedError } from '../errors/types/UnexpectedError'
 import { getFilesCollection } from './getFilesCollection'
+import { deprecate } from '../../infrastructure/functions/deprecate'
 
 /**
  * Checks ownership for a given document. Returns false if user is not given or the user does not own the document.
@@ -14,19 +15,20 @@ import { getFilesCollection } from './getFilesCollection'
  * @returns {boolean} true if owner, false otherwise
  */
 
-export const ownerShip = (document, userId) => !!(userId && document && document.createdBy === userId)
+export const ownerShip = deprecate((document, userId) => !!(userId && document && document.createdBy === userId))
 
 /**
  * Factory function to create a document-getter that includes several safety-checks (collection exists,
  * document exists, ownership).
+ * @deprecated
  * @param name The name of the context, used to obtain the collection
  * @param checkOwner determines, whether the document is to be checked for ownership
  * @returns {function} A function to retrieve documents by _id
  */
 
-export const createGetDoc = ({ name } = {}, { checkOwner = true } = {}) => {
+export const createGetDoc = deprecate(({ name } = {}, { checkOwner = true } = {}) => {
   check(name, String)
-  /**
+    /**
    * Returns a document by a given _id.
    * @param _id The id if the document to be returned.
    * @returns {Object} a document of a given collection, if found
@@ -50,7 +52,7 @@ export const createGetDoc = ({ name } = {}, { checkOwner = true } = {}) => {
   }
 
   return getDoc
-}
+})
 
 /**
  * Factory function to create a document-updater that includes several safety-checks (collection exists,
@@ -61,7 +63,7 @@ export const createGetDoc = ({ name } = {}, { checkOwner = true } = {}) => {
  * @param checkOwner determines, whether the document is to be checked for ownership
  * @returns {function} A function to update documents by _id and modifier
  */
-export const createUpdateDoc = function ({ name } = {}, { checkOwner = true } = {}) {
+export const createUpdateDoc = deprecate(function ({ name } = {}, { checkOwner = true } = {}) {
   check(name, String)
 
   /**
@@ -102,7 +104,7 @@ export const createUpdateDoc = function ({ name } = {}, { checkOwner = true } = 
   }
 
   return updateDoc
-}
+})
 
 /**
  * Factory function to create a document-clone function, that includes several safety-checks (collection exists,
@@ -112,7 +114,7 @@ export const createUpdateDoc = function ({ name } = {}, { checkOwner = true } = 
  * @param checkOwner determines, whether the document is to be checked for ownership
  * @returns {function} A function to update documents by _id and modifier
  */
-export const createCloneDoc = function getClone ({ name } = {}) {
+export const createCloneDoc = deprecate(function getClone ({ name } = {}) {
   check(name, String)
 
   /**
@@ -155,9 +157,9 @@ export const createCloneDoc = function getClone ({ name } = {}) {
   }
 
   return cloneDoc
-}
+})
 
-export const createRemoveDoc = ({ name, isFilesCollection } = {}, { checkOwner = true, multiple = false } = {}) => {
+export const createRemoveDoc = deprecate(({ name, isFilesCollection } = {}, { checkOwner = true, multiple = false } = {}) => {
   check(name, String)
 
   if (multiple) {
@@ -222,4 +224,4 @@ export const createRemoveDoc = ({ name, isFilesCollection } = {}, { checkOwner =
       return removed
     }
   }
-}
+})

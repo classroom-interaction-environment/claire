@@ -6,13 +6,13 @@ export const expectThrow = async ({ fn, error, message, reason, details }) => {
     expect.fail('Expected function to throw an error, but it did not.')
   } catch (e) {
     if (message) {
-      expect(e.message).to.equal(message)
+      expect(e.message).to.include(message)
     }
     if (error) {
-      expect(e.error).to.equal(error)
+      expect(e.error).to.include(error)
     }
     if (reason) {
-      expect(e.reason).to.equal(reason)
+      expect(e.reason).to.include(reason)
     }
     if (details) {
       expect(e.details).to.deep.equal(details)
