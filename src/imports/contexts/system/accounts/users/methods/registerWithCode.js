@@ -36,7 +36,7 @@ export const registerWithCode = async ({ code, email, firstName, lastName, passw
   const codeDoc = await getCodeDoc({ code })
 
   // first we validate if the related code doc exists and is still valid
-  if (!validateInvitation(codeDoc)) {
+  if (!codeDoc || !validateInvitation(codeDoc)) {
     throw new Meteor.Error(errors.failed, errors.codeInvalid, { code })
   }
 
@@ -71,11 +71,16 @@ export const registerWithCode = async ({ code, email, firstName, lastName, passw
     // if we have a class associated we aim to add the new student to the class
     // FIXME execution should not be in behalf of user, find another (capability based) check mechanism
     const teacherId = codeDoc.createdBy
-    const studentAdded = await addStudent({
-      classId,
-      userId,
-      teacherId
-    })
+    let studentAdded
+    try {
+      studentAdded = await addStudent({
+        classId,
+        userId,
+        teacherId
+      })
+    } catch (e) {
+      studentAdded = false
+    }
 
     if (!studentAdded) {
       await rollbackAccount(userId)

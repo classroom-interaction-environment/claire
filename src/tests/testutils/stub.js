@@ -10,6 +10,7 @@ export const stub = (target, name, handler) => {
   stubbedTarget.callsFake(handler)
 
   _stubs.set(stubbedTarget, name)
+  return stubbedTarget
 }
 
 export const restore = (target, name) => {

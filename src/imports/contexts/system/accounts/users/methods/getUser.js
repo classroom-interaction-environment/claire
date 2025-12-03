@@ -2,9 +2,9 @@ import { Meteor } from 'meteor/meteor'
 import { getUsersCollection } from '../../../../../api/utils/getUsersCollection'
 
 export const getUser = async ({ _id, userId }) => {
-  const userDoc = getUsersCollection().findOneAsync(_id)
+  const userDoc = await getUsersCollection().findOneAsync({ _id }, { fields: { services: 0 } })
   if (!userDoc) {
-    throw new Meteor.Error('user.invalidUser', 'user.notFound', _id)
+    throw new Meteor.Error('user.invalidUser', 'user.notFound', { userId: _id, calledBy: userId })
   }
 
   // for others remove presence and emails
@@ -13,7 +13,5 @@ export const getUser = async ({ _id, userId }) => {
     delete userDoc.emails
   }
 
-  // always remove services
-  delete userDoc.services
   return userDoc
 }
