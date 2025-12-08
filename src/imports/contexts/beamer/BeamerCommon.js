@@ -6,6 +6,7 @@ import { backgroundColors } from './backgroundColors'
 import { gridLayouts } from './gridLayouts'
 import { Hierarchy } from '../../api/accounts/roles/Hierarchy'
 import { PermissionDeniedError } from '../../api/errors/types/PermissionDeniedError'
+import { DocNotFoundError } from '../../api/errors/types/DocNotFoundError'
 
 export const Beamer = {
   name: 'beamer',
@@ -145,16 +146,17 @@ Beamer.methods.update = {
   numRequests: 100,
   timeInterval: 5000,
   run: onServer(async function (updateDoc) {
+    const { userId } = this
     const modifier = Object.assign({}, updateDoc)
     const BeamerCollection = getCollection(Beamer.name)
     const { _id } = modifier
     const beamerDoc = await BeamerCollection.findOneAsync(_id)
 
     if (!beamerDoc) {
-      throw new Meteor.Error('errors.docNotFound', _id)
+      throw new DocNotFoundError('beamer.noDocument', { _id })
     }
-    if (beamerDoc.createdBy !== this.userId) {
-      throw new Error('errors.permissionDenied')
+    if (beamerDoc.createdBy !== userId) {
+      throw new PermissionDeniedError('beamer.notOwner', { _id, userId })
     }
 
     delete modifier._id

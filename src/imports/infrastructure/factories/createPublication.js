@@ -9,8 +9,14 @@ import { logRuntimeEndpoints } from '../../api/mixins/logRuntimeEndpoints'
 export const createPublication = createPublicationFactory({
   schemaFactory: Schema.create,
   mixins: [checkPermissions, logRuntimeEndpoints],
-  async onError (publicationRuntimeError) {
+  async onError (publicationRuntimeError, mixinsObject) {
     const env = this
+
+    if (!env) {
+      throw publicationRuntimeError
+      // throw new Error(`Publication called without context in ${mixinsObject?.name}; error msg: ${publicationRuntimeError.message}`)
+    }
+
     error(`runtime error caught in publication [${env._name}]`, publicationRuntimeError)
 
     // assign id to it, so clients can point to a specific

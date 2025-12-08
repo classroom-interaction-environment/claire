@@ -2,16 +2,17 @@
 import { Random } from 'meteor/random'
 import { expect } from 'chai'
 import { CodeInvitation } from '../CodeInvitations'
-import { onClientExec, onServerExec } from '../../../../api/utils/archUtils'
 import { UserUtils } from '../../../system/accounts/users/UserUtils'
 import { SchoolClass } from '../../schoolclass/SchoolClass'
-import { createCodeDoc } from '../../../../../tests/testutils/doc/createCodeDoc'
 import { Users } from '../../../system/accounts/users/User'
-import { stub, restoreAll } from '../../../../../tests/testutils/stub'
 import { InvocationChecker } from '../../../../api/utils/InvocationChecker'
+import { Admin } from '../../../system/accounts/admin/Admin'
+import { Hierarchy } from '../../../../api/accounts/roles/Hierarchy'
 import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
-import { Admin } from '../../../system/accounts/admin/Admin'
+import { onClientExec, onServerExec } from '../../../../api/utils/archUtils'
+import { createCodeDoc } from '../../../../../tests/testutils/doc/createCodeDoc'
+import { stub, restoreAll } from '../../../../../tests/testutils/stub'
 import { getInvitationOffset } from '../validation/getInvitationOffset'
 import { invitationTimeLeft } from '../validation/invitationTimeLeft'
 import { invitationExpired } from '../validation/invitationExpired'
@@ -20,11 +21,13 @@ import { invitationPending } from '../validation/invitationPending'
 import { getInvitationStatus } from '../validation/getInvitationStatus'
 import { createInvitationURLQuery } from '../url/createInvitationURLQuery'
 import { parseInvitationURLQuery } from '../url/parseInvitationURLQuery'
+import { expectThrow } from '../../../../../tests/testutils/expectThrow'
+import { stubUser } from '../../../../../tests/testutils/stubUser'
 
-describe(CodeInvitation.name, function () {
-  describe('helpers (now refactored into functions)', function () {
-    describe(getInvitationOffset.name, function () {
-      it('Calculates a future date as unix timestamp', function () {
+describe(CodeInvitation.name, () => {
+  describe('helpers (now refactored into functions)', () => {
+    describe(getInvitationOffset.name, () => {
+      it('Calculates a future date as unix timestamp', () => {
         const now = new Date()
         const time = now.getTime()
 
@@ -37,8 +40,8 @@ describe(CodeInvitation.name, function () {
       })
     })
 
-    describe(invitationTimeLeft.name, function () {
-      it('Returns the time left in ms between now and the expiration date', function () {
+    describe(invitationTimeLeft.name, () => {
+      it('Returns the time left in ms between now and the expiration date', () => {
         const now = new Date()
         const counts = Math.floor(Math.random() * 10)
         for (let i = 0; i < counts; i++) {
@@ -50,103 +53,103 @@ describe(CodeInvitation.name, function () {
       })
     })
 
-    describe(invitationExpired.name, function () {
-      it('returns true for a doc with invalid flag', function () {
+    describe(invitationExpired.name, () => {
+      it('returns true for a doc with invalid flag', () => {
         const invalid = { invalid: true, expires: 4, createdAt: new Date() }
         expect(invitationExpired(invalid)).to.equal(true)
       })
 
-      it('returns true for a doc with expired date', function () {
+      it('returns true for a doc with expired date', () => {
         const expiredDoc = { expires: -3, createdAt: new Date(), invalid: false }
         expect(invitationExpired(expiredDoc)).to.equal(true)
       })
 
-      it('returns false for a valid doc with unexpired date', function () {
+      it('returns false for a valid doc with unexpired date', () => {
         const expiredDoc = { expires: 3, createdAt: new Date(), invalid: false }
         expect(invitationExpired(expiredDoc)).to.equal(false)
       })
 
-      it('throws, if params are missing', function () {
+      it('throws, if params are missing', () => {
         expect(() => invitationExpired({})).to.throw()
       })
     })
 
-    describe(invitationComplete.name, function () {
-      it('returns false for a doc with no registered users', function () {
+    describe(invitationComplete.name, () => {
+      it('returns false for a doc with no registered users', () => {
         const doc = createCodeDoc({ registeredUsers: null })
         expect(invitationComplete(doc)).to.equal(false)
       })
 
-      it('returns false for a doc where the registered users are below max users', function () {
+      it('returns false for a doc where the registered users are below max users', () => {
         const doc = createCodeDoc({ registeredUsers: [Random.id()], maxUsers: 2 })
         expect(invitationComplete(doc)).to.equal(false)
       })
 
-      it('returns true for a doc where all users have been completed', function () {
+      it('returns true for a doc where all users have been completed', () => {
         const doc = createCodeDoc({ registeredUsers: [Random.id(), Random.id()], maxUsers: 2 })
         expect(invitationComplete(doc)).to.equal(true)
       })
 
-      it('throws, if registered users are greater than max users', function () {
+      it('throws, if registered users are greater than max users', () => {
         const doc = createCodeDoc({ registeredUsers: [Random.id(), Random.id()], maxUsers: 1 })
         expect(() => invitationComplete(doc)).to.throw()
       })
 
-      it('throws, if params are missing', function () {
+      it('throws, if params are missing', () => {
         expect(() => invitationComplete({})).to.throw()
       })
     })
 
-    describe(invitationPending.name, function () {
-      it('returns false, if a doc is invalid', function () {
+    describe(invitationPending.name, () => {
+      it('returns false, if a doc is invalid', () => {
         const doc = createCodeDoc()
         doc.invalid = true
         expect(invitationPending(doc)).to.equal(false)
       })
-      it('returns false, if a doc is expired', function () {
+      it('returns false, if a doc is expired', () => {
         const doc = createCodeDoc({ expires: -2 })
         expect(invitationPending(doc)).to.equal(false)
       })
-      it('returns false, if a doc is completed', function () {
+      it('returns false, if a doc is completed', () => {
         const doc = createCodeDoc({ registeredUsers: [Random.id()] })
         expect(invitationPending(doc)).to.equal(false)
       })
-      it('returns true otherwise', function () {
+      it('returns true otherwise', () => {
         const doc = createCodeDoc()
         expect(invitationPending(doc)).to.equal(true)
       })
-      it('throws if params are incomplete', function () {
+      it('throws if params are incomplete', () => {
         expect(() => invitationPending({})).to.throw()
       })
     })
 
-    describe(getInvitationStatus.name, function () {
-      it('gets the correct status for invalid', function () {
+    describe(getInvitationStatus.name, () => {
+      it('gets the correct status for invalid', () => {
         const doc = createCodeDoc()
         doc.invalid = true
         const status = getInvitationStatus(doc)
         expect(status).to.deep.equal(CodeInvitation.status.expired)
       })
-      it('gets the correct status for expired', function () {
+      it('gets the correct status for expired', () => {
         const doc = createCodeDoc({ expires: -2 })
         const status = getInvitationStatus(doc)
         expect(status).to.deep.equal(CodeInvitation.status.expired)
       })
-      it('gets the correct status for completed', function () {
+      it('gets the correct status for completed', () => {
         const doc = createCodeDoc({ registeredUsers: [Random.id()] })
         const status = getInvitationStatus(doc)
         expect(status).to.deep.equal(CodeInvitation.status.complete)
       })
-      it('gets the correct status for pending', function () {
+      it('gets the correct status for pending', () => {
         const doc = createCodeDoc()
         const status = getInvitationStatus(doc)
         expect(status).to.deep.equal(CodeInvitation.status.pending)
       })
     })
 
-    onClientExec(function () {
-      describe(createInvitationURLQuery.name, function () {
-        it('Creates a compressed version of URL query containing invitation credentials', function () {
+    onClientExec(() => {
+      describe(createInvitationURLQuery.name, () => {
+        it('Creates a compressed version of URL query containing invitation credentials', () => {
           const doc = createCodeDoc()
           const queryString = createInvitationURLQuery(doc)
           expect(queryString).to.be.a('string')
@@ -154,8 +157,8 @@ describe(CodeInvitation.name, function () {
         })
       })
 
-      describe(parseInvitationURLQuery.name, function () {
-        it('parses a compressed url query', function () {
+      describe(parseInvitationURLQuery.name, () => {
+        it('parses a compressed url query', () => {
           const doc = createCodeDoc()
           const queryDoc = {
             code: doc.code,
@@ -172,8 +175,12 @@ describe(CodeInvitation.name, function () {
     })
   })
 
-  onServerExec(function () {
-    import { mockCollections, clearCollections, restoreAllCollections } from '../../../../../tests/testutils/mockCollection'
+  onServerExec(() => {
+    import {
+      mockCollections,
+      clearCollections,
+      restoreAllCollections
+    } from '../../../../../tests/testutils/mockCollection'
     import { exampleUser } from '../../../../../tests/testutils/exampleUser'
     import { unstubUser, stubUser } from '../../../../../tests/testutils/stubUser'
 
@@ -186,27 +193,27 @@ describe(CodeInvitation.name, function () {
     let classDoc
     let classId
 
-    describe('methods', function () {
-      before(function () {
+    describe('methods', () => {
+      before(() => {
         [CodeCollection, SchoolClassCollection] = mockCollections(CodeInvitation, SchoolClass, Admin, Users)
       })
 
-      beforeEach(function () {
+      beforeEach(async () => {
         user = exampleUser()
         userId = user._id
         environment = { userId }
         classDoc = { createdBy: userId, title: Random.id() }
-        classId = SchoolClassCollection.insert(classDoc)
+        classId = await SchoolClassCollection.insertAsync(classDoc)
       })
 
-      afterEach(function () {
-        unstubUser(user, userId)
+      afterEach(async () => {
+        await unstubUser(user, userId)
         restoreAll()
-        clearCollections(Users, CodeInvitation, SchoolClass)
+        await clearCollections(Users, CodeInvitation, SchoolClass)
       })
 
-      after(function () {
-        restoreAllCollections()
+      after(async () => {
+        await restoreAllCollections()
       })
 
       const createInvitation = (...args) => CodeInvitation.methods.create.run.call(environment, ...args)
@@ -215,10 +222,10 @@ describe(CodeInvitation.name, function () {
       const removeInvitation = (...args) => CodeInvitation.methods.remove.run.call(environment, ...args)
       const verify = (...args) => CodeInvitation.methods.verify.run.call(environment, ...args)
 
-      describe(CodeInvitation.methods.create.name, function () {
-        it('throws, if the user cannot invite the given role', function () {
+      describe(CodeInvitation.methods.create.name, () => {
+        it('throws, if the user cannot invite the given role', async () => {
           // expected errors
-          const { admin, schoolAdmin, curriculum, teacher, student } = UserUtils.roles
+          const { admin, schoolAdmin, curriculum, teacher, student } = Hierarchy
           const errorPairs = [
             [schoolAdmin, [admin, schoolAdmin]],
             [curriculum, [admin, schoolAdmin, curriculum]],
@@ -226,13 +233,13 @@ describe(CodeInvitation.name, function () {
             [student, [admin, schoolAdmin, curriculum, teacher, student]]
           ]
 
-          errorPairs.forEach(entry => {
+          for (const entry of errorPairs) {
             const role = entry[0]
             const targets = entry[1]
             const { institution } = user
-            stubUser(user, userId, [role], institution)
+            await stubUser(user, userId, [role], institution)
 
-            targets.forEach(targetRole => {
+            for (const targetRole of targets) {
               const createDoc = {
                 maxUsers: 1,
                 expires: 1,
@@ -241,50 +248,56 @@ describe(CodeInvitation.name, function () {
                 classId
               }
 
-              const thrown = expect(() => createInvitation.call(environment, createDoc))
-                .to.throw('codeInvitation.createFailed')
-              thrown.with.property('reason', CodeInvitation.errors.insufficientRole)
-              thrown.with.deep.property('details', { userId, role: targetRole })
-            })
+              await expectThrow({
+                fn: () => createInvitation.call(environment, createDoc),
+                error: 'codeInvitation.createFailed',
+                reason: CodeInvitation.errors.insufficientRole,
+                details: { userId, role: targetRole }
+              })
+            }
 
-            unstubUser(user, userId)
-          })
+            await unstubUser(user, userId)
+          }
         })
-        it('throws ,if a class is given but the user is not owner of the class or class does not exists', function () {
-          stubUser(user, userId, [UserUtils.roles.teacher], user.institution)
+        it('throws ,if a class is given but the user is not owner of the class or class does not exists', async () => {
+          await stubUser(user, userId, [Hierarchy.teacher], user.institution)
           const createDoc = {
             maxUsers: 1,
             expires: 1,
-            role: UserUtils.roles.student,
+            role: Hierarchy.student,
             classId: Random.id(),
             institution: user.institution
           }
 
           // case a: classdoc not found
-          const notFound = expect(() => createInvitation.call(environment, createDoc))
-            .to.throw(DocNotFoundError.name)
-          notFound.with.property('reason', 'getDocument.docUndefined')
-          notFound.with.deep.property('details', { name: SchoolClass.name, query: createDoc.classId })
+          await expectThrow({
+            fn: () => createInvitation.call(environment, createDoc),
+            error: DocNotFoundError.name,
+            reason: 'getDocument.docUndefined',
+            details: { name: SchoolClass.name, query: createDoc.classId }
+          })
 
           // case b: not owner
-          createDoc.classId = SchoolClassCollection.insert({ title: Random.id(), createdBy: Random.id() })
-          const notTeacher = expect(() => createInvitation(createDoc))
-            .to.throw(PermissionDeniedError.name)
-          notTeacher.with.property('reason', 'schoolClass.notTeacher')
-          notTeacher.with.deep.property('details', { userId, classId: createDoc.classId })
+          createDoc.classId = await SchoolClassCollection.insertAsync({ title: Random.id(), createdBy: Random.id() })
+          await expectThrow({
+            fn: () => createInvitation.call({}, createDoc),
+            error: PermissionDeniedError.name,
+            reason: 'schoolClass.notTeacher',
+            details: { userId, classId: createDoc.classId }
+          })
         })
-        it('throws if user is not admin and institutions mismatch', function () {
+        it('throws if user is not admin and institutions mismatch', async () => {
           const errorPairs = [
-            [UserUtils.roles.schoolAdmin, [UserUtils.roles.teacher, UserUtils.roles.student]],
-            [UserUtils.roles.teacher, [UserUtils.roles.student]]
+            [Hierarchy.schoolAdmin, [Hierarchy.teacher, Hierarchy.student]],
+            [Hierarchy.teacher, [Hierarchy.student]]
           ]
 
-          errorPairs.forEach(entry => {
+          for (const entry of errorPairs) {
             const role = entry[0]
             const targets = entry[1]
-            stubUser(user, userId, [role], user.institution)
+            await stubUser(user, userId, [role], user.institution)
 
-            targets.forEach(targetRole => {
+            for (const targetRole of targets) {
               const createDoc = {
                 maxUsers: 1,
                 expires: 1,
@@ -292,25 +305,31 @@ describe(CodeInvitation.name, function () {
                 institution: Random.id(),
                 classId
               }
-              expect(() => createInvitation(createDoc)).to.throw(CodeInvitation.errors.institutionMismatch)
-            })
+              await expectThrow({
+                fn: () => createInvitation.call({}, createDoc),
+                error: CodeInvitation.errors.createFailed,
+                reason: CodeInvitation.errors.institutionMismatch,
+                details: { institution: createDoc.institution, userId }
+              })
+            }
 
-            unstubUser(user, userId)
-          })
+            await unstubUser(user, userId)
+          }
         })
-        it('returns a new code doc', function () {
+        it('returns a new code doc', async () => {
           const expectedWorking = [
-            [UserUtils.roles.admin, [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher, UserUtils.roles.student]],
-            [UserUtils.roles.schoolAdmin, [UserUtils.roles.teacher, UserUtils.roles.student]],
-            [UserUtils.roles.teacher, [UserUtils.roles.student]]
+            [Hierarchy.admin, [Hierarchy.admin, Hierarchy.schoolAdmin, Hierarchy.teacher, Hierarchy.student]],
+            [Hierarchy.schoolAdmin, [Hierarchy.teacher, Hierarchy.student]],
+            [Hierarchy.teacher, [Hierarchy.student]]
           ]
 
-          expectedWorking.forEach(entry => {
+          for (const entry of expectedWorking) {
             const role = entry[0]
             const targetRoles = entry[1]
-            stubUser(user, userId, [role], user.institution)
+            await stubUser(user, userId, [role], user.institution)
 
-            targetRoles.forEach(targetRole => {
+            for (const targetRole of targetRoles) {
+              const classId = await SchoolClassCollection.insertAsync({ createdBy: userId, title: Random.id() })
               const createDoc = {
                 role: targetRole,
                 maxUsers: 1,
@@ -319,27 +338,27 @@ describe(CodeInvitation.name, function () {
                 classId
               }
 
-              const codeDocId = createInvitation(createDoc)
-              const codeDoc = CodeCollection.findOne(codeDocId)
+              const codeDocId = await createInvitation.call({ userId }, createDoc)
+              const codeDoc = await CodeCollection.findOneAsync(codeDocId)
               expect(codeDoc.code).to.be.a('string')
               expect(codeDoc.code).to.be.lengthOf(4)
               expect(codeDoc.role).to.equal(createDoc.role)
               expect(codeDoc.maxUsers).to.equal(createDoc.maxUsers)
               expect(codeDoc.expires).to.equal(createDoc.expires)
               expect(codeDoc.institution).to.equal(user.institution)
-            })
+            }
 
-            unstubUser(user, userId)
-          })
+            await unstubUser(user, userId)
+          }
         })
       })
 
-      describe(CodeInvitation.methods.remove.name, function () {
-        it('removes a code document', function () {
-          stubUser(user, userId, [UserUtils.roles.teacher], user.institution)
+      describe(CodeInvitation.methods.remove.name, () => {
+        it('removes a code document', async () => {
+          await stubUser(user, userId, [Hierarchy.teacher], user.institution)
 
-          const codeDocId = CodeCollection.insert({
-            role: UserUtils.roles.student,
+          const codeDocId = await CodeCollection.insertAsync({
+            role: Hierarchy.student,
             code: Random.id(5),
             maxUsers: 1,
             expires: 1,
@@ -347,45 +366,66 @@ describe(CodeInvitation.name, function () {
             classId
           })
 
-          const codeDoc = CodeCollection.findOne(codeDocId)
-          const removed = removeInvitation(codeDoc)
+          const codeDoc = await CodeCollection.findOneAsync(codeDocId)
+          const removed = await removeInvitation.call({ userId }, codeDoc)
           expect(removed).to.equal(1)
-          expect(CodeCollection.findOne(codeDocId)).to.equal(undefined)
+          expect(await CodeCollection.findOneAsync(codeDocId)).to.equal(undefined)
         })
       })
 
-      describe(CodeInvitation.methods.verify.name, function () {
-        it('throws when the document does not exists', function () {
+      describe(CodeInvitation.methods.verify.name, () => {
+        it('throws when the document does not exists', async () => {
           const codeDoc = { code: Random.id() }
-          expect(() => verify(codeDoc)).to.throw(CodeInvitation.errors.invalidLink)
+          await expectThrow({
+            fn: () => verify.call({}, codeDoc),
+            error: CodeInvitation.errors.invalidLink,
+            reason: CodeInvitation.errors.invalidLinkReason,
+            details: { code: codeDoc.code }
+          })
         })
-        it('throws when the document is expired', function () {
-          stubUser(user, userId, [UserUtils.roles.teacher], user.institution)
+        it('throws when the document is expired', async () => {
+          await stubUser(user, userId, [Hierarchy.teacher], user.institution)
 
           const createDoc = createCodeDoc({ expires: 1, classId, institution: user.institution })
-          const codeDocId = CodeCollection.insert(createDoc)
-          CodeCollection.update(codeDocId, { $set: { invalid: true, createdAt: new Date() } })
+          const codeDocId = await CodeCollection.insertAsync(createDoc)
+          await CodeCollection.updateAsync(codeDocId, { $set: { invalid: true, createdAt: new Date() } })
 
-          const codeDoc = CodeCollection.findOne(codeDocId)
-          expect(() => verify(codeDoc)).to.throw(CodeInvitation.errors.invalidLink)
+          const codeDoc = await CodeCollection.findOneAsync(codeDocId)
+          await expectThrow({
+            fn: () => verify.call({}, codeDoc),
+            error: CodeInvitation.errors.invalidLink,
+            reason: CodeInvitation.errors.invalidLinkReason,
+            details: { code: codeDoc.code }
+          })
         })
-        it('throws when the document is completed', function () {
-          stubUser(user, userId, [UserUtils.roles.teacher], user.institution)
+        it('throws when the document is completed', async () => {
+          await stubUser(user, userId, [Hierarchy.teacher], user.institution)
           const createDoc = createCodeDoc({ expires: 1, classId, institution: user.institution })
-          const codeDocId = CodeCollection.insert(createDoc)
-          CodeCollection.update(codeDocId, { $set: { createdAt: new Date(), registeredUsers: [Random.id()] } })
+          const codeDocId = await CodeCollection.insertAsync(createDoc)
+          await CodeCollection.updateAsync(codeDocId, {
+            $set: {
+              createdAt: new Date(),
+              registeredUsers: [Random.id()]
+            }
+          })
 
-          const codeDoc = CodeCollection.findOne(codeDocId)
-          expect(() => verify(codeDoc)).to.throw(CodeInvitation.errors.invalidLink)
+          const codeDoc = await CodeCollection.findOneAsync(codeDocId)
+          await expectThrow({
+            fn: () => verify.call({}, codeDoc),
+            error: CodeInvitation.errors.invalidLink,
+            reason: CodeInvitation.errors.invalidLinkReason,
+            details: { code: codeDoc.code }
+          })
         })
-        it('returns the correct document for the given code', function () {
-          stubUser(user, userId, [UserUtils.roles.teacher], user.institution)
+        it('returns the correct document for the given code', async () => {
+          await stubUser(user, userId, [Hierarchy.teacher], user.institution)
           const createDoc = createCodeDoc({ expires: 1, classId, institution: user.institution })
-          const codeDocId = CodeCollection.insert(createDoc)
-          CodeCollection.update(codeDocId, { $set: { createdAt: new Date(), registeredUsers: [] } })
+          const codeDocId = await CodeCollection.insertAsync(createDoc)
+          await CodeCollection.updateAsync(codeDocId, { $set: { createdAt: new Date(), registeredUsers: [] } })
 
-          const codeDoc = CodeCollection.findOne(codeDocId)
-          const verifiedDoc = verify(codeDoc)
+          const codeDoc = await CodeCollection.findOneAsync(codeDocId)
+          const verifiedDoc = await verify.call({ userId }, codeDoc)
+          const classDoc = await SchoolClassCollection.findOneAsync(classId)
           const expectedDoc = {
             firstName: codeDoc.firstName,
             lastName: codeDoc.lastName,
@@ -393,125 +433,113 @@ describe(CodeInvitation.name, function () {
             institution: codeDoc.institution,
             email: codeDoc.email,
             classId: codeDoc.classId,
-            className: SchoolClassCollection.findOne(classId).title
+            className: classDoc.title
           }
           expect(verifiedDoc).to.deep.equal(expectedDoc)
         })
       })
 
-      describe(CodeInvitation.methods.addToClass.name, function () {
-        it('throws on invalid code', function () {
-          stubUser(user, userId, [UserUtils.roles.teacher], user.institution)
-          const codeDoc = { code: Random.id() }
-          expect(() => addToClass(codeDoc)).to.throws(CodeInvitation.errors.invalidCode)
+      describe(CodeInvitation.methods.addToClass.name, () => {
+        it('throws on invalid code', async () => {
+          await stubUser(user, userId, [Hierarchy.teacher], user.institution)
+          const createDoc = createCodeDoc({ expires: 1, classId, institution: user.institution })
+
+          await expectThrow({
+            fn: () => addToClass.call({ userId }, createDoc),
+            error: PermissionDeniedError.name,
+            reason: CodeInvitation.errors.invalidCode,
+            details: { code: createDoc.code, userId }
+          })
         })
-        it('throws if the class does not exists', function () {
-          stubUser(user, userId, [UserUtils.roles.teacher], user.institution)
-          const createDoc = {
-            role: UserUtils.roles.student,
+        it('throws if the class does not exists', async () => {
+          const randomClassId = Random.id()
+          await stubUser(user, userId, [Hierarchy.student], user.institution)
+          const createDoc = createCodeDoc({
+            role: Hierarchy.student,
             code: Random.id(4),
             maxUsers: 1,
             expires: 1,
             institution: user.institution,
             createdAt: new Date(),
-            classId: Random.id()
-          }
-
-          stub(Users.helpers, 'verify', () => true)
-
-          const codeDocId = CodeCollection.insert(createDoc)
-          const codeDoc = CodeCollection.findOne(codeDocId)
-          expect(() => addToClass(codeDoc)).to.throws('docNotFound')
-        })
-        it('throws if the user is already in the class', function () {
-          stub(Users.helpers, 'verify', () => true)
-          stubUser(user, userId, [UserUtils.roles.teacher], user.institution)
-          const classDocId = SchoolClassCollection.insert({ createdBy: userId, title: Random.id(), students: [userId] })
-
-          const createDoc = {
-            role: UserUtils.roles.student,
-            code: Random.id(4),
-            maxUsers: 1,
-            expires: 1,
-            institution: user.institution,
-            createdAt: new Date(),
-            classId: classDocId
-          }
-
-          const codeDocId = CodeCollection.insert(createDoc)
-
-          stub(SchoolClass.helpers, 'isStudent', ({ classDoc, userId }) => classDoc && userId && true)
-
-          const codeDoc = CodeCollection.findOne(codeDocId)
-          expect(() => addToClass(codeDoc)).to.throws(CodeInvitation.errors.alreadyClassMember)
-        })
-        it('adds a student to the class', function () {
-          stub(Users.helpers, 'verify', () => true)
-          stub(UserUtils, 'hasRole', () => true)
-          stub(InvocationChecker, InvocationChecker.ensureMethodInvocation.name, () => true)
-
-          stubUser(user, userId, [UserUtils.roles.student], user.institution)
-
-          const classDocId = SchoolClassCollection.insert({ title: Random.id(), students: [] })
-          const createDoc = {
-            role: UserUtils.roles.student,
-            maxUsers: 1,
-            expires: 1,
-            code: Random.id(4),
-            institution: user.institution,
-            createdAt: new Date(),
-            classId: classDocId
-          }
-
-          const codeDocId = CodeCollection.insert(createDoc)
-
-          stub(SchoolClass.helpers, 'isStudent', ({ classDoc, userId }) => classDoc && userId && false)
-          stub(SchoolClass.helpers, 'addStudent', ({ classId, userId }) => {
-            return SchoolClassCollection.update(classId, { $addToSet: { students: userId } })
+            classId: randomClassId
           })
 
-          const codeDoc = CodeCollection.findOne(codeDocId)
-          addToClass(codeDoc)
-
-          const classDoc = SchoolClassCollection.findOne(classDocId)
-          expect(classDoc.students).to.include(userId)
+          const codeDocId = await CodeCollection.insertAsync(createDoc)
+          const codeDoc = await CodeCollection.findOneAsync(codeDocId)
+          await expectThrow({
+            fn: () => addToClass.call({ userId }, codeDoc),
+            error: DocNotFoundError.name,
+            reason: 'getDocument.docUndefined',
+            details: { name: SchoolClass.name, query: randomClassId }
+          })
         })
-        it('adds the student to the registered users', function () {
-          stub(Users.helpers, 'verify', () => true)
-          stub(UserUtils, 'hasRole', () => true)
-          stub(InvocationChecker, InvocationChecker.ensureMethodInvocation.name, () => true)
-
-          stubUser(user, userId, [UserUtils.roles.student], user.institution)
-          const classDocId = SchoolClassCollection.insert({ title: Random.id(), students: [] })
-          const createDoc = {
-            role: UserUtils.roles.student,
+        it('throws if the user is already in the class', async () => {
+          await stubUser(user, userId, [Hierarchy.student], user.institution)
+          const classDocId = await SchoolClassCollection.insertAsync({
+            createdBy: userId,
+            title: Random.id(),
+            students: [userId]
+          })
+          const createDoc = createCodeDoc({
+            role: Hierarchy.student,
+            code: Random.id(4),
             maxUsers: 1,
             expires: 1,
-            code: Random.id(4),
             institution: user.institution,
             createdAt: new Date(),
-            classId: classDocId
-          }
-
-          stub(SchoolClass.helpers, 'isStudent', ({ classDoc, userId }) => classDoc && userId && false)
-          stub(SchoolClass.helpers, 'addStudent', ({ classId, userId }) => {
-            return SchoolClassCollection.update(classId, { $addToSet: { students: userId } })
+            classId: classDocId,
+            createdBy: userId
           })
-
-          const codeDocId = CodeCollection.insert(createDoc)
-          const codeDoc = CodeCollection.findOne(codeDocId)
-          addToClass(codeDoc)
-
-          const updatedCodeDoc = CodeCollection.findOne(codeDocId)
+          await CodeCollection.insertAsync(createDoc)
+          await expectThrow({
+            fn: () => addToClass.call({ userId }, { code: createDoc.code }),
+            error: PermissionDeniedError.name,
+            reason: SchoolClass.errors.alreadyMember,
+            details: { classId: classDocId, userId }
+          })
+        })
+        it('adds a student to the class', async () => {
+          await stubUser(user, userId, [Hierarchy.student], user.institution)
+          const otherStudentId = Random.id()
+          const classDocId = await SchoolClassCollection.insertAsync({
+            createdBy: userId,
+            title: Random.id(),
+            students: [otherStudentId]
+          })
+          const createDoc = createCodeDoc({
+            role: Hierarchy.student,
+            code: Random.id(4),
+            maxUsers: 1,
+            expires: 1,
+            institution: user.institution,
+            createdAt: new Date(),
+            classId: classDocId,
+            createdBy: userId
+          })
+          const codeDocId = await CodeCollection.insertAsync(createDoc)
+          await addToClass.call({ userId }, { code: createDoc.code })
+          const classDoc = await SchoolClassCollection.findOneAsync(classDocId)
+          expect(classDoc.students).to.deep.equal([otherStudentId, userId])
+          const updatedCodeDoc = await CodeCollection.findOneAsync(codeDocId)
           expect(updatedCodeDoc.registeredUsers).to.include(userId)
         })
       })
 
-      describe(CodeInvitation.methods.forceExpire.name, function () {
-        it('throws if the targeted doc is not owned', function () {
-          stubUser(user, userId, [UserUtils.roles.teacher], user.institution)
+      describe(CodeInvitation.methods.forceExpire.name, () => {
+        it('throws if the targeted doc does not exists', async () => {
+          await stubUser(user, userId, [Hierarchy.admin], user.institution)
+          const _id = Random.id()
+          await expectThrow({
+            fn: () => forceExpire.call({}, { _id }),
+            error: DocNotFoundError.name,
+            reason: 'getDocument.docUndefined',
+            details: { name: CodeInvitation.name, query: _id }
+          })
+        })
+        it('throws if the targeted doc is not owned', async () => {
+          await stubUser(user, userId, [Hierarchy.student], user.institution)
           const createDoc = {
-            role: UserUtils.roles.student,
+            role: Hierarchy.student,
             maxUsers: 1,
             expires: 1,
             institution: user.institution,
@@ -519,20 +547,21 @@ describe(CodeInvitation.name, function () {
             classId
           }
 
-          const codeDocId = CodeCollection.insert(createDoc)
-          const codeDoc = CodeCollection.findOne(codeDocId)
+          const codeDocId = await CodeCollection.insertAsync(createDoc)
+          const codeDoc = await CodeCollection.findOneAsync(codeDocId)
           expect(codeDoc.createdAt).to.equal(undefined)
-          expect(() => forceExpire(codeDoc)).to.throw('permissionDenied')
+          await expectThrow({
+            fn: () => forceExpire.call({ userId }, { _id: codeDocId }),
+            error: PermissionDeniedError.name,
+            reason: 'errors.notOwner',
+            details: { context: CodeInvitation.name, userId, docId: codeDocId }
+          })
         })
-        it('throws if the targeted doc does not exists', function () {
-          stubUser(user, userId, [UserUtils.roles.admin], user.institution)
-          expect(() => forceExpire({ _id: Random.id() })).to.throw('docNotFound')
-        })
-        it('invalidates a doc', function () {
-          stubUser(user, userId, [UserUtils.roles.admin], user.institution)
+        it('expires a code invitation', async () => {
+          await stubUser(user, userId, [Hierarchy.admin], user.institution)
 
           const createDoc = {
-            role: UserUtils.roles.teacher,
+            role: Hierarchy.teacher,
             maxUsers: 1,
             expires: 1,
             institution: user.institution,
@@ -541,14 +570,14 @@ describe(CodeInvitation.name, function () {
             classId
           }
 
-          const codeDocId = CodeCollection.insert(createDoc)
-          const codeDoc = CodeCollection.findOne(codeDocId)
+          const codeDocId = await CodeCollection.insertAsync(createDoc)
+          const codeDoc = await CodeCollection.findOneAsync(codeDocId)
           expect(codeDoc.invalid).to.equal(false)
 
-          const updated = forceExpire(codeDoc)
+          const updated = await forceExpire.call({ userId }, codeDoc)
           expect(updated).to.equal(1)
 
-          const invalidDoc = CodeCollection.findOne(codeDocId)
+          const invalidDoc = await CodeCollection.findOneAsync(codeDocId)
           expect(invalidDoc.invalid).to.equal(true)
         })
       })

@@ -10,6 +10,7 @@ import { CodeInvitation } from '../CodeInvitations'
 import { isTeacher } from '../../schoolclass/helpers/isTeacher'
 import { canInvite } from '../../../../api/accounts/roles/canInvite'
 import { Hierarchy } from '../../../../api/accounts/roles/Hierarchy'
+import { isOwner } from '../../schoolclass/helpers/isOwner'
 
 
 
@@ -17,18 +18,19 @@ export const createInvitation = async ({ userId, createDoc }) => {
   // check if institution matches
   const user = await getUsersCollection().findOneAsync({ _id: userId })
   const { institution } = user
+  const isAdmin = await userIsAdmin(userId)
 
-  if (!await canInvite({ userId, user, role: createDoc.role, institution })) {
+  if (!await canInvite({ userId, user, role: createDoc.role, institution }) && !isAdmin) {
     throw new Meteor.Error(
-      'codeInvitation.createFailed',
+      CodeInvitation.errors.createFailed,
       CodeInvitation.errors.insufficientRole,
       { userId, role: createDoc.role }
     )
   }
 
-  if (institution !== createDoc.institution && !await userIsAdmin(userId)) {
+  if (institution !== createDoc.institution && !isAdmin) {
     throw new Meteor.Error(
-      'codeInvitation.createFailed',
+      CodeInvitation.errors.createFailed,
       CodeInvitation.errors.institutionMismatch,
       { institution: createDoc.institution, userId }
     )
@@ -53,7 +55,7 @@ export const createInvitation = async ({ userId, createDoc }) => {
     const getClassDoc = createDocGetter({ name: SchoolClass.name })
     const classDoc = await getClassDoc(classId)
 
-    if (!isTeacher(userId, classDoc)) {
+    if (!isTeacher(userId, classDoc) && !isOwner(userId, classDoc) && !isAdmin) {
       throw new PermissionDeniedError('schoolClass.notTeacher', { classId, userId })
     }
   }

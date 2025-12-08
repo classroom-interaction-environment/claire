@@ -69,6 +69,7 @@ CodeInvitation.status = {
  * @deprecated
  */
 CodeInvitation.errors = {
+  createFailed: 'codeInvitation.createFailed',
   expirationExceeded: 'codeInvitation.expirationExceeded',
   removeNoPermission: 'codeInvitation.removeNoPermission',
   maxUsersExceeded: 'codeInvitation.maxUsersExceeded',
@@ -114,6 +115,7 @@ CodeInvitation.schema = {
     type: Array,
     label: i18n.reactive('codeInvitation.registeredUsers'),
     optional: true,
+    defaultValue: [],
     autoform: {
       type: 'hidden'
     }

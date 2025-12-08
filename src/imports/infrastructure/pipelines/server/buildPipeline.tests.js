@@ -75,33 +75,41 @@ describe('buildPipeline (server)', () => {
       collection: true
     }
 
+    const userId = Random.id()
     const ctxName = Random.id(6)
     const title = Random.id(6)
     const pubName = `${ctxName}.publications.test`
     const context = {
       name: ctxName,
       schema: {
-        title: String
+        title: String,
+        userId: String
       },
       publications: {
         test: {
           name: pubName,
           isPublic: true,
-          schema: {},
-          run () {
-            return Collection.find()
+          schema: {
+            title: String
+          },
+          run ({ title }) {
+            const { userId } = this
+            return Collection.find({ title, userId })
           }
         }
       }
     }
 
+    const env = { userId, error: expect.fail, ready: expect.fail }
     const products = buildPipeline(context, options)
     const Collection = products.collection
     const publication = products.publications[0]
-    const docId = await Collection.insertAsync({ title })
-    const cursor = await publication()
+    const docId = await Collection.insertAsync({ title, userId })
+    const expectedDocs = await Collection.find().fetchAsync()
+    expect(expectedDocs).to.have.lengthOf(1)
+    const cursor = await publication.call(env, { title })
     const docs = await collectPublication(cursor)
-
+    expect(docs).to.deep.equal(expectedDocs)
     expect(docs.length).to.equal(1)
     expect(docs[0]._id).to.equal(docId)
     expect(docs[0].title).to.equal(title)

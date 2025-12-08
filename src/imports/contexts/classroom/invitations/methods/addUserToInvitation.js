@@ -1,6 +1,7 @@
 import { getCollection } from '../../../../api/utils/getCollection'
 import { CodeInvitation } from '../CodeInvitations'
 import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
+import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 
 const getCodeDoc = createDocGetter({ name: CodeInvitation.name })
 
@@ -11,11 +12,9 @@ export const addUserToInvitation = async (codeOrCodeDoc, userId) => {
 
   const registeredUsers = codeDoc.registeredUsers || []
   if (registeredUsers.length >= codeDoc.maxUsers) {
-    throw new Error(CodeInvitation.errors.maxUsersExceeded)
+    throw new PermissionDeniedError(CodeInvitation.errors.maxUsersExceeded)
   }
 
-  registeredUsers.push(userId)
-  return getCollection(CodeInvitation.name).updateAsync(codeDoc._id, {
-    $set: { registeredUsers }
-  })
+  const CodeInvitationCollection = getCollection(CodeInvitation.name)
+  return CodeInvitationCollection.updateAsync({ _id: codeDoc._id }, { $push: { registeredUsers: userId } })
 }

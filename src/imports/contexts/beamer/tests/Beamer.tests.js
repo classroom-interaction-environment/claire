@@ -89,8 +89,9 @@ describe('Beamer', () => {
       })
 
       describe(Beamer.methods.update.name, () => {
+        const updateBeamer = Beamer.methods.update.run
         it('has a run function', () => {
-          expect(Beamer.methods.update.run).to.be.a('function')
+          expect(updateBeamer).to.be.a('function')
         })
         it('updates a given beamer doc by _id with values from the update doc', async () => {
           const beamerDoc = await createDoc(environment)
@@ -102,26 +103,33 @@ describe('Beamer', () => {
 
           // before update
           const docId = beamerDoc._id
-          expect(getDoc(docId)).to.not.deep.equal(beamerDoc)
-          expect(getDoc(docId)).to.deep.equal(originalDoc)
+          expect(await getDoc(docId)).to.not.deep.equal(beamerDoc)
+          expect(await getDoc(docId)).to.deep.equal(originalDoc)
 
           // after update
-          await Beamer.methods.update.run.call(environment, beamerDoc)
-          expect(getDoc(docId)).to.deep.equal(beamerDoc)
-          expect(getDoc(docId)).to.not.deep.equal(originalDoc)
+          await updateBeamer.call(environment, beamerDoc)
+          expect(await getDoc(docId)).to.deep.equal(beamerDoc)
+          expect(await getDoc(docId)).to.not.deep.equal(originalDoc)
         })
         it('throws if no doc is found by _id', async () => {
+          const _id = Random.id()
           await expectThrow({
-            fn: () => Beamer.methods.update.run({ _id: Random.id() }),
-            error: DocNotFoundError.name
+            fn: () => updateBeamer({ _id }),
+            error: DocNotFoundError.name,
+            reason: 'beamer.noDocument',
+            data: { _id: Random.id() }
           })
         })
 
         it('throws on attempted update on other users docs', async () => {
           const beamerDoc = await createDoc(environment)
+          const _id = beamerDoc._id
+          const userId = Random.id()
           await expectThrow({
-            fn: () => Beamer.methods.update.run.call({ userId: Random.id() }, { _id: beamerDoc._id, headline: Random.id() }),
-            error: PermissionDeniedError.name
+            fn: () => updateBeamer.call({ userId }, { _id, headline: Random.id() }),
+            error: PermissionDeniedError.name,
+            reason: 'beamer.notOwner',
+            details: { _id, userId }
           })
         })
       })

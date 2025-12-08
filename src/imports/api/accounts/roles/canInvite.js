@@ -3,12 +3,24 @@ import { getUsersCollection } from '../../utils/getUsersCollection'
 import { hasAtLeastRole } from './hasAtLeastRole'
 import { Hierarchy } from './Hierarchy'
 
-export const canInvite = async ({ userId, user, role, institution }) => {
-  check(userId, String)
-  check(role, String)
-  check(institution, Match.Maybe(String))
-  check(user, Match.Maybe(Object))
+/**
+ *
+ * @param options {object}
+ * @param options.userId {string}
+ * @param options.role {string}
+ * @param options.user {object=}
+ * @param options.institution {string=}
+ * @return {Promise<boolean>}
+ */
+export const canInvite = async (options) => {
+  check(options, Match.ObjectIncluding({
+    userId: String,
+    role: String,
+    institution: Match.Maybe(String),
+    user: Match.Maybe(Object)
+  }))
 
+  const { userId, user, role, institution } = options
   let finalScope = institution
 
   if (!institution) {

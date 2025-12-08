@@ -1,4 +1,3 @@
-import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
 import { DocNotFoundError } from '../../errors/types/DocNotFoundError'
 import { PermissionDeniedError } from '../../errors/types/PermissionDeniedError'
 import { userIsCurriculum } from '../../accounts/userIsCurriculum'

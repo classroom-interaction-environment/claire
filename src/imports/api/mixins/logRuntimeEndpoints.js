@@ -1,5 +1,6 @@
 import { createLog } from '../log/createLog'
 import { Random } from 'meteor/random'
+import { deprecate } from '../../infrastructure/functions/deprecate'
 
 const createMethodId = () => Random.id(6)
 
@@ -24,8 +25,8 @@ export const logRuntimeEndpoints = function (options) {
 
     // if we allow method to use these logs we can better
     // associate them by the given method id
-    environment.log = log
-    environment.error = error
+    environment.log = deprecate(log)
+    environment.error = deprecate(error)
 
     log(type, 'invoked by', environment.userId)
 

@@ -4,6 +4,7 @@ import { stub, restore, isStubbed } from './stub'
 import { getUsersCollection } from '../../imports/api/utils/getUsersCollection'
 
 export const stubUser = async (userObj, userId, roles, institution) => {
+  if (Meteor.isClient) throw new Error('stubUser should only be used on the server')
   const userIsDefined = typeof userObj !== 'undefined'
   const UsersCollection = getUsersCollection()
 
@@ -21,18 +22,21 @@ export const stubUser = async (userObj, userId, roles, institution) => {
   }
 
   if (!userIsDefined && typeof userId !== 'undefined') {
-    stub(Meteor, 'user', () => userObj || null)
-    stub(Meteor, 'userId', () => userId)
+    stub(Meteor, 'user', async () => userObj || null)
+    stub(Meteor, 'userId', async () => userId)
   }
 
   if (typeof roles !== 'undefined') {
-    stub(Roles, 'userIsInRole', (id, role, domain) => {
+    stub(Roles, 'userIsInRoleAsync', async (id, role, domain) => {
       if (userObj) {
         return id === userObj._id && roles.includes(role) && domain === institution
       }
       else {
         return id === userId && roles.includes(role) && domain === institution
       }
+    })
+    stub(Roles, 'getRolesForUserAsync', async (uid, scope) => {
+      return (uid === (userObj ? userObj._id : userId) && scope === institution) ? roles : []
     })
   }
   return userObj ? userObj._id : userId
@@ -52,5 +56,6 @@ export const unstubUser = async (user, userId) => {
   }
 
   await getUsersCollection().removeAsync(_id)
-  restore(Roles, 'userIsInRole')
+  restore(Roles, 'userIsInRoleAsync')
+  restore(Roles, 'getRolesForUserAsync')
 }

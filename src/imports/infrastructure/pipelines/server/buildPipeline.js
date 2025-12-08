@@ -13,6 +13,7 @@ import { isSupportedObject } from '../../../api/utils/isSupportedObject'
 import { getCheckMime } from '../../../api/files/getCheckMime'
 import { getUserCheck } from '../../../api/files/getUserCheck'
 import { isFilesContext } from '../../../contexts/files/isFilesContext'
+import { check, Match } from 'meteor/check'
 
 const i18nFactory = (...args) => i18n.get(...args)
 
@@ -23,6 +24,13 @@ const i18nFactory = (...args) => i18n.get(...args)
  * @param options {object}  the build options for this pipeline
  */
 export const buildPipeline = createPipeline('build', (context, api, options) => {
+  check(options, Match.ObjectIncluding({
+    collection: Match.Maybe(Boolean),
+    filesCollection: Match.Maybe(Boolean),
+    methods: Match.Maybe(Boolean),
+    publications: Match.Maybe(Boolean),
+    debug: Match.Maybe(Function)
+  }))
   const { collection, filesCollection, methods, publications, debug } = options
   const products = {
     collection: null,

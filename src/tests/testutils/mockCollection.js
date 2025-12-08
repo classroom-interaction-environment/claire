@@ -32,8 +32,8 @@ export const mockCollection = ({ name, schema, isFilesCollection } = {}, {
   else {
     collection = new Mongo.Collection(null)
   }
-
   collection._name = `${name}-mocked`
+
 
   if (schema && noSchema !== true) {
     const schemaInstance = noDefaults
