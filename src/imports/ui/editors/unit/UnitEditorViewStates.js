@@ -10,20 +10,12 @@ export const UnitEditorViewStates = {
       return import('./views/summary/summary')
     }
   },
-  basicInfo: {
-    name: 'basicInfo',
-    label: 'editor.unit.basicInfo',
-    template: 'uebasicInfo',
+  tasks: {
+    name: 'tasks',
+    label: 'editor.unit.tasks.title',
+    template: 'uetasks',
     load: async function () {
-      return import('./views/basicinfo/basicInfo')
-    }
-  },
-  objectives: {
-    name: 'objectives',
-    label: 'editor.unit.objectives.title',
-    template: 'ueobjectives',
-    load: async function () {
-      return import('./views/objectives/objectives')
+      return import('./views/tasks/tasks')
     }
   },
   material: {

@@ -1,21 +1,23 @@
 import { Template } from 'meteor/templating'
+import { DocNotFoundError } from '../../../../../api/errors/types/DocNotFoundError'
+import { Unit } from '../../../../../contexts/curriculum/curriculum/unit/Unit'
 import { Dimension } from '../../../../../contexts/curriculum/curriculum/dimension/Dimension'
 import { Objective } from '../../../../../contexts/curriculum/curriculum/objective/Objective'
 import { Pocket } from '../../../../../contexts/curriculum/curriculum/pocket/Pocket'
-import { Phase } from '../../../../../contexts/curriculum/curriculum/phase/Phase'
 import { SchoolClass } from '../../../../../contexts/classroom/schoolclass/SchoolClass'
-import { LessonMaterial } from '../../../../controllers/LessonMaterial'
-import { DocNotFoundError } from '../../../../../api/errors/types/DocNotFoundError'
-
-import { getMaterialContexts } from '../../../../../contexts/material/initMaterial'
+import { Curriculum } from '../../../../../contexts/curriculum/Curriculum'
+import { FormModal } from '../../../../components/forms/modal/formModal'
 import { dataTarget } from '../../../../utils/dataTarget'
-import { findUnassociatedMaterial } from '../../../../../api/utils/findUnassociatedMaterial'
-import { callMethod } from '../../../../controllers/document/callMethod'
-import { setQueryParams } from '../../../../../api/routes/params/setQueryParams'
-
+import { toUpdateDoc } from '../../../../utils/toUpdateDoc'
+import { updateContextDoc } from '../../../../controllers/document/updateContextDoc'
+import { firstOption } from '../../../../../contexts/resources/web/lib/helpers'
+import { dimensionOptions } from '../../../../../contexts/curriculum/curriculum/dimension/dimensionOptions'
+import { getLocalCollection } from '../../../../../infrastructure/collection/getLocalCollection'
+import { loadIntoCollection } from '../../../../../infrastructure/loading/loadIntoCollection'
 import '../../../../renderer/phase/compact/compactPhases'
 import '../../../../renderer/phase/nonphaseMaterial/nonPhaseMaterial'
 import '../../../../renderer/objective/objective'
+import '../../../../forms/treeselect/treeSelect'
 import './summary.html'
 
 /*******************************************************************************
@@ -29,10 +31,116 @@ import './summary.html'
  ******************************************************************************/
 
 const API = Template.uesummary.setDependencies({
-  contexts: [...(new Set([Dimension, Objective, Pocket, Phase].concat(getMaterialContexts()))).values()]
+  contexts: [Unit, Dimension, Objective, Pocket]
 })
 
-Template.uesummary.onCreated(function () {
+const forms = {
+  basicInfo: {
+    doc (instance) {
+      return instance.data.unitDoc
+    },
+    schema () {
+      const defaultSchema = Curriculum.getDefaultSchema()
+      return API.createSchema({
+        title: defaultSchema.title,
+        description: defaultSchema.description,
+        period: Unit.schema.period
+      })
+    },
+    onSubmit ({ doc, originalDoc, templateInstance }) {
+      const updateDoc = toUpdateDoc(originalDoc, doc)
+
+      return updateContextDoc({
+        context: Unit,
+        _id: originalDoc._id,
+        doc: updateDoc,
+        prepare: () => templateInstance.state.set('submitting', true),
+        receive: () => templateInstance.state.set('submitting', false),
+        failure: er => API.notify(er),
+        success: () => API.notify(true)
+      })
+    }
+  },
+  dimensions: {
+    doc (instance) {
+      return instance.data.unitDoc
+    },
+    schema () {
+      return API.createSchema({
+        dimensions: {
+          ...Unit.schema.dimensions,
+          optional: true,
+        },
+        'dimensions.$': {
+          ...Unit.schema['dimensions.$'],
+          autoform: {
+            firstOption: firstOption(),
+            options: dimensionOptions({ collection: getLocalCollection(Dimension.name) })
+          }
+        }
+      })
+    },
+    onSubmit ({ doc, originalDoc, templateInstance }) {
+      const updateDoc = toUpdateDoc(originalDoc, doc)
+
+      return updateContextDoc({
+        context: Unit,
+        _id: originalDoc._id,
+        doc: updateDoc,
+        prepare: () => templateInstance.state.set('submitting', true),
+        receive: () => templateInstance.state.set('submitting', false),
+        failure: er => API.notify(er),
+        success: () => API.notify(true)
+      })
+    }
+  },
+  objectives: {
+    doc (instance) {
+      return instance.data.unitDoc
+    },
+    schema () {
+      return API.createSchema({
+        objectives: {
+          ...Unit.schema.objectives,
+          optional: true,
+          autoform: {
+            type: 'treeSelect',
+            renderer: 'objective',
+            documents: () => buildObjectiveTree(getLocalCollection(Objective.name).find().fetch())
+          }
+        },
+        'objectives.$': {
+          type: String
+        }
+      })
+    },
+    onSubmit ({ doc, originalDoc, templateInstance }) {
+      debugger
+      const updateDoc = toUpdateDoc(originalDoc, doc)
+
+      return updateContextDoc({
+        context: Unit,
+        _id: originalDoc._id,
+        doc: updateDoc,
+        prepare: () => templateInstance.state.set('submitting', true),
+        receive: () => templateInstance.state.set('submitting', false),
+        failure: er => API.notify(er),
+        success: () => API.notify(true)
+      })
+    }
+  }
+}
+
+const buildObjectiveTree = (docs, parentId = null) => {
+  return docs
+    .filter(doc => doc.parent == parentId)
+    .map(doc => ({
+      ...doc,
+      children: buildObjectiveTree(docs, doc._id)
+    }))
+}
+
+Template.uesummary.onCreated(async function () {
   const instance = this
   const { data } = instance
   const { unitDoc, classDoc, pocketDoc, preview } = data
@@ -43,31 +151,26 @@ Template.uesummary.onCreated(function () {
   if (!unitDoc) {
     return API.fatal(new DocNotFoundError(undefined, { unitDoc }))
   }
-
   // detect all material, that is linked to the unit but not to any phase of it
-  instance.state.set('preview', preview)
+  instance.state.set({ preview })
 
   // create on overview list of any basic information
 
   const baseData = []
 
   // add classDoc data only if we are working on a copy; not on a master
-  if (classDoc) {
-    baseData.push({
-      icon: SchoolClass.icon,
-      label: SchoolClass.label,
-      value: classDoc.title
-    })
-  }
+  baseData.push({
+    icon: SchoolClass.icon,
+    label: SchoolClass.label,
+    value: classDoc?.title
+  })
 
   // add pocketDoc data only if we are not working on a custom unit
-  if (pocketDoc) {
-    baseData.push({
-      icon: Pocket.icon,
-      label: Pocket.label,
-      value: pocketDoc.title
-    })
-  }
+  baseData.push({
+    icon: Pocket.icon,
+    label: Pocket.label,
+    value: pocketDoc?.title ?? API.translate('curriculum.customUnit')
+  })
 
   // always add period and description
   baseData.push({
@@ -82,62 +185,25 @@ Template.uesummary.onCreated(function () {
 
   instance.state.set({ baseData })
 
-  // since we don't update any data on this page we can safely load all content
-  // that is linked to the unit via methods and display a loading indicator for
-  // each type of data / material that we currently load.
-  // The procedure is always the same, so we reuse a single function for it:
-  const onFailure = er => API.notify(er)
-  const loadBaseContent = ({ context }) => {
-    const fieldName = context.fieldName
-    const stateName = `${context.name}s`
-    const completeName = `${stateName}Complete`
-    const entries = unitDoc[fieldName]
+  await loadIntoCollection({
+    name: Dimension.methods.editor,
+    collection: getLocalCollection(Dimension.name),
+    success: () => instance.state.set('dimensionsComplete', true)
+  })
+  await loadIntoCollection({
+    name: Objective.methods.editor,
+    collection: getLocalCollection(Objective.name),
+    success: () => instance.state.set('objectivesComplete', true)
+  })
 
-    if (entries?.length > 0) {
-      callMethod({
-        name: context.methods.all.name,
-        args: { ids: entries },
-        failure: onFailure,
-        success: (documents = []) => {
-          API.log('loaded', context.name, { documents })
-          const map = new Map()
-          documents.forEach(doc => map.set(doc._id, doc))
-          const sortedDocuments = entries.map(docId => map.get(docId))
-          instance.state.set({
-            [stateName]: sortedDocuments,
-            [completeName]: true
-          })
-        }
-      })
-    }
-
-    // if there are no entries on this field we simply set this state as loaded
-    else {
-      API.log('no entries found for', context.name)
-      instance.state.set({ [completeName]: true })
-    }
-  }
-
-  loadBaseContent({ context: Dimension })
-  loadBaseContent({ context: Objective })
-  loadBaseContent({ context: Phase })
-
-  // the lesson material is separately loaded, once the material has all been
-  // initialized and is ready
-  LessonMaterial.load(unitDoc)
-    .then(() => instance.state.set('materialComplete', true))
-    .catch(err => {
-      if (err) {
-        API.notify(err)
-      }
-    })
-
+  // if unit doc changes, we update the associated dimensions
   instance.autorun(() => {
-    const materialComplete = instance.state.get('materialComplete')
-    if (!materialComplete) return
-
-    const unassociatedMaterial = findUnassociatedMaterial(unitDoc)
-    instance.state.set('unassociatedMaterial', unassociatedMaterial)
+    const unitDoc = Template.currentData().unitDoc
+    const dimensionIds = unitDoc?.dimensions || []
+    const dimensions = getLocalCollection(Dimension.name).find({ _id: { $in: dimensionIds } }).fetch()
+    const objectiveIds = unitDoc?.objectives || []
+    const objectives = getLocalCollection(Objective.name).find({ _id: { $in: objectiveIds } }).fetch()
+    instance.state.set({ dimensions, objectives })
   })
 })
 
@@ -145,40 +211,47 @@ Template.uesummary.helpers({
   baseData () {
     return Template.getState('baseData')
   },
+  state (name) {
+    return Template.getState(name)
+  },
   loadComplete () {
-    const instance = Template.instance()
-    return API.initComplete() &&
-      instance.state.get('dimensionsComplete') &&
-      instance.state.get('objectivesComplete') &&
-      instance.state.get('phasesComplete') &&
-      instance.state.get('materialComplete')
+    return API.initComplete()
+  },
+  objectivesComplete () {
+    return Template.getState('objectivesComplete')
+  },
+  dimensionsComplete () {
+    return Template.getState('dimensionsComplete')
   },
   dimensions () {
     return Template.getState('dimensions')
-  },
-  phases () {
-    return Template.getState('phases')
   },
   objectives () {
     return Template.getState('objectives')
   },
   isPreview () {
     return Template.getState('preview')
-  },
-  unassociatedMaterial () {
-    return Template.getState('unassociatedMaterial')
   }
 })
 
-Template.uesummarySection.events({
+Template.uesummary.events({
   'click .uesummary-edit-button' (event, templateInstance) {
     event.preventDefault()
     const target = dataTarget(event, templateInstance)
-    setQueryParams({ tab: target })
-  },
-  'click .uesummary-fix-button' (event, templateInstance) {
-    event.preventDefault()
-    const target = dataTarget(event, templateInstance)
-    setQueryParams({ tab: target })
+    const ctx = forms[target]
+    const originalDoc = ctx.doc(templateInstance)
+    FormModal.show({
+      title: SchoolClass.label,
+      action: 'update',
+      load: ctx.load,
+      schema: ctx.schema(),
+      doc: originalDoc,
+      onError: API.failure,
+      custom: ctx.handlers,
+      onClosed: ctx.onClosed,
+      onSubmit: ({ doc }) => {
+        return ctx.onSubmit({ originalDoc, doc, templateInstance })
+      }
+    })
   }
 })

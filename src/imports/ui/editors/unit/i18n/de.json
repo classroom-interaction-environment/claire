@@ -11,17 +11,17 @@
       "errors": {
         "invalidLessonState": "Der Unterricht läuft oder ist beendet. Er kann daher nicht bearbeitet werden!"
       },
-      "basicInfo": "Basisdaten",
+      "basicInfo": "Kursdaten",
       "preview": "Vorschau",
       "summary": "Zusammenfassung",
       "editInUnitEditor": "Im Sequenz-Editor bearbeiten",
       "continueToEdit": "Möchten Sie gleich weiter und das neue Material bearbeiten?",
       "documentCreated": "{{title}} erfolgreich erstellt",
       "unitUpdated": "Sequenz aktualisiert",
-      "incomplete": "ist unvollständig oder noch nicht bearbeitet.",
+      "incomplete": "'{{name}}' ist unvollständig oder noch nicht bearbeitet.",
       "confirmDeleteUnit": "Sie sind dabei, die Sequenz zu löschen. Es werden alle verknüpften Materialien entfernt und alle Unterrichtsphasen gelöscht. Möchten Sie wirklich fortfahren?",
-      "objectives": {
-        "title": "Kompetenzen",
+      "tasks": {
+        "title": "Aufgaben",
         "add": "Kompetenzen hinzufügen",
         "create": "Kompetenz erstellen und hinzufügen",
         "added": "Kompetenzen dieser Sequenz",

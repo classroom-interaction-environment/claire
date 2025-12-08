@@ -26,7 +26,10 @@ export const deleteUnit = async ({ unitId, userId }) => {
   // this removes all material that is related to the unit doc, which
   // can have several implications, if the material is in use anywhere
   // a future versioning of curricula should prevent such issues
-  await removeAllMaterial({ unitDoc, userId })
-
-  return UnitCollection.removeAsync({ _id: unitId })
+  const materialRemoved = await removeAllMaterial({ unitDoc, userId })
+  const unitRemoved = await UnitCollection.removeAsync({ _id: unitId })
+  return {
+    unitRemoved,
+    materialRemoved
+  }
 }

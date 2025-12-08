@@ -22,7 +22,14 @@ export const stubUnitDoc = unitDoc => stub(getCollection(Unit.name), 'findOneAsy
 export const stubUserDoc = ({ userId }) => stub(getCollection(Users.name), 'findOneAsync', async () => ({ _id: userId }))
 export const stubTaskDoc = taskDoc => stub(getCollection(Task.name), 'findOneAsync', async () => taskDoc)
 export const stubAdmin = value => stub(UserUtils, 'isAdmin', () => value)
-
+export const stubRole = (userId, role, scope) => {
+  return stub(Roles, 'userIsInRoleAsync', async (uid, r, s) => {
+    if (uid === userId && r === role && s === scope) {
+      return true
+    }
+    return false
+  })
+}
 export const checkLesson = (fct, stateFct, fields = { lessonId: '_id' }) => {
   const userId = Random.id()
   const environment = { userId }

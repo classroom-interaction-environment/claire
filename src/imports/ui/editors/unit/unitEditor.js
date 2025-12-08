@@ -47,6 +47,7 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
   // 1. resetting the state to default values
   // ---------------------------------------------------------------------------
 
+  instance.state.setDefault('currentViewName', UnitEditorViewStates.summary.name)
   instance.state.setDefault('currentLoadState', '')
   instance.state.setDefault('unitSubComplete', false)
   instance.state.setDefault('lessonSubComplete', false)
