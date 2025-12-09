@@ -405,8 +405,7 @@ Lesson.methods.create = {
 
     return async function ({ classId, unitId }) {
       const { userId } = this
-      const lessonId = await createLesson({ classId, unitId, userId })
-      return lessonId
+      return createLesson({ classId, unitId, userId })
     }
   })
 }

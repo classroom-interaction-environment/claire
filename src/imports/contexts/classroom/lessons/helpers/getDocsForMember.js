@@ -11,8 +11,9 @@ let getClassDoc
  * Gets lessonDoc and classDoc for a given userId and lessonId,
  * if the user is teacher of the class or admin
  * @private
- * @param userId
- * @param lessonId
+ * @param userId {string}
+ * @param lessonId {string}
+ * @param isStudent {boolean}
  * @return {Promise<{classDoc: Object, lessonDoc: Object}>}
  */
 export const getDocsForMember = async ({ userId, lessonId, isStudent = false }) => {

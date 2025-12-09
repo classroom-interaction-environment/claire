@@ -15,13 +15,14 @@ import { getUsersCollection } from '../../../imports/api/utils/getUsersCollectio
 import { expectThrow } from '../expectThrow'
 import { PermissionDeniedError } from '../../../imports/api/errors/types/PermissionDeniedError'
 import { LessonErrors } from '../../../imports/contexts/classroom/lessons/LessonErrors'
+import { Admin } from '../../../imports/contexts/system/accounts/admin/Admin'
 
 export const stubClassDoc = classDoc => stub(getCollection(SchoolClass.name), 'findOneAsync', async () => classDoc)
 export const stubLessonDoc = lessonDoc => stub(getCollection(Lesson.name), 'findOneAsync', async () => lessonDoc)
 export const stubUnitDoc = unitDoc => stub(getCollection(Unit.name), 'findOneAsync', async () => unitDoc)
 export const stubUserDoc = ({ userId }) => stub(getCollection(Users.name), 'findOneAsync', async () => ({ _id: userId }))
 export const stubTaskDoc = taskDoc => stub(getCollection(Task.name), 'findOneAsync', async () => taskDoc)
-export const stubAdmin = value => stub(UserUtils, 'isAdmin', () => value)
+export const stubAdmin = value => stub(getCollection(Admin.name), 'countDocuments', () => value)
 export const stubRole = (userId, role, scope) => {
   return stub(Roles, 'userIsInRoleAsync', async (uid, r, s) => {
     if (uid === userId && r === role && s === scope) {
@@ -54,7 +55,7 @@ export const checkLesson = (fct, stateFct, fields = { lessonId: '_id' }) => {
       })
       const lessonId = await getCollection(Lesson.name).insertAsync({ classId, createdBy: userId, unit: Random.id() })
       await getUsersCollection().insertAsync({ _id: userId, username: Random.id() })
-      await stubAdmin(false)
+      await stubAdmin(0)
       stub(LessonStates, stateFct.name, () => false)
 
       await expectThrow({
@@ -93,7 +94,7 @@ export const checkClass = (fct, { isTeacher = true, isStudent = false } = {}, fi
       await stubLessonDoc(lessonDoc)
       await stubUserDoc(environment)
       await stubClassDoc(classDoc)
-      await stubAdmin(false)
+      await stubAdmin(0)
       await expectThrow({
         fn: () => fct.call(environment, { [lessonIdField]: lessonId }),
         error: PermissionDeniedError.name,
@@ -111,7 +112,7 @@ export const checkClass = (fct, { isTeacher = true, isStudent = false } = {}, fi
       await stubLessonDoc(lessonDoc)
       await stubUserDoc(environment)
       await stubClassDoc(classDoc)
-      await stubAdmin(false)
+      await stubAdmin(0)
       await expectThrow({
         fn: () => fct.call(environment, { [lessonIdField]: lessonId }),
         error: PermissionDeniedError.name,
@@ -121,16 +122,18 @@ export const checkClass = (fct, { isTeacher = true, isStudent = false } = {}, fi
   }
 }
 
-export const stubTeacherDocs = async (lessonMutator = {}, {
+export const stubTeacherDocs = async ({
   classId = Random.id(),
   userId = Random.id(),
   lessonId = Random.id(),
-  isAdmin = false,
+  isAdmin = 0,
   classTitle = Random.id(5),
-  unit = Random.id()
+  unit = Random.id(),
+  lessonProps = {},
+  classProps = {}
 } = {}) => {
-  const lessonDoc = Object.assign({}, { _id: lessonId, classId, createdBy: userId, unit }, lessonMutator)
-  const classDoc = { _id: classId, createdBy: userId, title: classTitle }
+  const lessonDoc = { _id: lessonId, classId, createdBy: userId, unit, ...lessonProps }
+  const classDoc = { _id: classId, createdBy: userId, title: classTitle, ...classProps }
   await stubUserDoc({ userId })
   await stubLessonDoc(lessonDoc)
   await stubClassDoc(classDoc)
@@ -148,7 +151,7 @@ export const stubStudentDocs = async (lessonMutators) => {
   await stubUserDoc({ userId })
   await stubLessonDoc(lessonDoc)
   await stubClassDoc(classDoc)
-  await stubAdmin(false)
+  await stubAdmin(0)
 
   return { userId, lessonDoc, classDoc }
 }

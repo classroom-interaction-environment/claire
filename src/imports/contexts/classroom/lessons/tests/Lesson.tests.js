@@ -48,6 +48,14 @@ import { ImageFiles } from '../../../files/image/ImageFiles'
 import { AudioFiles } from '../../../files/audio/AudioFiles'
 import { VideoFiles } from '../../../files/video/VideoFiles'
 import { DocumentFiles } from '../../../files/document/DocumentFiles'
+import { EmbeddedResource } from '../../../resources/web/embedded/EmbeddedResource'
+import { Literature } from '../../../resources/web/literature/Literature'
+import { LinkedResource } from '../../../resources/web/linked/LinkedResource'
+import { getMaterialContexts } from '../../../material/initMaterial'
+import { Dimension } from '../../../curriculum/curriculum/dimension/Dimension'
+import { Objective } from '../../../curriculum/curriculum/objective/Objective'
+import { Pocket } from '../../../curriculum/curriculum/pocket/Pocket'
+import { WebResources } from '../../../resources/web/WebResources'
 
 const log = () => {
 }
@@ -75,7 +83,14 @@ describe(Lesson.name, () => {
       AudioFiles,
       VideoFiles,
       DocumentFiles,
-      Beamer
+      Beamer,
+      EmbeddedResource,
+      Literature,
+      LinkedResource,
+      Dimension,
+      Objective,
+      Pocket,
+      WebResources
     )
   })
 
@@ -96,10 +111,10 @@ describe(Lesson.name, () => {
 
     describe(Lesson.methods.create.name, () => {
       it('throws if the given original unit does not exists', async () => {
-        const unit = Random.id()
+        const unitId = Random.id()
         const classId = Random.id()
         const userId = Random.id()
-        const lessonCreateDoc = { classId, unit }
+        const lessonCreateDoc = { classId, unitId }
 
         stubClassDoc({ _id: classId, createdBy: userId })
         stubUserDoc({ userId })
@@ -109,13 +124,13 @@ describe(Lesson.name, () => {
           fn: () => createLesson.call({ userId, log }, lessonCreateDoc),
           error: DocNotFoundError.name,
           reason: 'getDocument.docUndefined',
-          details: { query: unit, name: Unit.name }
+          details: { query: unitId, name: Unit.name }
         })
       })
       it('throws if the given class does not exists', async () => {
         const originalUnit = Random.id()
         const classId = Random.id()
-        const lessonCreateDoc = { classId, unit: originalUnit }
+        const lessonCreateDoc = { classId, unitId: originalUnit }
 
         await mockUnitDoc({ _id: originalUnit }, UnitCollection)
         await expectThrow({
@@ -132,9 +147,8 @@ describe(Lesson.name, () => {
         await mockUnitDoc({ _id: originalUnit }, UnitCollection)
 
         stub(SchoolClassCollection, 'findOneAsync', async () => ({ _id: classId, createdBy: userId }))
-        stub(UserUtils, 'isAdmin', () => false)
 
-        const { lessonId, unitId } = await createLesson.call({ userId, log }, { classId, unit: originalUnit })
+        const { lessonId, unitId } = await createLesson.call({ userId, log }, { classId, unitId: originalUnit })
         expect(unitId).to.not.equal(originalUnit)
         const lessonDoc = await LessonCollection.findOneAsync(lessonId)
         expect(lessonDoc.unitOriginal).to.equal(originalUnit)
@@ -143,14 +157,14 @@ describe(Lesson.name, () => {
 
       it('creates a copy of the given master unit', async () => {
         const userId = Random.id()
-        const phaseDoc =await mockPhaseDoc({}, PhaseCollection)
+        const phaseDoc = await mockPhaseDoc({}, PhaseCollection)
         const unitOriginal = await mockUnitDoc({
           createdBy: userId,
           phases: [phaseDoc._id]
         }, UnitCollection)
 
         const classId = Random.id()
-        const lessonCreateDoc = { classId, unit: unitOriginal._id, createdBy: userId }
+        const lessonCreateDoc = { classId, unitId: unitOriginal._id, createdBy: userId }
 
         stub(UserUtils, 'isAdmin', () => false)
         stub(SchoolClassCollection, 'findOneAsync', async () => {
@@ -192,12 +206,10 @@ describe(Lesson.name, () => {
 
         const classId = Random.id()
         const userId = Random.id()
-        const lessonCreateDoc = { classId, unit: unitOriginal._id, createdBy: userId }
+        const lessonCreateDoc = { classId, unitId: unitOriginal._id, createdBy: userId }
         await mockClassDoc({ _id: classId, createdBy: userId }, SchoolClassCollection)
 
-        stub(UserUtils, 'isAdmin', () => false)
-
-        const { lessonId } =await createLesson.call({ userId, log }, lessonCreateDoc)
+        const { lessonId } = await createLesson.call({ userId, log }, lessonCreateDoc)
         const lessonDoc = await LessonCollection.findOneAsync(lessonId)
         const newUnit = await UnitCollection.findOneAsync(lessonDoc.unit)
         expect(newUnit.title).to.equal(unitOriginal.title)
@@ -227,7 +239,7 @@ describe(Lesson.name, () => {
 
       it('updates the lesson state to running', async () => {
         const unit = Random.id()
-        const { userId, lessonDoc } = stubTeacherDocs({ unit })
+        const { userId, lessonDoc } = await stubTeacherDocs({ unit })
         await LessonCollection.insertAsync(lessonDoc)
 
         const started = await startLesson.call({ userId, log }, lessonDoc)
@@ -246,10 +258,10 @@ describe(Lesson.name, () => {
       checkLesson(toggleMaterial, LessonStates.canToggle)
       checkClass(toggleMaterial, { userId: Random.id() })
 
-      it('throws if the material is not existent',async () => {
+      it('throws if the material is not existent', async () => {
         const unit = Random.id()
         const name = Random.id(6)
-        const { lessonDoc, userId } = stubTeacherDocs({ startedAt: new Date(), unit })
+        const { lessonDoc, userId } = await stubTeacherDocs({ lessonProps: { startedAt: new Date(), unit } })
         await expectThrow({
           fn: () => toggleMaterial.call({ userId, log }, {
             _id: lessonDoc._id,
@@ -263,7 +275,7 @@ describe(Lesson.name, () => {
       })
 
       it('pushes material to the list, if not visible', async () => {
-        const { lessonDoc, userId } = stubTeacherDocs({ startedAt: new Date() })
+        const { lessonDoc, userId } = await stubTeacherDocs({ lessonProps: { startedAt: new Date() } })
         const taskId = Random.id()
         const taskDoc = { _id: Random.id() }
 
@@ -282,15 +294,18 @@ describe(Lesson.name, () => {
       it('pulls material from the list, if visible', async () => {
         const taskId = Random.id()
         const taskDoc = { _id: Random.id() }
-        const { lessonDoc, userId } = stubTeacherDocs({
-          startedAt: new Date(),
-          visibleStudent: [{ _id: taskId, context: Task.name }]
+        const { lessonDoc, userId } = await stubTeacherDocs({
+          lessonProps: {
+            startedAt: new Date(),
+            visibleStudent: [{ _id: taskId, context: Task.name }]
+          }
         })
+
         stubTaskDoc(taskDoc)
         const toggleDoc = { _id: lessonDoc._id, referenceId: taskId, context: Task.name }
 
         await LessonCollection.insertAsync(lessonDoc)
-        const toggled = toggleMaterial.call({ userId, log }, toggleDoc)
+        const toggled = await toggleMaterial.call({ userId, log }, toggleDoc)
 
         expect(toggled).to.equal(true)
         restore(LessonCollection, 'findOneAsync')
@@ -310,7 +325,7 @@ describe(Lesson.name, () => {
       checkClass(completeLesson)
 
       it('updates the lesson state to completed', async () => {
-        const { userId, lessonDoc } = stubTeacherDocs()
+        const { userId, lessonDoc } = await stubTeacherDocs()
         lessonDoc.startedAt = new Date()
         await LessonCollection.insertAsync(lessonDoc)
 
@@ -331,31 +346,50 @@ describe(Lesson.name, () => {
       checkClass(restartLesson)
 
       it('restarts the lesson', async () => {
-        const { userId, lessonDoc } = stubTeacherDocs()
-        lessonDoc.startedAt = new Date()
+        const { userId, lessonDoc } = await stubTeacherDocs({ lessonProps: { startedAt: new Date() } })
         await LessonCollection.insertAsync(lessonDoc)
-        const { lessonReset } = await restartLesson.call({ userId, log }, lessonDoc)
-
+        const result = await restartLesson.call({ userId, log }, lessonDoc)
         const updatedDoc = await LessonCollection.findOneAsync(lessonDoc._id)
-        expect(lessonReset).to.equal(true)
+        expect(result).to.deep.equal({
+          beamerReset: -1, // no beamer doc exists
+          groupDocs: { removed: 0, updated: 0 }, // no group was there
+          lessonReset: 1, // the lesson doc was reset
+          runtimeDocs: {
+            [TaskResults.name]: 0,
+            [TaskWorkingState.name]: 0,
+            [ImageFiles.name]: 0,
+            [AudioFiles.name]: 0,
+            [VideoFiles.name]: 0,
+            [DocumentFiles.name]: 0
+          }
+        })
         expect(LessonStates.isIdle(updatedDoc))
       })
 
       it('removes all visible references', async () => {
-        const { userId, lessonDoc } = stubTeacherDocs()
+        const { userId, lessonDoc } = await stubTeacherDocs()
         lessonDoc.startedAt = new Date()
         lessonDoc.visibleStudent = [{ _id: Random.id(), context: Random.id(5) }]
         lessonDoc.visibleBeamer = [Random.id()]
         lessonDoc.phase = Random.id()
         await LessonCollection.insertAsync(lessonDoc)
 
-        const { runtimeDocs, beamerReset, lessonReset, groupDocs } = await restartLesson.call({ userId, log }, lessonDoc)
+        const result = await restartLesson.call({ userId, log }, lessonDoc)
 
         // otherwise it returns always the stubbed doc
-        expect(runtimeDocs).to.equal(0)
-        expect(beamerReset).to.equal(0)
-        expect(lessonReset).to.equal(true)
-        expect(groupDocs).to.deep.equal({ removed: 0, updated: 0 })
+        expect(result).to.deep.equal({
+          beamerReset: -1, // no beamer doc exists
+          groupDocs: { removed: 0, updated: 0 }, // no group was there
+          lessonReset: 1, // the lesson doc was reset
+          runtimeDocs: {
+            [TaskResults.name]: 0,
+            [TaskWorkingState.name]: 0,
+            [ImageFiles.name]: 0,
+            [AudioFiles.name]: 0,
+            [VideoFiles.name]: 0,
+            [DocumentFiles.name]: 0
+          }
+        })
 
         restore(LessonCollection, 'findOneAsync')
         const updatedDoc = await LessonCollection.findOneAsync(lessonDoc._id)
@@ -364,7 +398,7 @@ describe(Lesson.name, () => {
         expect(updatedDoc.visibleBeamer).to.equal(undefined)
       })
       it('resets all groups, associated with this lesson', async () => {
-        const { userId, lessonDoc } = stubTeacherDocs()
+        const { userId, lessonDoc } = await stubTeacherDocs()
         lessonDoc.startedAt = new Date()
         lessonDoc.visibleStudent = [{ _id: Random.id(), context: Random.id(5) }]
         lessonDoc.visibleBeamer = [Random.id()]
@@ -376,7 +410,7 @@ describe(Lesson.name, () => {
         await getCollection(Group.name).insertAsync(createGroupDoc({ title: 'not remove', unitId }))
         await getCollection(Group.name).insertAsync(createGroupDoc({ title: 'to remove', unitId, isAdhoc: true }))
 
-        const { groupDocs } =await restartLesson.call({ userId, log }, lessonDoc)
+        const { groupDocs } = await restartLesson.call({ userId, log }, lessonDoc)
 
         expect(groupDocs).to.deep.equal({ removed: 1, updated: 1 })
         restore(LessonCollection, 'findOneAsync')
@@ -398,7 +432,7 @@ describe(Lesson.name, () => {
         const env = { userId, log }
         const args = { _id: lessonId }
         await expectThrow({
-          fn:  () => removeLesson.call(env, args),
+          fn: () => removeLesson.call(env, args),
           error: DocNotFoundError.name,
           reason: 'getDocument.docUndefined',
           details: { name: Lesson.name, query: lessonId }
@@ -407,50 +441,88 @@ describe(Lesson.name, () => {
 
       it('removes lesson', async () => {
         const userId = Random.id()
-        const unitDoc = mockUnitDoc({ createdBy: userId }, UnitCollection)
+        const unitDoc = await mockUnitDoc({
+          createdBy: userId,
+          [AudioFiles.name]: [Random.id()],
+          [Phase.name]: [Random.id(), Random.id()],
+          [Literature.name]: [Random.id()],
+          [DocumentFiles.name]: [Random.id()]
+        }, UnitCollection)
         const unitId = unitDoc._id
-        const { lessonDoc } = stubTeacherDocs({}, { userId, unit: unitId })
+        const lessonId = Random.id()
+        const classId = Random.id()
+        const lessonDoc = { _id: lessonId, classId, createdBy: userId, unit: unitId }
+        const classDoc = { _id: classId, createdBy: userId, title: Random.id() }
 
         await LessonCollection.insertAsync(lessonDoc)
         expect(await count(LessonCollection, { _id: lessonDoc._id })).to.equal(1)
 
-        const result =await removeLesson.call({
+        await SchoolClassCollection.insertAsync(classDoc)
+        expect(await count(SchoolClassCollection, { _id: classId })).to.equal(1)
+
+        stub(getCollection(Group.name), 'removeAsync', async () => 132)
+
+        const stubDynamic = (collection) => {
+          console.debug('stub', collection)
+            stub(getCollection(collection), 'removeAsync', async () => 10)
+            stub(getCollection(collection), 'countDocuments', async () => 10)
+          }
+
+        ;[TaskResults, TaskWorkingState, AudioFiles, DocumentFiles, Literature, Phase].map(c => c.name).forEach(stubDynamic)
+
+        const result = await removeLesson.call({
           userId,
           log
         }, { _id: lessonDoc._id })
         expect(result).to.deep.equal({
+          beamerRemoved: -1,
+          groupsRemoved: 132,
           lessonRemoved: 1,
+          phasesRemoved: 10,
           unitRemoved: 1,
-          phasesRemoved: 0,
-          materialRemoved: 0,
-          runtimeDocsRemoved: 123,
-          beamerRemoved: 456,
-          groupsRemoved: 0
+          runtimeDocsRemoved: {
+            [AudioFiles.name]: 10,
+            [DocumentFiles.name]: 10,
+            [ImageFiles.name]: 0,
+            [VideoFiles.name]: 0,
+            [TaskResults.name]: 10,
+            [TaskWorkingState.name]: 10
+          },
+          materialRemoved: {
+            [AudioFiles.name]: 0,
+            [DocumentFiles.name]: 0,
+            [ImageFiles.name]: 0,
+            [VideoFiles.name]: 0,
+            [EmbeddedResource.name]: 0,
+            [Literature.name]: 10,
+            [Task.name]: 0,
+            [LinkedResource.name]: 0
+          }
         })
+
         expect(await count(LessonCollection, { _id: lessonDoc._id })).to.equal(0)
         expect(await count(UnitCollection, { _id: unitDoc._id })).to.equal(0)
       })
 
       it('still removes lesson, even in case the linked unit does not exist', async () => {
         const userId = Random.id()
-        const unitId = Random.id()
-        const { lessonDoc } = stubTeacherDocs({}, { userId, unit: unitId })
+        const unitDoc = await mockUnitDoc({ createdBy: userId }, UnitCollection)
+        const unitId = unitDoc._id
+        const lessonId = Random.id()
+        const classId = Random.id()
+        const lessonDoc = { _id: lessonId, classId, createdBy: userId, unit: unitId }
+        const classDoc = { _id: classId, createdBy: userId, title: Random.id() }
 
         await LessonCollection.insertAsync(lessonDoc)
         expect(await count(LessonCollection, { _id: lessonDoc._id })).to.equal(1)
+        await SchoolClassCollection.insertAsync(classDoc)
+        expect(await count(SchoolClassCollection, { _id: classId })).to.equal(1)
+
         const result = await removeLesson.call({
           userId,
           log
         }, { _id: lessonDoc._id })
-        expect(result).to.deep.equal({
-          lessonRemoved: 1,
-          unitRemoved: 0,
-          phasesRemoved: 0,
-          materialRemoved: 0,
-          runtimeDocsRemoved: 123,
-          beamerRemoved: 456,
-          groupsRemoved: 0
-        })
+        expect(result.lessonRemoved).to.equal(1)
         expect(await count(LessonCollection, { _id: lessonDoc._id })).to.equal(0)
         expect(await count(UnitCollection, { _id: unitId })).to.equal(0)
       })
@@ -459,11 +531,15 @@ describe(Lesson.name, () => {
         const userId = Random.id()
         const unitDoc = await mockUnitDoc({ _master: true, createdBy: userId }, UnitCollection)
         const unitId = unitDoc._id
-        const { lessonDoc } = stubTeacherDocs({}, { userId, unit: unitId })
+        const lessonId = Random.id()
+        const classId = Random.id()
+        const lessonDoc = { _id: lessonId, classId, createdBy: userId, unit: unitId }
+        const classDoc = { _id: classId, createdBy: userId, title: Random.id() }
 
         await LessonCollection.insertAsync(lessonDoc)
         expect(await count(LessonCollection, { _id: lessonDoc._id })).to.equal(1)
-
+        await SchoolClassCollection.insertAsync(classDoc)
+        expect(await count(SchoolClassCollection, { _id: classId })).to.equal(1)
 
         const { lessonRemoved, unitRemoved } = await removeLesson.call({ userId, log }, { _id: lessonDoc._id })
         expect(lessonRemoved).to.equal(1)
@@ -474,12 +550,12 @@ describe(Lesson.name, () => {
 
       it('removes cloned phases', async () => {
         const userId = Random.id()
-        const phaseDoc = mockPhaseDoc({ createdBy: userId })
+        const phaseDoc = await mockPhaseDoc({ createdBy: userId })
         const unitDoc = await mockUnitDoc({ phases: [phaseDoc._id], createdBy: userId }, UnitCollection)
         const unitId = unitDoc._id
         phaseDoc.unit = unitId
 
-        const { lessonDoc } = stubTeacherDocs({}, { unit: unitId, userId })
+        const { lessonDoc } = await stubTeacherDocs({ unit: unitId, userId })
         const phaseId = await PhaseCollection.insertAsync(phaseDoc)
         expect(unitDoc.phases).to.deep.equal([phaseDoc._id])
 
@@ -490,53 +566,63 @@ describe(Lesson.name, () => {
         expect(await count(PhaseCollection, { _id: phaseId })).to.equal(0)
       })
 
-      it('does not remove global phases or master phases', () => {
+      it('does not remove global phases or master phases', async () => {
         const userId = Random.id()
-        const phaseDoc = mockPhaseDoc({ createdBy: userId })
-        let unitDoc = mockUnitDoc({ phases: [phaseDoc._id], createdBy: userId }, UnitCollection)
+        const phaseDoc = await mockPhaseDoc({ createdBy: userId })
+        let unitDoc = await mockUnitDoc({ phases: [phaseDoc._id], createdBy: userId }, UnitCollection)
         const unitId = unitDoc._id
         phaseDoc.unit = unitId
 
-        const { lessonDoc } = stubTeacherDocs({}, { unit: unitId, userId })
-        const phaseId = PhaseCollection.insert(phaseDoc)
+        const { lessonDoc } = await stubTeacherDocs({ unit: unitId, userId })
+        const phaseId = await PhaseCollection.insertAsync(phaseDoc)
 
-        const othersPhaseId = mockPhaseDoc({ unit: unitId }, PhaseCollection)._id
-        const globalPhaseId = mockPhaseDoc({ createdBy: userId }, PhaseCollection)._id
-        const masterPhaseId = mockPhaseDoc({ _master: true }, PhaseCollection)._id
-        UnitCollection.update(unitId, { $set: { phases: [phaseId, othersPhaseId, globalPhaseId, masterPhaseId] } })
-        unitDoc = UnitCollection.findOne(unitId)
+        const othersPhaseId = (await mockPhaseDoc({ unit: unitId }, PhaseCollection))._id
+        const globalPhaseId = (await mockPhaseDoc({ createdBy: userId }, PhaseCollection))._id
+        const masterPhaseId = (await mockPhaseDoc({ _master: true }, PhaseCollection))._id
+        expect(othersPhaseId).to.be.a('string')
+        expect(globalPhaseId).to.be.a('string')
+        expect(masterPhaseId).to.be.a('string')
+        await UnitCollection.updateAsync(unitId, { $set: { phases: [phaseId, othersPhaseId, globalPhaseId, masterPhaseId] } })
+        unitDoc = await UnitCollection.findOneAsync(unitId)
         expect(unitDoc.phases).to.deep.equal([phaseId, othersPhaseId, globalPhaseId, masterPhaseId])
 
-        LessonCollection.insert(lessonDoc)
-        stub(LessonRuntime, LessonRuntime.removeDocuments.name, () => 0)
-        stub(LessonRuntime, LessonRuntime.resetBeamer.name, () => 0)
-        stub(LessonRuntime, LessonRuntime.removeAllMaterial.name, () => 0)
+        await LessonCollection.insertAsync(lessonDoc)
 
-        const { phasesRemoved } = removeLesson.call({ userId, log }, { _id: lessonDoc._id })
-        expect(PhaseCollection.find(phaseId).count()).to.equal(0)
-        expect(PhaseCollection.find(othersPhaseId).count()).to.equal(1)
-        expect(PhaseCollection.find(globalPhaseId).count()).to.equal(1)
-        expect(PhaseCollection.find(masterPhaseId).count()).to.equal(1)
+        // before
+        expect(await count(PhaseCollection, { _id: phaseId })).to.equal(1)
+        expect(await count(PhaseCollection, { _id: othersPhaseId })).to.equal(1)
+        expect(await count(PhaseCollection, { _id: globalPhaseId })).to.equal(1)
+        expect(await count(PhaseCollection, { _id: masterPhaseId })).to.equal(1)
+
+        const { phasesRemoved } = await removeLesson.call({ userId, log }, { _id: lessonDoc._id })
         expect(phasesRemoved).to.equal(1)
+
+        // after
+        expect(await count(PhaseCollection, { _id: phaseId })).to.equal(0)
+        expect(await count(PhaseCollection, { _id: othersPhaseId })).to.equal(1)
+        expect(await count(PhaseCollection, { _id: globalPhaseId })).to.equal(1)
+        expect(await count(PhaseCollection, { _id: masterPhaseId })).to.equal(1)
       })
 
-      it('removes cloned material', () => {
+      it('removes cloned material', async () => {
         const userId = Random.id()
-        let unitDoc = mockUnitDoc({ createdBy: userId }, UnitCollection)
+        let unitDoc = await mockUnitDoc({ _master: true, createdBy: userId }, UnitCollection)
         const unitId = unitDoc._id
-        const { lessonDoc } = stubTeacherDocs({}, { userId, unit: unitId })
+        const lessonId = Random.id()
+        const classId = Random.id()
+        const lessonDoc = { _id: lessonId, classId, createdBy: userId, unit: unitId }
+        const classDoc = { _id: classId, createdBy: userId, title: Random.id() }
 
         // connect task with unit and with lesson
-        const taskId = TaskCollection.insert({ createdBy: userId, title: Random.id() })
-        UnitCollection.update(unitId, { $set: { tasks: [taskId] } })
-        unitDoc = UnitCollection.findOne(unitId)
+        const taskId = await TaskCollection.insertAsync({ createdBy: userId, title: Random.id() })
+        await UnitCollection.updateAsync(unitId, { $set: { tasks: [taskId] } })
+        unitDoc = await UnitCollection.findOneAsync(unitId)
         expect(unitDoc.tasks).to.deep.equal([taskId])
 
-        LessonCollection.insert(lessonDoc)
-        stub(LessonRuntime, LessonRuntime.removeDocuments.name, () => 0)
-        stub(LessonRuntime, LessonRuntime.resetBeamer.name, () => 0)
+        await LessonCollection.insertAsync(lessonDoc)
+        await SchoolClassCollection.insertAsync(classDoc)
 
-        const { materialRemoved } = removeLesson.call({ userId, log }, { _id: lessonDoc._id })
+        const { materialRemoved } = await removeLesson.call({ userId, log }, { _id: lessonDoc._id })
         const entries = Object.entries(materialRemoved)
         expect(entries.length).to.equal(8)
 
@@ -549,26 +635,28 @@ describe(Lesson.name, () => {
           }
         })
 
-        expect(TaskCollection.find(taskId).count()).to.equal(0)
+        expect(await count(TaskCollection, { _id: taskId})).to.equal(0)
       })
 
-      it('does not remove master material', () => {
+      it('does not remove master material', async () => {
         const userId = Random.id()
-        let unitDoc = mockUnitDoc({ createdBy: userId }, UnitCollection)
+        let unitDoc = await mockUnitDoc({ _master: true, createdBy: userId }, UnitCollection)
         const unitId = unitDoc._id
-        const { lessonDoc } = stubTeacherDocs({}, { userId, unit: unitId })
+        const lessonId = Random.id()
+        const classId = Random.id()
+        const lessonDoc = { _id: lessonId, classId, createdBy: userId, unit: unitId }
+        const classDoc = { _id: classId, createdBy: userId, title: Random.id() }
+        await SchoolClassCollection.insertAsync(classDoc)
 
         // connect task with unit and with lesson
-        const taskId = TaskCollection.insert({ _master: true, createdBy: userId, title: Random.id() })
-        UnitCollection.update(unitId, { $set: { tasks: [taskId] } })
-        unitDoc = UnitCollection.findOne(unitId)
+        const taskId = await TaskCollection.insertAsync({ _master: true, createdBy: userId, title: Random.id() })
+        await UnitCollection.updateAsync(unitId, { $set: { tasks: [taskId] } })
+        unitDoc = await UnitCollection.findOneAsync(unitId)
         expect(unitDoc.tasks).to.deep.equal([taskId])
 
-        LessonCollection.insert(lessonDoc)
-        stub(LessonRuntime, LessonRuntime.removeDocuments.name, () => 0)
-        stub(LessonRuntime, LessonRuntime.resetBeamer.name, () => 0)
+        await LessonCollection.insertAsync(lessonDoc)
 
-        const { materialRemoved } = removeLesson.call({ userId, log }, { _id: lessonDoc._id })
+        const { materialRemoved } = await removeLesson.call({ userId, log }, { _id: lessonDoc._id })
         const entries = Object.entries(materialRemoved)
         expect(entries.length).to.equal(8)
 
@@ -576,24 +664,26 @@ describe(Lesson.name, () => {
           expect(removeCount).to.equal(0)
         })
 
-        expect(TaskCollection.find(taskId).count()).to.equal(1)
+        expect(await count(TaskCollection, { _id: taskId})).to.equal(1)
       })
 
       it('removes custom material only if it\'s not used by other lessons')
-      it('removes groups, associated with this lesson', () => {
+      it('removes groups, associated with this lesson', async () => {
         const userId = Random.id()
-        const unitDoc = mockUnitDoc({ createdBy: userId }, UnitCollection)
+        let unitDoc = await mockUnitDoc({ _master: true, createdBy: userId }, UnitCollection)
         const unitId = unitDoc._id
-        const { lessonDoc } = stubTeacherDocs({}, { userId, unit: unitId })
-        LessonCollection.insert(lessonDoc)
+        const lessonId = Random.id()
+        const classId = Random.id()
+        const lessonDoc = { _id: lessonId, classId, createdBy: userId, unit: unitId }
+        const classDoc = { _id: classId, createdBy: userId, title: Random.id() }
+        await SchoolClassCollection.insertAsync(classDoc)
+        await LessonCollection.insertAsync(lessonDoc)
 
-        stub(LessonRuntime, LessonRuntime.removeDocuments.name, () => 0)
-        stub(LessonRuntime, LessonRuntime.resetBeamer.name, () => 0)
 
-        getCollection(Group.name).insert(createGroupDoc({ title: 'to remove', unitId }))
-        getCollection(Group.name).insert(createGroupDoc({ title: 'to remove', unitId, isAdhoc: true }))
+        await getCollection(Group.name).insertAsync(createGroupDoc({ title: 'to remove', unitId }))
+        await getCollection(Group.name).insertAsync(createGroupDoc({ title: 'to remove', unitId, isAdhoc: true }))
 
-        const { groupsRemoved } = removeLesson.call({ userId, log }, { _id: lessonDoc._id })
+        const { groupsRemoved } = await removeLesson.call({ userId, log }, { _id: lessonDoc._id })
         expect(groupsRemoved).to.equal(2)
       })
     })
@@ -607,44 +697,49 @@ describe(Lesson.name, () => {
       checkLesson(getLessonMaterial, LessonStates.isRunning)
       checkClass(getLessonMaterial, { isStudent: true, isTeacher: false })
 
-      it('returns undefined if no material is considered visible', () => {
-        const { lessonDoc, userId } = stubStudentDocs({ startedAt: new Date() })
-        expect(getLessonMaterial.call({ userId, log }, lessonDoc)).to.equal(undefined)
+      it('returns undefined if no material is considered visible', async () => {
+        const { lessonDoc, userId } = await stubStudentDocs({ startedAt: new Date() })
+        expect(await getLessonMaterial.call({ userId, log }, lessonDoc)).to.equal(undefined)
       })
 
-      it('throws if a collection is not found by context, referenced in the material', () => {
+      it('throws if a collection is not found by context, referenced in the material', async () => {
         const reference = { _id: Random.id(), context: Random.id() }
-        const { lessonDoc, userId } = stubStudentDocs({ startedAt: new Date(), visibleStudent: [reference] })
-        expect(() => getLessonMaterial.call({ userId, log }, lessonDoc)).to.throw('collectionNotFound')
+        const { lessonDoc, userId } = await stubStudentDocs({ startedAt: new Date(), visibleStudent: [reference] })
+        await expectThrow({
+          fn: () => getLessonMaterial.call({ userId, log }, lessonDoc),
+          error: 'errors.collectionNotFound',
+          reason: 'getCollection.notFoundByName',
+          details: { name: reference.context }
+        })
       })
-      it('returns the material, referenced by a lesson doc', () => {
+      it('returns the material, referenced by a lesson doc', async () => {
         const taskId = Random.id()
         const taskDoc = { _id: taskId, title: Random.id() }
         Object.assign(taskDoc, Task.helpers.createData())
 
         const reference = { _id: taskId, context: Task.name }
-        const { lessonDoc, userId } = stubStudentDocs({ startedAt: new Date(), visibleStudent: [reference] })
-        TaskCollection.insert(taskDoc)
+        const { lessonDoc, userId } = await stubStudentDocs({ startedAt: new Date(), visibleStudent: [reference] })
+        await TaskCollection.insertAsync(taskDoc)
 
-        const materialDocs = getLessonMaterial.call({ userId, log }, lessonDoc)
+        const materialDocs = await getLessonMaterial.call({ userId, log }, lessonDoc)
         expect(materialDocs).to.deep.equal({ [Task.name]: [taskDoc] })
       })
-      it('indicates if there are docs not found, but referenced in the material', () => {
+      it('indicates if there are docs not found, but referenced in the material', async () => {
         const taskId = Random.id()
         const reference = { _id: taskId, context: Task.name }
-        const { lessonDoc, userId } = stubStudentDocs({ startedAt: new Date(), visibleStudent: [reference] })
+        const { lessonDoc, userId } = await stubStudentDocs({ startedAt: new Date(), visibleStudent: [reference] })
 
-        const materialDocs = getLessonMaterial.call({ userId, log }, lessonDoc)
+        const materialDocs = await getLessonMaterial.call({ userId, log }, lessonDoc)
         expect(materialDocs).to.deep.equal({ [Task.name]: [], notFound: [{ context: Task.name, _id: taskId }] })
       })
-      it('allows to skip material', () => {
+      it('allows to skip material', async () => {
         const taskId = Random.id()
         const taskDoc = { _id: taskId, title: Random.id() }
         const reference = { _id: taskId, context: Task.name }
-        const { lessonDoc, userId } = stubStudentDocs({ startedAt: new Date(), visibleStudent: [reference] })
-        TaskCollection.insert(taskDoc)
+        const { lessonDoc, userId } = await stubStudentDocs({ startedAt: new Date(), visibleStudent: [reference] })
+        await TaskCollection.insertAsync(taskDoc)
 
-        const materialDocs = getLessonMaterial.call({ userId, log }, { _id: lessonDoc._id, skip: [taskId] })
+        const materialDocs = await getLessonMaterial.call({ userId, log }, { _id: lessonDoc._id, skip: [taskId] })
         expect(materialDocs).to.deep.equal({})
       })
     })

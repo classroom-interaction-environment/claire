@@ -62,8 +62,14 @@ export const removeLesson = async ({ userId, lessonId, lessonDoc, log = noop }) 
 
     log('remove phase query', phaseQuery)
     result.phasesRemoved = await getCollection(Phase.name).removeAsync(phaseQuery)
-    result.unitRemoved = await getCollection(Unit.name).removeAsync({ _id: unitDoc._id, _master: { $exists: false } })
+
+    const unitQuery = { _id: unitDoc._id, _master: { $exists: false } }
+    log('remove unit', unitQuery)
+    result.unitRemoved = await getCollection(Unit.name).removeAsync(unitQuery)
+    log('remove material')
     result.materialRemoved = await removeAllMaterial({ unitDoc, userId })
+    log('runtime docs')
+
 
     const unitId = unitDoc._id
     result.groupsRemoved = await removeGroups({ unitId })

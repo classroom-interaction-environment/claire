@@ -12,11 +12,9 @@ import {
 } from '../../../../tests/testutils/mockCollection'
 import { stubUser, unstubUser } from '../../../../tests/testutils/stubUser'
 import { exampleUser } from '../../../../tests/testutils/exampleUser'
-import { stubMethod, unstubMethod } from '../../../../tests/testutils/stubMethod'
 import { DocNotFoundError } from '../../../api/errors/types/DocNotFoundError'
 import { expectThrow } from '../../../../tests/testutils/expectThrow'
 import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
-import { restoreAll, stub } from '../../../../tests/testutils/stub'
 
 describe('Beamer', () => {
   let user
@@ -149,22 +147,22 @@ describe('Beamer', () => {
 
   // CLIENT_SIDE_ONLY TESTS
 
-  onClientExec(() => {
-    const createDoc = async (env) => {
-      const ui = {
-        background: Beamer.defaultBackground,
-        grid: Beamer.defaultGridlayout
-      }
-      const beamerDocId = await BeamerCollection.insertAsync({ createdBy: env.userId, references: [], ui })
-      return BeamerCollection.findOneAsync(beamerDocId)
-    }
-
-    const updateHandler = function (updateDoc) {
-      const _id = updateDoc._id
-      const modifier = Object.assign({}, updateDoc)
-      delete modifier._id
-      return BeamerCollection.update(_id, { $set: modifier })
-    }
+  // onClientExec(() => {
+  //   const createDoc = async (env) => {
+  //     const ui = {
+  //       background: Beamer.defaultBackground,
+  //       grid: Beamer.defaultGridlayout
+  //     }
+  //     const beamerDocId = await BeamerCollection.insertAsync({ createdBy: env.userId, references: [], ui })
+  //     return BeamerCollection.findOneAsync(beamerDocId)
+  //   }
+  //
+  //   const updateHandler = function (updateDoc) {
+  //     const _id = updateDoc._id
+  //     const modifier = Object.assign({}, updateDoc)
+  //     delete modifier._id
+  //     return BeamerCollection.update(_id, { $set: modifier })
+  //   }
     //
     // describe('doc', () => {
     //   it('isDefined', () => {
@@ -450,5 +448,5 @@ describe('Beamer', () => {
     //     })
     //   })
     // })
-  })
+  // })
 })

@@ -1,16 +1,18 @@
 import { getUsersCollection } from '../../utils/getUsersCollection'
+import { noop } from '../../../utils/noop'
 
 /**
  *
  * @param options {object}
  * @param options.userId {string=}
  * @param options.email {string=}
+ * @param options.debug {function=}
  * @return {Promise<boolean>}
  */
 export const userExists = async (options = {}) => {
   if (!options) return false
 
-  const { userId, email } = options
+  const { userId, email, debug = noop } = options
   if (!userId && !email) {
     return false
   }
@@ -29,6 +31,6 @@ export const userExists = async (options = {}) => {
   }
 
   const count = await getUsersCollection().countDocuments(query)
-  console.debug('userExists', { userId, email }, '=>', count)
+  debug('userExists?', { userId, email }, '=>', count)
   return count > 0
 }

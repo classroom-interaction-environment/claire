@@ -89,13 +89,13 @@ describe('lesson runtime helpers', () => {
     )
   })
 
-  afterEach(() => {
+  afterEach(async () => {
     restoreAll()
-    clearAllCollections()
+    await clearAllCollections()
   })
 
-  after(() => {
-    restoreAllCollections()
+  after(async () => {
+    await restoreAllCollections()
   })
 
   describe(resetBeamer.name,  () => {
@@ -160,32 +160,26 @@ describe('lesson runtime helpers', () => {
     it('removed documents, if there are docs for a given lesson', async () => {
       const lessonId = Random.id()
       await TaskResultCollection.insertAsync({ lessonId })
+      expect(await TaskResultCollection.countDocuments({})).to.equal(1)
       await TaskWorkingStateCollection.insertAsync({ lessonId })
+      expect(await TaskWorkingStateCollection.countDocuments({})).to.equal(1)
       await ClusterCollection.insertAsync({ lessonId })
-
+      expect(await ClusterCollection.countDocuments({})).to.equal(1)
       await ImageFilesCollection.insertAsync({ meta: { lessonId } })
+      expect(await ImageFilesCollection.countDocuments({})).to.equal(1)
       await AudioFilesColection.insertAsync({ meta: { lessonId } })
+      expect(await AudioFilesColection.countDocuments({})).to.equal(1)
       await DocumentFilesCollection.insertAsync({ meta: { lessonId } })
+      expect(await DocumentFilesCollection.countDocuments({})).to.equal(1)
       await VideoFilesCollection.insertAsync({ meta: { lessonId } })
+      expect(await VideoFilesCollection.countDocuments({})).to.equal(1)
 
-      stub(ImageFilesCollection.filesCollection, 'remove', (query) => {
-        return ImageFilesCollection.removeAsync(query)
-      })
-      stub(AudioFilesColection.filesCollection, 'remove', (query) => {
-        return AudioFilesColection.removeAsync(query)
-      })
-      stub(DocumentFilesCollection.filesCollection, 'remove', (query) => {
-        return DocumentFilesCollection.removeAsync(query)
-      })
-      stub(VideoFilesCollection.filesCollection, 'remove', (query) => {
-        return VideoFilesCollection.removeAsync(query)
-      })
 
       const removed = await removeDocuments({ lessonId })
       for (const [context, removedCount] of Object.entries(removed)) {
         const remainCount = await getCollection(context).countDocuments({})
-        expect(removedCount).to.equal(1)
-        expect(remainCount).to.equal(0)
+        expect(remainCount, context).to.equal(0)
+        expect(removedCount, context).to.equal(1)
       }
     })
   })

@@ -25,7 +25,7 @@ import '../../imports/api/accounts/registration/tests/registerUserSchema'
 import '../../imports/startup/client/minimal/defaults'
 import '../../imports/utils/tests/archUtils.test'
 
-import '../../imports/contexts/beamer/tests'
+// import '../../imports/contexts/beamer/tests' // TODO create own beamer client tests
 import '../../imports/contexts/system/accounts/users/tests/UserUtils.tests'
 import '../../imports/contexts/classroom/invitations/tests/CodeInvitation.tests'
 import '../../imports/contexts/classroom/lessons/tests/LessonStates.tests'

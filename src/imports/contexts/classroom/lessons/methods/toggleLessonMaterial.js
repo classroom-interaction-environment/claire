@@ -10,7 +10,7 @@ export const toggleLessonMaterial = async ({ lessonId, userId, referenceId, cont
   const { lessonDoc } = await getDocsForMember({ lessonId, userId })
 
   if (!LessonStates.canToggle(lessonDoc)) {
-    throw new Meteor.Error('lesson.errors.unexpectedState', 'lesson.errors.expectedToggleAble')
+    throw new Meteor.Error(LessonErrors.unexpectedState, 'lesson.expectedToggleAble', { lessonId, startedAt: lessonDoc.startedAt, completedAt: lessonDoc.completedAt })
   }
 
   // use doc getter to ensure reference doc exists

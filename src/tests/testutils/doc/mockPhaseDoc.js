@@ -29,8 +29,10 @@ export const mockPhaseDoc = async (options = {}, collection) => {
     phaseDoc._master = options._master
   }
 
+
   if (collection) {
-    await collection.insertAsync(phaseDoc)
+    const phaseId = await collection.insertAsync(phaseDoc)
+    return collection.findOneAsync(phaseId)
   }
 
   return phaseDoc

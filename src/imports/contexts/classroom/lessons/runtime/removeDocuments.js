@@ -6,6 +6,7 @@ import { AudioFiles } from '../../../files/audio/AudioFiles'
 import { DocumentFiles } from '../../../files/document/DocumentFiles'
 import { VideoFiles } from '../../../files/video/VideoFiles'
 import { createDocRemover } from '../../../../api/utils/document/createDocRemover'
+import { noop } from '../../../../utils/noop'
 
 const options = { checkOwner: false, multiple: true }
 const removeTaskResults = createDocRemover({ name: TaskResults.name, ...options })
@@ -38,10 +39,11 @@ const removeVideoFiles = createDocRemover({
  * @async
  * @param lessonId {string} the lesson _id
  * @param userId {string} the user _id performing the removal
+ * @param debug {function=}
  * @return {object} returns an Object with context names as keys and number of removed docs as values
  */
 
-export const removeDocuments = async ({ lessonId, userId } = {}) => {
+export const removeDocuments = async ({ lessonId, userId, debug = noop } = {}) => {
   check(lessonId, String)
   const docQuery = { lessonId }
   const fileQuery = { 'meta.lessonId': lessonId }
@@ -49,17 +51,18 @@ export const removeDocuments = async ({ lessonId, userId } = {}) => {
   const removed = {}
 
   // tasks
-  removed[TaskResults.name] = await removeTaskResults({ query: docQuery, userId })
-  removed[TaskWorkingState.name] = await removeTaskWorkingState({ query: docQuery, userId })
+  removed[TaskResults.name] = await removeTaskResults({ query: docQuery, userId, debug })
+  removed[TaskWorkingState.name] = await removeTaskWorkingState({ query: docQuery, userId, debug })
 
   // response processor products
   // TODO load all and remove
 
   // files
-  removed[ImageFiles.name] = await removeImageFiles({ query: fileQuery, userId })
-  removed[AudioFiles.name] = await removeAudioFiles({ query: fileQuery, userId })
-  removed[DocumentFiles.name] = await removeDocumentFiles({ query: fileQuery, userId })
-  removed[VideoFiles.name] = await removeVideoFiles({ query: fileQuery, userId })
+  removed[ImageFiles.name] = await removeImageFiles({ query: fileQuery, userId, debug })
+  removed[AudioFiles.name] = await removeAudioFiles({ query: fileQuery, userId, debug })
+  removed[DocumentFiles.name] = await removeDocumentFiles({ query: fileQuery, userId, debug })
+  removed[VideoFiles.name] = await removeVideoFiles({ query: fileQuery, userId, debug })
 
+  debug(removed)
   return removed
 }
