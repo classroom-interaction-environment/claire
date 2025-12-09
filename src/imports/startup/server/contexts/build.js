@@ -5,11 +5,14 @@ import { createLog } from '../../../api/log/createLog'
 
 ContextBuilder.buildAll(function (context) {
   const useDebug = Meteor.isDevelopment && context.debug
-  buildPipeline(context, {
+  const options = {
     collection: true,
     filesCollection: true,
     methods: true,
     publications: true,
-    debug: Meteor.isTest || useDebug ? createLog({ name: context.name, type: 'debug'}) : undefined
-  })
+  }
+  if (Meteor.isTest || useDebug) {
+    options.debug = createLog({ name: context.name, type: 'debug'})
+  }
+  buildPipeline(context, options)
 })

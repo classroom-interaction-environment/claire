@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
+import { noop } from '../../utils/noop'
 
 const time = () => new Date().toISOString()
-const noOp = () => {}
 const LOG_LEVEL = Meteor.settings.public.logLevel || 0
 const isDevelopment = Meteor.isDevelopment
 
@@ -44,11 +44,11 @@ export const createLog = ({ name, type = 'log', devOnly = false, inTests = false
 
   const excludeFromTest = !inTests && Meteor.isTest
   const excludeFromProd = devOnly && !isDevelopment
-  if (excludeFromTest || excludeFromProd) { return noOp }
+  if (excludeFromTest || excludeFromProd) { return noop }
 
   const logProp = internal[type]
 
-  if (LOG_LEVEL > logProp.level) { return noOp }
+  if (LOG_LEVEL > logProp.level) { return noop }
 
   const logName = `${type} [${name}]:`
   const logFn = logProp.run
