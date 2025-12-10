@@ -44,7 +44,8 @@
         "unexpected": "Beklenmedik hata",
         "editTaskInEditor": "Görev düzenleyicide düzenleme",
         "confirmRemove": "\"{{title}}\" materyalini sekans içerisinden kaldırmak üzeresiniz. Materyal tamamen silinmez ve herhangi bir zamanda tekrar eklenebilir.",
-        "confirmDelete": "Dikkat! Bu materyali kalıcı olarak silmek üzeresiniz. Bundan sonra artık mevcut olmayacaktır."
+        "confirmDelete": "Dikkat! Bu materyali kalıcı olarak silmek üzeresiniz. Bundan sonra artık mevcut olmayacaktır.",
+        "closeTask": "Görev düzenlemeyi kapat"
       },
       "phases": {
         "title": "Öğretim aşamaları",

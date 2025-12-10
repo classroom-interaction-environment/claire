@@ -1,167 +1,156 @@
 <template name="taskRenderer">
     {{#if preview}}
-        <div class="alert alert-warning d-flex justify-content-between d-print-none">
-            <span>{{i18n "task.previewMode"}}</span>
+      <div class="alert alert-warning d-flex justify-content-between d-print-none">
+        <span class="alert-heading">{{i18n "task.previewMode"}}</span>
+        <span>
+			{{> actionButton
+                    type="outline-secondary"
+                    active=(previewType "mobile")
+                    icon="mobile-phone"
+                    class="preview-type-btn"
+                    data-target="mobile"
+            }}
+            {{> actionButton
+                    type="outline-secondary"
+                    active=(previewType "desktop")
+                    icon="desktop"
+                    class="preview-type-btn"
+                    data-target="desktop"
+            }}
             {{#if print}}
                 {{> print }}
             {{/if}}
-        </div>
+			</span>
+      </div>
     {{/if}}
 
-	{{#onLoaded complete=loadComplete type="data"}}
-		<div id="task-renderer-scroll-anchor"></div>
-		{{#unless taskComplete}}
-			<hr class="d-print-none">
+  <div class="{{#if preview}}card{{/if}} card-body" style="{{#if previewType "mobile"}}width: 320px !important;{{else}}width: 100% !important;{{/if}}">
+      {{#onLoaded complete=loadComplete type="data"}}
+        <div id="task-renderer-scroll-anchor"></div>
+          {{#unless taskComplete}}
+              {{#if isPrintPreview}}
+              {{! on print preview we want to print all the pages so we}}
+              {{! can print / save the full document at one without further actions}}
+                  {{#each all}}
+                    <div id="task_container_content_{{currentPage}}" class="task-page-container">
+                        {{#each element in this.content}}
+                          <div class="task-content border border-secondary my-4 break-auto">
+                              {{> TaskRendererFactory type=element.type attributes=(attributes element)}}
+                          </div>
+                        {{else}}
+                          <div class="alert alert-warning my-4">
+                            <h2 class="alert-heading">{{i18n "task.noPageContent"}}</h2>
+                          </div>
+                        {{/each}}
+                    </div>
+                  {{/each}}
+              {{else}}
+              {{! Otherwise we just print single pages that are toggled }}
+              {{! Using the prev and next buttons on the bottom of the task }}
+                  {{#unless pageChanged}}
+                      {{#let page=current}}
+                        <div id="task_container_content_{{currentPage}}" class="task-page-container">
+                            {{#each element in page.content}}
+                              <div class="task-content my-0">
+                                  {{> TaskRendererFactory type=element.type attributes=(attributes element page.index)}}
+                              </div>
+                            {{else}}
+                              <div class="alert alert-warning my-4">
+                                <h2 class="alert-heading">{{i18n "task.noPageContent"}}</h2>
+                              </div>
+                            {{/each}}
+                        </div>
+                      {{/let}}
+                  {{/unless}}
+              {{/if}}
 
-			{{! DISPLAY PAGE }}
-			{{>taskRendererPageDisplay currentPage=currentPage maxPages=maxPages}}
-
-			{{! DISPLAY STATIC HEADER }}
-			<div class="my-4">
-				{{#with static}}
-					{{#each this.content}}
-						<div class="task-content">
-							{{> TaskRendererFactory type=this.type attributes=(attributes this) }}
-						</div>
-					{{/each}}
-					<hr class="fw-lighter text-light">
-				{{/with}}
-			</div>
-
-            {{#if isPrintPreview}}
-			{{! on print preview we want to print all the pages so we}}
-			{{! can print / save the full document at one without further actions}}
-				{{#each all}}
-					<div id="task_container_content_{{currentPage}}" class="task-page-container">
-						{{#each element in this.content}}
-							<div class="task-content border border-secondary my-4 break-auto">
-								{{> TaskRendererFactory type=element.type attributes=(attributes element)}}
-							</div>
-						{{else}}
-							<div class="alert alert-warning my-4">
-								<h2 class="alert-heading">{{i18n "task.noPageContent"}}</h2>
-							</div>
-						{{/each}}
-					</div>
-				{{/each}}
-			{{else}}
-			{{! Otherwise we just print single pages that are toggled }}
-			{{! Using the prev and next buttons on the bottom of the task }}
-                {{#unless pageChanged}}
-				{{#let page=current}}
-					<div id="task_container_content_{{currentPage}}" class="task-page-container">
-						{{#each element in page.content}}
-							<div class="task-content my-0">
-								{{> TaskRendererFactory type=element.type attributes=(attributes element page.index)}}
-							</div>
-						{{else}}
-							<div class="alert alert-warning my-4">
-								<h2 class="alert-heading">{{i18n "task.noPageContent"}}</h2>
-							</div>
-						{{/each}}
-					</div>
-				{{/let}}
+            <div class="my-4">
+              <div class="d-print-none">
+                  {{#unless isPrintPreview}}
+                      {{> taskEditorNavButtons  hasNext=hasNext hasPrev=hasPrev isPreview=isPreview isEditable=isEditable}}
+                  {{/unless}}
+              </div>
+            </div>
+          {{else}}
+            <div class="jumbotron text-center">
+              <i class="text-success fa fa-check fa-5x"></i>
+              <h1 class="text-success">{{i18n "unit.taskComplete"}}</h1>
+              <p>{{i18n "schoolClass.waitForTeacher"}}</p>
+                {{#unless notEditable}}
+                  <button class="mt-2 btn btn-secondary white-space-normal" id="restore-complete">{{i18n
+                          "unit.taskUnwantedComplete"}}</button>
                 {{/unless}}
-			{{/if}}
+            </div>
+          {{/unless}}
 
-			<div class="my-4">
-				{{#with footer}}
-					<hr class="fw-lighter text-light">
-					{{#each this.content}}
-						<div class="task-content">
-							{{> TaskRendererFactory type=this.type attributes=(attributes this)}}
-						</div>
-					{{/each}}
-				{{/with}}
+          {{!-- Modal --}}
+        <div id="item-modal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <div class="modal-body">
 
-				{{>taskRendererPageDisplay currentPage=currentPage maxPages=maxPages}}
+                    {{#if data.static}}
+                        {{#each data.static}}
+                            {{> TaskRendererFactory type=this.type
+                                    attributes=(attributes this)     }}
+                        {{/each}}
+                    {{/if}}
 
-                <div class="d-print-none">
-				<hr>
-				{{#unless isPrintPreview}}
-					{{> taskEditorNavButtons  hasNext=hasNext hasPrev=hasPrev isPreview=isPreview isEditable=isEditable}}
-				{{/unless}}
                 </div>
-			</div>
-		{{else}}
-			<div class="jumbotron text-center">
-				<i class="text-success fa fa-check fa-5x"></i>
-				<h1 class="text-success">{{i18n "unit.taskComplete"}}</h1>
-				<p>{{i18n "schoolClass.waitForTeacher"}}</p>
-				{{#unless notEditable}}
-					<button class="mt-2 btn btn-secondary white-space-normal" id="restore-complete">{{i18n
-							"unit.taskUnwantedComplete"}}</button>
-				{{/unless}}
-			</div>
-		{{/unless}}
-
-		{{!-- Modal --}}
-		<div id="item-modal" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-					</div>
-					<div class="modal-body">
-						<div class="modal-body">
-
-							{{#if data.static}}
-								{{#each data.static}}
-									{{> TaskRendererFactory type=this.type
-											attributes=(attributes this)     }}
-								{{/each}}
-							{{/if}}
-
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		{{!-- end modal --}}
-	{{/onLoaded}}
+              </div>
+            </div>
+          </div>
+        </div>
+      {{!-- end modal --}}
+      {{/onLoaded}}
+  </div>
 </template>
 
 <template name="taskRendererPageDisplay">
-	{{#if currentPage}}
-		<div class="card-body text-center">
-			{{i18n "common.page"}} {{currentPage}} / {{maxPages}}
-		</div>
-	{{/if}}
+    {{#if currentPage}}
+      <div class="card-body text-center">
+          {{i18n "common.page"}} {{currentPage}} / {{maxPages}}
+      </div>
+    {{/if}}
 </template>
 
 <template name="taskEditorNavButtons">
-	<div class="row d-print-none">
+  <div class="row d-print-none">
 
-		{{! PREV BUTTON }}
-		{{#if hasPrev}}
-			<div class="col">
-				<button class="btn w-100 btn-lg  btn-secondary task-renderer-prev-button" id="task-prev-button">
-					<i class="fa fa-arrow-left"></i> {{i18n "wizard.back"}}
-				</button>
-			</div>
-		{{/if}}
+      {{! PREV BUTTON }}
+      {{#if hasPrev}}
+        <div class="col">
+          <button class="btn w-100 btn-lg  btn-secondary task-renderer-prev-button" id="task-prev-button">
+            <i class="fa fa-arrow-left"></i> {{i18n "wizard.back"}}
+          </button>
+        </div>
+      {{/if}}
 
-		{{! NEXT / FINISH BUTTON }}
-		<div class="col">
-			{{#if hasNext}}
-				<button class="btn w-100 btn-lg btn-primary task-renderer-next-button" id="task-next-button">
-					{{i18n "wizard.next"}} <i class="fa fa-arrow-right"></i>
-				</button>
-			{{else if isEditable}}
-                <button class="btn w-100 btn-lg btn-success task-renderer-next-button task-renderer-finish-button"
-                        id="task-finish-button">
-                    {{i18n "wizard.finish"}}
-                </button>
-			{{/if}}
-		</div>
-	</div>
+      {{! NEXT / FINISH BUTTON }}
+    <div class="col">
+        {{#if hasNext}}
+          <button class="btn w-100 btn-lg btn-primary task-renderer-next-button" id="task-next-button">
+              {{i18n "wizard.next"}} <i class="fa fa-arrow-right"></i>
+          </button>
+        {{else if isEditable}}
+          <button class="btn w-100 btn-lg btn-success task-renderer-next-button task-renderer-finish-button"
+                  id="task-finish-button">
+              {{i18n "wizard.finish"}}
+          </button>
+        {{/if}}
+    </div>
+  </div>
 
-	{{#if isEditable}}
-		<div class="card-body text-center text-warning">
-			<small>
-				<i class="fa fa-fw fa-exclamation-circle"></i>
-				<span>{{i18n "task.saveHint"}}</span>
-			</small>
-		</div>
-	{{/if}}
+    {{#if isEditable}}
+      <div class="card-body text-center text-warning">
+        <small>
+          <i class="fa fa-fw fa-exclamation-circle"></i>
+          <span>{{i18n "task.saveHint"}}</span>
+        </small>
+      </div>
+    {{/if}}
 </template>

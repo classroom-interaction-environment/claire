@@ -12,46 +12,6 @@ export const TaskEditorViewStates = {
       return import('./pages/taskPages')
     }
   },
-  header: {
-    name: 'header',
-    label: 'editor.task.headerContent',
-    template: 'taskHeader',
-    inExtendedView: true,
-    async load () {
-      await import('../../../contexts/curriculum/curriculum/task/renderer/main/taskRendererFactory')
-      await import('./helpers/sharedTemplateHelpers')
-      return import('./header/taskHeader')
-    }
-  },
-  footer: {
-    name: 'footer',
-    label: 'editor.task.footerContent',
-    template: 'taskFooter',
-    inExtendedView: true,
-    async load () {
-      await import('../../../contexts/curriculum/curriculum/task/renderer/main/taskRendererFactory')
-      await import('./helpers/sharedTemplateHelpers')
-      return import('./footer/taskFooter')
-    }
-  },
-  baseInfo: {
-    name: 'baseInfo',
-    label: 'editor.task.baseInfo',
-    template: 'teBasicInfo',
-    inExtendedView: true,
-    async load () {
-      return import('./basic/basic')
-    }
-  },
-  units: {
-    name: 'units',
-    label: 'curriculum.units',
-    template: 'teunits',
-    inExtendedView: true,
-    async load () {
-      return import('./units/taskUnits')
-    }
-  },
   summary: {
     name: 'summary',
     label: 'editor.task.preview',
@@ -61,6 +21,15 @@ export const TaskEditorViewStates = {
       await import('../../../contexts/curriculum/curriculum/task/renderer/main/taskRendererFactory')
       await import('./helpers/sharedTemplateHelpers')
       return import('./summary/taskSummary')
+    }
+  },
+  units: {
+    name: 'units',
+    label: 'curriculum.units',
+    template: 'teunits',
+    inExtendedView: true,
+    async load () {
+      return import('./units/taskUnits')
     }
   },
   code: {

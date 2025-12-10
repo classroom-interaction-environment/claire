@@ -67,7 +67,7 @@
                                 </td>
 
                                 {{! MIN / PERIOD }}
-                                <td class="text-end">
+                                <td class="text-center">
                                     {{> link href="" label=this.period class="phase-edit-link text-dark" data-field="period" data-target=this._id }}
                                 </td>
 
@@ -80,10 +80,11 @@
                                     <p>
                                         {{#if this.plot}}
                                             {{> link href="" label=this.plot class="phase-edit-link text-dark" data-field="plot" data-target=this._id }}
-                                        {{else if isSelected this._id}}
-                                            {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link" data-field="plot" data-target=this._id }}
+                                        {{/if}}
+                                        {{#if isSelected this._id}}
+                                            {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-nowrap" data-field="plot" data-target=this._id }}
                                         {{else}}
-                                            {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-white" data-field="plot" data-target=this._id }}
+                                            {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-white text-nowrap" data-field="plot" data-target=this._id }}
                                         {{/if}}
                                     </p>
                                 </td>
@@ -94,11 +95,12 @@
                                         {{#with socialState this}}
                                             {{> link href="" label=this.label icon=this.icon class="no-wrap phase-edit-link text-dark" data-field="socialState" data-target=../../_id }}
                                         {{/with}}
-                                    {{else if isSelected this._id}}
-                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link" data-field="socialState" data-target=this._id }}
-                                    {{else}}
-                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-white" data-field="socialState" data-target=this._id }}
                                     {{/each}}
+                                    {{#if isSelected this._id}}
+                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-nowrap" data-field="socialState" data-target=this._id }}
+                                    {{else}}
+                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-white text-nowrap" data-field="socialState" data-target=this._id }}
+                                    {{/if}}
                                 </td>
 
                                 {{! METHOD }}
@@ -107,10 +109,11 @@
                                         <p>
                                             {{> link href="" label=this.method icon=this.icon class="phase-edit-link text-dark" data-field="method" data-target=this._id }}
                                         </p>
-                                    {{else if isSelected this._id}}
-                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link" data-field="method" data-target=this._id }}
+                                    {{/if}}
+                                    {{#if isSelected this._id}}
+                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-nowrap" data-field="method" data-target=this._id }}
                                     {{else}}
-                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-white" data-field="method" data-target=this._id }}
+                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-white text-nowrap" data-field="method" data-target=this._id }}
                                     {{/if}}
                                 </td>
 
@@ -135,11 +138,12 @@
                                                 </div>
                                             {{/with}}
                                         {{/link}}
-                                    {{else if isSelected this._id}}
-                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link" data-field="references" data-target=this._id }}
-                                    {{else}}
-                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-white" data-field="references" data-target=this._id }}
                                     {{/each}}
+                                    {{#if isSelected this._id}}
+                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-nowrap" data-field="references" data-target=this._id }}
+                                    {{else}}
+                                        {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-white text-nowrap" data-field="references" data-target=this._id }}
+                                    {{/if}}
                                 </td>
 
                                 {{! NOTES }}
@@ -148,9 +152,9 @@
                                         {{#if this.notes}}
                                             {{> link href="" label=this.notes icon=this.icon class="phase-edit-link text-dark" data-field="notes" data-target=this._id }}
                                         {{else if isSelected this._id}}
-                                            {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link" data-field="notes" data-target=this._id }}
+                                            {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-nowrap" data-field="notes" data-target=this._id }}
                                         {{else}}
-                                            {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-white" data-field="notes" data-target=this._id }}
+                                            {{> link href="" label=(i18n "actions.edit") icon="edit" class="phase-edit-link text-white text-nowrap" data-field="notes" data-target=this._id }}
                                         {{/if}}
                                     </p>
                                 </td>

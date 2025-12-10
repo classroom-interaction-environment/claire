@@ -64,12 +64,13 @@ Template.submenu.helpers({
   },
   navAtts () {
     const { data } = Template.instance()
+    const type = data.tabType || data?.tabType || 'tabs'
     const justified = data.justified || data?.nav?.justified
       ? 'nav-justified'
       : ''
     const ulClass = data.class || data?.nav?.class || ''
     return {
-      class: `nav nav-tabs ${justified} ${ulClass}`
+      class: `nav nav-${type} ${justified} ${ulClass}`
     }
   },
   visible (view, user) {

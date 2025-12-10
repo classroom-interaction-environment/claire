@@ -1,7 +1,6 @@
 import { Tracker } from 'meteor/tracker'
 import { Schema } from '../../../../../api/schema/Schema'
 import { Curriculum } from '../../../../../contexts/curriculum/Curriculum'
-import { Task } from '../../../../../contexts/curriculum/curriculum/task/Task'
 import { Material } from '../../../../../contexts/material/Material'
 import { getMaterialRenderer } from '../../../../../api/material/getMaterialRenderer'
 import { getLocalCollection } from '../../../../../infrastructure/collection/getLocalCollection'
@@ -25,7 +24,7 @@ export const MaterialSubviews = {}
  * load.
  * @return {string} name of the subview
  */
-MaterialSubviews.defaultViewName = () => Task.name
+MaterialSubviews.defaultViewName = () => unitEditorMaterialNames()[0].name
 
 /**
  * Returns a list of names for all available materials.
@@ -97,7 +96,7 @@ MaterialSubviews.create = ({ name }) => {
   // we need the list and main/preview renderer for each material type
   const previewRenderer = getMaterialRenderer(material, 'preview')
   const listRenderer = getMaterialRenderer(material, 'list')
-console.debug({ previewRenderer, listRenderer })
+
   // connect all functionality that is necessary to create forms
   // and load documents from the collections
   const loadMaterialFn = material.load || (doc => doc)

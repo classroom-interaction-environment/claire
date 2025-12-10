@@ -50,7 +50,7 @@ Template.taskEditor.onCreated(function () {
   const onError = err => API.fatal(err)
 
   instance.autorun(() => {
-    const tab = getQueryParam('tab')
+    const tab = getQueryParam('taskTab')
     if (!tab) return
     const currentView = instance.state.get('view')
     if (currentView !== tab) {
@@ -84,7 +84,8 @@ Template.taskEditor.onCreated(function () {
   // subscribe to the single taskDoc as it changes often
 
   instance.autorun(() => {
-    const taskId = Router.param('taskId')
+    const currentData = Template.currentData()
+    const taskId = currentData.taskId ?? Router.param('taskId')
     if (taskId) {
       instance.state.set('taskId', taskId)
       const taskDocQuery = { _id: $in([taskId]) }
@@ -156,7 +157,8 @@ Template.taskEditor.helpers({
     const instance = Template.instance()
     return {
       views: views,
-      queryParam: 'tab',
+      tabType: 'pills',
+      queryParam: 'taskTab',
       getQueryParam: getQueryParam,
       updateQueryParam: setQueryParams,
       onViewSelected: currentViewName => instance.state.set({ currentViewName })
@@ -221,13 +223,5 @@ Template.taskEditor.events({
   'change .task-editor-viewmode' (event, templateInstance) {
     const val = $(event.currentTarget).val()
     templateInstance.state.set('viewMode', val)
-  }
-})
-
-Template.taskEditorEditButton.events({
-  'click .edit-target-button' (event, templateInstance) {
-    event.preventDefault()
-    const target = dataTarget(event, templateInstance)
-    Shared.cache.set('target', target)
   }
 })

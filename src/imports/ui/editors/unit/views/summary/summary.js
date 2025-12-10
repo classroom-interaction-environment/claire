@@ -154,36 +154,37 @@ Template.uesummary.onCreated(async function () {
   // detect all material, that is linked to the unit but not to any phase of it
   instance.state.set({ preview })
 
-  // create on overview list of any basic information
+  instance.createBaseData = ({ unitDoc }) => {
+    // create on overview list of any basic information
+    const baseData = []
 
-  const baseData = []
+    // add classDoc data only if we are working on a copy; not on a master
+    baseData.push({
+      icon: SchoolClass.icon,
+      label: SchoolClass.label,
+      value: classDoc?.title
+    })
 
-  // add classDoc data only if we are working on a copy; not on a master
-  baseData.push({
-    icon: SchoolClass.icon,
-    label: SchoolClass.label,
-    value: classDoc?.title
-  })
+    // add pocketDoc data only if we are not working on a custom unit
+    baseData.push({
+      icon: Pocket.icon,
+      label: Pocket.label,
+      value: pocketDoc?.title ?? API.translate('unit.custom')
+    })
 
-  // add pocketDoc data only if we are not working on a custom unit
-  baseData.push({
-    icon: Pocket.icon,
-    label: Pocket.label,
-    value: pocketDoc?.title ?? API.translate('curriculum.customUnit')
-  })
+    // always add period and description
+    baseData.push({
+      icon: 'clock',
+      label: 'curriculum.period',
+      value: `${unitDoc.period} ${API.translate('time.minutes')}`
+    }, {
+      icon: 'align-justify',
+      label: 'common.description',
+      value: unitDoc.description || API.translate('common.noDescription')
+    })
 
-  // always add period and description
-  baseData.push({
-    icon: 'clock',
-    label: 'curriculum.period',
-    value: `${unitDoc.period} ${API.translate('time.minutes')}`
-  }, {
-    icon: 'align-justify',
-    label: 'common.description',
-    value: unitDoc.description || API.translate('common.noDescription')
-  })
-
-  instance.state.set({ baseData })
+    instance.state.set({ baseData })
+  }
 
   await loadIntoCollection({
     name: Dimension.methods.editor,
@@ -199,6 +200,7 @@ Template.uesummary.onCreated(async function () {
   // if unit doc changes, we update the associated dimensions
   instance.autorun(() => {
     const unitDoc = Template.currentData().unitDoc
+    instance.createBaseData({ unitDoc })
     const dimensionIds = unitDoc?.dimensions || []
     const dimensions = getLocalCollection(Dimension.name).find({ _id: { $in: dimensionIds } }).fetch()
     const objectiveIds = unitDoc?.objectives || []

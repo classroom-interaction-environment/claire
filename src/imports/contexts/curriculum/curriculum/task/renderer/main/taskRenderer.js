@@ -7,7 +7,7 @@ import taskrendererLang from './i18n/taskRendererLang'
 import './taskRendererFactory'
 import './taskRenderer.scss'
 import './taskRenderer.html'
-import { asyncTimeout } from '../../../../../../api/utils/asyncTimeout'
+import { dataTarget } from '../../../../../../ui/utils/dataTarget'
 
 /* ****************************************************************************
  * TaskRenderer
@@ -48,7 +48,7 @@ const API = Template.taskRenderer.setDependencies({
 
 Template.taskRenderer.onCreated(function () {
   const instance = this
-  instance.state.set('current', 0)
+  instance.state.set({ current: 0, previewType: 'desktop' })
   unsaved.clear()
 
   const { readMode, preview, data = {} } = instance.data
@@ -166,6 +166,9 @@ Template.taskRenderer.helpers({
   },
   isPreview () {
     return Template.getState('preview')
+  },
+  previewType (name) {
+    return Template.getState('previewType') === name
   },
   hasPrev () {
     return Template.getState('current') > 0
@@ -321,5 +324,10 @@ Template.taskRenderer.events({
     }
 
     templateInstance.state.set('taskComplete', false)
+  },
+  'click .preview-type-btn' (event, templateInstance) {
+    event.preventDefault()
+    const previewType = dataTarget(event)
+    templateInstance.state.set({ previewType })
   }
 })

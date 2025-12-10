@@ -170,7 +170,7 @@ Template.taskPageContent.onRendered(function onTemplateRendered () {
           failure: er => API.notify(er),
           success: () => {
             instance.state.set('dragging', false)
-            API.notify('form.updateComplete')
+            // API.notify('form.updateComplete')
           }
         }), 50)
       }

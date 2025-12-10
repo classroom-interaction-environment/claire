@@ -26,7 +26,15 @@ export const createGetAll = ({ name, roles, isCurriculum }) => {
         type: Array,
         optional: true
       },
-      'skip.$': String
+      'skip.$': String,
+      // omit field names to exclude them from the result
+      fields: {
+        type: Array,
+        optional: true
+      },
+      'fields.$': {
+        type: String
+      }
     },
     roles: roles,
     numRequests: 1,
@@ -41,7 +49,7 @@ const getRunFct = ({ name, isCurriculum }) => {
     // because the curriculum is a "semi-public" entity: all registered users
     // should be able to read all curriculum documents
 
-    return async function ({ ids = [], skip = [] }) {
+    return async function ({ ids = [], skip = [], fields = [] }) {
       if (ids !== null && !ids?.length) {
         return []
       }
@@ -70,7 +78,14 @@ const getRunFct = ({ name, isCurriculum }) => {
       }
 
       const query = { $or: [masterDocsQuery, customDocsQuery] }
-      const docs = await collection.find(query).fetchAsync()
+      const options = {}
+      if (fields.length) {
+        options.fields = {}
+        fields.forEach(name => {
+          options.fields[name] = 0
+        })
+      }
+      const docs = await collection.find(query, options).fetchAsync()
       log('get all', JSON.stringify(query), '=>', docs.length)
       return docs
     }

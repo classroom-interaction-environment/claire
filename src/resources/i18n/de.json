@@ -474,7 +474,7 @@
       "contentEntry": "Inhalt"
     },
     "pages": {
-      "title": "Seiten",
+      "title": "Seiteninhalte",
       "page": "Seite",
       "pageTitle": "Seitentitel",
       "content": "Seiteninhalt"
@@ -541,6 +541,7 @@
     "histogram": "Histogramm"
   },
   "unit": {
+    "custom": "Eigene Sequenz",
     "material": "Externe Ressourcen und Links",
     "taskUnwantedComplete": "Hier klicken, wenn die Aufgabe unbeabsichtigt beendet wurde",
     "furtherReadings": "Weiterführende Literatur",

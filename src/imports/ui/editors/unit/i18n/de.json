@@ -46,7 +46,8 @@
         "unexpected": "Unerwarter Fehler",
         "editTaskInEditor": "Im Aufgaben-Editor bearbeiten",
         "confirmRemove": "Sie sind dabei, das Material \"{{title}}\" aus der Sequenz zu entfernen. Das Material wird nicht vollständig gelöscht und kann jederzeit erneut hinzugefügt werden.",
-        "confirmDelete": "Achtung! Sie sind dabei dieses Material endgültig zu löschen. Danach ist es nicht mehr verfügbar."
+        "confirmDelete": "Achtung! Sie sind dabei dieses Material endgültig zu löschen. Danach ist es nicht mehr verfügbar.",
+        "closeTask": "Aufgabenbearbeitung beenden"
       },
       "phases": {
         "title": "Unterrichtsphasen",

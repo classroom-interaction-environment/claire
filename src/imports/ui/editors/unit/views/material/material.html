@@ -1,7 +1,8 @@
 <template name="uematerial">
     <div class="my-4 clearfix">
 		<span class="float-end">
-			<button class="btn btn-sm btn-secondary uematerial-select-button" disabled="{{#unless selectEntries}}disabled{{/unless}}">
+          {{#if selectEntries}}
+			<button class="btn btn-sm btn-secondary uematerial-select-button">
                 {{i18n 'actions.add'}}
                 {{#with selectEntries}}
                     <span class="badge bg-pill text-light">
@@ -9,6 +10,7 @@
                     </span>
                 {{/with}}
             </button>
+            {{/if}}
 			<button class="btn btn-sm btn-success uematerial-insert-button">
 				<i class="fa fa-fw fa-plus"></i> {{i18n 'actions.create'}}
 			</button>

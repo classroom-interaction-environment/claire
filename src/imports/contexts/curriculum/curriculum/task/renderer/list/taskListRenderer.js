@@ -19,14 +19,9 @@ Template.taskListRenderer.helpers({
       return { length: arr.length }
     }
   },
-  emptyPages (arr = []) {
-    let empty = 0
-    arr.forEach(page => {
-      if (!page.content || page.content.length === 0) {
-        empty++
-      }
-    })
-    return empty
+  emptyPage (taskDoc) {
+    const pages = taskDoc.pages ?? []
+    return !pages[0]?.content?.length
   },
   copyRequired (taskDoc, userId = Meteor.userId()) {
     // there is a copy required in the following cases:

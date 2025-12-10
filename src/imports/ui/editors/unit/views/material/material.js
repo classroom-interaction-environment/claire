@@ -26,13 +26,14 @@ import { getMaterialContexts } from '../../../../../contexts/material/initMateri
 import { loadIntoCollection } from '../../../../../infrastructure/loading/loadIntoCollection'
 import { getLocalCollection } from '../../../../../infrastructure/collection/getLocalCollection'
 import { getQueryParam } from '../../../../../api/routes/params/getQueryParam'
+import { unique } from '../../../../../utils/array/unique'
 
 import '../../../../renderer/phase/compact/compactPhases'
 import './material.css'
 import './material.html'
 
 const API = Template.uematerial.setDependencies({
-  contexts: [...(new Set([Phase, Unit].concat(getMaterialContexts()))).values()],
+  contexts: unique([Phase, Unit].concat(getMaterialContexts())),
   useForms: true
 })
 
@@ -47,8 +48,21 @@ const removeReferences = createRemoveReferences(getCollection(Phase.name))
 Template.uematerial.onCreated(function onUeMaterialCreated () {
   const instance = this
   instance.subViews = new Map()
+
   instance.state.set('view', MaterialSubviews.defaultViewName())
-  instance.state.set('subviewNames', MaterialSubviews.names())
+
+  instance.autorun(c => {
+    if (!API.initComplete()) {
+      return
+    }
+    const subViewNames = MaterialSubviews.names().sort((a, b) => {
+      const transA = API.translate(a.label)
+      const transB = API.translate(b.label)
+      return transA.localeCompare(transB)
+    })
+    instance.state.set({ subViewNames })
+    c.stop()
+  })
 
   instance.getViewState = () => {
     const viewName = instance.state.get('view')
@@ -217,7 +231,7 @@ Template.uematerial.helpers({
       instance.state.get('dataComplete')
   },
   subviewNames () {
-    return Template.getState('subviewNames')
+    return Template.getState('subViewNames')
   },
   active (name) {
     return Template.getState('view') === name

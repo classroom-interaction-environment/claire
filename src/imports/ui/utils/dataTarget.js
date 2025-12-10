@@ -1,4 +1,4 @@
-export const dataTarget = (event, templateInstance, field = 'target') => {
+export const dataTarget = (event, templateInstance = null, field = 'target') => {
   const fieldName = typeof templateInstance === 'string' ? templateInstance : field
   if (!event || !event.currentTarget) throw new Error('Expected event with target')
   let value = event.currentTarget.dataset[fieldName]

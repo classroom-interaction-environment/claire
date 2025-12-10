@@ -167,7 +167,7 @@ Template.uephases.onRendered(function onTemplateRendered () {
             prepare: () => instance.state.set('dragUpdate', currentTarget),
             receive: () => instance.state.set('dragUpdate', null),
             failure: er => API.notify(er),
-            success: () => API.notify('editor.unit.unitUpdated')
+            success: () => API.notify(API.translate('editor.unit.unitUpdated'))
           })
         }
       })
@@ -390,7 +390,7 @@ Template.uephases.events({
       receive: () => templateInstance.state.set('submitting', false),
       failure: er => API.notify(er),
       success: () => {
-        API.notify('editor.unit.unitUpdated')
+        API.notify(API.translate('editor.unit.unitUpdated'))
         templateInstance.$('#uniteditor-phases-edit-modal').modal('hide')
       }
     })
@@ -449,7 +449,7 @@ Template.uephases.events({
       },
       failure: err => API.notify(err),
       success: () => {
-        API.notify('editor.unit.unitUpdated')
+        API.notify(API.translate('editor.unit.unitUpdated'))
         formReset('uecreatePhaseForm')
       }
     })
