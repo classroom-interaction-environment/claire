@@ -165,6 +165,13 @@ Template.uesummary.onCreated(async function () {
 
     // add classDoc data only if we are working on a copy; not on a master
     baseData.push({
+      icon: Unit.icon,
+      label: Unit.label,
+      value: unitDoc.title
+    })
+
+    // add classDoc data only if we are working on a copy; not on a master
+    baseData.push({
       icon: SchoolClass.icon,
       label: SchoolClass.label,
       value: classDoc?.title

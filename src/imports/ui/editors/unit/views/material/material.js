@@ -1,33 +1,23 @@
 import { Template } from 'meteor/templating'
-import { Meteor } from 'meteor/meteor'
-
-import { i18n } from '../../../../../api/language/language'
 import { Unit } from '../../../../../contexts/curriculum/curriculum/unit/Unit'
 import { Phase } from '../../../../../contexts/curriculum/curriculum/phase/Phase'
 import { unitEditorSubscriptionKey } from '../../unitEditorSubscriptionKey'
 import { MaterialSubviews } from './MaterialSubviews'
-
 import { formIsValid, formReset } from '../../../../components/forms/formUtils'
 import { dataTarget } from '../../../../utils/dataTarget'
 import { getCollection } from '../../../../../api/utils/getCollection'
-import { confirmDialog } from '../../../../components/confirm/confirm'
 import { updateContextDoc } from '../../../../controllers/document/updateContextDoc'
 import { toUpdateDoc } from '../../../../utils/toUpdateDoc'
 import { setQueryParams } from '../../../../../api/routes/params/setQueryParams'
-import { userIsCurriculum } from '../../../../../api/accounts/userIsCurriculum'
-import { createRemoveReferences } from './createRemoveReferences'
 import { $in } from '../../../../../api/utils/query/inSelector'
-import { unitEditorIsMasterMode } from '../../utils/unitEditorIsMasterMode'
-import { createMaterial } from './createMaterial'
-import { isCurriculumDoc } from '../../../../../api/decorators/methods/isCurriculumDoc'
-import { createSelectableMaterialEntriesQuery } from './helpers/createSelectableMaterialEntriesQuery'
-import { entries } from './helpers/entries'
 import { getMaterialContexts } from '../../../../../contexts/material/initMaterial'
 import { loadIntoCollection } from '../../../../../infrastructure/loading/loadIntoCollection'
 import { getLocalCollection } from '../../../../../infrastructure/collection/getLocalCollection'
 import { getQueryParam } from '../../../../../api/routes/params/getQueryParam'
 import { unique } from '../../../../../utils/array/unique'
-
+import { createMaterialEvents } from '../common/createMaterialEvents'
+import { createMaterialHelpers } from '../common/createMaterialHelpers'
+import { createMaterialEdit } from '../common/createMaterialEdit'
 import '../../../../renderer/phase/compact/compactPhases'
 import './material.css'
 import './material.html'
@@ -36,14 +26,6 @@ const API = Template.uematerial.setDependencies({
   contexts: unique([Phase, Unit].concat(getMaterialContexts())),
   useForms: true
 })
-
-const Labels = {
-  create: 'editor.unit.material.create',
-  select: 'editor.unit.material.select',
-  preview: 'editor.unit.material.preview'
-}
-
-const removeReferences = createRemoveReferences(getCollection(Phase.name))
 
 Template.uematerial.onCreated(function onUeMaterialCreated () {
   const instance = this
@@ -68,6 +50,18 @@ Template.uematerial.onCreated(function onUeMaterialCreated () {
     const viewName = instance.state.get('view')
     return instance.subViews.get(viewName)
   }
+
+  instance.edit = createMaterialEdit({
+    API,
+    templateInstance: instance,
+    onComplete: ({ insertDoc }) => {
+      instance.state.set({
+        edit: true,
+        editMaterialDoc: insertDoc
+      })
+      API.showModal('uematerial-edit-modal')
+    }
+  })
 
   // ===========================================================================
   // 2. subscribe phases
@@ -236,124 +230,7 @@ Template.uematerial.helpers({
   active (name) {
     return Template.getState('view') === name
   },
-  entryCount (fieldName) {
-    const unitDoc = Template.getState('unitDoc')
-    if (!unitDoc || !unitDoc[fieldName]) { return 0 }
-    return unitDoc[fieldName].length
-  },
-  listRendererTemplate () {
-    const sub = Template.instance().getViewState()
-    return sub.listRenderer.template
-  },
-  preview () {
-    const sub = Template.instance().getViewState()
-    return sub.preview !== false
-  },
-  editable () {
-    const sub = Template.instance().getViewState()
-    return sub.editable !== false
-  },
-  entries () {
-    const instance = Template.instance()
-    const unitDoc = instance.state.get('unitDoc')
-    const viewState = instance.getViewState()
-    return viewState && entries(viewState, unitDoc)
-  },
-  withUnitDoc (entry) {
-    const instance = Template.instance()
-    const unitDoc = instance.state.get('unitDoc')
-    const viewState = instance.getViewState()
-    const context = viewState.context
-    return Object.assign({}, entry, { unitDoc, context, parent: instance })
-  },
-  selectEntries () {
-    const instance = Template.instance()
-    const unitDoc = instance.state.get('unitDoc')
-    const originalUnitDoc = instance.state.get('originalUnitDoc')
-    const viewState = instance.getViewState()
-    return viewState && createSelectableMaterialEntriesQuery(viewState, unitDoc, originalUnitDoc)
-  },
-  selectEntryModalData (entry) {
-    return Object.assign({}, entry, { isModal: true })
-  },
-  isGlobal (materialDoc) {
-    const originalUnitDoc = Template.getState('originalUnitDoc')
-    const view = Template.getState('view')
-    return !materialDoc._original &&
-      (!originalUnitDoc || !(originalUnitDoc[view] || []).includes(materialDoc._id))
-  },
-  isTarget (id) {
-    return Template.getState('targetMaterial') === id
-  },
-  label (fieldName) {
-    const viewState = Template.instance().getViewState()
-    const title = i18n.get(viewState.context.label)
-    const label = Labels[fieldName]
-    return i18n.get(label, { title })
-  },
-  processing (targetId) {
-    return Template.getState('processing') === targetId
-  },
-  create () {
-    return Template.getState('create')
-  },
-  creating () {
-    return Template.getState('creating')
-  },
-  edit () {
-    return Template.getState('edit')
-  },
-  editMaterialDoc () {
-    return Template.getState('editMaterialDoc')
-  },
-  createMaterialSchema () {
-    return Template.instance().getViewState().schema
-  },
-  createInfo () {
-    const viewState = Template.instance().getViewState()
-    return viewState.info?.create
-  },
-  formState () {
-    const processing = Template.getState('processing')
-    return processing ? 'disabled' : 'normal'
-  },
-  previewTemplate () {
-    const viewState = Template.instance().getViewState()
-    return viewState.previewRenderer.template
-  },
-  previewTarget () {
-    const instance = Template.instance()
-    const targetId = instance.state.get('previewTarget')
-    const viewState = instance.getViewState()
-    if (!viewState) { return null }
-
-    const previewCtx = viewState.previewRenderer.previewData.call(viewState, targetId, instance)
-    if (!previewCtx) { return null }
-
-    previewCtx.print = !!instance.state.get('isPrintPreview')
-    return previewCtx
-  },
-  phases () {
-    return Template.getState('phases')
-  },
-  materialToLink () {
-    return Template.getState('materialToLink')
-  },
-  linkedWithPhase (materialId, phaseDoc) {
-    if (!phaseDoc || !phaseDoc.references) return
-    return phaseDoc.references.find(entry => entry.document === materialId)
-  },
-  linkingPhase (phaseId) {
-    return Template.getState('linkingPhase') === phaseId
-  },
-  canDeleteMaterial (materialDoc) {
-    if (materialDoc._master) {
-      return userIsCurriculum()
-    }
-
-    const userId = Meteor.userId()
-    return (materialDoc.createdBy === userId || materialDoc.userId === userId)
-  }
+  ...createMaterialHelpers({ API })
 })
 
 Template.uematerial.events({
@@ -361,59 +238,6 @@ Template.uematerial.events({
     event.preventDefault()
     const targetView = dataTarget(event, templateInstance)
     setQueryParams({ sub: targetView })
-  },
-  'click .uematerial-preview-button' (event, templateInstance) {
-    event.preventDefault()
-    const targetId = dataTarget(event, templateInstance)
-    templateInstance.state.set('previewTarget', targetId)
-    API.showModal('uematerial-preview-modal')
-  },
-  'click .uematerial-link-to-phase-button' (event, templateInstance) {
-    event.preventDefault()
-    const materialToLink = dataTarget(event, templateInstance)
-    templateInstance.state.set('materialToLink', materialToLink)
-    API.showModal('uematerial-linkphase-modal')
-  },
-  'click .uematerial-phaselink-button' (event, templateInstance) {
-    event.preventDefault()
-
-    const phaseId = dataTarget(event, templateInstance, 'phase')
-
-    const materialId = templateInstance.state.get('materialToLink')
-    const viewState = templateInstance.getViewState()
-    const { context } = viewState
-
-    const phaseDoc = getCollection(Phase.name).findOne(phaseId)
-    let references = phaseDoc.references || []
-
-    if (references.find(el => el.document === materialId)) {
-      references = references.filter(el => el.document !== materialId)
-    }
-    else {
-      references.push({ collection: context.name, document: materialId })
-    }
-
-    updateContextDoc({
-      context: Phase,
-      _id: phaseId,
-      doc: { references },
-      prepare: () => templateInstance.state.set('linkingPhase', phaseId),
-      receive: () => templateInstance.state.set('linkingPhase', null),
-      failure: er => API.notify(er)
-    }).catch(e => API.notify(e))
-  },
-  'hidden.bs.modal #uematerial-preview-modal' (event, templateInstance) {
-    templateInstance.state.set('previewTarget', null)
-  },
-  'click .uematerial-insert-button' (event, templateInstance) {
-    event.preventDefault()
-    templateInstance.state.set('create', true)
-    const subView = templateInstance.getViewState()
-    subView.hooks.formOpen('create')
-    setTimeout(() => API.showModal('uematerial-create-modal'), 50)
-  },
-  'hidden.bs.modal #uematerial-create-modal' (event, templateInstance) {
-    templateInstance.state.set('create', false)
   },
   'hidden.bs.modal #uematerial-edit-modal' (event, templateInstance) {
     templateInstance.state.set('editMaterialDoc', null)
@@ -426,10 +250,6 @@ Template.uematerial.events({
 
     const subView = templateInstance.getViewState()
     subView.hooks.formClosed('create')
-  },
-  'click .uematerial-select-button' (event, templateInstance) {
-    event.preventDefault()
-    templateInstance.$('#uematerial-select-modal').modal('show')
   },
   'click .uematerial-add-button' (event, templateInstance) {
     event.preventDefault()
@@ -456,201 +276,6 @@ Template.uematerial.events({
       failure: er => API.notify(er),
       success: () => API.notify('editor.unit.unitUpdated')
     }).catch(e => API.notify(e))
-  },
-  'click .uematerial-edit-button' (event, templateInstance) {
-    event.preventDefault()
-
-    const isMasterMaterial = dataTarget(event, templateInstance, 'master')
-    const redirect = dataTarget(event, templateInstance, 'redirect')
-    const removeId = dataTarget(event, templateInstance)
-    const viewState = templateInstance.getViewState()
-    const unitDoc = templateInstance.state.get('unitDoc')
-    const { context } = viewState
-    const insertDoc = getLocalCollection(context.name).findOne(removeId)
-    const isMasterMode = unitEditorIsMasterMode(unitDoc)
-
-    if (isMasterMaterial && !isMasterMode) {
-      return confirmDialog({ text: 'curriculum.cloneMaster' })
-        .catch(e => API.notify(e))
-        .then(result => {
-          if (!result) return
-
-          // we keep a reference to the original document
-          // in order to identify clones from _master docs
-          insertDoc._original = insertDoc._id
-
-          // thus we can safely remove any _master related
-          // fields and replace them on insert with new ones
-          delete insertDoc._id
-          delete insertDoc.createdBy
-          delete insertDoc.createdAt
-          delete insertDoc.updatedBy
-          delete insertDoc.updatedAt
-          delete insertDoc._master
-
-          // give additional context to the onCreated hook
-          // to allow contexts to decide, what to do when a new doc
-          // is created
-          const onCreated = (viewState.onCreated || viewState.hooks?.onCreated || function () {}).bind({
-            redirect,
-            isMasterMaterial,
-            isMasterMode
-          })
-
-          createMaterial({
-            unitDoc,
-            insertDoc,
-            removeId,
-            viewState,
-            templateInstance,
-            onCreated,
-            API: API
-          }).catch(e => API.notify(e))
-        })
-    }
-
-    templateInstance.state.set('edit', true)
-    setTimeout(() => {
-      templateInstance.state.set('editMaterialDoc', insertDoc)
-      templateInstance.$('#uematerial-edit-modal').modal('show')
-    }, 50)
-  },
-  'click .uematerial-remove-button' (event, templateInstance) {
-    event.preventDefault()
-
-    const targetId = dataTarget(event, templateInstance)
-    const unitDoc = templateInstance.state.get('unitDoc')
-    const viewState = templateInstance.getViewState()
-    const { field } = viewState
-
-    const { context } = viewState
-    const materialDoc = getLocalCollection(context.name).findOne(targetId)
-    const title = materialDoc.title || materialDoc.name || i18n.get(context.label)
-    const textOptions = { title }
-
-    // material can be fully deleted if
-    // - its own material or
-    // - it's a copy
-    // - it's a master doc and
-    // - this is a master unit and
-    // - the user is a curriculum user
-    const deleteMaterial =
-      materialDoc._custom ||
-      materialDoc._original ||
-      (materialDoc._master &&
-        unitEditorIsMasterMode(unitDoc) &&
-        userIsCurriculum())
-
-    const confirmOptions = deleteMaterial
-      ? {
-          text: 'editor.unit.material.confirmDelete',
-          textOptions,
-          codeRequired: true,
-          type: 'danger'
-        }
-      : {
-          text: 'editor.unit.material.confirmRemove',
-          textOptions,
-          codeRequired: false,
-          type: 'secondary'
-        }
-
-    confirmDialog(confirmOptions)
-      .then(result => {
-        if (!result) return
-
-        // set "processing" state after confirm
-        // or it would indicate already some processing
-        // even if unwanted
-        templateInstance.state.set('processing', targetId)
-
-        const index = unitDoc[field].indexOf(targetId)
-        if (index === -1) {
-          return API.notify({
-            message: 'editor.unit.material.unexpected',
-            type: 'error'
-          })
-        }
-
-        const updateDoc = { [field]: unitDoc[field] }
-        updateDoc[field].splice(index, 1)
-
-        updateContextDoc({
-          context: Unit,
-          _id: unitDoc._id,
-          doc: updateDoc,
-          receive: () => templateInstance.state.set('processing', null),
-          failure: er => API.notify(er),
-          success: () => {
-            API.notify('editor.unit.unitUpdated')
-
-            // remove reference from phase only if we have
-            // been successful with "updating" the unit doc
-            // if there is any that references this material
-            if (unitDoc.phases?.length) {
-              removeReferences({
-                phases: unitDoc.phases,
-                field: field,
-                targetId: targetId
-              }, (err, phaseDoc) => {
-                if (err) {
-                  return API.notify(err)
-                }
-                else {
-                  return API.notify('editor.unit.material.unlinkedFromPhase')
-                }
-              })
-            }
-
-            // only delete documents, when the use case permits it, will be
-            // checked on the server for permissions etc., too
-            if (deleteMaterial) {
-              Meteor.call(context.methods.remove.name, { _id: targetId }, (err) => {
-                if (err) {
-                  API.notify(err)
-                }
-                else {
-                  getLocalCollection(context.name).remove({ _id: targetId })
-                  API.notify(i18n.get('editor.unit.material.deleted', { title }))
-                }
-              })
-            }
-          }
-        })
-      })
-      .catch(e => API.notify(e))
-  },
-  'submit #createMaterialForm' (event, templateInstance) {
-    event.preventDefault()
-
-    const unitDoc = templateInstance.state.get('unitDoc')
-    const viewState = templateInstance.getViewState()
-    const { schema } = viewState
-    const insertDoc = formIsValid(schema, 'createMaterialForm')
-    if (!insertDoc) {
-      return
-    }
-
-    // set flag
-    templateInstance.state.set('creating', true)
-
-    // if this is curriculum mode, then all created material is master material
-    if (isCurriculumDoc(unitDoc)) {
-      insertDoc._master = true
-    }
-
-    createMaterial({
-      unitDoc,
-      insertDoc,
-      viewState,
-      templateInstance,
-      API,
-      onCreated: () => {
-        setTimeout(() => {
-          templateInstance.state.set('creating', false)
-        }, 500)
-      }
-    })
   },
   'submit #editMaterialForm' (event, templateInstance) {
     event.preventDefault()
@@ -679,5 +304,6 @@ Template.uematerial.events({
         })
       }
     })
-  }
+  },
+  ...createMaterialEvents({ API })
 })

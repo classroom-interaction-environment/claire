@@ -1,87 +1,89 @@
 <template name="uesummary">
-<div class="my-4">
-    {{!-- basic info --}}
-    {{#ueSection title=(i18n "editor.unit.basicInfo") }}
-        {{#unless isPreview}}
-          <button class="btn btn-outline-primary ms-auto uesummary-edit-button"
-                  data-target="basicInfo"
-                  title="{{i18n 'actions.edit'}}">
-            <i class="fa fa-fw fa-edit"></i>
-          </button>
-        {{/unless}}
-    {{/ueSection}}
-  <ul class="list-group mb-4">
-      {{#each entry in baseData}}
-        <li class="list-group-item d-flex">
-            {{> tooltip icon=entry.icon title=(i18n entry.label)}}
-          <span class="w-100 ms-3">
-              {{entry.value}}
-          </span>
-        </li>
-      {{else}}
-        <li class="list-group-item bg-warning d-flex">
-          <span>{{i18n 'editor.unit.incomplete' name=(i18n "editor.unit.basicInfo")}}</span>
-        </li>
-      {{/each}}
-  </ul>
+  <div class="my-4">
+      {{!-- basic info --}}
+      {{#ueSection title=(i18n "editor.unit.basicInfo") }}
+          {{#unless isPreview}}
+            <button class="btn btn-outline-primary ms-auto uesummary-edit-button"
+                    data-target="basicInfo"
+                    title="{{i18n 'actions.edit'}}">
+              <i class="fa fa-fw fa-edit"></i>
+            </button>
+          {{/unless}}
+      {{/ueSection}}
+    <ul class="list-group mb-4">
+        {{#each entry in baseData}}
+          <li class="list-group-item d-flex">
+              {{> tooltip icon=entry.icon title=(i18n entry.label)}}
+            <span class="w-100 ms-3">
+                {{entry.value}}
+            </span>
+          </li>
+        {{else}}
+          <li class="list-group-item bg-warning d-flex">
+            <span>{{i18n 'editor.unit.incomplete' name=(i18n "editor.unit.basicInfo")}}</span>
+          </li>
+        {{/each}}
+    </ul>
 
 
-    {{!-- dimensions --}}
-    {{#ueSection title=(i18n "curriculum.dimensions") }}
-        {{#unless isPreview}}
-          <button class="btn btn-outline-primary ms-auto uesummary-edit-button"
-                  data-target="dimensions"
-                  title="{{i18n 'actions.edit'}}">
-            <i class="fa fa-fw fa-edit"></i>
-          </button>
-        {{/unless}}
-    {{/ueSection}}
+      {{!-- dimensions --}}
+      {{#ueSection title=(i18n "curriculum.dimensions") }}
+          {{#unless isPreview}}
+            <button class="btn btn-outline-primary ms-auto uesummary-edit-button"
+                    data-target="dimensions"
+                    title="{{i18n 'actions.edit'}}">
+              <i class="fa fa-fw fa-edit"></i>
+            </button>
+          {{/unless}}
+      {{/ueSection}}
 
-    {{#onLoaded complete=dimensionsComplete type="data"}}
-      <ul class="list-group mb-4">
-        <li class="list-group-item d-flex gap-2">
-            {{#each dimension in dimensions}}
-              <span class="badge p-3 fw-light"
-                    style="background-color: {{dimension.color}};color: {{contrastColor dimension.color}};">
-                  {{dimension.title}}
-              </span>
-            {{/each}}
-        </li>
-      </ul>
-        {{#unless dimensions.length}}
-          <div class="alert bg-warning">
-            <span class="alert-heading">{{i18n 'editor.unit.incomplete' name=(i18n "curriculum.dimensions")}}</span>
-          </div>
-        {{/unless}}
-    {{/onLoaded}}
+      {{#onLoaded complete=dimensionsComplete type="data"}}
+          {{#unless dimensions.length}}
+            <div class="alert bg-warning">
+              <span class="alert-heading">{{i18n 'editor.unit.incomplete' name=(i18n "curriculum.dimensions")}}</span>
+            </div>
+          {{else}}
+            <ul class="list-group mb-4">
+              <li class="list-group-item d-flex gap-2">
+                  {{#each dimension in dimensions}}
+                    <span class="badge p-3 fw-light"
+                          style="background-color: {{dimension.color}};color: {{contrastColor dimension.color}};">
+                        {{dimension.title}}
+                    </span>
+                  {{/each}}
+              </li>
+            </ul>
+          {{/unless}}
+      {{/onLoaded}}
 
-    {{!-- objectives --}}
-    {{#ueSection title=(i18n "curriculum.objectives") }}
-        {{#unless isPreview}}
-          <button class="btn btn-outline-primary ms-auto uesummary-edit-button"
-                  data-target="objectives"
-                  title="{{i18n 'actions.edit'}}">
-            <i class="fa fa-fw fa-edit"></i>
-          </button>
-        {{/unless}}
-    {{/ueSection}}
-    {{#onLoaded complete=objectivesComplete type="data"}}
-      <ul class="list-group">
-          {{#each objectiveDoc in objectives}}
-            <li class="list-group-item">
-                {{> objective objectiveDoc}}
-            </li>
-          {{/each}}
-      </ul>
-        {{#unless objectives.length}}
-          <div class="alert bg-warning">
-            <span class="alert-heading">{{i18n 'editor.unit.incomplete' name=(i18n "curriculum.objectives")}}</span>
-          </div>
-        {{/unless}}
-    {{/onLoaded}}
+      {{!-- objectives --}}
+      {{#ueSection title=(i18n "curriculum.objectives") }}
+          {{#unless isPreview}}
+            <button class="btn btn-outline-primary ms-auto uesummary-edit-button"
+                    data-target="objectives"
+                    title="{{i18n 'actions.edit'}}">
+              <i class="fa fa-fw fa-edit"></i>
+            </button>
+          {{/unless}}
+      {{/ueSection}}
+      {{#onLoaded complete=objectivesComplete type="data"}}
+          {{#unless objectives.length}}
+            <div class="alert bg-warning">
+              <span class="alert-heading">{{i18n 'editor.unit.incomplete' name=(i18n "curriculum.objectives")}}</span>
+            </div>
+          {{else}}
+            <ul class="list-group">
+                {{#each objectiveDoc in objectives}}
+                  <li class="list-group-item">
+                      {{> objective objectiveDoc}}
+                  </li>
+                {{/each}}
+            </ul>
+          {{/unless}}
+      {{/onLoaded}}
 
-    {{> formModal}}
-</div>
+      {{> formModal}}
+  </div>
 </template>
 
 <template name="ueSection">

@@ -19,6 +19,7 @@
 
     {{#if showBigButtons}}
       <div class="my-4 d-flex align-items-center justify-content-center gap-4">
+        {{#if selectEntries}}
         <button class="btn btn-secondary uematerial-select-button" style="width: 10rem; height: 10rem;">
           <span class="d-block text-center"><i class="fa fa-fw fa-bars fa-3x"></i></span>
           <span class="d-block fw-semibold fs-4">{{i18n 'actions.add'}}</span>
@@ -28,8 +29,7 @@
               </span>
             {{/with}}
         </button>
-          {{#if selectEntries}}
-          {{/if}}
+        {{/if}}
         <button class="text-center btn btn-success uematerial-insert-button" style="width: 10rem; height: 10rem;">
           <span class="d-block text-center"><i class="fa fa-fw fa-plus fa-3x"></i></span>
           <span class="d-block fw-semibold fs-4">{{i18n 'actions.create'}}</span>
@@ -153,7 +153,7 @@
             {{#if create}}
                 {{> caroForm id="createMaterialForm"
                         schema=createMaterialSchema
-                        hideLegend=true
+                        collapse=false
                         type=(formState)}}
             {{/if}}
             {{#mfooter}}
@@ -173,6 +173,91 @@
                   </button>
                 {{/unless}}
 
+            {{/mfooter}}
+        {{/modal}}
+
+        {{! preview material modal, loading preview renderer }}
+        {{#if preview}}
+            {{#modal id="uematerial-preview-modal" large=true scrollable=true}}
+                {{>mheader dismiss=true title=(label "preview") class="bg-secondary text-white"}}
+                {{#mbody id='uematerial-preview-modal-body'}}
+                    {{#with previewTarget}}
+                        {{> Template.dynamic template=previewTemplate data=this}}
+                    {{/with}}
+                {{/mbody}}
+                {{#mfooter}}
+                  <button class="btn btn-secondary" data-bs-dismiss="modal">
+                      {{i18n "actions.close"}}
+                  </button>
+                {{/mfooter}}
+            {{/modal}}
+        {{/if}}
+
+        {{! select existing material modal }}
+        {{#modal id="uematerial-select-modal" large=true}}
+            {{#mheader dismiss=true title=(label "select") class="bg-secondary text-white"}}{{/mheader}}
+            {{#with selectEntries}}
+              <!-- table list with tasks -->
+              <table class="table">
+                  {{#each entry in this}}
+                    <tr>
+                      <td>
+                          {{> documentState document=entry showLabel=false}}
+                      </td>
+                        {{> Template.dynamic
+                                template=listRendererTemplate
+                                data=(selectEntryModalData entry)}}
+                      <td class="text-end no-wrap">
+                          {{> actionButton type="outline-secondary"
+                                  class="btn-sm uematerial-add-button"
+                                  data-target=(entry._id)
+                                  title=(i18n "actions.add")
+                                  icon="plus"
+                                  blocked=(processing entry._id)}}
+                      </td>
+                    </tr>
+                  {{/each}}
+              </table>
+            {{else}}
+                {{>nodocs}}
+            {{/with}}
+        {{/modal}}
+
+        {{! link material with phases modal }}
+        {{#modal id="uematerial-linkphase-modal" large=true}}
+            {{#mheader dismiss=true title=(i18n "editor.unit.material.linkToPhase")
+                       class="bg-secondary text-white"}}{{/mheader}}
+            {{#with materialToLink}}
+              <ul class="list-group">
+                  {{#each phase in phases}}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            {{phase.title}}
+                        </span>
+                      <span>
+                          {{#if linkedWithPhase this phase}}
+                            <span class="me-2"><i class="fa fa-fw fa-check"></i> {{i18n "common.linked"}}</span>
+                              {{>actionButton icon="minus" type="secondary" class="uematerial-phaselink-button"
+                                      title=(i18n "editor.unit.material.unlinkFromPhase") data-phase=phase._id blocked=(linkingPhase phase._id)}}
+                          {{else}}
+                              {{>actionButton icon="plus" type="outline-secondary" class="uematerial-phaselink-button"
+                                      title=(i18n "editor.unit.material.linkWithPhase") data-phase=phase._id blocked=(linkingPhase phase._id)}}
+                          {{/if}}
+                      </span>
+                    </li>
+                  {{else}}
+                    <li>
+                        {{> nodocs title=(i18n "curriculum.phases")}}
+                    </li>
+                  {{/each}}
+              </ul>
+            {{else}}
+                {{#mbody}}{{> loading}}{{/mbody}}
+            {{/with}}
+            {{#mfooter}}
+              <button class="btn btn-secondary" data-bs-dismiss="modal">
+                  {{i18n "actions.close"}}
+              </button>
             {{/mfooter}}
         {{/modal}}
     {{/unless}}
