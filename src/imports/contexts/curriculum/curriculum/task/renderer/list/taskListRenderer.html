@@ -4,15 +4,8 @@
             {{> icon title=(i18n this.label) name=this.icon}}
         {{/with}}
     </td>
-    <td class="w-100">
-        <strong class="m-0">
+    <td class="fw-semibold w-100">
             {{this.title}}
-        </strong>
-        {{#if this.description}}
-            <p class="fw-normal my-3">
-                {{> short length=100 text=this.description}}
-            </p>
-        {{/if}}
     </td>
     <td class="text-end">
         {{#unless isModal}}
