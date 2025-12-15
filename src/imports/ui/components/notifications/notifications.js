@@ -5,7 +5,7 @@ import './notifications.scss'
 import './notifications.html'
 
 const API = Template.notifications.setDependencies({})
-const i18nCodeRegEx = /^[\w\d.]+$/g
+const i18nCodeRegEx = /^[\w\d.]+$/
 
 Template.notifications.helpers({
   loadComplete () {
@@ -38,6 +38,7 @@ Template.notifications.onRendered(function () {
 
 Template.notification.helpers({
   translateMaybe (str) {
+    console.debug('translateMaybe', str)
     if (str && i18nCodeRegEx.test(str)) {
       return API.translate(str)
     }

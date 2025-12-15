@@ -36,6 +36,7 @@ const API = Template.uesummary.setDependencies({
 
 const forms = {
   basicInfo: {
+    collapse: false,
     doc (instance) {
       return instance.data.unitDoc
     },
@@ -62,6 +63,8 @@ const forms = {
     }
   },
   dimensions: {
+    hideLegend: true,
+    collapse: false,
     doc (instance) {
       return instance.data.unitDoc
     },
@@ -95,6 +98,8 @@ const forms = {
     }
   },
   objectives: {
+    hideLegend: true,
+    collapse: false,
     doc (instance) {
       return instance.data.unitDoc
     },
@@ -247,6 +252,8 @@ Template.uesummary.events({
       action: 'update',
       load: ctx.load,
       schema: ctx.schema(),
+      hideLegend: ctx.hideLegend,
+      collapse: ctx.collapse,
       doc: originalDoc,
       onError: API.failure,
       custom: ctx.handlers,
