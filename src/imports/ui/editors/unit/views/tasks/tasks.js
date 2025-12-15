@@ -114,6 +114,66 @@ Template.uetasks.onCreated(function () {
     // when editing unit master docs (curriculum docs)
     instance.state.set({ unitDoc, originalUnitDoc })
   })
+
+  // ===========================================================================
+  // Actions
+  // ===========================================================================
+  instance.edit = async ({ taskId, isMasterMaterial }) => {
+    instance.state.set('selectForEdit', taskId)
+    const viewState = instance.getViewState()
+    const unitDoc = instance.state.get('unitDoc')
+    const { context } = viewState
+    const insertDoc = getLocalCollection(context.name).findOne(taskId)
+    const isMasterMode = unitEditorIsMasterMode(unitDoc)
+
+    if (isMasterMaterial && !isMasterMode) {
+      let result
+      try {
+        result = await confirmDialog({ text: 'curriculum.cloneMaster' })
+      } catch (e) {
+        API.notify(e)
+      }
+      if (!result) return
+      // we keep a reference to the original document
+      // in order to identify clones from _master docs
+      insertDoc._original = insertDoc._id
+
+      // thus we can safely remove any _master related
+      // fields and replace them on insert with new ones
+      delete insertDoc._id
+      delete insertDoc.createdBy
+      delete insertDoc.createdAt
+      delete insertDoc.updatedBy
+      delete insertDoc.updatedAt
+      delete insertDoc._master
+
+      // give additional context to the onCreated hook
+      // to allow contexts to decide, what to do when a new doc
+      // is created
+      const onCreated = (viewState.onCreated || viewState.hooks?.onCreated || function () {
+      }).bind({
+        isMasterMaterial,
+        isMasterMode
+      })
+
+      try {
+        await createMaterial({
+          unitDoc,
+          insertDoc,
+          removeId: taskId,
+          viewState,
+          templateInstance: instance,
+          onCreated,
+          API: API
+        })
+      } catch (e) {
+        API.notify(e)
+      }
+    }
+
+    await TaskEditor.load()
+    instance.state.set({ edit: insertDoc, selectForEdit: null })
+  }
 })
 
 Template.uetasks.helpers({
@@ -302,9 +362,10 @@ Template.uetasks.events({
       viewState,
       templateInstance,
       API,
-      onCreated: () => {
-        setTimeout(() => {
+      onCreated: taskId => {
+        setTimeout(async () => {
           templateInstance.state.set('creating', false)
+          await templateInstance.edit({ taskId, isMasterMaterial: !!insertDoc._master })
         }, 500)
       }
     })
@@ -316,60 +377,7 @@ Template.uetasks.events({
   'click .uematerial-edit-button': async function (event, templateInstance) {
     event.preventDefault()
     const isMasterMaterial = dataTarget(event, templateInstance, 'master')
-    const removeId = dataTarget(event, templateInstance)
-    templateInstance.state.set('selectForEdit', removeId)
-    const viewState = templateInstance.getViewState()
-    const unitDoc = templateInstance.state.get('unitDoc')
-    const { context } = viewState
-    const insertDoc = getLocalCollection(context.name).findOne(removeId)
-    const isMasterMode = unitEditorIsMasterMode(unitDoc)
-
-    if (isMasterMaterial && !isMasterMode) {
-      let result
-      try {
-        result = await confirmDialog({ text: 'curriculum.cloneMaster' })
-      } catch (e) {
-        API.notify(e)
-      }
-      if (!result) return
-      // we keep a reference to the original document
-      // in order to identify clones from _master docs
-      insertDoc._original = insertDoc._id
-
-      // thus we can safely remove any _master related
-      // fields and replace them on insert with new ones
-      delete insertDoc._id
-      delete insertDoc.createdBy
-      delete insertDoc.createdAt
-      delete insertDoc.updatedBy
-      delete insertDoc.updatedAt
-      delete insertDoc._master
-
-      // give additional context to the onCreated hook
-      // to allow contexts to decide, what to do when a new doc
-      // is created
-      const onCreated = (viewState.onCreated || viewState.hooks?.onCreated || function () {
-      }).bind({
-        isMasterMaterial,
-        isMasterMode
-      })
-
-      try {
-        await createMaterial({
-          unitDoc,
-          insertDoc,
-          removeId,
-          viewState,
-          templateInstance,
-          onCreated,
-          API: API
-        })
-      } catch (e) {
-        API.notify(e)
-      }
-    }
-
-    await TaskEditor.load()
-    templateInstance.state.set({ edit: insertDoc, selectForEdit: null })
+    const taskId = dataTarget(event, templateInstance)
+    await templateInstance.edit({ taskId, isMasterMaterial })
   }
 })
