@@ -1,4 +1,7 @@
 {
+  "h5p": {
+    "title": "H5P Interaktion"
+  },
   "lessons": {
     "toLesson": "Unterricht durchführen"
   },
@@ -11,7 +14,7 @@
       "errors": {
         "invalidLessonState": "Der Unterricht läuft oder ist beendet. Er kann daher nicht bearbeitet werden!"
       },
-      "basicInfo": "Kursdaten",
+      "basicInfo": "Sequenzdaten",
       "preview": "Vorschau",
       "summary": "Zusammenfassung",
       "editInUnitEditor": "Im Sequenz-Editor bearbeiten",

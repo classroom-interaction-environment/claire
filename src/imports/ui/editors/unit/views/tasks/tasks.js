@@ -232,12 +232,17 @@ Template.uetasks.helpers({
   showHeaderButtons () {
     const instance = Template.instance()
     const unitDoc = instance.state.get('unitDoc')
-    return unitDoc[Task.fieldName]?.length > 0 && !instance.state.get('creating') && !instance.state.get('edit') && !instance.state.get('selectForEdit')
+    const viewState = instance.getViewState()
+    const cursor = viewState && entries(viewState, unitDoc)
+    return !cursor || cursor.count() === 0
   },
   showBigButtons () {
     const instance = Template.instance()
+    if (instance.state.get('creating') || instance.state.get('edit') || instance.state.get('selectForEdit')) {
+      return false
+    }
     const unitDoc = instance.state.get('unitDoc')
-    return unitDoc[Task.fieldName]?.length === 0 && !instance.state.get('creating') && !instance.state.get('edit') && !instance.state.get('selectForEdit')
+    return !unitDoc[Task.fieldName]?.length
   },
   listRendererTemplate () {
     const sub = Template.instance().getViewState()
