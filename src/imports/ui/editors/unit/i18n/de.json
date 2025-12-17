@@ -14,6 +14,36 @@
       "errors": {
         "invalidLessonState": "Der Unterricht läuft oder ist beendet. Er kann daher nicht bearbeitet werden!"
       },
+      "guide": {
+        "welcome": {
+          "title": "Willkommen im Sequenz-Editor",
+          "text": "Hier planen Sie Ihren Unterricht, erstellen Aufgaben und strukturieren Abläufe. Eine kurze Einführung gibt einen Überblick über die Funktionen des Sequenz-Editors."
+        },
+        "submenu": {
+          "title": "Ihr Arbeitsbereich",
+          "text": "Der Sequenz-Editor besteht aus mehreren Bereichen: Zusammenfassung, Aufgaben, Materialien, Unterrichtsphasen und Gruppen. Über die Reiterleiste können Sie jederzeit zwischen den Bereichen wechseln."
+        },
+        "summary": {
+          "title": "Basisdaten",
+          "text": "Hier bearbeiten Sie den Titel, die Dauer und die Beschreibung der Sequenz. Außerdem wählen Sie die Bildungsdimensionen und Kompetenzen aus, die in dieser Unterrichtssequenz behandelt werden."
+        },
+        "tasks": {
+          "title": "Aufgaben",
+          "text": "Hier erstellen Sie interaktive Aufgaben für Ihre Lernenden, z.B. Multiple Choice Aufgaben, Schreibaufträge oder andere digitale Übungen. Mit \"Neue Aufgabe erstellen\" legen Sie eigenes Material an, mit \"Bestehende Aufgabe hinzufügen\" übernehmen Sie eine vorhandene Aufgabe aus Vorlagen oder anderen Sequenzen."
+        },
+        "material": {
+          "title": "Material",
+          "text": "Hier verwalten Sie Dateien, Links, Literatur oder Einbettungen, die Sie im Unterricht, aber außerhalb von Aufgaben einsetzen wollen."
+        },
+        "phases": {
+          "title": "Unterrichtsphasen",
+          "text": "Gliedern Sie Ihren Unterricht in einzelne Phasen und ordnen Sie Aufgaben direkt zu. So können Sie Ihren Unterrichtsverlaufsplan vollständig digital gestalten."
+        },
+        "groups": {
+          "title": "Gruppen",
+          "text": "Wenn Ihr Kurs Teilnehmende enthält, können Sie hier Unterrichtsgruppen anlegen. Teilnehmende lassen sich automatisch oder manuell auf Gruppen verteilen. Sie können Gruppen verschiedene Rollen zuweisen und ihnen eigene Materialien und Aufgaben bereitstellen."
+        }
+      },
       "basicInfo": "Sequenzdaten",
       "preview": "Vorschau",
       "summary": "Zusammenfassung",

@@ -1,5 +1,10 @@
 <template name="dashboard">
-    {{> routeInfo}}
+    {{#routeInfo}}
+        {{> actionButton icon="circle-question"
+                type="outline-secondary"
+                class="mb-3 float-end help-btn"
+                title=(i18n "common.help")}}
+    {{/routeInfo}}
 
     <div class="d-flex justify-content-between align-items-baseline mt-5">
         {{> actionButton

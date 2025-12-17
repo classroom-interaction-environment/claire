@@ -20,7 +20,6 @@ import { getLocalCollection } from '../../../infrastructure/collection/getLocalC
 import { getFilesLink } from '../../../contexts/files/getFilesLink'
 import { hasProfileImageLoaded } from '../../../api/accounts/user/client/hasProfileImageLoaded'
 import { loadProfileImage } from '../../../api/accounts/user/client/loadProfileImage'
-
 import '../../generic/docnotfound/docnotfound'
 import '../../components/langselect/langselect'
 import '../../components/image/placeholder/imagePlaceholder'
@@ -34,8 +33,6 @@ const API = Template.userProfile.setDependencies({
 
 const uploadTemplateLoaded = loadTemplate(FilesTemplates.upload)
 const imagesTemplateLoaded = loadTemplate(ProfileImages.renderer)
-
-let guide
 
 const UserProfileFormSchema = {
   profileImage: {
@@ -81,6 +78,35 @@ function decorateUserDoc (userDoc) {
 
 Template.userProfile.onCreated(function () {
   const instance = this
+  instance.guide = Guide.tour({
+    allowClose: true,
+    showProgress: true,
+    steps: [{
+      element: '#user-profile-overview',
+      popover: {
+        title: i18n.get('user.profile.guide'),
+        description: i18n.get('user.profile.overview')
+      }
+    }, {
+      element: '#user-profile-image',
+      popover: {
+        title: i18n.get('user.profile.guide'),
+        description: i18n.get('user.profile.image')
+      }
+    }, {
+      element: '#user-fixed-data',
+      popover: {
+        title: i18n.get('user.profile.guide'),
+        description: i18n.get('user.profile.fixed')
+      }
+    }, {
+      element: '#user-profile-research',
+      popover: {
+        title: i18n.get('user.profile.guide'),
+        description: i18n.get('user.profile.research')
+      }
+    }]
+  })
 
   callMethod({
     name: Settings.methods.get,
@@ -152,33 +178,7 @@ Template.userProfile.onRendered(function () {
       const user = instance.state.get('user')
       const loadComplete = instance.state.get('loadComplete')
       if (!user || !loadComplete) return
-
-      setTimeout(() => {
-        guide = Guide.buildTour({ allowClose: true, opacity: 0.5 })
-          .addStep({
-            target: '#user-profile-overview',
-            title: i18n.get('user.profile.guide'),
-            description: i18n.get('user.profile.overview')
-          })
-          .addStep({
-            target: '#user-profile-image',
-            title: i18n.get('user.profile.guide'),
-            description: i18n.get('user.profile.image')
-          })
-          .addStep({
-            target: '#user-fixed-data',
-            title: i18n.get('user.profile.guide'),
-            description: i18n.get('user.profile.fixed')
-          })
-          .addStep({
-            target: '#user-profile-research',
-            title: i18n.get('user.profile.guide'),
-            description: i18n.get('user.profile.research')
-          })
-          .complete()
-        guide.start()
-      }, 500)
-      c.stop()
+      instance.guide.start()
     })
   }
 })
@@ -292,10 +292,6 @@ Template.userProfile.events({
   },
   'click .research-optin-button' (event, templateInstance) {
     event.preventDefault()
-    if (guide) {
-      guide.reset()
-      guide = null
-    }
     API.showModal('resarch-optin-modal')
   },
   'click .research-optout-button' (event, templateInstance) {
@@ -353,5 +349,9 @@ Template.userProfile.events({
         API.notify()
       }
     })
+  },
+  'click .help-btn': function (event, templateInstance) {
+    event.preventDefault()
+    templateInstance.guide.start()
   }
 })

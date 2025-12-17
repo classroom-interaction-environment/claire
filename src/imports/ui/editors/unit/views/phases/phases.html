@@ -1,10 +1,11 @@
 <template name="uephases">
+    <div class="my-2 ue-phases">
     {{#unless loadComplete}}
         {{> loading type="data"}}
     {{/unless}}
 
         {{#with unitDoc}}
-            <div class="my-4 clearfix">
+            <div class="clearfix">
 				<span class="float-end d-print-none">
 					{{> info id="phasesInfo" sm=true outline=true label=(i18n 'editor.unit.phases.description')}}
                     <button class="btn btn-sm btn-secondary uephases-select-button">
@@ -313,4 +314,5 @@
                 </button>
             {{/mfooter}}
         {{/modal}}
+    </div>
 </template>

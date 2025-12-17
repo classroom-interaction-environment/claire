@@ -54,6 +54,10 @@ Template.submenu.onCreated(function () {
 })
 
 Template.submenu.helpers({
+  rootClasses () {
+    const { data } = Template.instance()
+    return data?.containerClass || ''
+  },
   isCurrent (targetId) {
     return targetId && Template.getState('current') === targetId
   },

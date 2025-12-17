@@ -1,28 +1,28 @@
 <template name="routeInfo">
-    <div class="w-100 p-0 py-sm-1 py-md-3 py-lg-4 nav-route-info d-print-none">
-        {{#with routeTitle}}
+  <div class="w-100 p-0 py-sm-1 py-md-3 py-lg-4 nav-route-info d-print-none clearfix">
+      {{#with routeTitle}}
+        <h1 class="text-primary text-center text-md-start float-start">
             {{#if i18nInitialized}}
-                <h1 class="text-primary text-center text-md-start">{{i18n this}}</h1>
+                {{i18n this}}
             {{else}}
-                <h1 class="text-primary text-center text-md-start">{{this}}</h1>
+                {{this}}
             {{/if}}
-        {{/with}}
-        {{!--
-            <div class="row  d-flex">
-                <div class="col-xs-12 col-sm-12 col-md-6">
-                    {{#with ref}}
-                        <span class="ms-auto">
-                            <a href="{{this.value}}">
-                                <i class="fa fa-fw fa-caret-left"></i>
-                                {{i18n 'routes.backToEdit'}}: {{i18n this.label}}
-                            </a>
-                        </span>
-                    {{/with}}
-                </div>
-            </div>
-        --}}
-        <div class="w-100 d-print-none">
-            {{> Template.contentBlock}}
-        </div>
-    </div>
+        </h1>
+      {{/with}}
+      {{!--
+          <div class="row  d-flex">
+              <div class="col-xs-12 col-sm-12 col-md-6">
+                  {{#with ref}}
+                      <span class="ms-auto">
+                          <a href="{{this.value}}">
+                              <i class="fa fa-fw fa-caret-left"></i>
+                              {{i18n 'routes.backToEdit'}}: {{i18n this.label}}
+                          </a>
+                      </span>
+                  {{/with}}
+              </div>
+          </div>
+      --}}
+      {{> Template.contentBlock}}
+  </div>
 </template>

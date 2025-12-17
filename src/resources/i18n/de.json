@@ -58,6 +58,7 @@
     "title": "Mit Code registrieren"
   },
   "common": {
+    "help": "Hilfe",
     "deprecated": "Veraltet / nicht mehr verwendet",
     "startedAt": "Gestartet am",
     "completedAt": "Abgeschlossen am",

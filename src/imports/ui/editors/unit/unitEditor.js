@@ -2,8 +2,11 @@ import { Template } from 'meteor/templating'
 import { Unit } from '../../../contexts/curriculum/curriculum/unit/Unit'
 import { UnitEditorViewStates } from './UnitEditorViewStates'
 import { DocNotFoundError } from '../../../api/errors/types/DocNotFoundError'
-import { unitEditorSubscriptionKey } from './unitEditorSubscriptionKey'
 import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
+import { unitEditorSubscriptionKey } from './unitEditorSubscriptionKey'
+import { CurriculumSession } from '../../curriculum/CurriculumSession'
+import { LessonStates } from '../../../contexts/classroom/lessons/LessonStates'
+import { Guide } from '../../tools/guide/guide'
 
 import { callMethod } from '../../controllers/document/callMethod'
 import { getQueryParam } from '../../../api/routes/params/getQueryParam'
@@ -11,15 +14,13 @@ import { setQueryParams } from '../../../api/routes/params/setQueryParams'
 import { unitEditorIsMasterMode } from './utils/unitEditorIsMasterMode'
 import { userIsCurriculum } from '../../../api/accounts/userIsCurriculum'
 import { getCollection } from '../../../api/utils/getCollection'
-
+import { asyncTimeout } from '../../../api/utils/asyncTimeout'
 import unitEditorLanguage from './i18n/unitEditorLanguage'
 import '../../layout/submenu/submenu'
 import '../../components/confirm/confirm'
 import '../../generic/templateLoader/TemplateLoader'
 import '../../components/documentState/documentState'
 import './unitEditor.html'
-import { CurriculumSession } from '../../curriculum/CurriculumSession'
-import { LessonStates } from '../../../contexts/classroom/lessons/LessonStates'
 
 const viewStates = Object.values(UnitEditorViewStates)
 
@@ -42,6 +43,66 @@ const API = Template.unitEditor.setDependencies({
 
 Template.unitEditor.onCreated(function onUnitEditorCreated () {
   const instance = this
+
+  // ---------------------------------------------------------------------------
+  // 0. Creating guide
+  // ---------------------------------------------------------------------------+
+  instance.autorun((c) => {
+    if (!API.initComplete()) return
+    const createStep = ({ name, element, nextView }) => {
+      const step = {
+        elements: element ? [element] : [`.ue-${name}`, `li[data-key="${name}"]`],
+        popover: {
+          title: API.translate(`editor.unit.guide.${name}.title`),
+          description: API.translate(`editor.unit.guide.${name}.text`),
+        }
+      }
+      if (nextView) {
+        step.popover.onNextClick = (element, step, options) => {
+          setQueryParams({ tab: nextView })
+          instance.state.set('currentViewName', nextView)
+          setTimeout(() =>  options.driver.moveNext(), 750)
+        }
+      }
+      return step
+    }
+    instance.guide = Guide.tour({
+      showButtons: ['next', 'close'],
+      steps: [
+        {
+          popover: {
+            title: API.translate('editor.unit.guide.welcome.title'),
+            description: API.translate('editor.unit.guide.welcome.text'),
+          }
+        },
+        createStep({
+          element: '.submenu',
+          name: 'submenu',
+          nextView: UnitEditorViewStates.summary.name
+        }),
+        createStep({
+          name: UnitEditorViewStates.summary.name,
+          nextView: UnitEditorViewStates.tasks.name
+        }),
+        createStep({
+          name: UnitEditorViewStates.tasks.name,
+          nextView: UnitEditorViewStates.material.name
+        }),
+        createStep({
+          name: UnitEditorViewStates.material.name,
+          nextView: UnitEditorViewStates.phases.name
+        }),
+        createStep({
+          name: UnitEditorViewStates.phases.name,
+          nextView: UnitEditorViewStates.groups.name
+        }),
+        createStep({
+          name: UnitEditorViewStates.groups.name,
+        }),
+      ]
+    })
+    c.stop()
+  })
 
   // ---------------------------------------------------------------------------
   // 1. resetting the state to default values
@@ -211,5 +272,12 @@ Template.unitEditor.helpers({
   },
   classDoc () {
     return Template.getState('classDoc')
+  }
+})
+
+Template.unitEditor.events({
+  'click .help-btn': function (event, templateInstance) {
+    event.preventDefault()
+    templateInstance.guide.start()
   }
 })

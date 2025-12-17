@@ -57,6 +57,7 @@
     "title": "Register with code"
   },
   "common": {
+    "help": "Help",
     "deprecated": "Deprecated",
     "startedAt": "Started at",
     "completedAt": "Completed at",

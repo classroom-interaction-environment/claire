@@ -8,6 +8,10 @@
     {{else}}
         {{#with unitDoc}}
             {{#routeInfo}}
+                {{> actionButton icon="circle-question"
+                        type="outline-secondary"
+                        class="mb-3 float-end help-btn"
+                        title=(i18n "common.help")}}
                 <div class="d-flex w-100 justify-content-between">
                     {{#with classDoc}}
                     <div class="fw-light my-2 w-100 text-center text-md-start">

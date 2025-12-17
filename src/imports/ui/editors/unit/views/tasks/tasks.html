@@ -1,6 +1,7 @@
 <template name="uetasks">
+    <div class="my-2 ue-tasks">
     {{#if showHeaderButtons}}
-      <div class="my-4 d-flex align-items-center">
+      <div class="py-4 d-flex align-items-center">
           {{#if selectEntries}}
             <button class="btn btn-sm btn-secondary uematerial-select-button me-auto">
                 {{i18n 'actions.add'}}
@@ -261,5 +262,5 @@
             {{/mfooter}}
         {{/modal}}
     {{/unless}}
-
+    </div>
 </template>

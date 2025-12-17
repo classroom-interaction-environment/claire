@@ -1,5 +1,10 @@
 <template name="userProfile">
-    {{> routeInfo}}
+    {{#routeInfo}}
+        {{> actionButton icon="circle-question"
+                type="outline-secondary"
+                class="mb-3 float-end help-btn"
+                title=(i18n "common.help")}}
+    {{/routeInfo}}
     {{#unless loadComplete}}
         {{> loading}}
     {{else}}
