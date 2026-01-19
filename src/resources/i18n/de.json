@@ -687,6 +687,7 @@
     "fullName": "Name",
     "password": "Passwort",
     "changePassword": "Passwort ändern",
+    "backToHome": "zur Übersicht",
     "role": "Rolle",
     "roles": "Rollen",
     "group": "Gruppe",

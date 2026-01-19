@@ -37,7 +37,13 @@ StudentRoutes.profile = {
   label: 'routes.profile',
   template: 'userProfile',
   roles: null,
-  data: null
+  data: null,
+  onAction (params, queryParams) {
+    BackRoute.flush()
+    const path = StudentRoutes.root.path()
+    const title = StudentRoutes.root.label
+    BackRoute.set({ path, title })
+  }
 }
 
 // ////////////////////////////////////////////////////////////////////////////

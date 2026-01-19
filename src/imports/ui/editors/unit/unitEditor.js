@@ -6,7 +6,7 @@ import { PermissionDeniedError } from '../../../api/errors/types/PermissionDenie
 import { unitEditorSubscriptionKey } from './unitEditorSubscriptionKey'
 import { CurriculumSession } from '../../curriculum/CurriculumSession'
 import { LessonStates } from '../../../contexts/classroom/lessons/LessonStates'
-import { Guide } from '../../tools/guide/guide'
+import { Guide } from '../../tools/guide/Guide'
 
 import { callMethod } from '../../controllers/document/callMethod'
 import { getQueryParam } from '../../../api/routes/params/getQueryParam'
@@ -14,7 +14,6 @@ import { setQueryParams } from '../../../api/routes/params/setQueryParams'
 import { unitEditorIsMasterMode } from './utils/unitEditorIsMasterMode'
 import { userIsCurriculum } from '../../../api/accounts/userIsCurriculum'
 import { getCollection } from '../../../api/utils/getCollection'
-import { asyncTimeout } from '../../../api/utils/asyncTimeout'
 import unitEditorLanguage from './i18n/unitEditorLanguage'
 import '../../layout/submenu/submenu'
 import '../../components/confirm/confirm'
@@ -67,6 +66,7 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
       return step
     }
     instance.guide = Guide.tour({
+      key: 'unitEditor',
       showButtons: ['next', 'close'],
       steps: [
         {
@@ -101,6 +101,18 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
         }),
       ]
     })
+
+    // guide autostart
+    instance.guide.autostart(({ hasViewed, start, stop }) => {
+      const instance = Template.instance()
+      const user = Meteor.user()
+      if (instance.state.get('unitSubComplete') &&
+        instance.state.get('dependenciesComplete') &&
+        user) {
+        return hasViewed(user)
+      }
+    })
+
     c.stop()
   })
 

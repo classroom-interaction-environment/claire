@@ -2,8 +2,17 @@ import { check, Match } from 'meteor/check'
 import { driver } from 'driver.js';
 import "driver.js/dist/driver.css";
 import { i18n } from '../../../api/language/language'
+import { markGuideAsRead } from './markGuideAsRead'
 
 export const Guide = {}
+
+Guide.hasViewed = (key, user) => {
+  // this is a little scope creepy, but
+  // for now we have only this place where we need to check
+  const value = user?.ui?.guide?.[key]
+  return value === true
+}
+
 
 const createDriver = ({ allowClose, opacity, steps, ...additionalOptions }) => {
   return driver({
@@ -94,17 +103,44 @@ Guide.highlight = function highlight ({ target, title, description, position, sh
   return driver
 }
 
-Guide.tour = ({ allowClose = true, opacity = 0.75, steps, ...additionalOptions }) => {
+Guide.tour = ({ key, allowClose = true, opacity = 0.75, steps, ...additionalOptions }) => {
   const instance = createDriver({ allowClose, opacity, steps, ...additionalOptions })
   return {
+    autostart(fn) {
+      this.tracker = Tracker.autorun(c => {
+        const start = () => {
+          console.debug('autostart guide', key)
+          this.start()
+          markGuideAsRead(key).catch(console.error)
+          c.stop()
+        }
+        const stop = () => {
+          console.debug('autostop guide', key)
+          c.stop()
+        }
+        const value = fn({
+          key,
+          hasViewed: (user) => Guide.hasViewed(key, user) ? "stop" : "start",
+          start,
+          stop
+        })
+        if (value === "start") start()
+        if (value === "stop") stop()
+      })
+    },
     start () {
       if (instance) {
+        console.debug('start guide', key)
         instance.drive()
       }
     },
     dispose () {
+      console.debug('dispose', key)
       if (instance) {
-        instance.reset()
+
+      }
+      if (this.tracker) {
+        this.tracker.stop()
       }
     }
   }

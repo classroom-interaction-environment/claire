@@ -60,6 +60,12 @@ Users.schema = {
     optional: true
   },
   ui: {
+    // persistent user interface settings
+    // classId: string - the last classId the user has worked with
+    // ui: object? - additional ui settings
+    // ui.fluid: boolean - whether to use fluid layout
+    // ui.guides: object? - tutorial settings
+    // ui.guides.[name]: boolean - whether the guides has been shown
     type: Object,
     blackbox: true,
     optional: true
@@ -278,6 +284,31 @@ Users.methods.updateUI = {
     return function ({ fluid, classId }) {
       const { userId } = this
       return updateUI({ userId, classId, fluid })
+    }
+  })
+}
+
+/**
+ * Marks a guide as viweed
+ */
+
+Users.methods.guideViewed = {
+  name: 'users.methods.guideViewed',
+  schema: {
+    guides: {
+      type: Array
+    },
+    'guides.$': {
+      type: String
+    }
+  },
+  timeInterval: 1000,
+  numRequests: 10,
+  run: onServerExec(function () {
+    import { updateUI } from './methods/updateUI'
+    return function ({ guides }) {
+      const { userId } = this
+      return updateUI({ userId, guides })
     }
   })
 }

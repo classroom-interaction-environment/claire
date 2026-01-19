@@ -8,7 +8,7 @@ import { Schema } from '../../../api/schema/Schema'
 import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
 import { Settings } from '../../../contexts/system/settings/Settings'
 import { ProfileImages } from '../../../contexts/files/image/ProfileImages'
-import { Guide } from '../../tools/guide/guide'
+import { Guide } from '../../tools/guide/Guide'
 import { i18n } from '../../../api/language/language'
 import { FilesTemplates } from '../../../contexts/files/FilesTemplates'
 
@@ -66,19 +66,25 @@ const profileSchemas = {}
 
 function decorateUserDoc (userDoc) {
   const locale = { locale: { language: 'en' } }
-  const ui = { ui: { fluid: false } }
+  const ui = { ui: { fluid: false }, guide }
   const research = {
     research: {
       participate: undefined,
       confirmed: undefined
     }
   }
-  return Object.assign({}, { locale, ui, research }, userDoc)
+  return {
+    ...userDoc,
+    locale: userDoc.locale ?? locale,
+    ui: userDoc.ui ?? ui,
+    research: userDoc.research ?? research,
+  }
 }
 
 Template.userProfile.onCreated(function () {
   const instance = this
   instance.guide = Guide.tour({
+    key: 'profile',
     allowClose: true,
     showProgress: true,
     steps: [{
@@ -169,18 +175,20 @@ Template.userProfile.onCreated(function () {
   })
 })
 
+Template.userProfile.onDestroyed(function () {
+  const instance = this
+  instance.guide.dispose()
+})
+
 Template.userProfile.onRendered(function () {
   const instance = this
-  const { status } = instance.data.queryParams
-
-  if (status === 'new') {
-    instance.autorun(c => {
-      const user = instance.state.get('user')
-      const loadComplete = instance.state.get('loadComplete')
-      if (!user || !loadComplete) return
-      instance.guide.start()
-    })
-  }
+  instance.guide.autostart(({ hasViewed, start, stop }) => {
+    const user = instance.state.get('user')
+    const loadComplete = instance.state.get('loadComplete')
+    if (loadComplete && user) {
+      return hasViewed(user)
+    }
+  })
 })
 
 Template.userProfile.helpers({
