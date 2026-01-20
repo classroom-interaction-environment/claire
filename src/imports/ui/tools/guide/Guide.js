@@ -26,6 +26,12 @@ const createDriver = ({ allowClose, opacity, steps, ...additionalOptions }) => {
     animate: true,
     showProgress: true,
     steps: transformSteps(steps),
+    onPopoverRender: (popover) => {
+      const closeBtn = popover.wrapper.querySelector('.driver-popover-close-btn');
+      if (closeBtn) {
+        closeBtn.style.display = 'inline-block';
+      }
+    },
     ...additionalOptions
   })
 }
@@ -96,14 +102,14 @@ const createStep = (options) => {
   return step
 }
 
-Guide.highlight = function highlight ({ target, title, description, position, showButtons, allowClose = true, opacity = 0.75 }) {
+Guide.highlight = function highlight ({ target, title, description, position, showButtons, allowClose = false, opacity = 0.75 }) {
   const driver = createDriver({ allowClose, opacity })
   const step = createStep({ target, title, description, position, showButtons })
   driver.highlight(step)
   return driver
 }
 
-Guide.tour = ({ key, allowClose = true, opacity = 0.75, steps, ...additionalOptions }) => {
+Guide.tour = ({ key, allowClose = false, opacity = 0.75, steps, ...additionalOptions }) => {
   const instance = createDriver({ allowClose, opacity, steps, ...additionalOptions })
   return {
     autostart(fn) {

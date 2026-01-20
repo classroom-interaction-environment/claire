@@ -42,6 +42,10 @@
         "groups": {
           "title": "Gruppen",
           "text": "Wenn Ihr Kurs Teilnehmende enthält, können Sie hier Unterrichtsgruppen anlegen. Teilnehmende lassen sich automatisch oder manuell auf Gruppen verteilen. Sie können Gruppen verschiedene Rollen zuweisen und ihnen eigene Materialien und Aufgaben bereitstellen."
+        },
+        "toLesson": {
+          "title": "Unterricht durchführen",
+          "text": "Wenn Ihre Planung abgeschlossen ist, können Sie den Unterricht starten. Die Sequenz wird dann in einer übersichtlichen Ansicht präsentiert, die Schritt für Schritt durch den Ablauf führt."
         }
       },
       "basicInfo": "Sequenzdaten",

@@ -30,10 +30,10 @@
 
             {{! display a route button to allow users to navigtate to the lesson }}
             {{#submenu submenuData}}
-                <li class="nav-item ms-auto">
+                <li class="nav-item ms-auto ui-to-lesson-item">
                     {{#with lessonDoc}}
                         {{# routeButton
-                                class="d-block d-md-inline-block"
+                                class="d-block d-md-inline-block to-lesson-button"
                                 type="primary"
                                 href=(route "lesson" this._id)
                                 title=(i18n "lessons.toLesson")}}

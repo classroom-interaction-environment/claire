@@ -5,6 +5,10 @@
 
         {{#unless hideHeader}}
             {{#routeInfo}}
+                {{> actionButton icon="circle-question"
+                        type="outline-secondary"
+                        class="mb-3 float-end te-help-btn"
+                        title=(i18n "common.help")}}
               <div class="d-flex justify-content-between w-100">
                   {{! pocket info}}
                   {{#with unitDoc}}
@@ -39,12 +43,15 @@
         {{> submenu submenuData}}
 
         {{! current view }}
-        {{> TemplateLoader currentView}}
+        <div class="te-{{currentViewName}} w-100">
+            {{> TemplateLoader currentView}}
+        </div>
 
         {{!link to current unit in unit editor }}
         {{#with unitDoc}}
           <div class="d-block text-center">
               {{> routeButton
+                      class="to-unit-editor-btn"
                       href=(join "" (route "unitEditor" this._id) "?tab=material")
                       label=(i18n "editor.task.backToUnit")
                       title=unitDoc.title

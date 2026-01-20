@@ -58,9 +58,14 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
       }
       if (nextView) {
         step.popover.onNextClick = (element, step, options) => {
+          const nextBtn = document.querySelector('.driver-popover-next-btn')
+          nextBtn.disabled = true;
           setQueryParams({ tab: nextView })
           instance.state.set('currentViewName', nextView)
-          setTimeout(() =>  options.driver.moveNext(), 750)
+          setTimeout(() =>  {
+            options.driver.moveNext()
+            nextBtn.disabled = false;
+          }, 750)
         }
       }
       return step
@@ -96,9 +101,13 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
           name: UnitEditorViewStates.phases.name,
           nextView: UnitEditorViewStates.groups.name
         }),
-        createStep({
-          name: UnitEditorViewStates.groups.name,
-        }),
+        {
+          element: '.to-lesson-button',
+          popover: {
+            title: API.translate(`editor.unit.guide.toLesson.title`),
+            description: API.translate(`editor.unit.guide.toLesson.text`),
+          }
+        },
       ]
     })
 

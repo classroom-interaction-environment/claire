@@ -5,6 +5,7 @@ import { Unit } from '../../../contexts/curriculum/curriculum/unit/Unit'
 import { Pocket } from '../../../contexts/curriculum/curriculum/pocket/Pocket'
 import { Router } from '../../../api/routes/Router'
 import { Shared } from './helpers/shared'
+import { Guide } from '../../tools/guide/Guide'
 import { TaskEditorViewStates } from './TaskEditorViewStates'
 import { taskEditorSubKey } from './taskEditorSubKey'
 import { CurriculumSession } from '../../curriculum/CurriculumSession'
@@ -46,6 +47,123 @@ const views = Object.values(TaskEditorViewStates)
 Template.taskEditor.onCreated(function () {
   const instance = this
   instance.state.set('view', 'pages')
+
+  // ---------------------------------------------------------------------------
+  // 0. Creating guide
+  // ---------------------------------------------------------------------------+
+  instance.autorun((c) => {
+    if (!API.initComplete()) return
+    const createStep = ({ name, element, nextView }) => {
+      const step = {
+        elements: element ? [element] : [`.te-${name}`, `li[data-key="${name}"]`],
+        popover: {
+          title: API.translate(`editor.task.guide.${name}.title`),
+          description: API.translate(`editor.task.guide.${name}.text`),
+        }
+      }
+      if (nextView) {
+        step.popover.onNextClick = (element, step, options) => {
+          const nextBtn = document.querySelector('.driver-popover-next-btn')
+          nextBtn.disabled = true;
+          setQueryParams({ task: nextView })
+          instance.state.set('currentViewName', nextView)
+          setTimeout(() =>  {
+            options.driver.moveNext()
+            nextBtn.disabled = false;
+          }, 750)
+        }
+      }
+      return step
+    }
+    instance.guide = Guide.tour({
+      key: 'taskEditor',
+      showButtons: ['next', 'close'],
+      steps: [
+        {
+          popover: {
+            title: API.translate('editor.task.guide.welcome.title'),
+            description: API.translate('editor.task.guide.welcome.text'),
+          }
+        },
+        createStep({
+          name: TaskEditorViewStates.pages.name,
+        }),
+        {
+          element: '.add-content-buttons',
+          popover: {
+            title: API.translate(`editor.task.guide.elements.title`),
+            description: API.translate(`editor.task.guide.elements.text`),
+            onNextClick: (element, step, options) => {
+              const nextBtn = document.querySelector('.driver-popover-next-btn')
+              nextBtn.disabled = true;
+              const contentBtn = document.querySelector('.add-content-entry[data-target="item"]')
+              contentBtn.click()
+              setTimeout(() =>  {
+                options.driver.moveNext()
+                nextBtn.disabled = false;
+              }, 750)
+            }
+          }
+        },
+        {
+          element: '#pageContentAddModal > .modal-dialog',
+          popover: {
+            title: API.translate(`editor.task.guide.items.title`),
+            description: API.translate(`editor.task.guide.items.text`),
+            onNextClick: (element, step, options) => {
+              const nextBtn = document.querySelector('.driver-popover-next-btn')
+              nextBtn.disabled = true;
+              API.hideModal('pageContentAddModal')
+              setTimeout(() =>  {
+                options.driver.moveNext()
+                nextBtn.disabled = false;
+              }, 750)
+            }
+          }
+        },
+        createStep({
+          element: '.te-entry-list',
+          name: 'listing',
+          nextView: TaskEditorViewStates.summary.name
+        }),
+        createStep({
+          name: TaskEditorViewStates.summary.name,
+          nextView: TaskEditorViewStates.units.name
+        }),
+        createStep({
+          name: TaskEditorViewStates.units.name,
+        }),
+        {
+          elements: ['.uematerial-cancel-edit-button.bottom-btn'],
+          popover: {
+            title: API.translate(`editor.task.guide.leave.title`),
+            description: API.translate(`editor.task.guide.leave.text`),
+            onNextClick: (element, step, options) => {
+              instance.state.set('currentViewName', TaskEditorViewStates.pages.name)
+              setTimeout(() =>  {
+                options.driver.moveNext()
+              }, 750)
+            }
+          }
+        }
+      ]
+    })
+
+    // guide autostart
+    instance.guide.autostart(({ hasViewed, start, stop }) => {
+      const instance = Template.instance()
+      const user = Meteor.user()
+      if (instance.state.get('taskComplete') &&
+        instance.state.get('unitComplete') &&
+        instance.state.get('pocketComplete') &&
+        user) {
+        return hasViewed(user)
+      }
+    })
+
+    c.stop()
+  })
+
 
   const onError = err => API.fatal(err)
 
@@ -139,9 +257,19 @@ Template.taskEditor.onCreated(function () {
   })
 })
 
+Template.taskEditor.onRendered(function () {
+  const instance = this
+  instance.helpListener = function () {
+    instance.guide.start()
+  }
+  document.querySelector('.te-help-btn').addEventListener('click', instance.helpListener)
+})
+
 Template.taskEditor.onDestroyed(function () {
+  const instance = this
+  document.querySelector('.te-help-btn').removeEventListener('click', instance.helpListener)
   API.dispose(taskEditorSubKey)
-  this.state.destroy()
+  instance.state.destroy()
 })
 
 Template.taskEditor.helpers({
@@ -181,6 +309,9 @@ Template.taskEditor.helpers({
     }
 
     return Object.assign({ templateData }, view)
+  },
+  currentViewName () {
+    return Template.getState('currentViewName')
   },
   getTaskDoc () {
     return Template.getState('taskDoc')

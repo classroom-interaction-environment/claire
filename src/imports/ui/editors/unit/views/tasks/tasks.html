@@ -42,13 +42,19 @@
         {{> loading type="data"}}
     {{else}}
         {{#if edit}}
-          <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex justify-content-between align-items-center mt-3">
             <h2>{{edit.title}}</h2>
+              <span>
+              {{> actionButton icon="circle-question"
+                      type="outline-secondary"
+                      class="te-help-btn"
+                      title=(i18n "common.help")}}
               {{> actionButton type="outline-secondary"
                       title=(i18n "actions.close")
-                      class="uematerial-cancel-edit-button"
+                      class="uematerial-cancel-edit-button top-right-btn"
                       title=(i18n "editor.unit.material.closeTask")
                       icon='times' }}
+              </span>
           </div>
             {{> taskEditor taskId=edit._id hideHeader=true}}
         {{/if}}
@@ -136,7 +142,7 @@
             <div class="block text-center mt-4">
                 {{> actionButton type="outline-secondary"
                         title=(i18n "actions.close")
-                        class="uematerial-cancel-edit-button"
+                        class="uematerial-cancel-edit-button bottom-btn"
                         label=(i18n "editor.unit.material.closeTask")
                         icon='caret-left' }}
             </div>
