@@ -313,6 +313,13 @@ const notify = value => {
       icon: 'check'
     })
   }
+  if (value === false) {
+    return Notify.add({
+      type: 'danger',
+      message: 'common.failed',
+      icon: 'times'
+    })
+  }
 
   if (typeof value === 'string') {
     return Notify.add({

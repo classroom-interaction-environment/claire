@@ -13,6 +13,10 @@ import { createMaterialEvents } from '../common/createMaterialEvents'
 import { createMaterialHelpers } from '../common/createMaterialHelpers'
 import { createMaterialEdit } from '../common/createMaterialEdit'
 import './tasks.html'
+import { Schema } from '../../../../../api/schema/Schema'
+import { formIsValid } from '../../../../components/forms/formUtils'
+import { updateContextDoc } from '../../../../controllers/document/updateContextDoc'
+import { i18n } from '../../../../../api/language/language'
 
 const API = Template.uetasks.setDependencies({
   contexts: [Unit, Phase, Task],
@@ -140,6 +144,13 @@ Template.uetasks.helpers({
 
     return instance.state.get('dataComplete') && instance.state.get('hasDocuments')
   },
+  editTitle () {
+    return Template.getState('editTitle')
+  },
+  editTitleSchema () {
+    const instance = Template.instance()
+    return instance.editTitleSchema
+  },
   showBigButtons () {
     if (!API.initComplete()) {
       return false
@@ -160,7 +171,41 @@ Template.uetasks.events({
     event.preventDefault()
     templateInstance.state.set('edit', null)
   },
-
+  'click .edit-title-btn' (event, templateInstance) {
+    event.preventDefault()
+    if (!templateInstance.editTitleSchema) {
+      templateInstance.editTitleSchema = Schema.create({
+        title: Task.schema.title,
+        description: Task.schema.description
+      })
+    }
+    templateInstance.state.set('editTitle', true)
+    API.showModal('edit-title-modal')
+  },
+  'hidden.bs.modal #edit-title-modal' (event, templateInstance) {
+    templateInstance.state.set('editTitle', null)
+  },
+  'submit #editTitleForm' (event, templateInstance) {
+    event.preventDefault()
+    templateInstance.state.set('processing', true)
+    const taskDoc = templateInstance.state.get('edit')
+    const updateDoc = formIsValid(templateInstance.editTitleSchema, 'editTitleForm')
+    updateContextDoc({
+      context: Task,
+      _id: taskDoc._id,
+      doc: updateDoc,
+      receive: () => templateInstance.state.set('processing', null),
+      failure: er => API.notify(er),
+      success: (updated) => {
+        const notify = !!updated
+        API.notify(notify)
+        API.hideModal('edit-title-modal')
+        Object.assign(taskDoc, updateDoc)
+        templateInstance.state.set('edit', taskDoc)
+        getLocalCollection(Task.name).update(taskDoc._id, { $set: updateDoc })
+      }
+    })
+  },
   ...createMaterialEvents({
     API,
     onMaterialCreated: ({

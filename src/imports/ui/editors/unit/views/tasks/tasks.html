@@ -43,7 +43,16 @@
     {{else}}
         {{#if edit}}
           <div class="d-flex justify-content-between align-items-center mt-3">
-            <h2>{{edit.title}}</h2>
+            <div>
+                <h2>
+                  <span>{{edit.title}}</span>
+                    {{> actionButton icon="pencil"
+                            type="outline-secondary"
+                            class="edit-title-btn border-0"
+                            title=(i18n "actions.edit")}}
+                </h2>
+                <p>{{edit.description}}</p>
+            </div>
               <span>
               {{> actionButton icon="circle-question"
                       type="outline-secondary"
@@ -199,6 +208,33 @@
                 {{/mfooter}}
             {{/modal}}
         {{/if}}
+
+        {{#modal id="edit-title-modal" large=true scrollable=true}}
+            {{>mheader dismiss=true title=(i18n "actions.edit") class="bg-secondary text-white"}}
+            {{#mbody id='edit-title-modal-body'}}
+                {{#if editTitle}}
+                    {{> caroForm id="editTitleForm"
+                            schema=editTitleSchema
+                            collapse=false
+                            doc=edit
+                            type="normal"}}
+                {{/if}}
+            {{/mbody}}
+            {{#mfooter class="d-flex justify-content-between align-items-center"}}
+              {{> actionButton
+                        type="primary"
+                        submit=true
+                        form="editTitleForm"
+                        label=(i18n "actions.update")
+                        blocked=(processing true)}}
+                {{> actionButton
+                        type="secondary"
+                        label=(i18n "actions.cancel")
+                        class="edit-title-cancel-btn"
+                        data-bs-dismiss="modal"
+                        blocked=(processing true)}}
+            {{/mfooter}}
+        {{/modal}}
 
         {{! select existing material modal }}
         {{#modal id="uematerial-select-modal" large=true}}
