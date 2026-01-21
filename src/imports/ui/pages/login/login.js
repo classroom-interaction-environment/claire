@@ -1,17 +1,18 @@
 import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { Router } from '../../../api/routes/Router'
-import { i18n } from '../../../api/language/language'
 import { Schema, RegEx } from '../../../api/schema/Schema'
 import { Routes } from '../../../api/routes/Routes'
 import { Users } from '../../../contexts/system/accounts/users/User'
 import { formIsValid, getFormData } from '../../components/forms/formUtils'
-import { codeSchema, passwordSchemaClassic } from '../../../api/accounts/registration/registerUserSchema'
+import { codeSchema } from '../../../api/accounts/registration/registerUserSchema'
 import loginLanguage from './i18n/loginLanguage'
 import dely from 'dely'
 import { resolveRedirect } from '../../../api/routes/getResolveRedirect'
 import { createInvitationURLQuery } from '../../../contexts/classroom/invitations/url/createInvitationURLQuery'
 import './login.html'
+import { UserRoles } from '../../../api/roles/UserRoles'
+import { userRoutesLoaded } from '../../../api/routes/userRoutesLoaded'
 
 const by300 = dely(300)
 const { siteName } = Meteor.settings.public
@@ -29,51 +30,54 @@ Template.login.onCreated(function () {
       return
     }
 
-    const loginSchema = Schema.create({
-      usernameOrEmail: {
+    schemas.set('loginSchema', Schema.create({
+      email: {
         type: String,
         max: 50,
-        label: () => i18n.get('userProfile.email'),
+        label: API.translateReactive('userProfile.email'),
         regEx: RegEx.EmailWithTLD,
         autoform: {
           autofocus: true,
           label: false,
-          autocomplete: 'username',
-          placeholder: () => i18n.get('userProfile.email')
+          autocomplete: 'email',
+          name: 'email',
+          placeholder: API.translateReactive('userProfile.email')
         }
       },
-      password: passwordSchemaClassic({
-        min: null,
-        max: null,
-        regExp: null,
-        hint: false,
-        autocomplete: 'current-password'
-      })
-    })
+      password: {
+        type: String,
+        label: API.translateReactive('userProfile.password'),
+        autoform: {
+          label: false,
+          placeholder: API.translateReactive('userProfile.password'),
+          afFieldInput: {
+            type: 'password'
+          },
+          autocomplete: true
+        }
+      }
+    }))
 
-    const codeFormSchema = Schema.create({
+    schemas.set('codeFormSchema', Schema.create({
       code: codeSchema({
         label: null,
         autocomplete: false,
         autofocus: true
       })
-    })
+    }))
 
-    const resetEmailSchema = Schema.create({
+    schemas.set('resetEmailSchema', Schema.create({
       email: {
         type: String,
         max: 50,
-        label: () => i18n.get('userProfile.email'),
+        label: API.translateReactive('userProfile.email'),
         autoform: {
           autofocus: true,
           autocomplete: false
         }
       }
-    })
+    }))
 
-    schemas.set('loginSchema', loginSchema)
-    schemas.set('codeFormSchema', codeFormSchema)
-    schemas.set('resetEmailSchema', resetEmailSchema)
     instance.state.set('schemasCreated', true)
   })
 })
@@ -86,7 +90,7 @@ Template.login.onRendered(function () {
     instance.$('#registerCodeModal').modal('show')
   }
   else {
-    const input = instance.$('input[data-schema-key="usernameOrEmail"]')
+    const input = instance.$('input[data-schema-key="email"]')
     input.focus()
     input.focus()
     input.focus()
@@ -139,8 +143,8 @@ Template.login.events({
     // fail and want to send a reset link
     const values = getFormData('loginForm')
 
-    if (values.usernameOrEmail && values.usernameOrEmail.includes('@')) {
-      templateInstance.state.set('resetEmail', { email: values.usernameOrEmail })
+    if (values.email && values.email.includes('@')) {
+      templateInstance.state.set('resetEmail', { email: values.email })
     }
 
     const loginSchema = schemas.get('loginSchema')
@@ -148,11 +152,11 @@ Template.login.events({
     if (!insertDoc) {
       return templateInstance.state.set('loggingIn', false)
     }
-    const { usernameOrEmail } = insertDoc
+    const { email } = insertDoc
     const { password } = insertDoc
     const redirect = resolveRedirect()
 
-    Meteor.loginWithPassword(usernameOrEmail, password, (err) => {
+    Meteor.loginWithPassword(email, password, (err) => {
       if (err) {
         templateInstance.state.set('loggingIn', false)
         return API.notify(err)
@@ -161,7 +165,7 @@ Template.login.events({
       templateInstance.state.set('loggingIn', false)
 
       Tracker.autorun(c => {
-        if (!Meteor.user()) {
+        if (!Meteor.user() || !UserRoles.subscription.ready() || !userRoutesLoaded.get()) {
           return
         }
 

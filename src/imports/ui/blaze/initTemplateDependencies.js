@@ -87,6 +87,7 @@ export const initTemplateDependencies = function initTemplate ({
     warn,
     fatal: setFatalError,
     translate: (...args) => i18n.get(...args),
+    translateReactive: (...args) => i18n.reactive(...args),
     getLocalCollection,
     getCollection,
     setFatalError,

@@ -63,6 +63,7 @@
     "startedAt": "Gestartet am",
     "completedAt": "Abgeschlossen am",
     "lastUpdated": "Zuletzt aktualisiert am",
+    "failed": "Aktion fehlgeschlagen",
     "ok": "Verstanden",
     "from": "Von",
     "to": "Bis",

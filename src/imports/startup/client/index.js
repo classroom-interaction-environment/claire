@@ -8,6 +8,7 @@ import { dynamicImport } from '../../ui/utils/dynamicImport'
 import { createLog } from '../../api/log/createLog'
 import { UserRoles } from '../../api/roles/UserRoles'
 import { getHighestRole } from '../../api/accounts/roles/getHighestRole'
+import { userRoutesLoaded } from '../../api/routes/userRoutesLoaded'
 
 if (Blaze.setExceptionHandler) Blaze.setExceptionHandler(console.error)
 if (Template.stateName) Template.stateName('state')
@@ -21,7 +22,7 @@ const minimalLoaded = dynamicImport([
 const reloadRoute = () => {
   setTimeout(() => {
     Router.go(window.location.pathname + window.location.search)
-  }, 50)
+  }, 0)
 }
 
 Tracker.autorun((computation) => {
@@ -46,6 +47,7 @@ Tracker.autorun((computation) => {
   loadUserRoutes(userId)
     .catch(e => console.error(e))
     .then(role => {
+      userRoutesLoaded.set(true)
       debug(`${role}-specific routes loaded`)
       reloadRoute()
     })

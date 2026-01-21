@@ -16,7 +16,6 @@ import './tasks.html'
 import { Schema } from '../../../../../api/schema/Schema'
 import { formIsValid } from '../../../../components/forms/formUtils'
 import { updateContextDoc } from '../../../../controllers/document/updateContextDoc'
-import { i18n } from '../../../../../api/language/language'
 
 const API = Template.uetasks.setDependencies({
   contexts: [Unit, Phase, Task],

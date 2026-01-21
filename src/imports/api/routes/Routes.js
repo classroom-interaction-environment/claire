@@ -102,7 +102,9 @@ Routes.login = {
   roles: null,
   data: {
     onSuccess (redirect) {
-      Router.go(redirect || Routes.root)
+      const to = redirect ?? Routes.root ?? '/'
+      console.debug('on login success, go ', to)
+      Router.go(to)
     }
   }
 }
