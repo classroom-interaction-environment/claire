@@ -51,6 +51,23 @@ TeacherRoutes.dashboard = {
   }
 }
 
+TeacherRoutes.profile = {
+  path: (userId = ':userId', status) => {
+    const base = `/profile/${userId}`
+    if (typeof status !== 'string') return base
+    return `${base}?status=${status}`
+  },
+  triggersEnter: () => [loginTrigger],
+  async load () {
+    return import('../../../ui/pages/profile/profile')
+  },
+  target: null,
+  label: 'routes.profile',
+  template: 'userProfile',
+  roles: null,
+  data: null
+}
+
 /*
 TeacherRoutes.logout = {
   path: () => '/logout',

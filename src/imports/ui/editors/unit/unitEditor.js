@@ -46,6 +46,9 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
   // ---------------------------------------------------------------------------
   // 0. Creating guide
   // ---------------------------------------------------------------------------+
+  Guide.debug({
+    debug: (...args) => console.debug('[Guide]:', ...args)
+  })
   instance.autorun((c) => {
     if (!API.initComplete()) return
     const createStep = ({ name, element, nextView }) => {
@@ -115,9 +118,13 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
     instance.guide.autostart(({ hasViewed, start, stop }) => {
       const instance = Template.instance()
       const user = Meteor.user()
-      if (instance.state.get('unitSubComplete') &&
-        instance.state.get('dependenciesComplete') &&
-        user) {
+      const unitSubComplete = instance.state.get('unitSubComplete')
+      const dependenciesComplete = instance.state.get('dependenciesComplete')
+      console.debug('GUIDE: checking unit editor guide autostart', {
+        user, unitSubComplete, dependenciesComplete
+      })
+      if (unitSubComplete && dependenciesComplete && user) {
+        console.debug('GUIDE: deciding unit editor guide autostart')
         return hasViewed(user)
       }
     })

@@ -213,23 +213,6 @@ Routes.resetPassword = {
 //
 // ////////////////////////////////////////////////////////////////////////////////////////////////
 
-Routes.profile = {
-  path: (userId = ':userId', status) => {
-    const base = `/profile/${userId}`
-    if (typeof status !== 'string') return base
-    return `${base}?status=${status}`
-  },
-  triggersEnter: () => [loginTrigger],
-  async load () {
-    return import('../../ui/pages/profile/profile')
-  },
-  target: null,
-  label: 'routes.profile',
-  template: 'userProfile',
-  roles: null,
-  data: null
-}
-
 Routes.confirmResearch = {
   path: (data = ':data') => `/confirm-research/${data}`,
   triggersEnter: () => [loginTrigger],

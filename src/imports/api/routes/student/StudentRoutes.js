@@ -39,7 +39,7 @@ StudentRoutes.profile = {
   roles: null,
   data: null,
   onAction (params, queryParams) {
-    console.debug('on action', StudentRoutes.profile)
+    console.debug('routes.profile on action', StudentRoutes.profile)
     BackRoute.flush()
     const path = StudentRoutes.root.path()
     const title = StudentRoutes.root.label

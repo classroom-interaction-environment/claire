@@ -150,7 +150,9 @@ function createRoute (routeDef, onError) {
         }, 50)
       }
 
-      if (routeDef.onAction) {
+      const hasAction = routeDef.onAction
+      debug('route hasAction', routeDef.label, '→', hasAction, routeDef)
+      if (hasAction) {
         routeDef.onAction(params, queryParams)
       }
 

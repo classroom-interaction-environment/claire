@@ -7,14 +7,35 @@ import { markGuideAsRead } from './markGuideAsRead'
 export const Guide = {}
 
 Guide.hasViewed = (key, user) => {
+  if (internal.debug) {
+    internal.debug('hasViewed', key, user?.ui?.guide, user?.ui?.guide?.[key])
+    if (internal.hasViewed.hasOwnProperty(key)) {
+      internal.debug('hasViewed use override', key, internal.hasViewed[key])
+      return internal.hasViewed[key]
+    }
+  }
   // this is a little scope creepy, but
   // for now we have only this place where we need to check
   const value = user?.ui?.guide?.[key]
   return value === true
 }
 
+const defaults = { debug: null, hasViewed: {} }
+const internal = { ...defaults }
+const debug = (...args) => {
+  if (internal.debug) {
+    internal.debug(...args)
+  }
+}
+
+Guide.debug = (otions) => {
+  const override = otions === null ? defaults : otions
+  Object.assign(internal, override)
+  debug('Guide debug set with options:', override)
+}
 
 const createDriver = ({ allowClose, opacity, steps, ...additionalOptions }) => {
+  debug('createDriver', { allowClose, opacity, steps, additionalOptions })
   return driver({
     allowClose,
     overlayOpacity: opacity,
@@ -64,7 +85,6 @@ const transformSteps = (steps) => {
 
       }
     }
-    console.debug(config)
     return config
   })
 }
@@ -151,3 +171,5 @@ Guide.tour = ({ key, allowClose = false, opacity = 0.75, steps, ...additionalOpt
     }
   }
 }
+
+window.debugGuide = Guide.debug
