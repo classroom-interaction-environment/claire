@@ -138,7 +138,10 @@ module.exports = ({ factory, Integer, RegEx }) => {
         blacklist: Array,
         'blacklist.$': String
       }),
-      "siteName": String
+      "siteName": String,
+      h5p: factory({
+        enabled: Boolean
+      })
     })
   })
 }

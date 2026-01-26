@@ -40,6 +40,9 @@
         "^.*h(e|3|a|4|@)llo.*$",
         "^.*f(i|1)ck(e|3)n.*$"
       ]
+    },
+    "h5p": {
+      "enabled": false
     }
   },
   "patch": {

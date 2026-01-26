@@ -24,9 +24,13 @@ TaskDefinitions.types = {
   Text,
   WebResources,
   Files,
-  Item,
-  H5P
+  Item
 }
+
+if (H5P.isEnabled()) {
+  TaskDefinitions.types.H5P = H5P
+}
+
 
 // TODO make a Map
 const typeMap = new Map(Object.entries({
@@ -34,7 +38,7 @@ const typeMap = new Map(Object.entries({
   [WebResources.name]: WebResources,
   [Text.name]: Text,
   [Files.name]: Files,
-  [H5P.name]: H5P
+  ...(H5P.isEnabled() ? { [H5P.name]: H5P } : {})
 }))
 
 const log = createLog({ name: TaskDefinitions.name, type: 'debug' })

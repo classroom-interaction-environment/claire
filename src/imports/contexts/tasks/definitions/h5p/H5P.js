@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { ResponseDataTypes } from '../../../../api/plugins/ResponseDataTypes'
 import { getItemBase } from '../items/getItemBase'
 import { option } from '../common/helpers'
@@ -7,8 +8,10 @@ import { ReactiveVar } from 'meteor/reactive-var'
 import { H5PMeteor } from 'meteor/claire:h5p'
 import { callMethod } from '../../../../ui/controllers/document/callMethod'
 
+
 export const H5P = {}
 
+const { enabled } = Meteor.settings.public.h5p ?? {}
 const debug = createLog({ name: 'H5PItems', type: 'debug' })
 
 H5P.name = 'h5p'
@@ -18,6 +21,8 @@ H5P.icon = 'edit'
 H5P.options = {}
 H5P.dataTypes = Object.assign({}, ResponseDataTypes)
 H5P.categories = new Map()
+
+H5P.isEnabled = () => enabled === true
 
 H5P.categories.set('notCategorized', {
   name: 'notCategorized',
