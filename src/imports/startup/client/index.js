@@ -21,8 +21,9 @@ const minimalLoaded = dynamicImport([
 
 const reloadRoute = () => {
   setTimeout(() => {
+    debug('reloading route:', window.location.pathname + window.location.search)
     Router.go(window.location.pathname + window.location.search)
-  }, 0)
+  }, 50)
 }
 
 Tracker.autorun((computation) => {
@@ -43,7 +44,9 @@ Tracker.autorun((computation) => {
   // we need to wait for Meteor.user
   // because Meteor.userId is present before Meteor.user is ready
   // and we may need some info from the user document to determine roles
-  if (!UserRoles.subscription.ready() || !Meteor.user()) return
+  if (!UserRoles.subscription.ready() || !Meteor.user()) {
+    return debug('waiting for user roles subscription...', Meteor.user(), UserRoles.subscription.ready())
+  }
   loadUserRoutes(userId)
     .catch(e => console.error(e))
     .then(role => {
@@ -83,6 +86,7 @@ async function loadStudent () {
 }
 
 async function loadTeacher () {
+  debug('load teacher routes')
   return import('./teacher/index')
 }
 

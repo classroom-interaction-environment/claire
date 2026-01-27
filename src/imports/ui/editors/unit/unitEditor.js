@@ -56,7 +56,7 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
         elements: element ? [element] : [`.ue-${name}`, `li[data-key="${name}"]`],
         popover: {
           title: API.translate(`editor.unit.guide.${name}.title`),
-          description: API.translate(`editor.unit.guide.${name}.text`),
+          description: API.translate(`editor.unit.guide.${name}.text`)
         }
       }
       if (nextView) {
@@ -65,7 +65,7 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
           nextBtn.disabled = true;
           setQueryParams({ tab: nextView })
           instance.state.set('currentViewName', nextView)
-          setTimeout(() =>  {
+          setTimeout(() => {
             options.driver.moveNext()
             nextBtn.disabled = false;
           }, 750)
@@ -80,7 +80,7 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
         {
           popover: {
             title: API.translate('editor.unit.guide.welcome.title'),
-            description: API.translate('editor.unit.guide.welcome.text'),
+            description: API.translate('editor.unit.guide.welcome.text')
           }
         },
         createStep({
@@ -108,14 +108,14 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
           element: '.to-lesson-button',
           popover: {
             title: API.translate(`editor.unit.guide.toLesson.title`),
-            description: API.translate(`editor.unit.guide.toLesson.text`),
+            description: API.translate(`editor.unit.guide.toLesson.text`)
           }
-        },
+        }
       ]
     })
 
     // guide autostart
-    instance.guide.autostart(({ hasViewed}) => {
+    instance.guide.autostart(({ hasViewed }) => {
       const instance = Template.instance()
       const user = Meteor.user()
       const unitSubComplete = instance.state.get('unitSubComplete')
@@ -126,7 +126,8 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
       if (unitSubComplete && dependenciesComplete && user) {
         console.debug('GUIDE: deciding unit editor guide autostart')
         return hasViewed(user)
-      } else {
+      }
+      else {
         console.debug('GUIDE: autostart waiting for data')
       }
     })
@@ -180,25 +181,28 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
       args: { unitId },
       callbacks: {
         onReady () {
+          API.debug('unitSubComplete')
           const unitDoc = getCollection(Unit.name).findOne(unitId)
-
-          // check for master-access here (but make sure it's also checked on
-          // the server, in methods,s publications, etc
-
-          if (unitEditorIsMasterMode(unitDoc)) {
-            if (!userIsCurriculum()) {
-              return API.fatal(new PermissionDeniedError('errors.notCurriculum', { unitId }))
-            }
-
-            CurriculumSession.enable()
-          }
-
           if (unitDoc) {
             instance.state.set({ unitDoc, unitSubComplete: true })
           }
           else {
             instance.state.set('docNotFound', true)
             API.fatal(new DocNotFoundError(Unit.name, { unitId }))
+          }
+
+          // check for master-access here (but make sure it's also checked on
+          // the server, in methods,s publications, etc
+
+          if (unitEditorIsMasterMode(unitDoc)) {
+            userIsCurriculum().then(isCurriculum => {
+              if (isCurriculum) {
+                CurriculumSession.enable()
+              }
+              else {
+                API.fatal(new PermissionDeniedError('errors.notCurriculum', { unitId }))
+              }
+            })
           }
         }
       }

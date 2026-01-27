@@ -133,7 +133,7 @@ Guide.tour = ({ key, allowClose = false, opacity = 0.75, steps, ...additionalOpt
   const instance = createDriver({ allowClose, opacity, steps, ...additionalOptions })
   return {
     autostart(fn) {
-      this.tracker = Tracker.autorun(c => {
+      const computation = c => {
         const start = () => {
           console.debug('autostart guide', key)
           this.start()
@@ -152,7 +152,12 @@ Guide.tour = ({ key, allowClose = false, opacity = 0.75, steps, ...additionalOpt
         })
         if (value === "start") start()
         if (value === "stop") stop()
-      })
+        console.debug('autostart skip value', value)
+      }
+      const instance = Template.instance()
+      this.tracker = instance
+        ? instance.autorun(computation)
+        : Tracker.autorun(computation)
     },
     start () {
       if (instance) {
