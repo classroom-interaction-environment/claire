@@ -2,13 +2,14 @@ import { Meteor } from 'meteor/meteor'
 import { check, Match } from 'meteor/check'
 import { SubsCache } from 'meteor/ccorcos:subs-cache'
 import { createLog } from '../../api/log/createLog'
+import { noop } from '../../utils/noop'
 
 // ////////////////////////////////////////////////////////////////////////////
 //
 // INTERNAL
 //
 // ////////////////////////////////////////////////////////////////////////////
-const debug = createLog({ name: 'SubsManager', type: 'debug' })
+let debug = noop
 
 let _connection = Meteor.Connection
 const _subs = {}
@@ -50,7 +51,11 @@ function createHandle (publicationName, opts, { onError, onReady }) {
 // ////////////////////////////////////////////////////////////////////////////
 
 export const SubsManager = {
-
+  debug: (value) => {
+    debug = value
+      ? createLog('[SubsManager]', 'debug')
+      : noop
+  },
   connection: {
     /**
      * Sets the current connection. Default is Meteor.connection.

@@ -91,7 +91,10 @@ export const initTemplateDependencies = function initTemplate ({
     getLocalCollection,
     getCollection,
     setFatalError,
-    subscribe,
+    subscribe: (options) => {
+      options.debug = options.debug ?? debugLog
+      return subscribe(options)
+    },
     unsubscribe: name => SubsManager.unsubscribe(name),
     initContext,
     dispose: (key, { onError = console.error } = {}) => {
@@ -234,18 +237,27 @@ export const initTemplateDependencies = function initTemplate ({
  * @param name {String|Object} name or {{name}} Object
  * @param args {Object|undefined} subscription args
  * @param callbacks {Object|undefined} onReady and onStop callbacks
+ * @param debug {function} debug function
  * @return {*|{ready}}
  */
 
-const subscribe = ({ key, name, args, callbacks, debug }) => {
-  const onError = callbacks?.onError || console.error
+const subscribe = ({ key, name, args, callbacks, debug = noop }) => {
+  const onError = (e) => {
+    debug('subscription error', e)
+    if (callbacks?.onError) callbacks?.onError(e)
+  }
+  const onReady = () => {
+    debug('subscription ready')
+    if (callbacks?.onReady) callbacks?.onReady()
+  }
   try {
     const pubName = typeof name === 'object'
       ? name.name
       : name
+    debug('subscribing to', pubName, 'with key', key, 'with args', args)
     SubscriptionRegistry.registerTemplate(key)
     SubscriptionRegistry.add(key, pubName)
-    return SubsManager.subscribe(pubName, args, callbacks)
+    return SubsManager.subscribe(pubName, args, { onError, onReady })
   }
   catch (e) {
     onError(e)

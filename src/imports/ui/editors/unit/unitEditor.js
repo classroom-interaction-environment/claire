@@ -115,7 +115,7 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
     })
 
     // guide autostart
-    instance.guide.autostart(({ hasViewed, start, stop }) => {
+    instance.guide.autostart(({ hasViewed}) => {
       const instance = Template.instance()
       const user = Meteor.user()
       const unitSubComplete = instance.state.get('unitSubComplete')
@@ -126,6 +126,8 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
       if (unitSubComplete && dependenciesComplete && user) {
         console.debug('GUIDE: deciding unit editor guide autostart')
         return hasViewed(user)
+      } else {
+        console.debug('GUIDE: autostart waiting for data')
       }
     })
 
@@ -192,8 +194,7 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
           }
 
           if (unitDoc) {
-            instance.state.set('unitDoc', unitDoc)
-            instance.state.set('unitSubComplete', true)
+            instance.state.set({ unitDoc, unitSubComplete: true })
           }
           else {
             instance.state.set('docNotFound', true)
@@ -221,6 +222,7 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
       args: { unitId },
       failure: er => API.fatal(er),
       success: ({ lessonDoc, classDoc, pocketDoc, originalUnitDoc }) => {
+        API.debug('dependencies complete')
         const dependenciesComplete = true
 
         // if we have a lessonDoc associated (non-curriculum modes)

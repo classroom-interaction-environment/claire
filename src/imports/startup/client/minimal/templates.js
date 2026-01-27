@@ -1,6 +1,7 @@
 import { Template } from 'meteor/templating'
 import { TemplateLoader } from 'meteor/jkuester:template-loader'
 import { initTemplateDependencies } from '../../../ui/blaze/initTemplateDependencies'
+import { TemplatesDebug } from '../../../ui/blaze/TemplatesDebug'
 import '../../../ui/generic/loading/loading'
 import '../../../ui/components/onloaded/onLoaded'
 /*******************************************************************************
@@ -49,6 +50,10 @@ Template.prototype.setDependencies = function (options = {}) {
     throw new Error('Template setDependencies called multiple times. This should never occur.')
   }
 
+  if (!options.debug && TemplatesDebug.has(viewName)) {
+    options.debug = true
+  }
+
   const api = initTemplateDependencies.call(template, options)
   completeStates.set(viewName, api.initComplete)
   return api
@@ -65,3 +70,5 @@ Template.registerHelper('templateLoaded', function () {
   const template = Template[templateName]
   return !template.initComplete || template.initComplete.get()
 })
+
+window.debugTemplate = TemplatesDebug.debug
