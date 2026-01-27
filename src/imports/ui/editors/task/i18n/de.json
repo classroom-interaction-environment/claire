@@ -49,7 +49,7 @@
         },
         "listing": {
           "title": "Elementliste",
-          "text": "Alle hinzugefügten Elemente ercheinen in einer Liste. Mit den Schaltflächen rechts können Sie die Elemente verschieben, um die Reihenfolde zu ändern, sie bearbeiten oder vollständig löschen. Neue Elemente können entweder gant oben oder ganz unten in der Liste hinzugefügt werden."
+          "text": "Alle hinzugefügten Elemente erscheinen in einer Liste. Auf der rechten Seite jedes Elements befinden sich Schaltflächen, mit denen Sie diese verschieben, bearbeiten oder vollständig löschen können. Neue Elemente können entweder ganz oben oder ganz unten in der Liste hinzugefügt werden."
         },
         "summary": {
           "title": "Vorschau",
@@ -57,7 +57,7 @@
         },
         "units": {
           "title": "Verknüpfte Sequenzen",
-          "text": "Hier binden Sie die Aufgabe in weitere Unterrichtssequenzen ein. Dabei wird eine Kopie erstellt, die Sie unabhängig anpassen können."
+          "text": "Hier binden Sie die Aufgabe in weitere Unterrichtssequenzen ein. Dabei wird die Aufgabe mit einer anderen Sequenz verknüpft. Veränderungen, die sie bei einer der Aufgaben vornehmen, werden auch auf die jeweils andere übertragen."
         },
         "leave": {
           "title": "Bearbeitung beenden",
