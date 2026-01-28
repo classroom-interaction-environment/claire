@@ -11,7 +11,7 @@
 				<div id="preview-parent" class="w-100 disable-cluster">
 					<div id="cluster-preview-spawn" class="cluster-preview-spawn w-100">
 						{{#each entry in values}}
-							<span class="draggable cluster-preview-card"
+							<span class="draggable cluster-preview-card border border-dark"
 								  style="{{#with spawnPos @index}}left: {{this}}px;top: {{this}}px;{{/with}}background-color: {{#if entry.c}}{{entry.c}}{{else}}{{defaultBg}}{{/if}};"
 								  id="{{entry.responseId}}"
 								  data-x="{{spawnPos @index}}"

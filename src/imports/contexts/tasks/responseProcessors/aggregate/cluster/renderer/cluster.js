@@ -22,7 +22,7 @@ Template.rpCluster.onCreated(function () {
   instance.state.set('quadrants', [])
   instance.state.set('quadrantEdit', -1)
   instance.state.set('fontSize', 24)
-  instance.state.set('bgColor', 'light')
+  instance.state.set('bgColor', 'white')
 
   instance.initialized = false
 
@@ -188,7 +188,7 @@ const resizeText = ({ element, elements, minSize = 10, maxSize = 512, step = 0.5
   })
 }
 
-const defaultBg = '#4a4a4a'
+const defaultBg = '#fff'
 
 Template.rpCluster.helpers({
   defaultBg () {
@@ -310,7 +310,7 @@ Template.rpCluster.events({
     const elements = templateInstance.$('.draggable')
     elements.each((index, element) => {
       Interact.transform(element, 0, 0, 0, 0)
-      templateInstance.$(element).css('background-color', '#D4D4D4')
+      templateInstance.$(element).css('background-color', defaultBg)
     })
   },
   'click .edit-mode-button' (event, templateInstance) {
