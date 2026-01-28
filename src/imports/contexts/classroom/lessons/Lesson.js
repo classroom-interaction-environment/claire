@@ -1,5 +1,4 @@
-import { Meteor } from 'meteor/meteor'
-import { UserUtils } from '../../system/accounts/users/UserUtils'
+import { Hierarchy } from '../../../api/accounts/roles/Hierarchy'
 import { i18n } from '../../../api/language/language'
 import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
@@ -191,7 +190,7 @@ Lesson.publications = {}
 Lesson.publications.my = {
   name: 'lesson.publication.my',
   schema: {},
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServer(function () {
     const { userId } = this
     const query = {
@@ -207,7 +206,7 @@ Lesson.publications.my = {
 Lesson.publications.myRunning = {
   name: 'lesson.publication.myRunning',
   schema: {},
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     return function () {
       const { userId } = this
@@ -236,7 +235,7 @@ Lesson.publications.editor = {
     const query = { unit, createdBy: this.userId }
     return getCollection(Lesson.name).find(query, { limit: 1 })
   }),
-  role: UserUtils.roles.teacher,
+  role: Hierarchy.teacher,
   timeInterval: 1000,
   numRequests: 10
 }
@@ -272,7 +271,7 @@ Lesson.publications.byClass = {
   name: 'lesson.publications.byClass',
   timeInterval: 1000,
   numRequests: 20,
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   schema: {
     classId: String
   },
@@ -347,7 +346,7 @@ Lesson.methods.my = {
     },
     'units.$': String
   },
-  role: UserUtils.roles.teacher,
+  role: Hierarchy.teacher,
   run: onServer(function ({ classId, ids = [], skip = [], completed, custom, units = [] }) {
     const query = { createdBy: this.userId }
 
@@ -383,7 +382,7 @@ Lesson.methods.counts = {
     classIds: Array,
     'classIds.$': String
   },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(() => {
     import { countLessons } from './methods/countLessons'
     return async function ({ classIds }) {
@@ -399,7 +398,7 @@ Lesson.methods.create = {
     classId: String,
     unitId: String
   },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     import { createLesson } from './methods/createLesson'
 
@@ -415,7 +414,7 @@ Lesson.methods.remove = {
   schema: {
     _id: String
   },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     import { removeLesson } from './methods/removeLesson'
 
@@ -431,7 +430,7 @@ Lesson.methods.start = {
   schema: {
     _id: String
   },
-  role: UserUtils.roles.teacher,
+  role: Hierarchy.teacher,
   run: onServerExec(() => {
     import { startLesson } from './methods/lessonActions'
     return async function ({ _id }) {
@@ -446,7 +445,7 @@ Lesson.methods.complete = {
   schema: {
     _id: String
   },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     import { completeLesson } from './methods/lessonActions'
     return async function ({ _id }) {
@@ -461,7 +460,7 @@ Lesson.methods.stop = {
   schema: {
     _id: String
   },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     import { stopLesson } from './methods/lessonActions'
     return async function ({ _id }) {
@@ -476,7 +475,7 @@ Lesson.methods.resume = {
   schema: {
     _id: String
   },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     import { resumeLesson } from './methods/lessonActions'
     return async function ({ _id }) {
@@ -491,7 +490,7 @@ Lesson.methods.restart = {
   schema: {
     _id: String
   },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     import { restartLesson } from './methods/restartLesson'
     return async function ({ _id }) {
@@ -508,7 +507,7 @@ Lesson.methods.toggle = {
     referenceId: String,
     context: String
   },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     import { toggleLessonMaterial } from './methods/toggleLessonMaterial'
     return async function ({ _id, referenceId, context }) {

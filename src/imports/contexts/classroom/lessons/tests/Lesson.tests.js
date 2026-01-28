@@ -7,7 +7,6 @@ import {
 } from '../../../../../tests/testutils/mockCollection'
 import { Lesson } from '../Lesson'
 import { SchoolClass } from '../../schoolclass/SchoolClass'
-import { UserUtils } from '../../../system/accounts/users/UserUtils'
 import { LessonStates } from '../LessonStates'
 import { stub, restore, restoreAll } from '../../../../../tests/testutils/stub'
 import {
@@ -22,12 +21,10 @@ import {
 } from '../../../../../tests/testutils/doc/stubDocs'
 import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { expect } from 'chai'
-import { LessonRuntime } from '../runtime/LessonRuntime'
 import { Unit } from '../../../curriculum/curriculum/unit/Unit'
 import { Task } from '../../../curriculum/curriculum/task/Task'
 import { Phase } from '../../../curriculum/curriculum/phase/Phase'
 import { Users } from '../../../system/accounts/users/User'
-import { LessonHelpers } from '../LessonHelpers'
 
 // require startup files to initialize Material
 import '../../../../startup/server/contexts'
@@ -166,13 +163,13 @@ describe(Lesson.name, () => {
         const classId = Random.id()
         const lessonCreateDoc = { classId, unitId: unitOriginal._id, createdBy: userId }
 
-        stub(UserUtils, 'isAdmin', () => false)
+        // stub(UserUtils, 'isAdmin', () => false)
         stub(SchoolClassCollection, 'findOneAsync', async () => {
           return Object.assign({}, { _id: classId, createdBy: userId })
         })
 
         const { lessonId, unitId } = await createLesson.call({ userId, log }, lessonCreateDoc)
-        restore(UserUtils, 'isAdmin')
+        // restore(UserUtils, 'isAdmin')
         restore(SchoolClassCollection, 'findOne')
 
         const lessonDoc = await LessonCollection.findOneAsync(lessonId)

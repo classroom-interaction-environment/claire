@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor'
 import { i18n } from '../../../api/language/language'
-import { UserUtils } from '../../system/accounts/users/UserUtils'
 import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
+import { Hierarchy } from '../../../api/accounts/roles/Hierarchy'
 
 const firstOption = i18n.get('form.selectOne')
 
@@ -160,7 +160,7 @@ SchoolClass.methods.create = {
     'timeFrame.from': SchoolClass.schema['timeFrame.from'],
     'timeFrame.to': SchoolClass.schema['timeFrame.to']
   },
-  role: UserUtils.roles.teacher,
+  role: Hierarchy.teacher,
   run: onServerExec(() => {
     import { createSchoolClass } from './helpers/createSchoolClass'
     return async function createClass ({ title, timeFrame }) {
@@ -179,7 +179,7 @@ SchoolClass.methods.update = {
     _id: String,
     title: SchoolClass.schema.title
   },
-  role: UserUtils.roles.teacher,
+  role: Hierarchy.teacher,
   run: onServerExec(function () {
     import { checkEditPermission } from '../../../api/document/checkEditPermissions'
 
@@ -214,7 +214,7 @@ SchoolClass.methods.remove = {
   schema: {
     _id: String
   },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     import { removeClass } from './methods/removeClass'
 
@@ -236,7 +236,7 @@ SchoolClass.methods.addStudent = {
     classId: String,
     userId: String
   },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(() => {
     import { addStudent } from './methods/addStudent'
 
@@ -257,7 +257,7 @@ SchoolClass.methods.removeStudent = {
     classId: String,
     userId: String
   },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(() => {
     import { removeStudent } from './methods/removeStudent'
     return async function ({ classId, userId }) {

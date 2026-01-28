@@ -1,6 +1,6 @@
 import { FormFactory } from '../../utils/formfactory'
 import { i18n } from '../../../../api/language/language'
-import { UserUtils } from '../../../system/accounts/users/UserUtils'
+import { Hierarchy } from '../../../../api/accounts/roles/Hierarchy'
 import { getCollection } from '../../../../api/utils/getCollection'
 import { onServer, onServerExec } from '../../../../api/utils/archUtils'
 import { firstOption } from '../../../tasks/definitions/common/helpers'
@@ -382,7 +382,7 @@ Unit.methods.byTaskId = {
   schema: {
     taskId: String
   },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     import { getUnitsByTaskId } from './methods/getUnitsByTaskId'
 
@@ -396,7 +396,7 @@ Unit.methods.byTaskId = {
 Unit.methods.unlinkTask = {
   name: 'unit.methods.unlinkTask',
   schema: { taskId: String },
-  role: UserUtils.roles.teacher,
+  role: Hierarchy.teacher,
   run: onServerExec(() => {
     import { unlinkUnitTask } from './methods/unlinkUnitTask'
     return async function ({ taskId }) {
@@ -413,7 +413,7 @@ Unit.methods.unlinkTask = {
 Unit.methods.getEditorDocs = {
   name: 'unit.methods.getEditorDocs',
   schema: { unitId: String },
-  role: UserUtils.roles.teacher,
+  role: Hierarchy.teacher,
   run: onServerExecLazy(function () {
     return require( './methods/getEditorDocs').getEditorDocs
   })
@@ -422,7 +422,7 @@ Unit.methods.getEditorDocs = {
 Unit.methods.remove = {
   name: 'unit.methods.remove',
   schema: { _id: String },
-  role: UserUtils.roles.curriculum,
+  role: Hierarchy.curriculum,
   run: onServerExec(() => {
     import { deleteUnit } from './methods/deleteUnit'
 
@@ -436,7 +436,7 @@ Unit.methods.remove = {
 Unit.methods.loadMaterial = {
   name: 'unit.methods.loadMaterial',
   schema: { _id: String },
-  role: UserUtils.roles.teacher,
+  role: Hierarchy.teacher,
   run: onServerExec(function () {
     import { loadMaterial } from './methods/loadMaterial'
 
@@ -454,7 +454,7 @@ Unit.publications.editor = {
   schema: {
     unitId: String
   },
-  role: UserUtils.roles.teacher,
+  role: Hierarchy.teacher,
   run: onServer(function ({ unitId }) {
     return getCollection(Unit.name).find({ _id: unitId })
   })

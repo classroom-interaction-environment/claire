@@ -4,28 +4,53 @@ import { Roles } from 'meteor/alanning:roles'
 import { Hierarchy } from './Hierarchy'
 import { getUsersCollection } from '../../utils/getUsersCollection'
 import { PermissionDeniedError } from '../../errors/types/PermissionDeniedError'
+import { isomporph } from '../../utils/archUtils'
 
-export const getHighestRole = async (userId = Meteor.userId(), scope) => {
-  check(userId, String)
-  check(scope, Match.Maybe(String))
+export const getHighestRole = isomporph({
+  client: () => (userId = Meteor.userId(), scope) => {
+    check(userId, String)
+    check(scope, Match.Maybe(String))
 
-  let finalScope
-  if (!scope) {
-    const user = await getUsersCollection().findOneAsync(userId)
-    finalScope = user.institution
-  }
-  else {
-    finalScope = scope
-  }
-
-  const roles = await Roles.getRolesForUserAsync(userId, finalScope)
-  for (const role of hierarchyList) {
-    if (roles.includes(role)) {
-      return role
+    let finalScope
+    if (!scope) {
+      const user = getUsersCollection().findOne(userId)
+      finalScope = user.institution
     }
-  }
+    else {
+      finalScope = scope
+    }
 
-  throw new PermissionDeniedError('roles.userIsInNoRoles', { userId })
-}
+    const roles = Roles.getRolesForUser(userId, finalScope)
+    for (const role of hierarchyList) {
+      if (roles.includes(role)) {
+        return role
+      }
+    }
+
+    throw new PermissionDeniedError('roles.userIsInNoRoles', { userId })
+  },
+  server: () => async (userId = Meteor.userId(), scope) => {
+    check(userId, String)
+    check(scope, Match.Maybe(String))
+
+    let finalScope
+    if (!scope) {
+      const user = await getUsersCollection().findOneAsync(userId)
+      finalScope = user.institution
+    }
+    else {
+      finalScope = scope
+    }
+
+    const roles = await Roles.getRolesForUserAsync(userId, finalScope)
+    for (const role of hierarchyList) {
+      if (roles.includes(role)) {
+        return role
+      }
+    }
+
+    throw new PermissionDeniedError('roles.userIsInNoRoles', { userId })
+  }
+})
 
 const hierarchyList = Object.values(Hierarchy)

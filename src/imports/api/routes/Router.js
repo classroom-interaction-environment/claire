@@ -107,29 +107,29 @@ function createRoute (routeDef, onError) {
         this.render(loadingRenderTarget, 'loading', { title, requireTranslate: true })
       }
     },
-    waitOn () {
+    async waitOn () {
       debug('waitOn', routeDef.key)
-      const all = Promise.all([
-        Promise.resolve(routeDef.load()),
-        new Promise((resolve) => {
-          Tracker.autorun((computation) => {
-            const loadComplete = !Meteor.loggingIn() // && Roles.subscription.ready()
-            debug('waitOn complete', routeDef.key)
-            if (loadComplete) {
-              computation.stop()
-              resolve()
-            }
-          })
+      const loggingIn = new Promise((resolve) => {
+        Tracker.autorun((computation) => {
+          const loadComplete = !Meteor.loggingIn() // && Roles.subscription.ready()
+          if (loadComplete) {
+            computation.stop()
+            resolve()
+          }
         })
-      ])
-
-      all.catch(err => {
+      })
+      try {
+        debug('loading route', routeDef.key)
+        await routeDef.load()
+        debug('resolve logging in', routeDef.key)
+        await loggingIn
+        debug('route loaded', routeDef.key)
+        return true
+      } catch (err) {
         debug('failed to load', routeDef.key)
         console.error(err)
         Router.go('/')
-      })
-
-      return all
+      }
     },
     triggersEnter: routeDef.triggersEnter && routeDef.triggersEnter(),
     action (params, queryParams) {

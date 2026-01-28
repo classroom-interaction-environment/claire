@@ -1,5 +1,6 @@
-import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
+import { UserRoles } from '../../../api/roles/UserRoles'
 import { Features } from '../../../api/config/Features'
+import { isAdmin } from '../../../api/accounts/roles/isAdmin'
 
 export const UnitEditorViewStates = {
   summary: {
@@ -45,12 +46,12 @@ if (Features.get('groups')) {
   }
 }
 
-if (UserUtils.isAdmin()) {
+if (isAdmin()) {
   UnitEditorViewStates.codeView = {
     name: 'codeView',
     label: 'editor.unit.codeView',
     template: 'uecodeView',
-    roles: [UserUtils.roles.admin],
+    roles: [UserRoles.roles.admin],
     load: async function () {
       return import('./views/codeView/codeViedw')
     }

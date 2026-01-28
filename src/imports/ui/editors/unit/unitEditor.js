@@ -7,12 +7,11 @@ import { unitEditorSubscriptionKey } from './unitEditorSubscriptionKey'
 import { CurriculumSession } from '../../curriculum/CurriculumSession'
 import { LessonStates } from '../../../contexts/classroom/lessons/LessonStates'
 import { Guide } from '../../tools/guide/Guide'
-
+import { isCurriculum } from '../../../api/accounts/roles/isCurriculum'
 import { callMethod } from '../../controllers/document/callMethod'
 import { getQueryParam } from '../../../api/routes/params/getQueryParam'
 import { setQueryParams } from '../../../api/routes/params/setQueryParams'
 import { unitEditorIsMasterMode } from './utils/unitEditorIsMasterMode'
-import { userIsCurriculum } from '../../../api/accounts/userIsCurriculum'
 import { getCollection } from '../../../api/utils/getCollection'
 import unitEditorLanguage from './i18n/unitEditorLanguage'
 import '../../layout/submenu/submenu'
@@ -195,14 +194,12 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
           // the server, in methods,s publications, etc
 
           if (unitEditorIsMasterMode(unitDoc)) {
-            userIsCurriculum().then(isCurriculum => {
-              if (isCurriculum) {
-                CurriculumSession.enable()
-              }
-              else {
-                API.fatal(new PermissionDeniedError('errors.notCurriculum', { unitId }))
-              }
-            })
+            if (isCurriculm()) {
+              CurriculumSession.enable()
+            }
+            else {
+              API.fatal(new PermissionDeniedError('errors.notCurriculum', { unitId }))
+            }
           }
         }
       }

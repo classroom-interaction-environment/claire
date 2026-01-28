@@ -1,7 +1,7 @@
-import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
 import { onServer } from '../../utils/archUtils'
 import { $in } from '../../utils/query/inSelector'
 import { getCollection } from '../../utils/getCollection'
+import { Hierarchy } from '../../accounts/roles/Hierarchy'
 
 export const createGetMaster = ({ name }) => {
   const methodName = `${name}.methods.getMaster`
@@ -20,7 +20,7 @@ export const createGetMaster = ({ name }) => {
   return {
     name: methodName,
     schema: schema,
-    role: UserUtils.roles.teacher,
+    role: Hierarchy.teacher,
     numRequests: 1,
     timeInterval: 300,
     run: onServer(async function ({ ids = [], skip = [] }) {

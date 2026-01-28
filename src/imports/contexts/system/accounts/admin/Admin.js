@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { auto, onClient, onServer, onServerExec } from '../../../../api/utils/archUtils'
 import { AdminErrors } from './AdminErrors'
-import { UserUtils } from '../users/UserUtils'
+import { Hierarchy } from '../../../../api/accounts/roles/Hierarchy'
 
 export const Admin = {
   name: 'admin',
@@ -31,7 +31,7 @@ Admin.methods.reinvite = {
   schema: {
     userId: String
   },
-  roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin],
+  roles: [Hierarchy.admin, Hierarchy.schoolAdmin],
   run: onServerExec(function () {
     import { Accounts } from 'meteor/accounts-base'
     import { userExists } from '../../../../api/accounts/user/userExists'
@@ -48,7 +48,7 @@ Admin.methods.reinvite = {
 
 Admin.methods.createUser = {
   name: 'admin.methods.createUser',
-  roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin],
+  roles: [Hierarchy.admin, Hierarchy.schoolAdmin],
   schema: (function () {
     const {
       emailSchema,
@@ -75,7 +75,7 @@ Admin.methods.createUser = {
     import { correctName } from '../../../../api/utils/correctName'
 
     return async function ({ role, firstName, lastName, email, institution }) {
-      const willBeAdmin = role === UserUtils.roles.admin
+      const willBeAdmin = role === Hierarchy.admin
 
       // deny any attempt to create a new admin from a non-admin account
       if (willBeAdmin && !await userIsAdmin(this.userId)) {
@@ -111,7 +111,7 @@ Admin.methods.createUser = {
 
 Admin.methods.removeUser = {
   name: 'admin.methods.removeUser',
-  roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin],
+  roles: [Hierarchy.admin, Hierarchy.schoolAdmin],
   schema: {
     _id: String // TODO change to userId
   },
@@ -144,7 +144,7 @@ Admin.methods.removeUser = {
 
 Admin.methods.updateRole = {
   name: 'admin.methods.updateRole',
-  roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin],
+  roles: [Hierarchy.admin, Hierarchy.schoolAdmin],
   schema: (function () {
     import { roleSchema } from '../../../../api/accounts/registration/registerUserSchema'
 
@@ -167,6 +167,7 @@ Admin.methods.updateRole = {
     import { userExists } from '../../../../api/accounts/user/userExists'
     import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
     import { getCollection } from '../../../../api/utils/getCollection'
+    import { roleExists } from '../../../../api/accounts/roles/roleExists'
     import { Users } from '../users/User'
 
     return async function ({ userId, role, group }) {
@@ -179,13 +180,13 @@ Admin.methods.updateRole = {
         throw new Meteor.Error('admin.updateRoleFailed', Admin.errors.USER_NOT_FOUND, { adminId, userId })
       }
 
-      if (!UserUtils.roleExists(role)) {
+      if (!roleExists(role)) {
         throw new Meteor.Error('admin.updateRoleFailed', 'roles.unknownRole', { adminId, userId, role, group })
       }
 
       await Roles.setUserRolesAsync(userId, [role], group)
 
-      const willBeAdmin = role === UserUtils.roles.admin
+      const willBeAdmin = role === Hierarchy.admin
       const isAdmin = await userIsAdmin(userId)
 
       if (willBeAdmin && !isAdmin) {
@@ -207,7 +208,7 @@ Admin.methods.updateRole = {
 
 Admin.methods.users = {
   name: 'admin.methods.users',
-  roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin],
+  roles: [Hierarchy.admin, Hierarchy.schoolAdmin],
   schema: {
     ids: {
       type: Array,
@@ -231,7 +232,7 @@ Admin.methods.users = {
 
 Admin.methods.getInstitutions = {
   name: 'admin.methods.getInstitutions',
-  roles: [UserUtils.roles.schoolAdmin],
+  roles: [Hierarchy.schoolAdmin],
   schema: {},
   run: onServerExec(function () {
     import { getAllInstitutions } from './getAllInstitutions'
@@ -245,7 +246,7 @@ Admin.methods.getInstitutions = {
 
 Admin.methods.updateTheme = {
   name: 'admin.methods.updateTheme',
-  roles: [UserUtils.roles.schoolAdmin],
+  roles: [Hierarchy.schoolAdmin],
   schema: {
     theme: {
       type: String,
@@ -272,7 +273,7 @@ Admin.publications.usersByInstitution = {
   schema: {
     institution: String
   },
-  roles: [UserUtils.roles.schoolAdmin],
+  roles: [Hierarchy.schoolAdmin],
   run: onServer(function ({ institution }) {
     return Meteor.users.find({ institution }, {
       fields: {

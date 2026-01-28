@@ -9,7 +9,7 @@ import { isFilesContext } from '../files/isFilesContext'
 import { createEditorGetMethod } from '../../api/decorators/methods/createEditorGetMethod'
 import { Schema } from '../../api/schema/Schema'
 import { createInsert } from '../../api/decorators/methods/createInsert'
-import { UserUtils } from '../system/accounts/users/UserUtils'
+import { Hierarchy } from '../../api/accounts/roles/Hierarchy'
 import { createUpdate } from '../../api/decorators/methods/createUpdate'
 import { createRemove } from '../../api/decorators/methods/createRemove'
 import { createFindOne } from '../../api/decorators/methods/createFindOne'
@@ -38,7 +38,7 @@ export const curriculumPipeline = createPipeline(Curriculum.name, function (cont
   const options = {
     name: context.name,
     schema: assignSchema(context.schema, curriclumSchema),
-    roles: UserUtils.roles.teacher,
+    roles: Hierarchy.teacher,
     isCurriculum: true
   }
 

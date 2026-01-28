@@ -1,15 +1,17 @@
 /* global btoa atob */
 import { Meteor } from 'meteor/meteor'
 import { i18n } from '../../../api/language/language'
-import { UserUtils } from '../../system/accounts/users/UserUtils'
+import { Hierarchy } from '../../../api/accounts/roles/Hierarchy'
 import { SchoolClass } from '../schoolclass/SchoolClass'
 import { getCollection } from '../../../api/utils/getCollection'
 import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getSchemaField } from '../../../ui/utils/form/getSchemaField'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
 import { getInvitationOffset } from './validation/getInvitationOffset'
+import { getHighestRole } from '../../../api/accounts/roles/getHighestRole'
+import { isAdmin } from '../../../api/accounts/roles/isAdmin'
 
-const mappedRoles = Object.values(UserUtils.roles).map(role => ({
+const mappedRoles = Object.values(Hierarchy).map(role => ({
   value: role,
   label: i18n.reactive(`roles.${role}`)
 }))
@@ -138,9 +140,9 @@ CodeInvitation.schema = {
       // users will only be able to invite users with a role below their own
       options: function () {
         const userId = Meteor.userId()
-        const highest = UserUtils.getHighestRole(userId)
+        const highest = getHighestRole(userId)
 
-        if (highest === UserUtils.roles.admin) {
+        if (highest === Hierarchy.admin) {
           return mappedRoles
         }
 
@@ -155,13 +157,13 @@ CodeInvitation.schema = {
     autoform: {
       defaultValue () {
         const user = Meteor.user()
-        if (!UserUtils.isAdmin(user._id)) {
+        if (!isAdmin(user._id)) {
           return user.institution
         }
       },
       type: () => {
         const userId = Meteor.userId()
-        return UserUtils.isAdmin(userId)
+        return isAdmin(userId)
           ? 'text'
           : 'hidden'
       }
@@ -173,7 +175,7 @@ CodeInvitation.schema = {
       // if role is not student, then it's always true
       const role = getSchemaField.call(this, 'role')
 
-      if (role !== UserUtils.roles.student) {
+      if (role !== Hierarchy.student) {
         return true
       }
 
@@ -187,7 +189,7 @@ CodeInvitation.schema = {
     autoform: {
       type: () => {
         const role = getSchemaField('role')
-        if (!role || role !== UserUtils.roles.student) {
+        if (!role || role !== Hierarchy.student) {
           return 'hidden'
         }
 
@@ -293,7 +295,7 @@ CodeInvitation.publications.myCodes = {
 CodeInvitation.publications.getInvitationForClass = {
   name: 'codeInvitations.publications.getInvitationForClass',
   schema: { classId: String },
-  roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher],
+  roles: [Hierarchy.admin, Hierarchy.schoolAdmin, Hierarchy.teacher],
   run: onServerExec(function () {
     import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
 
@@ -350,7 +352,7 @@ CodeInvitation.methods = {}
 CodeInvitation.methods.create = {
   name: 'codeInvitations.methods.create',
   schema: CodeInvitation.createCodeSchema,
-  roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.curriculum, UserUtils.roles.teacher],
+  roles: [Hierarchy.admin, Hierarchy.schoolAdmin, Hierarchy.curriculum, Hierarchy.teacher],
   run: onServerExec(function () {
     import { createInvitation } from './methods/createInvitation'
     return function (createDoc) {
@@ -385,7 +387,7 @@ CodeInvitation.methods.verify = {
 
 CodeInvitation.methods.forceExpire = {
   name: 'codeInvitations.methods.forceExpire',
-  roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher],
+  roles: [Hierarchy.admin, Hierarchy.schoolAdmin, Hierarchy.teacher],
   schema: { _id: String },
   run: onServerExec(function () {
     import { forceExpire } from './methods/forceExpire'
@@ -403,7 +405,7 @@ CodeInvitation.methods.forceExpire = {
 
 CodeInvitation.methods.remove = {
   name: 'codeInvitations.methods.remove',
-  roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin],
+  roles: [Hierarchy.admin, Hierarchy.schoolAdmin],
   schema: { _id: String },
   run: onServer(function ({ _id }) {
     return getCollection(CodeInvitation.name).removeAsync(_id)
@@ -416,7 +418,7 @@ CodeInvitation.methods.remove = {
 
 CodeInvitation.methods.addToClass = {
   name: 'codeInvitations.methods.addToClass',
-  roles: [UserUtils.roles.admin, UserUtils.roles.schoolAdmin, UserUtils.roles.teacher, UserUtils.roles.student],
+  roles: [Hierarchy.admin, Hierarchy.schoolAdmin, Hierarchy.teacher, Hierarchy.student],
   schema: { code: String },
   run: onServerExec(function () {
     import { addUserToClassByCode } from './methods/addUserToClassByCode'

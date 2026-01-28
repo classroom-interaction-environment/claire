@@ -4,11 +4,11 @@ import { SchoolClass } from '../../schoolclass/SchoolClass'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { Users } from '../../../system/accounts/users/User'
-import { UserUtils } from '../../../system/accounts/users/UserUtils'
 import { CodeInvitation } from '../CodeInvitations'
 import { validateInvitation } from '../validation/validateInvitation'
 import { addUserToInvitation } from './addUserToInvitation'
 import { getUsersCollection } from '../../../../api/utils/getUsersCollection'
+import { hasRole } from '../../../../api/accounts/roles/hasRole'
 
 const getClassDoc = createDocGetter({ name: SchoolClass.name })
 const getCodeDoc = createDocGetter({ name: CodeInvitation.name })
@@ -46,16 +46,16 @@ export const addToClass = async ({ code }) => {
 
   // 5th check roles match
   const { role } = codeDoc
-  if (!UserUtils.hasRole(userId, role, user.institution)) {
+  if (!hasRole(userId, role, user.institution)) {
     throw new PermissionDeniedError(PermissionDeniedError.notInRole, role)
   }
 
   // 6th add to class
   const thisContext = { userId: codeDoc.createdBy }
-  if (role === UserUtils.roles.teacher) {
+  if (role === Hierarchy.teacher) {
     SchoolClass.helpers.addTeacher.call(thisContext, { classId, userId })
   }
-  else if (role === UserUtils.roles.student) {
+  else if (role === Hierarchy.student) {
     const added = SchoolClass.helpers.addStudent.call(thisContext, {
       classId,
       userId

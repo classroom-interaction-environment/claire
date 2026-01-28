@@ -1,6 +1,6 @@
+import { Hierarchy } from '../../../api/accounts/roles/Hierarchy'
 import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
-import { UserUtils } from '../../system/accounts/users/UserUtils'
 
 export const Group = {}
 
@@ -180,7 +180,7 @@ Group.publications.single = {
       type: String
     }
   },
-  role: [UserUtils.roles.student],
+  role: [Hierarchy.student],
   run: onServer(function ({ groupId }) {
     const { userId } = this
     const query = { _id: groupId, users: { $elemMatch: { userId } } }
@@ -202,7 +202,7 @@ Group.methods.get = {
     ids: Array,
     'ids.$': String
   },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     import { getGroups } from './methods/getGroups'
 
@@ -233,7 +233,7 @@ Group.methods.save = {
       optional: true
     }
   }, Group.schema),
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     import { saveGroup } from './methods/saveGroup'
     return function (groupDoc) {
@@ -246,7 +246,7 @@ Group.methods.save = {
 Group.methods.update = {
   name: 'group.methods.update',
   schema: { _id: String, ...Group.schema },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     import { updateGroup } from './methods/updateGroup'
     return function (doc) {
@@ -259,7 +259,7 @@ Group.methods.update = {
 Group.methods.delete = {
   name: 'group.methods.delete',
   schema: { _id: String },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     import { deleteGroup } from './methods/deleteGroup'
     return function ({ _id }) {
@@ -272,7 +272,7 @@ Group.methods.delete = {
 Group.methods.toggleMaterial = {
   name: 'group.methods.toggleMaterial',
   schema: { _id: String, materialId: String, contextName: String },
-  roles: UserUtils.roles.teacher,
+  roles: Hierarchy.teacher,
   run: onServerExec(function () {
     import { toggleGroupMaterial } from './methods/toggleGroupMaterial'
     return function ({ _id, materialId, contextName }) {
@@ -285,7 +285,7 @@ Group.methods.toggleMaterial = {
 Group.methods.users = {
   name: 'group.methods.users',
   schema: { groupId: String },
-  role: UserUtils.roles.student,
+  role: Hierarchy.student,
   run: onServerExec(function () {
     import { getGroupUsers } from './methods/getGroupUsers'
     return function ({ groupId }) {

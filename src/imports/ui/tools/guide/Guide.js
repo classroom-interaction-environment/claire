@@ -135,13 +135,13 @@ Guide.tour = ({ key, allowClose = false, opacity = 0.75, steps, ...additionalOpt
     autostart(fn) {
       const computation = c => {
         const start = () => {
-          console.debug('autostart guide', key)
+          debug('autostart guide', key)
           this.start()
           markGuideAsRead(key).catch(console.error)
           c.stop()
         }
         const stop = () => {
-          console.debug('autostop guide', key)
+          debug('autostop guide', key)
           c.stop()
         }
         const value = fn({
@@ -152,7 +152,7 @@ Guide.tour = ({ key, allowClose = false, opacity = 0.75, steps, ...additionalOpt
         })
         if (value === "start") start()
         if (value === "stop") stop()
-        console.debug('autostart skip value', value)
+        debug('autostart skip value', key, value)
       }
       const instance = Template.instance()
       this.tracker = instance
@@ -161,12 +161,12 @@ Guide.tour = ({ key, allowClose = false, opacity = 0.75, steps, ...additionalOpt
     },
     start () {
       if (instance) {
-        console.debug('start guide', key)
+        debug('start guide', key)
         instance.drive()
       }
     },
     dispose () {
-      console.debug('dispose', key)
+      debug('dispose', key)
       if (instance) {
 
       }

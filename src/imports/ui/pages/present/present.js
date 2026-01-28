@@ -68,6 +68,7 @@ Template.present.onCreated(function () {
     const { references } = beamerDoc
 
     if (!references) return
+    API.debug('load all related lessons for beamer')
 
     const lessonIds = new Set()
     const referencedLessons = new Set()
@@ -87,6 +88,7 @@ Template.present.onCreated(function () {
       name: Lesson.methods.my,
       args: { ids: [...lessonIds] },
       failure: API.fatal,
+      debug: API.debug,
       collection: getLocalCollection(Lesson.name),
       success: () => instance.state.set({ lessonIds: [...referencedLessons], lessonsComplete: true })
     })
@@ -103,6 +105,7 @@ Template.present.onCreated(function () {
     const { references } = beamerDoc
     if (!references) return
 
+    API.debug('subscribe to all items for beamer')
     instance.state.set('itemsComplete', false)
 
     const itemRefsForSub = references
@@ -126,7 +129,7 @@ Template.present.onCreated(function () {
       callbacks: {
         onError: API.notify,
         onReady: () => {
-          console.debug(getCollection(TaskResults).find().fetch())
+          API.debug('subscribed', getCollection(TaskResults).find().fetch())
           instance.state.set('itemsComplete', true)
         }
       }
@@ -140,6 +143,7 @@ Template.present.onCreated(function () {
     const beamerDoc = Beamer.doc.get()
     const lessonDocComplete = instance.state.get('lessonsComplete')
     if (!beamerDoc || !lessonDocComplete) return
+    API.debug('load associated units')
 
     const lessonIds = instance.state.get('lessonIds') || []
     const unitIds = new Set()
@@ -150,16 +154,22 @@ Template.present.onCreated(function () {
       }
     })
 
+    const complete = () => {
+      API.debug('all associated units loaded')
+      instance.state.set('unitsComplete', true)
+    }
+
     if (unitIds.size === 0) {
-      return instance.state.set('unitsComplete', true)
+      return complete()
     }
 
     loadIntoCollection({
       name: Unit.methods.all,
       args: { ids: [...unitIds] },
       failure: API.fatal,
+      debug: API.debug,
       collection: getLocalCollection(Unit.name),
-      success: () => instance.state.set('unitsComplete', true)
+      success: complete
     })
   })
 
@@ -204,7 +214,13 @@ Template.present.onCreated(function () {
     const referenceDocsLoaded = instance.state.get('referenceDocsLoaded')
 
     if (!referenceDocsLoaded || !beamerDoc || !Item.isInitialized() || !Files.isInitialized() || !rpInit.get()) {
-      return API.debug('resolving references not ready yet')
+      return API.debug('resolving references not ready yet', {
+        referenceDocsLoaded,
+        beamerDoc: !!beamerDoc,
+        itemInitialized: Item.isInitialized(),
+        filesInitialized: Files.isInitialized(),
+        rpInitialized: rpInit.get()
+      })
     }
 
     API.debug('start resolving material references')
@@ -253,6 +269,7 @@ Template.present.onCreated(function () {
     const initialized = taskInit.get()
 
     if (!Item.isInitialized() || !beamerDoc || !initialized || !resolvedReferences || !itemsComplete) return
+    API.debug('load and cache associated items and their response processors')
 
     cachedRefs.forEach(cacheId => {
       if (!resolvedReferences.find(r => r.itemId === cacheId)) {
@@ -337,6 +354,7 @@ Template.present.onCreated(function () {
     }))
       .catch(e => API.notify(e))
       .then(resolvedRefs => {
+        API.debug('all response processors loaded for beamer')
         resolvedRefs.forEach(({ itemId, responseProcessor }) => cachedRefs.set(itemId, { responseProcessor }))
       })
   })
@@ -391,7 +409,13 @@ Template.present.helpers({
     const beamerComplete = instance.state.get('beamerComplete')
     const lessonsComplete = instance.state.get('lessonsComplete')
     const materialComplete = instance.state.get('materialComplete')
-
+    API.debug('load complete', {
+      taskInitialized,
+      rpInitialized,
+      beamerComplete,
+      lessonsComplete,
+      materialComplete
+    })
     return beamerComplete &&
       lessonsComplete &&
       materialComplete

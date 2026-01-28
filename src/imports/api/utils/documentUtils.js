@@ -1,11 +1,11 @@
 import { Meteor } from 'meteor/meteor'
 import { check } from 'meteor/check'
-import { UserUtils } from '../../contexts/system/accounts/users/UserUtils'
 import { getCollection } from './getCollection'
 import { DocNotFoundError } from '../errors/types/DocNotFoundError'
 import { UnexpectedError } from '../errors/types/UnexpectedError'
 import { getFilesCollection } from './getFilesCollection'
 import { deprecate } from '../../infrastructure/functions/deprecate'
+import { isAdmin } from '../accounts/roles/isAdmin'
 
 /**
  * Checks ownership for a given document. Returns false if user is not given or the user does not own the document.
@@ -44,7 +44,7 @@ export const createGetDoc = deprecate(({ name } = {}, { checkOwner = true } = {}
     const document = await Collection.findOneAsync(_id)
     if (!document) throw new DocNotFoundError(_id, name)
 
-    if (checkOwner && !(ownerShip(document, this.userId) || UserUtils.isAdmin(this.userId))) {
+    if (checkOwner && !(ownerShip(document, this.userId) || await isAdmin(this.userId))) {
       throw new Meteor.Error('errors.permissionDenied', 'errors.notOwner', { _id, name, userId: this.userId })
     }
 
@@ -90,7 +90,7 @@ export const createUpdateDoc = deprecate(function ({ name } = {}, { checkOwner =
     const document = Collection.findOne(_id)
     if (!document) throw new DocNotFoundError(_id)
 
-    if (checkOwner && !(ownerShip(document, this.userId) || UserUtils.isAdmin(this.userId))) {
+    if (checkOwner && !(ownerShip(document, this.userId) || isAdmin(this.userId))) {
       throw new Meteor.Error('errors.permissionDenied', _id)
     }
     const modifier = {}
@@ -173,7 +173,7 @@ export const createRemoveDoc = deprecate(({ name, isFilesCollection } = {}, { ch
         throw new DocNotFoundError(query, name)
       }
 
-      if (checkOwner && !UserUtils.isAdmin(this.userId)) {
+      if (checkOwner && !isAdmin(this.userId)) {
         cursor.forEach(document => {
           if (!ownerShip(document)) {
             throw new Meteor.Error('errors.permissionDenied', 'errors.notOwner', {
@@ -207,7 +207,7 @@ export const createRemoveDoc = deprecate(({ name, isFilesCollection } = {}, { ch
       const document = Collection.findOne(_id)
       if (!document) throw new DocNotFoundError(_id, name)
 
-      if (checkOwner && !(ownerShip(document, this.userId) || UserUtils.isAdmin(this.userId))) {
+      if (checkOwner && !(ownerShip(document, this.userId) || isAdmin(this.userId))) {
         throw new Meteor.Error('errors.permissionDenied', 'errors.notOwner', { _id, name, userId: this.userId })
       }
 

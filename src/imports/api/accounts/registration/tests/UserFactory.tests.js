@@ -4,7 +4,7 @@ import { UserFactory } from '../UserFactory'
 import { expect } from 'chai'
 import { Accounts } from 'meteor/accounts-base'
 import { Roles } from 'meteor/alanning:roles'
-import { UserUtils } from '../../../../contexts/system/accounts/users/UserUtils'
+import { Hierarchy } from '../../roles/Hierarchy'
 import { restoreAll, stub } from '../../../../../tests/testutils/stub'
 import {
   clearCollections,
@@ -24,7 +24,7 @@ const userDoc = ({ email, firstName, lastName, password, role, institution } = {
     firstName: firstName || 'John',
     lastName: lastName || 'Doe',
     password: password,
-    role: role || UserUtils.roles.teacher,
+    role: role || Hierarchy.teacher,
     institution: institution || 'Example School'
   }
 
@@ -224,7 +224,7 @@ describe(UserFactory.name, () => {
     })
     it('adds the user to the respective given role with institution scope', async () => {
       stubAccountCreation({ stubRole: false })
-      for (const role of Object.values(UserUtils.roles)) {
+      for (const role of Object.values(Hierarchy)) {
         await Roles.createRoleAsync(role, { unlessExists: true })
         const user = userDoc({ role })
         const userId = await UserFactory.create(user)
@@ -233,7 +233,7 @@ describe(UserFactory.name, () => {
     })
     it('does not make user a real Admin', async () => {
       stubAccountCreation()
-      const user = userDoc({ role: UserUtils.roles.admin })
+      const user = userDoc({ role: Hierarchy.admin })
       const userId = await UserFactory.create(user)
       expect(await count(AdminCollection, { userId })).to.equal(0)
     })

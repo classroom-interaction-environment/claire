@@ -23,7 +23,7 @@ const reloadRoute = () => {
   setTimeout(() => {
     debug('reloading route:', window.location.pathname + window.location.search)
     Router.go(window.location.pathname + window.location.search)
-  }, 50)
+  }, 150)
 }
 
 Tracker.autorun((computation) => {
@@ -47,6 +47,7 @@ Tracker.autorun((computation) => {
   if (!UserRoles.subscription.ready() || !Meteor.user()) {
     return debug('waiting for user roles subscription...', Meteor.user(), UserRoles.subscription.ready())
   }
+  debug('loading user routes for userId:', userId)
   loadUserRoutes(userId)
     .catch(e => console.error(e))
     .then(role => {
@@ -71,7 +72,7 @@ async function loadUserRoutes (userId) {
     case Hierarchy.admin:
       return await loadAdmin() && role
     default:
-      throw new Error('Undefined role:', role)
+      throw new Error('Undefined role:', role, 'userId:', userId)
   }
 }
 

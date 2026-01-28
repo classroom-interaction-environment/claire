@@ -1,6 +1,4 @@
 import { Meteor } from 'meteor/meteor'
-import { Roles } from 'meteor/alanning:roles'
-import { UserUtils } from '../../contexts/system/accounts/users/UserUtils'
 import { i18n } from '../../api/language/language'
 import { currentLanguage } from '../../api/language/currentLanguage'
 import { ContextRegistry } from '../../infrastructure/context/ContextRegistry'
@@ -12,9 +10,10 @@ import { Features } from '../../api/config/Features'
 import { isTodayOrYesterday } from '../../utils/isTodayOrYesterday'
 import { createLog } from '../../api/log/createLog'
 import { getUser } from '../../contexts/system/accounts/users/getUser'
-import { Template } from 'meteor/templating'
 import { isTranslateableString } from '../../api/language/isTranslateableString'
 import { translate } from '../../api/language/translate'
+import { isCurriculum as isCurriculum2 } from '../../api/accounts/roles/isCurriculum'
+import { hasAtLeastRole as hasAtLeastRole2 } from '../../api/accounts/roles/hasAtLeastRole'
 
 export const feature = function (name) {
   return Features.get(name)
@@ -176,17 +175,17 @@ export const fluid = function () {
 
 export const isAdmin = function () {
   const userId = Meteor.userId()
-  return UserUtils.isAdmin(userId)
+  return isAdmin(userId)
 }
 
 export const isCurriculum = function () {
   const userId = Meteor.userId()
-  return UserUtils.isCurriculum(userId)
+  return isCurriculum2(userId)
 }
 
 export const hasAtLeastRole = function (role) {
   const userId = Meteor.userId()
-  return userId && role && UserUtils.hasAtLeastRole(userId, role)
+  return userId && role && hasAtLeastRole2(userId, role)
 }
 
 export const roleLabel = function (roleValue) {

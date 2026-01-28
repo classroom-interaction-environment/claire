@@ -1,12 +1,12 @@
 import { onServer } from '../../utils/archUtils'
 import { getCollection } from '../../utils/getCollection'
-import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
 import { Fields } from '../../fields/Fields'
 import { Curriculum } from '../../../contexts/curriculum/Curriculum'
 import { isFilesContext } from '../../../contexts/files/isFilesContext'
 import { curriculumQuery } from '../methods/curriculumQuery'
 import { userIsAdmin } from '../../accounts/admin/userIsAdmin'
 import { createLog } from '../../log/createLog'
+import { Hierarchy } from '../../accounts/roles/Hierarchy'
 
 export const createEditorPublication = function createEditorPublication (context) {
   const { name, publicFields, schema } = context
@@ -43,7 +43,7 @@ export const createEditorPublication = function createEditorPublication (context
         },
         'ids.$': String
       }, schema),
-      roles: UserUtils.roles.teacher,
+      roles: Hierarchy.teacher,
       run: onServer(async function ({ limit, curriculum, meta, ids, ...customFields }) {
         const { userId } = this
 

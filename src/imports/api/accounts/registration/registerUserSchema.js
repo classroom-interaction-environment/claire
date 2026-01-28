@@ -57,8 +57,9 @@ export const codeSchema = ({ max = 20, label, autofocus, autocomplete } = {}) =>
 let roleSchema
 
 ;(function () {
-  import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
-  const rolesList = Object.values(UserUtils.roles)
+  import { Hierarchy } from '../roles/Hierarchy'
+  import { getHighestRole } from '../roles/getHighestRole'
+  const rolesList = Object.values(Hierarchy)
   let mappedRoles
 
   roleSchema = () => ({
@@ -78,7 +79,7 @@ let roleSchema
 
         return function () {
           const userId = Meteor.userId()
-          const highest = UserUtils.getHighestRole(userId)
+          const highest = getHighestRole(userId)
           const index = mappedRoles.findIndex(entry => entry.value === highest)
           return mappedRoles.slice(index, mappedRoles.length)
         }
