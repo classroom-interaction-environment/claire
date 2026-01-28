@@ -25,11 +25,11 @@ import { getFileType } from '../../../api/files/getFileType'
 import { loadIntoCollection } from '../../../infrastructure/loading/loadIntoCollection'
 import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
 import { getMaterialContexts } from '../../../contexts/material/initMaterial'
+import { getCollection } from '../../../api/utils/getCollection'
 import { backgroundColors } from '../../../contexts/beamer/backgroundColors'
 import '../../components/invitation/coderender/coderenderer'
 import '../../generic/tooltip/tooltip'
 import './present.html'
-import { getCollection } from '../../../api/utils/getCollection'
 
 const API = Template.present.setDependencies({
   contexts: getMaterialContexts().concat([Unit, Lesson, Task, TaskResults]),

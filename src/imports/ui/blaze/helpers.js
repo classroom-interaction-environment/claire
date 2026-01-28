@@ -14,6 +14,7 @@ import { isTranslateableString } from '../../api/language/isTranslateableString'
 import { translate } from '../../api/language/translate'
 import { isCurriculum as isCurriculum2 } from '../../api/accounts/roles/isCurriculum'
 import { hasAtLeastRole as hasAtLeastRole2 } from '../../api/accounts/roles/hasAtLeastRole'
+import { isAdmin as isAdmin2 } from '../../api/accounts/roles/isAdmin'
 
 export const feature = function (name) {
   return Features.get(name)
@@ -175,7 +176,7 @@ export const fluid = function () {
 
 export const isAdmin = function () {
   const userId = Meteor.userId()
-  return isAdmin(userId)
+  return isAdmin2(userId)
 }
 
 export const isCurriculum = function () {

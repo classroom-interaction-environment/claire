@@ -244,7 +244,9 @@ TeacherRoutes.present = {
   triggersEnter: () => [leaveCurriculum, loginTrigger, studentTrigger],
   async load () {
     console.debug('async loading present page...')
-    return import('../../../ui/pages/present/present')
+    const tmpl = await import('../../../ui/pages/present/present')
+    console.debug('async loaded present page.')
+    return tmpl
   },
   target: 'beamerContainer',
   roles: null,
