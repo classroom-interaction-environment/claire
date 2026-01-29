@@ -1,5 +1,5 @@
-import { UserRoles } from '../../../api/roles/UserRoles'
 import { Features } from '../../../api/config/Features'
+import { Hierarchy } from '../../../api/accounts/roles/Hierarchy'
 import { isAdmin } from '../../../api/accounts/roles/isAdmin'
 
 export const UnitEditorViewStates = {
@@ -51,7 +51,7 @@ if (isAdmin()) {
     name: 'codeView',
     label: 'editor.unit.codeView',
     template: 'uecodeView',
-    roles: [UserRoles.roles.admin],
+    roles: [Hierarchy.admin],
     load: async function () {
       return import('./views/codeView/codeViedw')
     }

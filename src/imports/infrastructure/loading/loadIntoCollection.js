@@ -1,5 +1,4 @@
 import { callMethod } from '../../ui/controllers/document/callMethod'
-import { createLog } from '../../api/log/createLog'
 import { noop } from '../../utils/noop'
 
 const inProgress = new Set()
@@ -9,14 +8,15 @@ const inProgress = new Set()
  *
  * Handles single and multiple docs.
  * @async
- * @param name
- * @param args
- * @param collection
- * @param prepare
- * @param receive
- * @param failure
- * @param success
- * @param debug
+ * @function loadIntoCollection
+ * @param name {string|{name:string}}
+ * @param args {object=}
+ * @param collection {Mongo.Collection}
+ * @param prepare {function=}
+ * @param receive {function=}
+ * @param failure {function=}
+ * @param success {function=}
+ * @param debug {function=}
  * @param releaseTimeout
  */
 export const loadIntoCollection = ({

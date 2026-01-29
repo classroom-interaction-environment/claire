@@ -13,7 +13,6 @@ export const loadProfileImage = ({ user, onError = console.error, onSuccess = ()
     name: ProfileImages.methods.my,
     collection: getLocalCollection(ProfileImages.name),
     failure: error => onError(ProfileImages.methods.my.name, error),
-    debug: true,
     success: () => {
       user.profileImageReady = true
       onSuccess()
