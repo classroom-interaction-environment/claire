@@ -1,43 +1,43 @@
-import { Template } from 'meteor/templating'
-import { VideoFiles } from '../../VideoFiles'
-import { createDeleteFile } from '../../../shared/createDeleteFile'
-import { getFilesLink } from '../../../getFilesLink'
-import './videoFileRenderer.html'
+import { Template } from "meteor/templating";
+import { VideoFiles } from "../../VideoFiles";
+import { createDeleteFile } from "../../../shared/createDeleteFile";
+import { getFilesLink } from "../../../getFilesLink";
+import "./videoFileRenderer.html";
 
 const API = Template.videoFileRenderer.setDependencies({
-  contexts: [VideoFiles]
-})
+	contexts: [VideoFiles],
+});
 
 Template.videoFileRenderer.onCreated(function () {
-  this.state.setDefault('version', 'original')
-  this.deleteFile = createDeleteFile({
-    context: VideoFiles,
-    onSuccess: () => API.notify(true),
-    onError: API.notify
-  })
-})
+	this.state.setDefault("version", "original");
+	this.deleteFile = createDeleteFile({
+		context: VideoFiles,
+		onSuccess: () => API.notify(true),
+		onError: API.notify,
+	});
+});
 
 Template.videoFileRenderer.helpers({
-  getLink (videoFile) {
-    return getFilesLink({
-      file: videoFile,
-      name: VideoFiles.name,
-      version: Template.getState('version')
-    })
-  },
-  getPoster (videoFile) {
-    if (!videoFile?.versions?.poster) {
-      API.log('no poster available')
-      return
-    }
+	getLink(videoFile) {
+		return getFilesLink({
+			file: videoFile,
+			name: VideoFiles.name,
+			version: Template.getState("version"),
+		});
+	},
+	getPoster(videoFile) {
+		if (!videoFile?.versions?.poster) {
+			API.log("no poster available");
+			return;
+		}
 
-    return getFilesLink({
-      file: videoFile,
-      name: VideoFiles.name,
-      version: 'poster'
-    })
-  },
-  processingComplete (videoFile) {
-    return videoFile?.processingComplete
-  }
-})
+		return getFilesLink({
+			file: videoFile,
+			name: VideoFiles.name,
+			version: "poster",
+		});
+	},
+	processingComplete(videoFile) {
+		return videoFile?.processingComplete;
+	},
+});

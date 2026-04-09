@@ -1,7 +1,7 @@
-import { check, Match } from 'meteor/check'
-import { getUsersCollection } from '../../utils/getUsersCollection'
-import { hasAtLeastRole } from './hasAtLeastRole'
-import { Hierarchy } from './Hierarchy'
+import { check, Match } from "meteor/check";
+import { getUsersCollection } from "../../utils/getUsersCollection";
+import { hasAtLeastRole } from "./hasAtLeastRole";
+import { Hierarchy } from "./Hierarchy";
 
 /**
  *
@@ -13,34 +13,39 @@ import { Hierarchy } from './Hierarchy'
  * @return {Promise<boolean>}
  */
 export const canInvite = async (options) => {
-  check(options, Match.ObjectIncluding({
-    userId: String,
-    role: String,
-    institution: Match.Maybe(String),
-    user: Match.Maybe(Object)
-  }))
+	check(
+		options,
+		Match.ObjectIncluding({
+			userId: String,
+			role: String,
+			institution: Match.Maybe(String),
+			user: Match.Maybe(Object),
+		}),
+	);
 
-  const { userId, user, role, institution } = options
-  let finalScope = institution
+	const { userId, user, role, institution } = options;
+	let finalScope = institution;
 
-  if (!institution) {
-    finalScope = user?.institution ?? await getUsersCollection().findOneAsync(userId)?.institution
-  }
+	if (!institution) {
+		finalScope =
+			user?.institution ??
+			(await getUsersCollection().findOneAsync(userId)?.institution);
+	}
 
-  if (!finalScope) {
-    return false
-  }
+	if (!finalScope) {
+		return false;
+	}
 
-  switch (role) {
-    case Hierarchy.admin:
-    case Hierarchy.schoolAdmin:
-      return hasAtLeastRole(userId, Hierarchy.admin, finalScope)
-    case Hierarchy.teacher:
-    case Hierarchy.curriculum:
-      return hasAtLeastRole(userId, Hierarchy.schoolAdmin, finalScope)
-    case Hierarchy.student:
-      return hasAtLeastRole(userId, Hierarchy.teacher, finalScope)
-    default:
-      throw new Meteor.Error(400, 'roles.unknownRole', { role })
-  }
-}
+	switch (role) {
+		case Hierarchy.admin:
+		case Hierarchy.schoolAdmin:
+			return hasAtLeastRole(userId, Hierarchy.admin, finalScope);
+		case Hierarchy.teacher:
+		case Hierarchy.curriculum:
+			return hasAtLeastRole(userId, Hierarchy.schoolAdmin, finalScope);
+		case Hierarchy.student:
+			return hasAtLeastRole(userId, Hierarchy.teacher, finalScope);
+		default:
+			throw new Meteor.Error(400, "roles.unknownRole", { role });
+	}
+};

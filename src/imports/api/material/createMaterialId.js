@@ -5,4 +5,5 @@
  * @param itemId {String} _id (optional) of a given item
  * @return {string} A combined id of type <lessonId>-<referenceId>-<itemId>
  */
-export const createMaterialId = (lessonId, referenceId, itemId) => `${lessonId}-${referenceId}-${itemId}`
+export const createMaterialId = (lessonId, referenceId, itemId) =>
+	`${lessonId}-${referenceId}-${itemId}`;

@@ -1,6 +1,6 @@
-import { check, Match } from 'meteor/check'
-import { createLog } from '../../api/log/createLog'
-import { isContext } from './isContext'
+import { check, Match } from "meteor/check";
+import { createLog } from "../../api/log/createLog";
+import { isContext } from "./isContext";
 
 /**
  * Creates a new (repository-style) Registry for contexts.
@@ -19,59 +19,64 @@ import { isContext } from './isContext'
  */
 
 export const createContextRegistry = (options) => {
-  check(options, Match.ObjectIncluding({
-    name: String,
-    map: Match.Maybe(Map),
-    setIdentity: Match.Maybe(Function), // TODO deprecate
-    hasIdentity: Function
-  }))
+	check(
+		options,
+		Match.ObjectIncluding({
+			name: String,
+			map: Match.Maybe(Map),
+			setIdentity: Match.Maybe(Function), // TODO deprecate
+			hasIdentity: Function,
+		}),
+	);
 
-  const {
-    name,
-    map = new Map(),
-    setIdentity,
-    hasIdentity,
-    hooks = {},
-    ...props
-  } = options
+	const {
+		name,
+		map = new Map(),
+		setIdentity,
+		hasIdentity,
+		hooks = {},
+		...props
+	} = options;
 
-  const info = createLog({ name })
-  const internalHooks = {
-    afterAdd: hooks.afterAdd || (() => {})
-  }
+	const info = createLog({ name });
+	const internalHooks = {
+		afterAdd: hooks.afterAdd || (() => {}),
+	};
 
-  return {
-    name: name,
-    info: createLog({ name, devOnly: false }),
-    add: function (context) {
-      check(context, Match.ObjectIncluding(isContext()))
+	return {
+		name: name,
+		info: createLog({ name, devOnly: false }),
+		add: function (context) {
+			check(context, Match.ObjectIncluding(isContext()));
 
-      info('(add)', context.name)
+			info("(add)", context.name);
 
-      if (!hasIdentity(context)) {
-        throw new Error(`[${name}]: expected [${context.name}] to have identity for this registry`)
-      }
+			if (!hasIdentity(context)) {
+				throw new Error(
+					`[${name}]: expected [${context.name}] to have identity for this registry`,
+				);
+			}
 
-      map.set(context.name, context)
-      internalHooks.afterAdd(context)
-      return this
-    },
-    get (name) {
-      return map.get(name)
-    },
-    has (name) {
-      return map.has(name)
-    },
-    forEach (fn) {
-      map.forEach(fn)
-    },
-    all: () => Array.from(map.values()),
-    size () {
-      return map.size
-    },
-    /** @deprecated */
-    setIdentity: setIdentity,
-    hasIdentity: hasIdentity,
-    ...props
-  }
-}
+			map.set(context.name, context);
+			internalHooks.afterAdd(context);
+			return this;
+		},
+		get(name) {
+			return map.get(name);
+		},
+		has(name) {
+			return map.has(name);
+		},
+		forEach(fn) {
+			map.forEach(fn);
+		},
+		all: () => Array.from(map.values()),
+		size() {
+			return map.size;
+		},
+		/** @deprecated */
+		setIdentity: setIdentity,
+		hasIdentity: hasIdentity,
+		...props,
+	};
+};

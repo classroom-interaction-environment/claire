@@ -9,6 +9,6 @@
 // import '../all/filesCollections'
 
 // 3. create all secondary systems
-import './routes'
-import './beamer'
-import '../all/profile'
+import "./routes";
+import "./beamer";
+import "../all/profile";

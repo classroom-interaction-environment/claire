@@ -1,9 +1,9 @@
-import { LessonStates } from '../LessonStates'
-import { Meteor } from 'meteor/meteor'
-import { LessonErrors } from '../LessonErrors'
-import { Lesson } from '../Lesson'
-import { getDocsForMember } from '../helpers/getDocsForMember'
-import { getCollection } from '../../../../api/utils/getCollection'
+import { LessonStates } from "../LessonStates";
+import { Meteor } from "meteor/meteor";
+import { LessonErrors } from "../LessonErrors";
+import { Lesson } from "../Lesson";
+import { getDocsForMember } from "../helpers/getDocsForMember";
+import { getCollection } from "../../../../api/utils/getCollection";
 
 /**
  * Starts a lesson by _id.
@@ -16,17 +16,24 @@ import { getCollection } from '../../../../api/utils/getCollection'
  * @return {Boolean} A boolean value, whether the operation has been successful
  */
 export const startLesson = async ({ userId, lessonId }) => {
-  const { lessonDoc } = await getDocsForMember({ lessonId, userId })
+	const { lessonDoc } = await getDocsForMember({ lessonId, userId });
 
-  if (!LessonStates.canStart(lessonDoc)) {
-    throw new Meteor.Error(LessonErrors.unexpectedState, 'lesson.errors.expectedIdle', { lessonId, userId })
-  }
+	if (!LessonStates.canStart(lessonDoc)) {
+		throw new Meteor.Error(
+			LessonErrors.unexpectedState,
+			"lesson.errors.expectedIdle",
+			{ lessonId, userId },
+		);
+	}
 
-  const startedAt = new Date()
-  const modifier = { $set: { startedAt } }
-  const updated = await getCollection(Lesson.name).updateAsync(lessonId, modifier)
-  return !!updated
-}
+	const startedAt = new Date();
+	const modifier = { $set: { startedAt } };
+	const updated = await getCollection(Lesson.name).updateAsync(
+		lessonId,
+		modifier,
+	);
+	return !!updated;
+};
 
 /**
  * Completes a lesson by _id
@@ -37,24 +44,30 @@ export const startLesson = async ({ userId, lessonId }) => {
  * @return {Boolean} A boolean value, whether the operation has been successful
  */
 export const completeLesson = async ({ userId, lessonId }) => {
-  const { lessonDoc } = await getDocsForMember({ lessonId, userId })
+	const { lessonDoc } = await getDocsForMember({ lessonId, userId });
 
-  if (!LessonStates.canComplete(lessonDoc)) {
-    throw new Meteor.Error(LessonErrors.unexpectedState, 'lesson.errors.expectedRunning')
-  }
+	if (!LessonStates.canComplete(lessonDoc)) {
+		throw new Meteor.Error(
+			LessonErrors.unexpectedState,
+			"lesson.errors.expectedRunning",
+		);
+	}
 
-  // this is our indicator for the lesson being completed
-  const completedAt = new Date()
+	// this is our indicator for the lesson being completed
+	const completedAt = new Date();
 
-  // we also unset all visible materials, to prevent any runtime issues
-  // with current opened materials on the student views, that could arise
-  // during the state changing from running to completed
-  const visibleStudent = []
+	// we also unset all visible materials, to prevent any runtime issues
+	// with current opened materials on the student views, that could arise
+	// during the state changing from running to completed
+	const visibleStudent = [];
 
-  const modifier = { $set: { completedAt, visibleStudent } }
-  const updated = await getCollection(Lesson.name).updateAsync(lessonId, modifier)
-  return !!updated
-}
+	const modifier = { $set: { completedAt, visibleStudent } };
+	const updated = await getCollection(Lesson.name).updateAsync(
+		lessonId,
+		modifier,
+	);
+	return !!updated;
+};
 
 /**
  * Stops a lesson by _id
@@ -65,15 +78,22 @@ export const completeLesson = async ({ userId, lessonId }) => {
  */
 
 export const stopLesson = async ({ userId, lessonId }) => {
-  const { lessonDoc } = await getDocsForMember({ lessonId, userId })
-  if (!LessonStates.isRunning(lessonDoc)) {
-    throw new Meteor.Error(LessonErrors.unexpectedState, 'lesson.errors.expectedRunning', { lessonId, userId })
-  }
+	const { lessonDoc } = await getDocsForMember({ lessonId, userId });
+	if (!LessonStates.isRunning(lessonDoc)) {
+		throw new Meteor.Error(
+			LessonErrors.unexpectedState,
+			"lesson.errors.expectedRunning",
+			{ lessonId, userId },
+		);
+	}
 
-  const modifier = { $unset: { startedAt: 1 } }
-  const updated = await getCollection(Lesson.name).updateAsync(lessonId, modifier)
-  return !!updated
-}
+	const modifier = { $unset: { startedAt: 1 } };
+	const updated = await getCollection(Lesson.name).updateAsync(
+		lessonId,
+		modifier,
+	);
+	return !!updated;
+};
 
 /**
  * Resumes a lesson by _id
@@ -83,11 +103,18 @@ export const stopLesson = async ({ userId, lessonId }) => {
  * @return {Boolean} A boolean value, whether the operation has been successful
  */
 export const resumeLesson = async ({ userId, lessonId }) => {
-  const { lessonDoc } = await getDocsForMember({ lessonId, userId })
-  if (!LessonStates.canResume(lessonDoc)) {
-    throw new Meteor.Error(LessonErrors.unexpectedState, 'lesson.errors.expectedComplete', { lessonId, userId })
-  }
-  const modifier = { $unset: { completedAt: 1 } }
-  const updated = await getCollection(Lesson.name).updateAsync(lessonId, modifier)
-  return !!updated
-}
+	const { lessonDoc } = await getDocsForMember({ lessonId, userId });
+	if (!LessonStates.canResume(lessonDoc)) {
+		throw new Meteor.Error(
+			LessonErrors.unexpectedState,
+			"lesson.errors.expectedComplete",
+			{ lessonId, userId },
+		);
+	}
+	const modifier = { $unset: { completedAt: 1 } };
+	const updated = await getCollection(Lesson.name).updateAsync(
+		lessonId,
+		modifier,
+	);
+	return !!updated;
+};

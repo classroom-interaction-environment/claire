@@ -1,8 +1,8 @@
-import { Mongo } from 'meteor/mongo'
-import { createLog } from '../../api/log/createLog'
-import { assignToWindow } from '../../utils/assignToWindow'
+import { Mongo } from "meteor/mongo";
+import { createLog } from "../../api/log/createLog";
+import { assignToWindow } from "../../utils/assignToWindow";
 
-const cache = new Map()
+const cache = new Map();
 
 /**
  * Returns or creates a local {Mongo.Collection} by given name.
@@ -15,26 +15,26 @@ const cache = new Map()
  * @return {Mongo.Collection} a local Mongo.Collection
  */
 export const getLocalCollection = (name, { debug } = {}) => {
-  if (!cache.has(name)) {
-    if (debug) {
-      logDebug('create new for', name)
-    }
-    const localCollection = new Mongo.Collection(null)
+	if (!cache.has(name)) {
+		if (debug) {
+			logDebug("create new for", name);
+		}
+		const localCollection = new Mongo.Collection(null);
 
-    localCollection.add = (doc) => {
-      if (!doc._id || localCollection.find(doc._id).count() === 0) {
-        return localCollection.insert(doc)
-      }
+		localCollection.add = (doc) => {
+			if (!doc._id || localCollection.find(doc._id).count() === 0) {
+				return localCollection.insert(doc);
+			}
 
-      return localCollection.update(doc._id, { $set: doc })
-    }
+			return localCollection.update(doc._id, { $set: doc });
+		};
 
-    cache.set(name, localCollection)
-  }
+		cache.set(name, localCollection);
+	}
 
-  return cache.get(name)
-}
+	return cache.get(name);
+};
 
-assignToWindow({ getLocalCollection })
+assignToWindow({ getLocalCollection });
 
-const logDebug = createLog({ name: getLocalCollection.name, type: 'debug' })
+const logDebug = createLog({ name: getLocalCollection.name, type: "debug" });

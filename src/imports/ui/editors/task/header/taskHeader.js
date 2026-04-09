@@ -1,2 +1,2 @@
-import '../pagecontent/pageContent'
-import './taskHeader.html'
+import "../pagecontent/pageContent";
+import "./taskHeader.html";

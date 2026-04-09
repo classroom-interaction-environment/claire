@@ -6,27 +6,27 @@
  */
 
 class DoubleMap {
-  constructor (obj = {}) {
-    this.keys = new Map()
-    this.vals = new Map()
+	constructor(obj = {}) {
+		this.keys = new Map();
+		this.vals = new Map();
 
-    Object.entries(obj).forEach(([key, value]) => {
-      this.set(key, value)
-    })
-  }
+		Object.entries(obj).forEach(([key, value]) => {
+			this.set(key, value);
+		});
+	}
 
-  set (key, value) {
-    this.keys.set(key, value)
-    this.vals.set(value, key)
-  }
+	set(key, value) {
+		this.keys.set(key, value);
+		this.vals.set(value, key);
+	}
 
-  get (any) {
-    if (this.keys.has(any)) {
-      return this.keys.get(any)
-    }
+	get(any) {
+		if (this.keys.has(any)) {
+			return this.keys.get(any);
+		}
 
-    return this.vals.get(any)
-  }
+		return this.vals.get(any);
+	}
 }
 
-export { DoubleMap }
+export { DoubleMap };

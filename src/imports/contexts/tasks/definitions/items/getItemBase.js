@@ -1,3 +1,3 @@
-import { ItemBase } from './base'
+import { ItemBase } from "./base";
 
-export const getItemBase = () => ItemBase
+export const getItemBase = () => ItemBase;

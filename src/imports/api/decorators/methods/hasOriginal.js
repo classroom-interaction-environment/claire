@@ -1,1 +1,1 @@
-export const hasOriginal = doc => '_original' in doc
+export const hasOriginal = (doc) => "_original" in doc;

@@ -1,129 +1,132 @@
-import { check, Match } from 'meteor/check'
-import { Meteor } from 'meteor/meteor'
-import { Roles } from 'meteor/alanning:roles'
-import { mapFromObject } from '../../../../api/utils/mapFromObject'
-import { isomporph } from '../../../../api/utils/archUtils'
-import { getUsersCollection } from '../../../../api/utils/getUsersCollection'
-import { deprecate } from '../../../../infrastructure/functions/deprecate'
+import { check, Match } from "meteor/check";
+import { Meteor } from "meteor/meteor";
+import { Roles } from "meteor/alanning:roles";
+import { mapFromObject } from "../../../../api/utils/mapFromObject";
+import { isomporph } from "../../../../api/utils/archUtils";
+import { getUsersCollection } from "../../../../api/utils/getUsersCollection";
+import { deprecate } from "../../../../infrastructure/functions/deprecate";
 
 const roleIndices = mapFromObject({
-  admin: 0,
-  schoolAdmin: 1,
-  curriculum: 2,
-  teacher: 3,
-  student: 4
-})
+	admin: 0,
+	schoolAdmin: 1,
+	curriculum: 2,
+	teacher: 3,
+	student: 4,
+});
 
 /**
  * User roles utility class
  * @deprecated
  */
 export const UserUtils = {
-  roles: {
-    admin: 'admin',
-    schoolAdmin: 'schoolAdmin',
-    curriculum: 'curriculum',
-    teacher: 'teacher',
-    student: 'student'
-  },
-  getHighestRole (userId = Meteor.userId(), scope) {
-    check(userId, String)
-    check(scope, Match.Maybe(String))
+	roles: {
+		admin: "admin",
+		schoolAdmin: "schoolAdmin",
+		curriculum: "curriculum",
+		teacher: "teacher",
+		student: "student",
+	},
+	getHighestRole(userId = Meteor.userId(), scope) {
+		check(userId, String);
+		check(scope, Match.Maybe(String));
 
-    let finalScope
-    if (!scope) {
-      const user = getUsersCollection().findOne(userId)
-      finalScope = user.institution
-    }
-    else {
-      finalScope = scope
-    }
+		let finalScope;
+		if (!scope) {
+			const user = getUsersCollection().findOne(userId);
+			finalScope = user.institution;
+		} else {
+			finalScope = scope;
+		}
 
-    if (this.hasRole(userId, this.roles.admin, finalScope)) return this.roles.admin
-    if (this.hasRole(userId, this.roles.schoolAdmin, finalScope)) return this.roles.schoolAdmin
-    if (this.hasRole(userId, this.roles.curriculum, finalScope)) return this.roles.curriculum
-    if (this.hasRole(userId, this.roles.teacher, finalScope)) return this.roles.teacher
-    if (this.hasRole(userId, this.roles.student, finalScope)) return this.roles.student
-    throw new Meteor.Error('roles.userIsInNoRoles', userId)
-  },
-  /**
-   * @deprecated TODO extract
-   */
-  canInvite (userId, role, institution) {
-    check(userId, String)
-    check(role, String)
-    check(institution, Match.Maybe(String))
+		if (this.hasRole(userId, this.roles.admin, finalScope))
+			return this.roles.admin;
+		if (this.hasRole(userId, this.roles.schoolAdmin, finalScope))
+			return this.roles.schoolAdmin;
+		if (this.hasRole(userId, this.roles.curriculum, finalScope))
+			return this.roles.curriculum;
+		if (this.hasRole(userId, this.roles.teacher, finalScope))
+			return this.roles.teacher;
+		if (this.hasRole(userId, this.roles.student, finalScope))
+			return this.roles.student;
+		throw new Meteor.Error("roles.userIsInNoRoles", userId);
+	},
+	/**
+	 * @deprecated TODO extract
+	 */
+	canInvite(userId, role, institution) {
+		check(userId, String);
+		check(role, String);
+		check(institution, Match.Maybe(String));
 
-    let finalScope
+		let finalScope;
 
-    if (!institution) {
-      const user = getUsersCollection().findOne(userId)
-      finalScope = user?.institution
-    }
-    else {
-      finalScope = institution
-    }
+		if (!institution) {
+			const user = getUsersCollection().findOne(userId);
+			finalScope = user?.institution;
+		} else {
+			finalScope = institution;
+		}
 
-    if (!finalScope) {
-      return false
-    }
+		if (!finalScope) {
+			return false;
+		}
 
-    switch (role) {
-      case this.roles.admin:
-      case this.roles.schoolAdmin:
-      case this.roles.sync:
-        return this.hasAtLeastRole(userId, this.roles.admin, finalScope)
-      case this.roles.teacher:
-      case this.roles.curriculum:
-        return this.hasAtLeastRole(userId, this.roles.schoolAdmin, finalScope)
-      case this.roles.student:
-        return this.hasAtLeastRole(userId, this.roles.teacher, finalScope)
-      default:
-        throw new Error('roles.unknownRole')
-    }
-  },
-  roleExists (name) {
-    return roleMap.get(name)
-  },
-  /**
-   * Use hasRole standalone function instead
-   * @deprecated
-   * @param userId
-   * @param role
-   * @param scope
-   * @return {*}
-   */
-  hasRole (userId = Meteor.userId(), role, scope) {
-    check(userId, String)
-    check(role, Match.OneOf(String, [String]))
-    check(scope, Match.Maybe(String))
-    return Roles.userIsInRoleAsync(userId, role, scope)
-  },
-  hasAtLeastRole (userId = Meteor.userId(), role) {
-    check(userId, String)
-    check(role, String)
-    const highest = this.getHighestRole(userId)
-    return roleIndices.get(highest) <= roleIndices.get(role)
-  },
-  _users: [],
+		switch (role) {
+			case this.roles.admin:
+			case this.roles.schoolAdmin:
+			case this.roles.sync:
+				return this.hasAtLeastRole(userId, this.roles.admin, finalScope);
+			case this.roles.teacher:
+			case this.roles.curriculum:
+				return this.hasAtLeastRole(userId, this.roles.schoolAdmin, finalScope);
+			case this.roles.student:
+				return this.hasAtLeastRole(userId, this.roles.teacher, finalScope);
+			default:
+				throw new Error("roles.unknownRole");
+		}
+	},
+	roleExists(name) {
+		return roleMap.get(name);
+	},
+	/**
+	 * Use hasRole standalone function instead
+	 * @deprecated
+	 * @param userId
+	 * @param role
+	 * @param scope
+	 * @return {*}
+	 */
+	hasRole(userId = Meteor.userId(), role, scope) {
+		check(userId, String);
+		check(role, Match.OneOf(String, [String]));
+		check(scope, Match.Maybe(String));
+		return Roles.userIsInRoleAsync(userId, role, scope);
+	},
+	hasAtLeastRole(userId = Meteor.userId(), role) {
+		check(userId, String);
+		check(role, String);
+		const highest = this.getHighestRole(userId);
+		return roleIndices.get(highest) <= roleIndices.get(role);
+	},
+	_users: [],
 
-  /**
-   * @deprecated
-   */
-  users (userId) {
-    if (userId) {
-      this._users.push(userId)
-    }
-    return this._users
-  },
+	/**
+	 * @deprecated
+	 */
+	users(userId) {
+		if (userId) {
+			this._users.push(userId);
+		}
+		return this._users;
+	},
 
-  /**
-   * @deprecated
-   */
-  hasUserSub (userId) {
-    return this._users.indexOf(userId) > -1
-  }
-}
+	/**
+	 * @deprecated
+	 */
+	hasUserSub(userId) {
+		return this._users.indexOf(userId) > -1;
+	},
+};
 
 /**
  * Returns, whether a user fulfills the criteria of editing a curriculum.
@@ -134,42 +137,50 @@ export const UserUtils = {
  * @return {Boolean} true / false
  */
 UserUtils.isCurriculum = deprecate(async (userId = Meteor.userId(), scope) => {
-  let finalScope
-  if (!scope) {
-    const user = getUsersCollection().findOneAsync(userId)
-    finalScope = user.institution
-  }
-  else {
-    finalScope = scope
-  }
+	let finalScope;
+	if (!scope) {
+		const user = getUsersCollection().findOneAsync(userId);
+		finalScope = user.institution;
+	} else {
+		finalScope = scope;
+	}
 
-  if (
-    await UserUtils.hasRole(userId, UserUtils.roles.curriculum, finalScope) ||
-    await UserUtils.hasRole(userId, UserUtils.roles.schoolAdmin, finalScope)
-  ) {
-    return true
-  }
+	if (
+		(await UserUtils.hasRole(userId, UserUtils.roles.curriculum, finalScope)) ||
+		(await UserUtils.hasRole(userId, UserUtils.roles.schoolAdmin, finalScope))
+	) {
+		return true;
+	}
 
-  return UserUtils.isAdmin(userId)
-})
+	return UserUtils.isAdmin(userId);
+});
 
-UserUtils.isAdmin = deprecate(isomporph({
-  client: () => function isAdmin (userId = Meteor.userId()) {
-      if (!userId) return false
-      const user = getUsersCollection().findOne(userId)
+UserUtils.isAdmin = deprecate(
+	isomporph({
+		client: () =>
+			function isAdmin(userId = Meteor.userId()) {
+				if (!userId) return false;
+				const user = getUsersCollection().findOne(userId);
 
-      if (!user) return false
-      return Roles.userIsInRole(userId, UserUtils.roles.admin, user.institution)
-    },
+				if (!user) return false;
+				return Roles.userIsInRole(
+					userId,
+					UserUtils.roles.admin,
+					user.institution,
+				);
+			},
 
-  server: () => {
-    const { userIsAdmin } = require('../../../../api/accounts/admin/userIsAdmin')
+		server: () => {
+			const {
+				userIsAdmin,
+			} = require("../../../../api/accounts/admin/userIsAdmin");
 
-    return function isAdmin (userId = Meteor.userId()) {
-      if (!userId) return false
-      return userIsAdmin(userId)
-    }
-  }
-}))
+			return function isAdmin(userId = Meteor.userId()) {
+				if (!userId) return false;
+				return userIsAdmin(userId);
+			};
+		},
+	}),
+);
 
-const roleMap = mapFromObject(UserUtils.roles)
+const roleMap = mapFromObject(UserUtils.roles);

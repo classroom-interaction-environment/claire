@@ -1,5 +1,5 @@
-import { Meteor } from 'meteor/meteor'
-import { Mongo } from 'meteor/mongo'
+import { Meteor } from "meteor/meteor";
+import { Mongo } from "meteor/mongo";
 
 /*
  * due to unclean programming this collection has accidentally been named
@@ -8,12 +8,12 @@ import { Mongo } from 'meteor/mongo'
  */
 
 if (Meteor.settings.patch?.imageFiles) {
-  const imageFiles = new Mongo.Collection('imagefiles')
-  const rawCollection = imageFiles.rawCollection()
+	const imageFiles = new Mongo.Collection("imagefiles");
+	const rawCollection = imageFiles.rawCollection();
 
-  if (await imageFiles.countDocuments({}) > 0) {
-    rawCollection.rename('imageFiles')
-  }
+	if ((await imageFiles.countDocuments({})) > 0) {
+		rawCollection.rename("imageFiles");
+	}
 
-  rawCollection.drop()
+	rawCollection.drop();
 }

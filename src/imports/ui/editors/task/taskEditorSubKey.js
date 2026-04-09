@@ -1,1 +1,1 @@
-export const taskEditorSubKey = 'taskEditor'
+export const taskEditorSubKey = "taskEditor";

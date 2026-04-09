@@ -1,3 +1,2 @@
 // TODO REMOVE
-export const LessonRuntime = {
-}
+export const LessonRuntime = {};

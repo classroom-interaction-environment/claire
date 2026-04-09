@@ -6,7 +6,7 @@
  * @param name {string} name of the collection
  * @return {string} the new collection name
  */
-export const createCollectionName = name => {
-  const capitalized = `${name.charAt(0).toUpperCase()}${name.slice(1)}`
-  return `${capitalized}Collection`
-}
+export const createCollectionName = (name) => {
+	const capitalized = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
+	return `${capitalized}Collection`;
+};

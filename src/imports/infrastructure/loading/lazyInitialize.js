@@ -5,15 +5,14 @@
  * @param loadFunction
  * @return {function(...[*]): *}
  */
-export const lazyInitialize = loadFunction => {
-  let product
+export const lazyInitialize = (loadFunction) => {
+	let product;
 
-  return function (...args) {
+	return function (...args) {
+		if (!product) {
+			product = loadFunction();
+		}
 
-    if (!product) {
-      product = loadFunction()
-    }
-
-    return product.apply(this, args)
-  }
-}
+		return product.apply(this, args);
+	};
+};

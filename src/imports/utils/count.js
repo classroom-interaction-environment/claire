@@ -4,5 +4,5 @@
  * @param query {string|object}
  */
 export const count = (collection, query = {}) => {
-  return collection.countDocuments(query)
-}
+	return collection.countDocuments(query);
+};

@@ -6,18 +6,16 @@
  * @param isCurriculum
  */
 export const createMaterialQuery = (materialIds, userId, isCurriculum) => {
-  const query = {
-    _id: { $in: materialIds }
-  }
+	const query = {
+		_id: { $in: materialIds },
+	};
 
-  if (isCurriculum) {
-    query._master = true
-  }
+	if (isCurriculum) {
+		query._master = true;
+	} else {
+		query._master = { $exists: false };
+		query.createdBy = userId;
+	}
 
-  else {
-    query._master = { $exists: false }
-    query.createdBy = userId
-  }
-
-  return query
-}
+	return query;
+};

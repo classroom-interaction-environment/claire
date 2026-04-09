@@ -1,97 +1,96 @@
-import { Meteor } from 'meteor/meteor'
-import { ResponseDataTypes } from '../../../../api/plugins/ResponseDataTypes'
-import { getItemBase } from '../items/getItemBase'
-import { option } from '../common/helpers'
-import { ITaskDefinition } from '../ITaskDefinition'
-import { createLog } from '../../../../api/log/createLog'
-import { ReactiveVar } from 'meteor/reactive-var'
-import { H5PMeteor } from 'meteor/claire:h5p'
-import { callMethod } from '../../../../ui/controllers/document/callMethod'
+import { Meteor } from "meteor/meteor";
+import { ResponseDataTypes } from "../../../../api/plugins/ResponseDataTypes";
+import { getItemBase } from "../items/getItemBase";
+import { option } from "../common/helpers";
+import { ITaskDefinition } from "../ITaskDefinition";
+import { createLog } from "../../../../api/log/createLog";
+import { ReactiveVar } from "meteor/reactive-var";
+import { H5PMeteor } from "meteor/claire:h5p";
+import { callMethod } from "../../../../ui/controllers/document/callMethod";
 
+export const H5P = {};
 
-export const H5P = {}
+const { enabled } = Meteor.settings.public.h5p ?? {};
+const debug = createLog({ name: "H5PItems", type: "debug" });
 
-const { enabled } = Meteor.settings.public.h5p ?? {}
-const debug = createLog({ name: 'H5PItems', type: 'debug' })
+H5P.name = "h5p";
+H5P.label = "h5p.title";
+H5P.types = {};
+H5P.icon = "edit";
+H5P.options = {};
+H5P.dataTypes = Object.assign({}, ResponseDataTypes);
+H5P.categories = new Map();
 
-H5P.name = 'h5p'
-H5P.label = 'h5p.title'
-H5P.types = {}
-H5P.icon = 'edit'
-H5P.options = {}
-H5P.dataTypes = Object.assign({}, ResponseDataTypes)
-H5P.categories = new Map()
+H5P.isEnabled = () => enabled === true;
 
-H5P.isEnabled = () => enabled === true
+H5P.categories.set("notCategorized", {
+	name: "notCategorized",
+	label: "h5pTypes.notCategorized",
+	icon: "minus",
+	base: getItemBase().name,
+});
 
-H5P.categories.set('notCategorized', {
-  name: 'notCategorized',
-  label: 'h5pTypes.notCategorized',
-  icon: 'minus',
-  base: getItemBase().name
-})
-
-const contexts = new Map()
+const contexts = new Map();
 
 H5P.register = (h5pContentType) => {
-  debug('register', h5pContentType.machineName, h5pContentType)
+	debug("register", h5pContentType.machineName, h5pContentType);
 
-  const context = {
-    name: h5pContentType.machineName,
-    label: h5pContentType.title,
-    dataType: null,
-    iconUrl: h5pContentType.icon,
-    schema: {
-      contentId: String,
-      autoform: {
-        type: 'text',
-        h5p: h5pContentType
-      }
-    },
-    publicFields: {
-      contentId: 1
-    },
-    build: h5pDoc => ({
-      [h5pDoc.contentId]: {
-        type: String,
-        autoform: {
-          type: 'text'
-        }
-      }
-    }),
-    form: async () => {
-      // import autoform editor template
-    }
-  }
+	const context = {
+		name: h5pContentType.machineName,
+		label: h5pContentType.title,
+		dataType: null,
+		iconUrl: h5pContentType.icon,
+		schema: {
+			contentId: String,
+			autoform: {
+				type: "text",
+				h5p: h5pContentType,
+			},
+		},
+		publicFields: {
+			contentId: 1,
+		},
+		build: (h5pDoc) => ({
+			[h5pDoc.contentId]: {
+				type: String,
+				autoform: {
+					type: "text",
+				},
+			},
+		}),
+		form: async () => {
+			// import autoform editor template
+		},
+	};
 
-  contexts.set(context.name, context)
-}
+	contexts.set(context.name, context);
+};
 
-H5P.options = () => Array.from(contexts.values()).map(el => option(el))
+H5P.options = () => Array.from(contexts.values()).map((el) => option(el));
 
 H5P.renderer = {
-  template: 'h5pPlayer',
-  load: async () => import('../../../../ui/h5p/player/h5pPlayer')
-}
+	template: "h5pPlayer",
+	load: async () => import("../../../../ui/h5p/player/h5pPlayer"),
+};
 
-const initialized = new ReactiveVar(false)
+const initialized = new ReactiveVar(false);
 
-H5P.isInitialized = () => initialized.get()
+H5P.isInitialized = () => initialized.get();
 
 H5P.initialize = async () => {
-  debug('initialize')
-  if (initialized.get()) {
-    return true
-  }
+	debug("initialize");
+	if (initialized.get()) {
+		return true;
+	}
 
-  const response = await callMethod({
-    name: H5PMeteor.methods.listItems.name,
-    args: {}
-  })
+	const response = await callMethod({
+		name: H5PMeteor.methods.listItems.name,
+		args: {},
+	});
 
-  response.libraries.forEach(lib => {
-    H5P.register(lib)
-  })
-}
+	response.libraries.forEach((lib) => {
+		H5P.register(lib);
+	});
+};
 
-ITaskDefinition(H5P, contexts)
+ITaskDefinition(H5P, contexts);

@@ -1,652 +1,687 @@
-import { Template } from 'meteor/templating'
-import { ReactiveDict } from 'meteor/reactive-dict'
-import { ReactiveVar } from 'meteor/reactive-var'
-import { i18n } from '../../../../../api/language/language'
-import { LessonActions } from '../../../../controllers/LessonActions'
-import { LessonMaterial } from '../../../../controllers/LessonMaterial'
-import { LessonStates } from '../../../../../contexts/classroom/lessons/LessonStates'
-import { Material } from '../../../../../contexts/material/Material'
-import { Beamer } from '../../../../../contexts/beamer/Beamer'
-import { Task } from '../../../../../contexts/curriculum/curriculum/task/Task'
-import { Group } from '../../../../../contexts/classroom/group/Group'
-import { TaskResults } from '../../../../../contexts/tasks/results/TaskResults'
-import { dataTarget } from '../../../../utils/dataTarget'
-import { printHTMLElement } from '../../../../utils/printHtmlElement'
-import { confirmDialog } from '../../../../components/confirm/confirm'
-import { delayedCallback } from '../../../../utils/delayedCallback'
-import { getMaterialContexts } from '../../../../../contexts/material/initMaterial'
-import { getCollection } from '../../../../../api/utils/getCollection'
-import { resolveMaterialReference } from '../../../../../contexts/material/resolveMaterialReference'
-import { callMethod } from '../../../../controllers/document/callMethod'
-import { getLocalCollection } from '../../../../../infrastructure/collection/getLocalCollection'
-import { lessonSubKey } from '../../lessonSubKey'
-import '../../../../renderer/phase/full/phaseFullRenderer'
-import '../../../../renderer/phase/compact/compactPhases'
-import '../../../../renderer/phase/nonphaseMaterial/nonPhaseMaterial'
-import '../progress/taskProgress'
-import './phaseMaterial/phaseMaterial'
-import './lessonMaterial.scss'
-import './lessonMaterial.html'
+import { Template } from "meteor/templating";
+import { ReactiveDict } from "meteor/reactive-dict";
+import { ReactiveVar } from "meteor/reactive-var";
+import { i18n } from "../../../../../api/language/language";
+import { LessonActions } from "../../../../controllers/LessonActions";
+import { LessonMaterial } from "../../../../controllers/LessonMaterial";
+import { LessonStates } from "../../../../../contexts/classroom/lessons/LessonStates";
+import { Material } from "../../../../../contexts/material/Material";
+import { Beamer } from "../../../../../contexts/beamer/Beamer";
+import { Task } from "../../../../../contexts/curriculum/curriculum/task/Task";
+import { Group } from "../../../../../contexts/classroom/group/Group";
+import { TaskResults } from "../../../../../contexts/tasks/results/TaskResults";
+import { dataTarget } from "../../../../utils/dataTarget";
+import { printHTMLElement } from "../../../../utils/printHtmlElement";
+import { confirmDialog } from "../../../../components/confirm/confirm";
+import { delayedCallback } from "../../../../utils/delayedCallback";
+import { getMaterialContexts } from "../../../../../contexts/material/initMaterial";
+import { getCollection } from "../../../../../api/utils/getCollection";
+import { resolveMaterialReference } from "../../../../../contexts/material/resolveMaterialReference";
+import { callMethod } from "../../../../controllers/document/callMethod";
+import { getLocalCollection } from "../../../../../infrastructure/collection/getLocalCollection";
+import { lessonSubKey } from "../../lessonSubKey";
+import "../../../../renderer/phase/full/phaseFullRenderer";
+import "../../../../renderer/phase/compact/compactPhases";
+import "../../../../renderer/phase/nonphaseMaterial/nonPhaseMaterial";
+import "../progress/taskProgress";
+import "./phaseMaterial/phaseMaterial";
+import "./lessonMaterial.scss";
+import "./lessonMaterial.html";
 
 const API = Template.lessonMaterial.setDependencies({
-  contexts: getMaterialContexts().concat([TaskResults]),
-  initMaterial: true
-})
+	contexts: getMaterialContexts().concat([TaskResults]),
+	initMaterial: true,
+});
 
 Template.lessonMaterial.onCreated(function () {
-  this.state.set('hasGroups', {})
-  this.state.set('updating', {})
-  this.state.set('downloading', {})
-  this.state.set('showResults', {})
-  this.currentItems = new ReactiveVar()
+	this.state.set("hasGroups", {});
+	this.state.set("updating", {});
+	this.state.set("downloading", {});
+	this.state.set("showResults", {});
+	this.currentItems = new ReactiveVar();
 
-  this.updating = (key, value) => {
-    const updating = this.state.get('updating')
-    updating[key] = value
-    this.state.set('updating', updating)
-  }
+	this.updating = (key, value) => {
+		const updating = this.state.get("updating");
+		updating[key] = value;
+		this.state.set("updating", updating);
+	};
 
-  this.isUpdating = (key) => {
-    const updating = this.state.get('updating')
-    return updating[key]
-  }
+	this.isUpdating = (key) => {
+		const updating = this.state.get("updating");
+		return updating[key];
+	};
 
-  this.downloading = (key, value) => {
-    const downloading = this.state.get('downloading')
-    downloading[key] = value
-    this.state.set('downloading', downloading)
-  }
+	this.downloading = (key, value) => {
+		const downloading = this.state.get("downloading");
+		downloading[key] = value;
+		this.state.set("downloading", downloading);
+	};
 
-  this.isDownloading = (key) => {
-    const downloading = this.state.get('downloading')
-    return downloading[key]
-  }
+	this.isDownloading = (key) => {
+		const downloading = this.state.get("downloading");
+		return downloading[key];
+	};
 
-  this.isActiveStudent = (materialId, groupMaterial) => {
-    if (groupMaterial?.some(m => m._id === materialId)) {
-      return true
-    }
+	this.isActiveStudent = (materialId, groupMaterial) => {
+		if (groupMaterial?.some((m) => m._id === materialId)) {
+			return true;
+		}
 
-    const { lessonDoc } = this.data
-    return lessonDoc?.visibleStudent?.find(ref => ref._id === materialId)
-  }
+		const { lessonDoc } = this.data;
+		return lessonDoc?.visibleStudent?.find((ref) => ref._id === materialId);
+	};
 
-  this.showResults = (materialId, groupId) => {
-    const states = Template.getState('showResults')
-    let showId = materialId
-    if (typeof groupId === 'string') {
-      showId += groupId
-    }
-    return states?.[showId]
-  }
+	this.showResults = (materialId, groupId) => {
+		const states = Template.getState("showResults");
+		let showId = materialId;
+		if (typeof groupId === "string") {
+			showId += groupId;
+		}
+		return states?.[showId];
+	};
 
-  this.resultButtonDisabled = (materialName) => {
-    const { lessonDoc } = this.data
-    return !lessonDoc || LessonStates.isIdle(lessonDoc) || materialName !== Task.name
-  }
+	this.resultButtonDisabled = (materialName) => {
+		const { lessonDoc } = this.data;
+		return (
+			!lessonDoc || LessonStates.isIdle(lessonDoc) || materialName !== Task.name
+		);
+	};
 
-  this.isIdle = () => {
-    const { lessonDoc } = this.data
-    return LessonStates.isIdle(lessonDoc)
-  }
+	this.isIdle = () => {
+		const { lessonDoc } = this.data;
+		return LessonStates.isIdle(lessonDoc);
+	};
 
-  this.isOnBeamer = (referenceId, itemId) => {
-    const { lessonDoc } = this.data
-    const lessonId = lessonDoc?._id
-    return lessonId && Beamer.doc.has({ referenceId, lessonId, itemId })
-  }
+	this.isOnBeamer = (referenceId, itemId) => {
+		const { lessonDoc } = this.data;
+		const lessonId = lessonDoc?._id;
+		return lessonId && Beamer.doc.has({ referenceId, lessonId, itemId });
+	};
 
-  const unitId = this.data.unitDoc._id
-  this.autorun(() => {
-    const hasGroups = {}
-    getCollection(Group.name).find({ unitId }).forEach(groupDoc => {
-      if (groupDoc.phases?.length) {
-        groupDoc.phases.forEach(phaseId => {
-          hasGroups[phaseId] = true
-        })
-      }
+	const unitId = this.data.unitDoc._id;
+	this.autorun(() => {
+		const hasGroups = {};
+		getCollection(Group.name)
+			.find({ unitId })
+			.forEach((groupDoc) => {
+				if (groupDoc.phases?.length) {
+					groupDoc.phases.forEach((phaseId) => {
+						hasGroups[phaseId] = true;
+					});
+				} else {
+					hasGroups.global = true;
+				}
+			});
+		this.state.set({ hasGroups });
+	});
 
-      else {
-        hasGroups.global = true
-      }
-    })
-    this.state.set({ hasGroups })
-  })
+	// ==========================================================================
+	// RESOLVE REFERENCES
+	// ==========================================================================
 
-  // ==========================================================================
-  // RESOLVE REFERENCES
-  // ==========================================================================
+	// we want to resolve references only once, so we get all material refs
+	// and add them by id to a dict, which we then can use to access by id
 
-  // we want to resolve references only once, so we get all material refs
-  // and add them by id to a dict, which we then can use to access by id
+	this.references = new ReactiveDict();
+	const addReference = (reference) => {
+		console.debug("add ref?");
+		if (!this.references.get(reference.document)) {
+			console.debug("=> yes, add ref", reference);
+			const refDoc = resolveMaterialReference(reference);
+			if (!refDoc) {
+				console.warn("could not resolve", reference.document);
+			}
+			this.references.set(reference.document, refDoc);
+		}
+	};
 
-  this.references = new ReactiveDict()
-  const addReference = reference => {
-    console.debug('add ref?')
-    if (!this.references.get(reference.document)) {
-      console.debug('=> yes, add ref', reference)
-      const refDoc = resolveMaterialReference(reference)
-      if (!refDoc) {
-        console.warn('could not resolve', reference.document)
-      }
-      this.references.set(reference.document, refDoc)
-    }
-  }
+	this.autorun(() => {
+		const data = Template.currentData();
+		const { unitDoc, unassociatedMaterial } = data;
+		const allRefs = new Map();
+		const addToMap = (ref) => allRefs.set(ref.document, ref);
 
-  this.autorun(() => {
-    const data = Template.currentData()
-    const { unitDoc, unassociatedMaterial } = data
-    const allRefs = new Map()
-    const addToMap = ref => allRefs.set(ref.document, ref)
+		(unitDoc.phases || []).forEach((phase) => {
+			if (phase.references?.length) {
+				phase.references.forEach(addToMap);
+			}
+		});
 
-    ;(unitDoc.phases || []).forEach(phase => {
-      if (phase.references?.length) {
-        phase.references.forEach(addToMap)
-      }
-    })
+		(unassociatedMaterial || []).forEach(addToMap);
 
-    ;(unassociatedMaterial || []).forEach(addToMap)
-
-    if (allRefs.size === 0) {
-      return
-    }
-    console.debug(allRefs)
-    allRefs.forEach(ref => {
-      addReference(ref)
-    })
-  })
-})
+		if (allRefs.size === 0) {
+			return;
+		}
+		console.debug(allRefs);
+		allRefs.forEach((ref) => {
+			addReference(ref);
+		});
+	});
+});
 
 Template.lessonMaterial.helpers({
-  unassociatedMaterial () {
-    return Template.instance().data.unassociatedMaterial
-  },
-  hasGroups (phaseId) {
-    const dict = Template.getState('hasGroups')
-    return phaseId === 'global'
-      ? dict.global
-      : dict[phaseId]
-  },
-  groups (phaseId) {
-    const query = phaseId === 'global'
-      ? { phases: { $exists: false } }
-      : { phases: phaseId }
-    return getCollection(Group.name).find(query)
-  },
-  lessonId () {
-    const { lessonDoc } = Template.instance().data
-    return lessonDoc._id
-  },
-  lessonPhases () {
-    const { unitDoc } = Template.instance().data
-    return unitDoc.phases
-  },
-  phaseMaterialAtts (materialId, phase, group) {
-    const groupId = group?._id
-    const instance = Template.instance()
-    const material = instance.references.get(materialId)
+	unassociatedMaterial() {
+		return Template.instance().data.unassociatedMaterial;
+	},
+	hasGroups(phaseId) {
+		const dict = Template.getState("hasGroups");
+		return phaseId === "global" ? dict.global : dict[phaseId];
+	},
+	groups(phaseId) {
+		const query =
+			phaseId === "global"
+				? { phases: { $exists: false } }
+				: { phases: phaseId };
+		return getCollection(Group.name).find(query);
+	},
+	lessonId() {
+		const { lessonDoc } = Template.instance().data;
+		return lessonDoc._id;
+	},
+	lessonPhases() {
+		const { unitDoc } = Template.instance().data;
+		return unitDoc.phases;
+	},
+	phaseMaterialAtts(materialId, phase, group) {
+		const groupId = group?._id;
+		const instance = Template.instance();
+		const material = instance.references.get(materialId);
 
-    if (!material) {
-      return null
-    }
+		if (!material) {
+			return null;
+		}
 
-    const ctx = Material.get(material.name)
-    const downloadable = ctx?.material?.downloadable
-    const downloading = instance.isDownloading(materialId, group)
-    const downloadButtonDisabled = downloadable !== true
-    const isActiveStudent = instance.isActiveStudent(materialId, group?.visible)
-    const isIdle = instance.isIdle()
-    const updating = instance.isUpdating(materialId, groupId)
-    const presentButtonDisabled = !Beamer.actions.get()
-    const showResults = instance.showResults(materialId, groupId)
-    const resultButtonDisabled = instance.resultButtonDisabled(material.name)
-    const isOnBeamer = instance.isOnBeamer(material)
+		const ctx = Material.get(material.name);
+		const downloadable = ctx?.material?.downloadable;
+		const downloading = instance.isDownloading(materialId, group);
+		const downloadButtonDisabled = downloadable !== true;
+		const isActiveStudent = instance.isActiveStudent(
+			materialId,
+			group?.visible,
+		);
+		const isIdle = instance.isIdle();
+		const updating = instance.isUpdating(materialId, groupId);
+		const presentButtonDisabled = !Beamer.actions.get();
+		const showResults = instance.showResults(materialId, groupId);
+		const resultButtonDisabled = instance.resultButtonDisabled(material.name);
+		const isOnBeamer = instance.isOnBeamer(material);
 
-    return {
-      materialId,
-      material,
-      phase,
-      group,
-      downloadButtonDisabled,
-      downloading,
-      isActiveStudent,
-      isIdle,
-      updating,
-      presentButtonDisabled,
-      showResults,
-      resultButtonDisabled,
-      isOnBeamer
-    }
-  },
-  showResults (materialId, groupId) {
-    return Template.instance().showResults(materialId, groupId)
-  },
-  isIdle () {
-    return Template.instance().isIdle()
-  },
-  canStart () {
-    const { lessonDoc } = Template.instance().data
-    return LessonStates.canStart(lessonDoc)
-  },
-  isRunning () {
-    const { lessonDoc } = Template.instance().data
-    return LessonStates.isRunning(lessonDoc)
-  },
-  isComplete () {
-    const { lessonDoc } = Template.instance().data
-    return LessonStates.isCompleted(lessonDoc)
-  },
-  canComplete () {
-    const { lessonDoc } = Template.instance().data
-    return LessonStates.canComplete(lessonDoc)
-  },
-  downloading (_phaseId, referenceId) {
-    return Template.instance().isDownloading(referenceId)
-  },
-  isNotIdle () {
-    const { lessonDoc } = Template.instance().data
-    return (LessonStates.isRunning(lessonDoc) || LessonStates.isCompleted(lessonDoc))
-  },
-  previewBeamerTarget () {
-    return Template.getState('previewTarget')
-  },
-  previewData () {
-    const templateInstance = Template.instance()
-    const previewData = templateInstance.state.get('previewData')
-    const materialDoc = templateInstance.state.get('previewTarget')
+		return {
+			materialId,
+			material,
+			phase,
+			group,
+			downloadButtonDisabled,
+			downloading,
+			isActiveStudent,
+			isIdle,
+			updating,
+			presentButtonDisabled,
+			showResults,
+			resultButtonDisabled,
+			isOnBeamer,
+		};
+	},
+	showResults(materialId, groupId) {
+		return Template.instance().showResults(materialId, groupId);
+	},
+	isIdle() {
+		return Template.instance().isIdle();
+	},
+	canStart() {
+		const { lessonDoc } = Template.instance().data;
+		return LessonStates.canStart(lessonDoc);
+	},
+	isRunning() {
+		const { lessonDoc } = Template.instance().data;
+		return LessonStates.isRunning(lessonDoc);
+	},
+	isComplete() {
+		const { lessonDoc } = Template.instance().data;
+		return LessonStates.isCompleted(lessonDoc);
+	},
+	canComplete() {
+		const { lessonDoc } = Template.instance().data;
+		return LessonStates.canComplete(lessonDoc);
+	},
+	downloading(_phaseId, referenceId) {
+		return Template.instance().isDownloading(referenceId);
+	},
+	isNotIdle() {
+		const { lessonDoc } = Template.instance().data;
+		return (
+			LessonStates.isRunning(lessonDoc) || LessonStates.isCompleted(lessonDoc)
+		);
+	},
+	previewBeamerTarget() {
+		return Template.getState("previewTarget");
+	},
+	previewData() {
+		const templateInstance = Template.instance();
+		const previewData = templateInstance.state.get("previewData");
+		const materialDoc = templateInstance.state.get("previewTarget");
 
-    if (!materialDoc || !previewData) return
+		if (!materialDoc || !previewData) return;
 
-    const options = {}
-    options.print = !!templateInstance.state.get('print')
+		const options = {};
+		options.print = !!templateInstance.state.get("print");
 
-    // we need to assign the data in the helper, because
-    // passing this to a ReactiveDict will destroy any
-    // function, that is part of the data, which in turn will
-    // break the functionality of the material, if it relies
-    // on certain functions, such as onItemLoad etc.
-    // XXX: maybe we can instead use a ReactiveVar?
-    previewData.data = LessonMaterial.getPreviewData({ materialDoc, templateInstance, options })
-    return previewData
-  },
-  previewPhases () {
-    const instance = Template.instance()
-    const isPreview = instance.state.get('previewPhases')
-    const { unitDoc } = instance.data
-    if (!isPreview || !unitDoc) return
+		// we need to assign the data in the helper, because
+		// passing this to a ReactiveDict will destroy any
+		// function, that is part of the data, which in turn will
+		// break the functionality of the material, if it relies
+		// on certain functions, such as onItemLoad etc.
+		// XXX: maybe we can instead use a ReactiveVar?
+		previewData.data = LessonMaterial.getPreviewData({
+			materialDoc,
+			templateInstance,
+			options,
+		});
+		return previewData;
+	},
+	previewPhases() {
+		const instance = Template.instance();
+		const isPreview = instance.state.get("previewPhases");
+		const { unitDoc } = instance.data;
+		if (!isPreview || !unitDoc) return;
 
-    return unitDoc.phases
-  },
-  unitDoc () {
-    const { unitDoc } = Template.instance().data
-    return unitDoc
-  },
-  printing () {
-    return Template.getState('printing')
-  },
-  toggleTitle (id) {
-    const { lessonDoc } = Template.instance().data
-    if (!lessonDoc) return
-    return lessonDoc.visibleStudent && lessonDoc.visibleStudent.indexOf(id) > -1
-      ? i18n.get('lesson.actions.toggleMobileActive')
-      : i18n.get('lesson.actions.toggleMobileInactive')
-  },
-  currentItems () {
-    return Template.instance().currentItems.get()
-  },
-  currentTaskDoc () {
-    return Template.getState('currentTaskDoc')
-  },
-  defaultResponseProcessor (item) {
-    return item.responseProcessors[0].name
-  },
-  currentResponseProcessor (item) {
-    const { itemId } = item
-    const beamerDoc = Beamer.doc.get()
-    if (!beamerDoc) return
+		return unitDoc.phases;
+	},
+	unitDoc() {
+		const { unitDoc } = Template.instance().data;
+		return unitDoc;
+	},
+	printing() {
+		return Template.getState("printing");
+	},
+	toggleTitle(id) {
+		const { lessonDoc } = Template.instance().data;
+		if (!lessonDoc) return;
+		return lessonDoc.visibleStudent && lessonDoc.visibleStudent.indexOf(id) > -1
+			? i18n.get("lesson.actions.toggleMobileActive")
+			: i18n.get("lesson.actions.toggleMobileInactive");
+	},
+	currentItems() {
+		return Template.instance().currentItems.get();
+	},
+	currentTaskDoc() {
+		return Template.getState("currentTaskDoc");
+	},
+	defaultResponseProcessor(item) {
+		return item.responseProcessors[0].name;
+	},
+	currentResponseProcessor(item) {
+		const { itemId } = item;
+		const beamerDoc = Beamer.doc.get();
+		if (!beamerDoc) return;
 
-    const beamerReference = beamerDoc.references.find(r => r.itemId === itemId)
-    if (beamerReference?.responseProcessor) {
-      return item.responseProcessors.find(rp => rp.name === beamerReference.responseProcessor)
-    }
+		const beamerReference = beamerDoc.references.find(
+			(r) => r.itemId === itemId,
+		);
+		if (beamerReference?.responseProcessor) {
+			return item.responseProcessors.find(
+				(rp) => rp.name === beamerReference.responseProcessor,
+			);
+		}
 
-    const templateRp = Template.getState(itemId)
-    if (templateRp) {
-      return item.responseProcessors.find(rp => rp.name === templateRp)
-    }
+		const templateRp = Template.getState(itemId);
+		if (templateRp) {
+			return item.responseProcessors.find((rp) => rp.name === templateRp);
+		}
 
-    return item.responseProcessors?.[0]
-  },
-  isOnBeamer (referenceId, itemId) {
-    return Template.instance().isOnBeamer(referenceId, itemId)
-  },
-  sendingToBeamer (referenceId, itemId) {
-    const sendingToBeamerDoc = Template.instance().state.get('sendingToBeamer')
-    if (!sendingToBeamerDoc) return false
-    if (typeof referenceId === 'string' && sendingToBeamerDoc.referenceId !== referenceId) return false
-    if (typeof itemId === 'string' && sendingToBeamerDoc.itemId !== itemId) return false
-    return true
-  },
-  roles (groupDoc) {
-    const roles = new Set()
-    groupDoc?.users?.forEach(userDoc => {
-      if (userDoc.role) {
-        roles.add(userDoc.role)
-      }
-    })
-    return Array.from(roles)
-  }
-})
+		return item.responseProcessors?.[0];
+	},
+	isOnBeamer(referenceId, itemId) {
+		return Template.instance().isOnBeamer(referenceId, itemId);
+	},
+	sendingToBeamer(referenceId, itemId) {
+		const sendingToBeamerDoc = Template.instance().state.get("sendingToBeamer");
+		if (!sendingToBeamerDoc) return false;
+		if (
+			typeof referenceId === "string" &&
+			sendingToBeamerDoc.referenceId !== referenceId
+		)
+			return false;
+		if (typeof itemId === "string" && sendingToBeamerDoc.itemId !== itemId)
+			return false;
+		return true;
+	},
+	roles(groupDoc) {
+		const roles = new Set();
+		groupDoc?.users?.forEach((userDoc) => {
+			if (userDoc.role) {
+				roles.add(userDoc.role);
+			}
+		});
+		return Array.from(roles);
+	},
+});
 
 Template.lessonMaterial.events({
-  // ===========================================================================
-  //
-  //  START LESSON
-  //
-  // ===========================================================================
-  'click .start-lesson-button' (event, templateInstance) {
-    event.preventDefault()
-    confirmDialog({ text: 'lesson.actions.startConfirm' })
-      .then(result => {
-        if (!result) return
-        const { lessonDoc } = templateInstance.data
-        LessonActions.start({
-          _id: lessonDoc._id,
-          failure: API.notify,
-          success: () => API.notify(true)
-        })
-      })
-      .catch(e => API.notify(e))
-  },
+	// ===========================================================================
+	//
+	//  START LESSON
+	//
+	// ===========================================================================
+	"click .start-lesson-button"(event, templateInstance) {
+		event.preventDefault();
+		confirmDialog({ text: "lesson.actions.startConfirm" })
+			.then((result) => {
+				if (!result) return;
+				const { lessonDoc } = templateInstance.data;
+				LessonActions.start({
+					_id: lessonDoc._id,
+					failure: API.notify,
+					success: () => API.notify(true),
+				});
+			})
+			.catch((e) => API.notify(e));
+	},
 
-  // ===========================================================================
-  //
-  //  COMPLETE LESSON
-  //
-  // ===========================================================================
-  'click .complete-lesson-button' (event, templateInstance) {
-    event.preventDefault()
-    confirmDialog({ text: 'lesson.actions.completeConfirm' })
-      .then(result => {
-        if (!result) return
-        const { lessonDoc } = templateInstance.data
-        LessonActions.complete({
-          _id: lessonDoc._id,
-          failure: API.notify,
-          success: () => API.notify(true)
-        })
-      })
-      .catch(e => API.notify(e))
-  },
+	// ===========================================================================
+	//
+	//  COMPLETE LESSON
+	//
+	// ===========================================================================
+	"click .complete-lesson-button"(event, templateInstance) {
+		event.preventDefault();
+		confirmDialog({ text: "lesson.actions.completeConfirm" })
+			.then((result) => {
+				if (!result) return;
+				const { lessonDoc } = templateInstance.data;
+				LessonActions.complete({
+					_id: lessonDoc._id,
+					failure: API.notify,
+					success: () => API.notify(true),
+				});
+			})
+			.catch((e) => API.notify(e));
+	},
 
-  // ===========================================================================
-  //
-  //  TOGGLE MATERIAL
-  //
-  // ===========================================================================
-  'click .toggle-mobile-button' (event, templateInstance) {
-    event.preventDefault()
-    const referenceId = dataTarget(event, templateInstance, 'reference')
-    templateInstance.updating(referenceId, true)
+	// ===========================================================================
+	//
+	//  TOGGLE MATERIAL
+	//
+	// ===========================================================================
+	"click .toggle-mobile-button"(event, templateInstance) {
+		event.preventDefault();
+		const referenceId = dataTarget(event, templateInstance, "reference");
+		templateInstance.updating(referenceId, true);
 
-    const groupId = dataTarget(event, templateInstance, 'group')
-    const groupDoc = groupId && getCollection(Group.name).findOne(groupId)
-    const context = dataTarget(event, templateInstance, 'type')
-    const { lessonDoc } = templateInstance.data
-    const { _id } = lessonDoc
+		const groupId = dataTarget(event, templateInstance, "group");
+		const groupDoc = groupId && getCollection(Group.name).findOne(groupId);
+		const context = dataTarget(event, templateInstance, "type");
+		const { lessonDoc } = templateInstance.data;
+		const { _id } = lessonDoc;
 
-    if (groupDoc) {
-      const visibleInPhases = (lessonDoc.visibleStudent || []).some(ref => ref._id === referenceId)
+		if (groupDoc) {
+			const visibleInPhases = (lessonDoc.visibleStudent || []).some(
+				(ref) => ref._id === referenceId,
+			);
 
-      // toggle only for group
-      if (!visibleInPhases) {
-        callMethod({
-          name: Group.methods.toggleMaterial,
-          args: { _id: groupId, materialId: referenceId, contextName: context },
-          receive: () => templateInstance.updating(referenceId, false),
-          failure: API.notify
-        })
-      }
+			// toggle only for group
+			if (!visibleInPhases) {
+				callMethod({
+					name: Group.methods.toggleMaterial,
+					args: { _id: groupId, materialId: referenceId, contextName: context },
+					receive: () => templateInstance.updating(referenceId, false),
+					failure: API.notify,
+				});
+			} else {
+				return templateInstance.updating(referenceId, false);
+			}
+		}
 
-      else {
-        return templateInstance.updating(referenceId, false)
-      }
-    }
+		// if no groupDoc is present we toggle the material for the phases-level
+		else {
+			LessonActions.toggle({ _id, referenceId, context }, (err) => {
+				if (err) {
+					API.notify(err);
+				}
+				setTimeout(() => templateInstance.updating(referenceId, false), 100);
+			});
+		}
+	},
 
-    // if no groupDoc is present we toggle the material for the phases-level
-    else {
-      LessonActions.toggle({ _id, referenceId, context }, (err) => {
-        if (err) {
-          API.notify(err)
-        }
-        setTimeout(() => templateInstance.updating(referenceId, false), 100)
-      })
-    }
-  },
+	// ===========================================================================
+	//
+	//  PREVIEW MATERIAL
+	//
+	// ===========================================================================
+	"click .preview-material-button"(event, templateInstance) {
+		event.preventDefault();
+		const context = dataTarget(event, templateInstance, "type");
+		const referenceId = dataTarget(event, templateInstance, "reference");
 
-  // ===========================================================================
-  //
-  //  PREVIEW MATERIAL
-  //
-  // ===========================================================================
-  'click .preview-material-button' (event, templateInstance) {
-    event.preventDefault()
-    const context = dataTarget(event, templateInstance, 'type')
-    const referenceId = dataTarget(event, templateInstance, 'reference')
+		templateInstance.$("#lesson-material-preview-modal").modal("show");
 
-    templateInstance.$('#lesson-material-preview-modal').modal('show')
+		LessonMaterial.loadPreviewTemplate(
+			{
+				name: context,
+				referenceId,
+			},
+			templateInstance,
+		)
+			.catch((e) => API.notify(e))
+			.then(() => {
+				const previewDoc = { name: context, referenceId };
+				const template = LessonMaterial.getPreviewTemplate(previewDoc);
 
-    LessonMaterial.loadPreviewTemplate({
-      name: context,
-      referenceId
-    }, templateInstance)
-      .catch(e => API.notify(e))
-      .then(() => {
-        const previewDoc = { name: context, referenceId }
-        const template = LessonMaterial.getPreviewTemplate(previewDoc)
+				templateInstance.state.set({
+					previewTarget: previewDoc,
+					previewData: { template },
+				});
+			});
+	},
 
-        templateInstance.state.set({
-          previewTarget: previewDoc,
-          previewData: { template }
-        })
-      })
-  },
+	// ===========================================================================
+	//
+	//  CLEAR PREVIEW
+	//
+	// ===========================================================================
+	"hidden.bs.modal #lesson-material-preview-modal"(_event, templateInstance) {
+		templateInstance.state.set({
+			previewTarget: null,
+			previewData: null,
+		});
+	},
 
-  // ===========================================================================
-  //
-  //  CLEAR PREVIEW
-  //
-  // ===========================================================================
-  'hidden.bs.modal #lesson-material-preview-modal' (_event, templateInstance) {
-    templateInstance.state.set({
-      previewTarget: null,
-      previewData: null
-    })
-  },
+	// ===========================================================================
+	//
+	//  PRINT MATERIAL FROM PREVIEW
+	//
+	// ===========================================================================
+	"click .print-material-preview-button"(event, _templateInstance) {
+		event.preventDefault();
+		printHTMLElement("preview-material-target");
+	},
 
-  // ===========================================================================
-  //
-  //  PRINT MATERIAL FROM PREVIEW
-  //
-  // ===========================================================================
-  'click .print-material-preview-button' (event, _templateInstance) {
-    event.preventDefault()
-    printHTMLElement('preview-material-target')
-  },
+	// ===========================================================================
+	//
+	//  DOWNLOAD MATERIAL
+	//
+	// ===========================================================================
+	"click .material-download-button"(event, templateInstance) {
+		event.preventDefault();
+		const context = dataTarget(event, templateInstance, "type");
+		const referenceId = dataTarget(event, templateInstance, "reference");
+		templateInstance.downloading(referenceId, true);
+		if (context === Task.name) {
+			templateInstance.state.set("previewTarget", {
+				referenceId,
+				name: context,
+				print: true,
+			});
+			setTimeout(() => {
+				templateInstance.downloading(referenceId, false);
+				printHTMLElement("preview-material-target", () => {
+					templateInstance.state.set("printMaterial", false);
+				});
+			}, 500);
+		}
+	},
 
-  // ===========================================================================
-  //
-  //  DOWNLOAD MATERIAL
-  //
-  // ===========================================================================
-  'click .material-download-button' (event, templateInstance) {
-    event.preventDefault()
-    const context = dataTarget(event, templateInstance, 'type')
-    const referenceId = dataTarget(event, templateInstance, 'reference')
-    templateInstance.downloading(referenceId, true)
-    if (context === Task.name) {
-      templateInstance.state.set('previewTarget', {
-        referenceId,
-        name: context,
-        print: true
-      })
-      setTimeout(() => {
-        templateInstance.downloading(referenceId, false)
-        printHTMLElement('preview-material-target', () => {
-          templateInstance.state.set('printMaterial', false)
-        })
-      }, 500)
-    }
-  },
+	// ===========================================================================
+	//
+	//  SHOW PHASES SCHEMA
+	//
+	// ===========================================================================
+	"click .preview-all-phases-button"(event, templateInstance) {
+		event.preventDefault();
+		templateInstance.state.set("previewPhases", true);
+		templateInstance.$("#lesson-material-preview-phases-modal").modal("show");
+	},
+	"click .print-phases-table-button"(event, templateInstance) {
+		event.preventDefault();
+		const printRoot = dataTarget(event, templateInstance);
+		printHTMLElement(
+			printRoot,
+			() => {},
+			(err) => {
+				API.notify(err);
+			},
+		);
+	},
 
-  // ===========================================================================
-  //
-  //  SHOW PHASES SCHEMA
-  //
-  // ===========================================================================
-  'click .preview-all-phases-button' (event, templateInstance) {
-    event.preventDefault()
-    templateInstance.state.set('previewPhases', true)
-    templateInstance.$('#lesson-material-preview-phases-modal').modal('show')
-  },
-  'click .print-phases-table-button' (event, templateInstance) {
-    event.preventDefault()
-    const printRoot = dataTarget(event, templateInstance)
-    printHTMLElement(printRoot, () => {
-    }, err => {
-      API.notify(err)
-    })
-  },
+	// ===========================================================================
+	//
+	//  SHOW TASK RESULTS
+	//
+	// ===========================================================================
+	"click .lesson-show-results-button": async (event, templateInstance) => {
+		event.preventDefault();
 
-  // ===========================================================================
-  //
-  //  SHOW TASK RESULTS
-  //
-  // ===========================================================================
-  'click .lesson-show-results-button': async (event, templateInstance) => {
-    event.preventDefault()
+		const taskId = dataTarget(event, templateInstance, "reference");
+		const groupId = dataTarget(event, templateInstance, "group") || "";
+		const groupDoc = groupId && getCollection(Group.name).findOne(groupId);
+		const classDoc = templateInstance.data.classDoc;
+		const lessonId = templateInstance.data.lessonDoc._id;
 
-    const taskId = dataTarget(event, templateInstance, 'reference')
-    const groupId = dataTarget(event, templateInstance, 'group') || ''
-    const groupDoc = groupId && getCollection(Group.name).findOne(groupId)
-    const classDoc = templateInstance.data.classDoc
-    const lessonId = templateInstance.data.lessonDoc._id
+		let showId = taskId;
+		if (groupId) showId += groupId;
 
-    let showId = taskId
-    if (groupId) showId += groupId
+		const showResults = templateInstance.state.get("showResults");
 
-    const showResults = templateInstance.state.get('showResults')
+		// when already active -> hide
+		if (showResults[showId]) {
+			delete showResults[showId];
+			// check if there is any progress to be shown left
+			// and if not, unsubscribe from results
+			const isActive = Object.values(showResults).some((val) => !!val);
+			if (!isActive) {
+				API.unsubscribe(TaskResults.publications.byTask.name);
+			}
+			return templateInstance.state.set({ currentTaskId: null, showResults });
+		}
 
-    // when already active -> hide
-    if (showResults[showId]) {
-      delete showResults[showId]
-      // check if there is any progress to be shown left
-      // and if not, unsubscribe from results
-      const isActive = Object.values(showResults).some(val => !!val)
-      if (!isActive) {
-        API.unsubscribe(TaskResults.publications.byTask.name)
-      }
-      return templateInstance.state.set({ currentTaskId: null, showResults })
-    }
+		API.subscribe({
+			name: TaskResults.publications.byTask,
+			args: { lessonId },
+			key: lessonSubKey,
+			callbacks: {
+				onError: API.notify,
+			},
+		});
 
-    API.subscribe({
-      name: TaskResults.publications.byTask,
-      args: { lessonId },
-      key: lessonSubKey,
-      callbacks: {
-        onError: API.notify
-      }
-    })
+		const taskDoc = getLocalCollection(Task.name).findOne(taskId);
+		const userIds = groupDoc
+			? groupDoc.users.map((doc) => doc.userId)
+			: classDoc.students;
+		showResults[showId] = { taskDoc, userIds, lessonId, taskId };
 
-    const taskDoc = getLocalCollection(Task.name).findOne(taskId)
-    const userIds = groupDoc
-      ? groupDoc.users.map(doc => doc.userId)
-      : classDoc.students
-    showResults[showId] = { taskDoc, userIds, lessonId, taskId }
+		import("./taskResultTable/taskResultTable")
+			.catch(API.notify)
+			.then(() =>
+				templateInstance.state.set({ currentTaskId: taskId, showResults }),
+			);
+	},
 
-    import('./taskResultTable/taskResultTable')
-      .catch(API.notify)
-      .then(() => templateInstance.state.set({ currentTaskId: taskId, showResults }))
-  },
+	// ===========================================================================
+	//
+	//  TOGGLE BEAMER
+	//
+	// ===========================================================================
+	"hidden.bs.modal #lesson-beamer-preview-modal"(_event, templateInstance) {
+		templateInstance.state.set({
+			currentTaskId: null,
+			currentTaskDoc: null,
+		});
+	},
+	"click .toggle-beamer-material-button"(event, templateInstance) {
+		event.preventDefault();
+		const context = dataTarget(event, templateInstance, "context");
+		const itemId = dataTarget(event, templateInstance, "item");
+		const referenceId = dataTarget(event, templateInstance, "reference");
+		const defaultRp = dataTarget(event, templateInstance, "defaultrp");
+		const responseProcessor = templateInstance.state.get(itemId) || defaultRp;
 
-  // ===========================================================================
-  //
-  //  TOGGLE BEAMER
-  //
-  // ===========================================================================
-  'hidden.bs.modal #lesson-beamer-preview-modal' (_event, templateInstance) {
-    templateInstance.state.set({
-      currentTaskId: null,
-      currentTaskDoc: null
-    })
-  },
-  'click .toggle-beamer-material-button' (event, templateInstance) {
-    event.preventDefault()
-    const context = dataTarget(event, templateInstance, 'context')
-    const itemId = dataTarget(event, templateInstance, 'item')
-    const referenceId = dataTarget(event, templateInstance, 'reference')
-    const defaultRp = dataTarget(event, templateInstance, 'defaultrp')
-    const responseProcessor = templateInstance.state.get(itemId) || defaultRp
+		// if we have a Task document, we need to open the preview dialog
+		// TODO do not couple with task but with a material flag
+		if (!itemId && context === Task.name) {
+			return import("../../../../renderer/item/list/itemList")
+				.catch(API.notify)
+				.then(() => {
+					const taskDoc = Material.getDocuments(Task.name, {
+						_id: referenceId,
+					})[0];
 
-    // if we have a Task document, we need to open the preview dialog
-    // TODO do not couple with task but with a material flag
-    if (!itemId && context === Task.name) {
-      return import('../../../../renderer/item/list/itemList')
-        .catch(API.notify)
-        .then(() => {
-          const taskDoc = Material.getDocuments(Task.name, { _id: referenceId })[0]
+					// TODO change to beamerData { taskDoc }
+					templateInstance.state.set({
+						currentTaskId: referenceId,
+						currentTaskDoc: taskDoc,
+					});
 
-          // TODO change to beamerData { taskDoc }
-          templateInstance.state.set({
-            currentTaskId: referenceId,
-            currentTaskDoc: taskDoc
-          })
+					API.showModal("lesson-beamer-preview-modal");
+				});
+		}
 
-          API.showModal('lesson-beamer-preview-modal')
-        })
-    }
+		templateInstance.state.set("sendingToBeamer", { referenceId, itemId });
 
-    templateInstance.state.set('sendingToBeamer', { referenceId, itemId })
+		const { lessonDoc } = templateInstance.data;
+		const lessonId = lessonDoc._id;
 
-    const { lessonDoc } = templateInstance.data
-    const lessonId = lessonDoc._id
+		Beamer.doc.material(
+			{
+				lessonId,
+				referenceId,
+				context,
+				itemId,
+				responseProcessor,
+			},
+			delayedCallback(300, (err, _res) => {
+				templateInstance.state.set("sendingToBeamer", null);
+				if (err) return API.notify(err);
+			}),
+		);
+	},
+	"click .select-item-rp-button"(event, templateInstance) {
+		event.preventDefault();
 
-    Beamer.doc.material({
-      lessonId,
-      referenceId,
-      context,
-      itemId,
-      responseProcessor
-    }, delayedCallback(300, (err, _res) => {
-      templateInstance.state.set('sendingToBeamer', null)
-      if (err) return API.notify(err)
-    }))
-  },
-  'click .select-item-rp-button' (event, templateInstance) {
-    event.preventDefault()
+		const itemId = dataTarget(event, templateInstance, "item");
+		const name = dataTarget(event, templateInstance, "rp");
+		const beamerDoc = Beamer.doc.get();
 
-    const itemId = dataTarget(event, templateInstance, 'item')
-    const name = dataTarget(event, templateInstance, 'rp')
-    const beamerDoc = Beamer.doc.get()
+		// if we have this item currently displayed and it has a defined RP
+		// then we only want to update the response processor on the reference
+		if (beamerDoc?.references) {
+			const index = beamerDoc.references.findIndex((r) => r.itemId === itemId);
+			const beamerReference = beamerDoc.references[index];
 
-    // if we have this item currently displayed and it has a defined RP
-    // then we only want to update the response processor on the reference
-    if (beamerDoc?.references) {
-      const index = beamerDoc.references.findIndex(r => r.itemId === itemId)
-      const beamerReference = beamerDoc.references[index]
+			// only update the beamer doc, if the referenced item is active
+			if (beamerReference && beamerReference.responseProcessor !== name) {
+				const updateDoc = {
+					_id: beamerDoc._id,
+					references: beamerDoc.references,
+				};
+				updateDoc.references[index].responseProcessor = name;
+				Beamer.doc.update(updateDoc, (err) => {
+					if (err) return API.notify(err);
+				});
+			}
+		}
 
-      // only update the beamer doc, if the referenced item is active
-      if (beamerReference && beamerReference.responseProcessor !== name) {
-        const updateDoc = { _id: beamerDoc._id, references: beamerDoc.references }
-        updateDoc.references[index].responseProcessor = name
-        Beamer.doc.update(updateDoc, (err) => {
-          if (err) return API.notify(err)
-        })
-      }
-    }
-
-    // in any case let the template know that this is the current rp
-    // so it is used immediately when the rp is activated
-    templateInstance.state.set(itemId, name)
-  }
-})
+		// in any case let the template know that this is the current rp
+		// so it is used immediately when the rp is activated
+		templateInstance.state.set(itemId, name);
+	},
+});

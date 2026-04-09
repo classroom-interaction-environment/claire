@@ -1,1 +1,1 @@
-export const $nin = (array = []) => ({ $nin: array })
+export const $nin = (array = []) => ({ $nin: array });

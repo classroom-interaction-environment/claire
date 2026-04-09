@@ -9,6 +9,6 @@
 // import '../all/filesCollections'
 
 // 3. create all secondary systems
-import './currentClass'
-import './routes'
-import '../all/profile'
+import "./currentClass";
+import "./routes";
+import "../all/profile";

@@ -1,4 +1,4 @@
-import { onClientExec } from '../api/utils/archUtils'
+import { onClientExec } from "../api/utils/archUtils";
 
 /**
  * Allows assigning functions and objects to the window object.
@@ -6,4 +6,5 @@ import { onClientExec } from '../api/utils/archUtils'
  * for debugging etc.
  * @param target {object}
  */
-export const assignToWindow = target => onClientExec(() => Object.assign(window, target))
+export const assignToWindow = (target) =>
+	onClientExec(() => Object.assign(window, target));

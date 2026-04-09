@@ -1,3 +1,3 @@
-import { Hierarchy } from './roles/Hierarchy'
+import { Hierarchy } from "./roles/Hierarchy";
 
-export const getMinimalRole = () => Hierarchy.student
+export const getMinimalRole = () => Hierarchy.student;

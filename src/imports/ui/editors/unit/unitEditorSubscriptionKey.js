@@ -1,1 +1,1 @@
-export const unitEditorSubscriptionKey = 'unitEditor'
+export const unitEditorSubscriptionKey = "unitEditor";

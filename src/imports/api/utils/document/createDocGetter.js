@@ -1,6 +1,6 @@
-import { check, Match } from 'meteor/check'
-import { getCollection } from '../getCollection'
-import { DocNotFoundError } from '../../errors/types/DocNotFoundError'
+import { check, Match } from "meteor/check";
+import { getCollection } from "../getCollection";
+import { DocNotFoundError } from "../../errors/types/DocNotFoundError";
 
 /**
  * Factory function to create a document-getter that includes several safety-checks (collection exists,
@@ -12,36 +12,41 @@ import { DocNotFoundError } from '../../errors/types/DocNotFoundError'
  */
 
 export const createDocGetter = (options) => {
-  check(options, Match.ObjectIncluding({
-    name: String,
-    optional: Match.Maybe(Boolean)
-  }))
-  const { name, optional = false } = options
+	check(
+		options,
+		Match.ObjectIncluding({
+			name: String,
+			optional: Match.Maybe(Boolean),
+		}),
+	);
+	const { name, optional = false } = options;
 
-  /**
-   * Returns a document by a given _id.
-   * @param query {String|Object} The id if the document to be returned.
-   * @returns {Promise<object>} a document of a given collection, if found
-   * @throws {Meteor.Error} if no collection is found by the given context
-   * @throws {Meteor.Error} if no doc is found by the given _id
-   * @throws {Meteor.Error} if current user is neither admin nor owner of the document.
-   */
+	/**
+	 * Returns a document by a given _id.
+	 * @param query {String|Object} The id if the document to be returned.
+	 * @returns {Promise<object>} a document of a given collection, if found
+	 * @throws {Meteor.Error} if no collection is found by the given context
+	 * @throws {Meteor.Error} if no doc is found by the given _id
+	 * @throws {Meteor.Error} if current user is neither admin nor owner of the document.
+	 */
 
-  async function getDocument (query) {
-    if (!['string', 'object'].includes(typeof query)) {
-      const details = { name, query }
-      const message = Meteor.isDevelopment ? `getDocument.invalidQuery (${JSON.stringify(details)})` : 'getDocument.invalidQuery'
-      throw new DocNotFoundError(message, details)
-    }
+	async function getDocument(query) {
+		if (!["string", "object"].includes(typeof query)) {
+			const details = { name, query };
+			const message = Meteor.isDevelopment
+				? `getDocument.invalidQuery (${JSON.stringify(details)})`
+				: "getDocument.invalidQuery";
+			throw new DocNotFoundError(message, details);
+		}
 
-    const document = await getCollection(name).findOneAsync(query)
+		const document = await getCollection(name).findOneAsync(query);
 
-    if (!optional && !document) {
-      throw new DocNotFoundError('getDocument.docUndefined', { name, query })
-    }
+		if (!optional && !document) {
+			throw new DocNotFoundError("getDocument.docUndefined", { name, query });
+		}
 
-    return document
-  }
+		return document;
+	}
 
-  return getDocument
-}
+	return getDocument;
+};

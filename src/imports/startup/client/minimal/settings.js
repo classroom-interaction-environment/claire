@@ -1,6 +1,6 @@
-import { Meteor } from 'meteor/meteor'
-import { Settings } from '../../../contexts/system/settings/Settings'
+import { Meteor } from "meteor/meteor";
+import { Settings } from "../../../contexts/system/settings/Settings";
 
 Meteor.startup(() => {
-  Settings.helpers.init()
-})
+	Settings.helpers.init();
+});

@@ -1,6 +1,6 @@
-import { mapFromObject } from '../../utils/mapFromObject'
-import { Hierarchy } from './Hierarchy'
+import { mapFromObject } from "../../utils/mapFromObject";
+import { Hierarchy } from "./Hierarchy";
 
-export const roleExists = role => roleMap.has(role)
+export const roleExists = (role) => roleMap.has(role);
 
-const roleMap = mapFromObject(Hierarchy)
+const roleMap = mapFromObject(Hierarchy);

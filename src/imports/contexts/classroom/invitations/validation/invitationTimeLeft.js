@@ -1,4 +1,4 @@
-import { getInvitationOffset } from './getInvitationOffset'
+import { getInvitationOffset } from "./getInvitationOffset";
 
 /**
  * Returns the time left in ms between now and the expiration date
@@ -7,7 +7,7 @@ import { getInvitationOffset } from './getInvitationOffset'
  * @return {number} a unix timestamp as integer
  */
 export const invitationTimeLeft = (createdAt, expires) => {
-  const now = Date.now()
-  const expirationDate = getInvitationOffset(new Date(createdAt), expires)
-  return expirationDate - now
-}
+	const now = Date.now();
+	const expirationDate = getInvitationOffset(new Date(createdAt), expires);
+	return expirationDate - now;
+};

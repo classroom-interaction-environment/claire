@@ -1,69 +1,67 @@
-import { fileExists } from '../../../../api/utils/filesystem/fileExists'
-import { gmexec } from '../../shared/converters/gmexec'
+import { fileExists } from "../../../../api/utils/filesystem/fileExists";
+import { gmexec } from "../../shared/converters/gmexec";
 
-let im
+let im;
 
 // convert -density 150 presentation.pdf[0] -quality 90 test.jpg
 export const documentConverter = async function (fileRef, _options) {
-  if (!fileRef.isPDF) {
-    return fileRef
-  }
-  await fileExists(fileRef.path)
+	if (!fileRef.isPDF) {
+		return fileRef;
+	}
+	await fileExists(fileRef.path);
 
-  if (!im) im = require('gm').subClass({ imageMagick: true })
+	if (!im) im = require("gm").subClass({ imageMagick: true });
 
-  let document
-  const thumbnailPath = `${(this.storagePath(fileRef))}/thumbnail-${fileRef._id}.png`
+	let document;
+	const thumbnailPath = `${this.storagePath(fileRef)}/thumbnail-${fileRef._id}.png`;
 
-  try {
-    document = im(fileRef.path)
-      .selectFrame(0)
-      .define('filter:support=2')
-      .define('png:compression-filter=5')
-      .define('png:compression-level=9')
-      .define('png:compression-strategy=1')
-      .define('png:exclude-chunk=all')
-      .noProfile()
-      .strip()
-      .dither(false)
-      .interlace('Line')
-      .filter('Triangle')
-      .resize('50%')
-      .interlace('Line')
-  }
-  catch (imError) {
-    // if we catch an error here we skip the rest as we have nothing
-    // created neither on disk nor in the database
-    console.error(imError)
-    return fileRef
-  }
+	try {
+		document = im(fileRef.path)
+			.selectFrame(0)
+			.define("filter:support=2")
+			.define("png:compression-filter=5")
+			.define("png:compression-level=9")
+			.define("png:compression-strategy=1")
+			.define("png:exclude-chunk=all")
+			.noProfile()
+			.strip()
+			.dither(false)
+			.interlace("Line")
+			.filter("Triangle")
+			.resize("50%")
+			.interlace("Line");
+	} catch (imError) {
+		// if we catch an error here we skip the rest as we have nothing
+		// created neither on disk nor in the database
+		console.error(imError);
+		return fileRef;
+	}
 
-  try {
-    await gmexec(document, document.write, thumbnailPath)
-  }
-  catch (imErr) {
-    console.error(imErr)
-    return fileRef
-  }
+	try {
+		await gmexec(document, document.write, thumbnailPath);
+	} catch (imErr) {
+		console.error(imErr);
+		return fileRef;
+	}
 
-  const stat = await fileExists(thumbnailPath)
-  const thumbImage = im(thumbnailPath)
-  const imgInfo = await gmexec(thumbImage, thumbImage.size)
-  fileRef.versions.thumbnail = {
-    path: thumbnailPath,
-    size: stat.size,
-    type: fileRef.type,
-    extension: fileRef.extension,
-    meta: {
-      width: imgInfo.width,
-      height: imgInfo.height
-    }
-  }
+	const stat = await fileExists(thumbnailPath);
+	const thumbImage = im(thumbnailPath);
+	const imgInfo = await gmexec(thumbImage, thumbImage.size);
+	fileRef.versions.thumbnail = {
+		path: thumbnailPath,
+		size: stat.size,
+		type: fileRef.type,
+		extension: fileRef.extension,
+		meta: {
+			width: imgInfo.width,
+			height: imgInfo.height,
+		},
+	};
 
-  // update the files doc
-  const updateDoc = { $set: {} }
-  updateDoc.$set['versions.thumbnail'] = fileRef.versions.thumbnail
-  await this.collection.updateAsync(fileRef._id, updateDoc)
+	// update the files doc
+	const updateDoc = { $set: {} };
+	updateDoc.$set["versions.thumbnail"] = fileRef.versions.thumbnail;
+	await this.collection.updateAsync(fileRef._id, updateDoc);
 
-  return fileRef
-}
+	return fileRef;
+};

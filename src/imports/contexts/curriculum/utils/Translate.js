@@ -1,27 +1,27 @@
-import { i18n } from '../../../api/language/language'
+import { i18n } from "../../../api/language/language";
 
 /**
  * @deprecated
  */
 export const Lang = {
-  setTranslationProvider (_provider, _accessProperty = '__') {},
+	setTranslationProvider(_provider, _accessProperty = "__") {},
 
-  translate (field, ...args) {
-    return i18n.get(field, ...args)
-  },
+	translate(field, ...args) {
+		return i18n.get(field, ...args);
+	},
 
-  translateReactive (field, lang) {
-    return () => Lang.translate(field, lang)
-  },
+	translateReactive(field, lang) {
+		return () => Lang.translate(field, lang);
+	},
 
-  _defaultSelectOne: 'form.selectOne',
-  _defaultEntry: 'common.entry',
+	_defaultSelectOne: "form.selectOne",
+	_defaultEntry: "common.entry",
 
-  firstOption () {
-    return Lang.translateReactive(Lang._defaultSelectOne)
-  },
+	firstOption() {
+		return Lang.translateReactive(Lang._defaultSelectOne);
+	},
 
-  entry () {
-    return Lang.translateReactive(Lang._defaultEntry)
-  }
-}
+	entry() {
+		return Lang.translateReactive(Lang._defaultEntry);
+	},
+};

@@ -1,22 +1,22 @@
-import { Template } from 'meteor/templating'
-import { toolTipEvents } from '../utils/tooltipUtils'
-import '../icon/icon'
-import './actionbutton.html'
+import { Template } from "meteor/templating";
+import { toolTipEvents } from "../utils/tooltipUtils";
+import "../icon/icon";
+import "./actionbutton.html";
 
-Template.actionButton.onCreated(() => {})
+Template.actionButton.onCreated(() => {});
 
 Template.actionButton.helpers({
-  dataAtts () {
-    const instance = Template.instance()
-    const { data } = instance
-    const dataAtts = {}
-    Object.keys(data).forEach(key => {
-      if (key.indexOf('data-') > -1) {
-        dataAtts[key] = data[key]
-      }
-    })
-    return dataAtts
-  }
-})
+	dataAtts() {
+		const instance = Template.instance();
+		const { data } = instance;
+		const dataAtts = {};
+		Object.keys(data).forEach((key) => {
+			if (key.indexOf("data-") > -1) {
+				dataAtts[key] = data[key];
+			}
+		});
+		return dataAtts;
+	},
+});
 
-Template.actionButton.events(toolTipEvents({ name: '.action-btn' }))
+Template.actionButton.events(toolTipEvents({ name: ".action-btn" }));

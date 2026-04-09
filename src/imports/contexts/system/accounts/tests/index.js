@@ -1,2 +1,2 @@
-import '../admin/tests'
-import '../users/tests'
+import "../admin/tests";
+import "../users/tests";

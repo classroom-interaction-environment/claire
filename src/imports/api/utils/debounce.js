@@ -7,18 +7,18 @@
  * @return {(function(...[*]): void)|*}
  */
 export const debounce = (func, wait, immediate = false) => {
-  let timeout;
-  // keep fn bindable
-  return function (...args) {
-    clearTimeout(timeout);
-    if (immediate && !timeout) {
-      func.apply(this, args);
-    }
-    timeout = setTimeout(() => {
-      timeout = null;
-      if (!immediate) {
-        func.apply(this, args);
-      }
-    }, wait);
-  };
-}
+	let timeout;
+	// keep fn bindable
+	return function (...args) {
+		clearTimeout(timeout);
+		if (immediate && !timeout) {
+			func.apply(this, args);
+		}
+		timeout = setTimeout(() => {
+			timeout = null;
+			if (!immediate) {
+				func.apply(this, args);
+			}
+		}, wait);
+	};
+};

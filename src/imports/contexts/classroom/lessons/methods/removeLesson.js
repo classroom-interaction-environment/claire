@@ -1,15 +1,15 @@
-import { Lesson } from '../Lesson'
-import { Unit } from '../../../curriculum/curriculum/unit/Unit'
-import { Phase } from '../../../curriculum/curriculum/phase/Phase'
-import { getCollection } from '../../../../api/utils/getCollection'
-import { getDocsForMember } from '../helpers/getDocsForMember'
-import { removeDocuments } from '../runtime/removeDocuments'
-import { resetBeamer } from '../runtime/resetBeamer'
-import { removeGroups } from '../runtime/resetGroups'
-import { createRemoveAllMaterial } from '../../../material/createRemoveAllMaterial'
-import { noop } from 'bootstrap/js/src/util'
+import { Lesson } from "../Lesson";
+import { Unit } from "../../../curriculum/curriculum/unit/Unit";
+import { Phase } from "../../../curriculum/curriculum/phase/Phase";
+import { getCollection } from "../../../../api/utils/getCollection";
+import { getDocsForMember } from "../helpers/getDocsForMember";
+import { removeDocuments } from "../runtime/removeDocuments";
+import { resetBeamer } from "../runtime/resetBeamer";
+import { removeGroups } from "../runtime/resetGroups";
+import { createRemoveAllMaterial } from "../../../material/createRemoveAllMaterial";
+import { noop } from "bootstrap/js/src/util";
 
-const removeAllMaterial = createRemoveAllMaterial({ isCurriculum: false })
+const removeAllMaterial = createRemoveAllMaterial({ isCurriculum: false });
 
 /**
  * Removes / deletes a lesson by a given _id. Removes all related documents, too.
@@ -27,67 +27,81 @@ const removeAllMaterial = createRemoveAllMaterial({ isCurriculum: false })
  *     beamerRemoved: number
  * }>}
  */
-export const removeLesson = async ({ userId, lessonId, lessonDoc, log = noop }) => {
-  log('get lesson doc')
-  const doc = lessonDoc ? lessonDoc : (await getDocsForMember({ lessonId, userId })).lessonDoc
-  const result = {
-    lessonRemoved: 0,
-    unitRemoved: 0,
-    phasesRemoved: 0,
-    materialRemoved: 0,
-    runtimeDocsRemoved: 0,
-    beamerRemoved: 0,
-    groupsRemoved: 0
-  }
+export const removeLesson = async ({
+	userId,
+	lessonId,
+	lessonDoc,
+	log = noop,
+}) => {
+	log("get lesson doc");
+	const doc = lessonDoc
+		? lessonDoc
+		: (await getDocsForMember({ lessonId, userId })).lessonDoc;
+	const result = {
+		lessonRemoved: 0,
+		unitRemoved: 0,
+		phasesRemoved: 0,
+		materialRemoved: 0,
+		runtimeDocsRemoved: 0,
+		beamerRemoved: 0,
+		groupsRemoved: 0,
+	};
 
-  lessonId = doc._id
+	lessonId = doc._id;
 
-  log('remove runtime docs', { lessonId, userId })
-  result.runtimeDocsRemoved = await removeDocuments({ lessonId, userId })
-  result.beamerRemoved = await resetBeamer({ lessonId, userId })
+	log("remove runtime docs", { lessonId, userId });
+	result.runtimeDocsRemoved = await removeDocuments({ lessonId, userId });
+	result.beamerRemoved = await resetBeamer({ lessonId, userId });
 
-  // XXX: there are cases where the unit doc is
-  // removed and we need to remove the lesson but omit the unit doc
-  // which is why it's optional
-  const unitDoc = await getCollection(Unit.name).findOneAsync({ _id: doc.unit })
-  log('has unitDoc?', unitDoc ? unitDoc._id : false)
+	// XXX: there are cases where the unit doc is
+	// removed and we need to remove the lesson but omit the unit doc
+	// which is why it's optional
+	const unitDoc = await getCollection(Unit.name).findOneAsync({
+		_id: doc.unit,
+	});
+	log("has unitDoc?", unitDoc ? unitDoc._id : false);
 
-  if (unitDoc) {
-    // removes all linked phases but not global phases
-    const phaseQuery = createPhaseQuery({ userId, unitId: unitDoc._id })
+	if (unitDoc) {
+		// removes all linked phases but not global phases
+		const phaseQuery = createPhaseQuery({ userId, unitId: unitDoc._id });
 
-    if (unitDoc.phases?.length) {
-      phaseQuery._id = { $in: unitDoc.phases }
-    }
+		if (unitDoc.phases?.length) {
+			phaseQuery._id = { $in: unitDoc.phases };
+		}
 
-    log('remove phase query', phaseQuery)
-    result.phasesRemoved = await getCollection(Phase.name).removeAsync(phaseQuery)
+		log("remove phase query", phaseQuery);
+		result.phasesRemoved = await getCollection(Phase.name).removeAsync(
+			phaseQuery,
+		);
 
-    const unitQuery = { _id: unitDoc._id, _master: { $exists: false } }
-    log('remove unit', unitQuery)
-    result.unitRemoved = await getCollection(Unit.name).removeAsync(unitQuery)
-    log('remove material')
-    result.materialRemoved = await removeAllMaterial({ unitDoc, userId })
-    log('runtime docs')
+		const unitQuery = { _id: unitDoc._id, _master: { $exists: false } };
+		log("remove unit", unitQuery);
+		result.unitRemoved = await getCollection(Unit.name).removeAsync(unitQuery);
+		log("remove material");
+		result.materialRemoved = await removeAllMaterial({ unitDoc, userId });
+		log("runtime docs");
 
+		const unitId = unitDoc._id;
+		result.groupsRemoved = await removeGroups({ unitId });
+	}
 
-    const unitId = unitDoc._id
-    result.groupsRemoved = await removeGroups({ unitId })
-  }
+	// If the unit doc is not found we still try to remove phases and material.
+	// Removes all linked phases but not global phases.
+	else {
+		const phaseQuery = createPhaseQuery({ userId, unitId: lessonDoc.unit });
+		log("remove phase query", phaseQuery);
+		result.phasesRemoved = await getCollection(Phase.name).removeAsync(
+			phaseQuery,
+		);
+	}
 
-    // If the unit doc is not found we still try to remove phases and material.
-  // Removes all linked phases but not global phases.
-  else {
-    const phaseQuery = createPhaseQuery({ userId, unitId: lessonDoc.unit })
-    log('remove phase query', phaseQuery)
-    result.phasesRemoved = await getCollection(Phase.name).removeAsync(phaseQuery)
-  }
+	result.lessonRemoved = await getCollection(Lesson.name).removeAsync({
+		_id: lessonId,
+	});
+	log(result);
 
-  result.lessonRemoved = await getCollection(Lesson.name).removeAsync({ _id: lessonId })
-  log(result)
-
-  return result
-}
+	return result;
+};
 
 /**
  * @private
@@ -96,7 +110,7 @@ export const removeLesson = async ({ userId, lessonId, lessonDoc, log = noop }) 
  * @return {{unit, createdBy, _master: {$exists: boolean}}}
  */
 const createPhaseQuery = ({ userId, unitId }) => ({
-  _master: { $exists: false },
-  unit: unitId,
-  createdBy: userId
-})
+	_master: { $exists: false },
+	unit: unitId,
+	createdBy: userId,
+});

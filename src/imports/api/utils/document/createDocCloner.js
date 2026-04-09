@@ -1,7 +1,7 @@
-import { check } from 'meteor/check'
-import { getCollection } from '../getCollection'
-import { UnexpectedError } from '../../errors/types/UnexpectedError'
-import { DocNotFoundError } from '../../errors/types/DocNotFoundError'
+import { check } from "meteor/check";
+import { getCollection } from "../getCollection";
+import { UnexpectedError } from "../../errors/types/UnexpectedError";
+import { DocNotFoundError } from "../../errors/types/DocNotFoundError";
 
 /**
  * Factory function to create a document-clone function, that includes several safety-checks (collection exists,
@@ -11,46 +11,52 @@ import { DocNotFoundError } from '../../errors/types/DocNotFoundError'
  * @returns {function():Promise<string>} A function to update documents by _id and modifier
  */
 export const createDocCloner = ({ name } = {}) => {
-  check(name, String)
+	check(name, String);
 
-  /**
-   * Clones a document by _id and modifier(s).
-   * @param docId {string} The _id if the supposed document to be cloned
-   * @param $set optional modifier
-   * @returns {String} docId of the new document, if the doc has been cloned, otherwise undefined
-   * @throws {Meteor.Error} if no collection is found by the given context
-   * @throws {Meteor.Error} if no doc is found by the given _id
-   */
-  const cloneDoc = async (docId, { $set } = {}) => {
-    const Collection = getCollection(name)
-    const sourceDoc = await Collection.findOneAsync(docId)
+	/**
+	 * Clones a document by _id and modifier(s).
+	 * @param docId {string} The _id if the supposed document to be cloned
+	 * @param $set optional modifier
+	 * @returns {String} docId of the new document, if the doc has been cloned, otherwise undefined
+	 * @throws {Meteor.Error} if no collection is found by the given context
+	 * @throws {Meteor.Error} if no doc is found by the given _id
+	 */
+	const cloneDoc = async (docId, { $set } = {}) => {
+		const Collection = getCollection(name);
+		const sourceDoc = await Collection.findOneAsync(docId);
 
-    if (!sourceDoc) {
-      throw new DocNotFoundError('createCloneDoc.sourceNotFound', { name, docId })
-    }
+		if (!sourceDoc) {
+			throw new DocNotFoundError("createCloneDoc.sourceNotFound", {
+				name,
+				docId,
+			});
+		}
 
-    // if we clone a doc we always link to the original with this flag
-    // note, that this link is only valid for one generation of ancestry
-    sourceDoc._original = sourceDoc._id
+		// if we clone a doc we always link to the original with this flag
+		// note, that this link is only valid for one generation of ancestry
+		sourceDoc._original = sourceDoc._id;
 
-    delete sourceDoc._id
-    delete sourceDoc._master
-    delete sourceDoc._custom
-    delete sourceDoc.createdBy
-    delete sourceDoc.createdAt
-    delete sourceDoc.updatedBy
-    delete sourceDoc.updatedAt
+		delete sourceDoc._id;
+		delete sourceDoc._master;
+		delete sourceDoc._custom;
+		delete sourceDoc.createdBy;
+		delete sourceDoc.createdAt;
+		delete sourceDoc.updatedBy;
+		delete sourceDoc.updatedAt;
 
-    const insertDoc = $set ? Object.assign({}, sourceDoc, $set) : sourceDoc
-    // XXX: simple sanity check if we really have a new _id
-    // Could be the case, when someone weirdly added the original _id to the $set
-    const clonedDocId = await Collection.insertAsync(insertDoc)
-    if (!clonedDocId || clonedDocId === docId) {
-      throw new UnexpectedError('createCloneDoc.failed', { docId, clonedDocId })
-    }
+		const insertDoc = $set ? Object.assign({}, sourceDoc, $set) : sourceDoc;
+		// XXX: simple sanity check if we really have a new _id
+		// Could be the case, when someone weirdly added the original _id to the $set
+		const clonedDocId = await Collection.insertAsync(insertDoc);
+		if (!clonedDocId || clonedDocId === docId) {
+			throw new UnexpectedError("createCloneDoc.failed", {
+				docId,
+				clonedDocId,
+			});
+		}
 
-    return clonedDocId
-  }
+		return clonedDocId;
+	};
 
-  return cloneDoc
-}
+	return cloneDoc;
+};

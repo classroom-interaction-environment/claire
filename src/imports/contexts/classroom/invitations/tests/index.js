@@ -1,4 +1,4 @@
 /* eslint-env mocha */
-describe('CodeInvitation', () => {
-  require('./CodeInvitation.tests')
-})
+describe("CodeInvitation", () => {
+	require("./CodeInvitation.tests");
+});

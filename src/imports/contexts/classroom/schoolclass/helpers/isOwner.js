@@ -4,4 +4,5 @@
  * @param createdBy
  * @return {*|boolean}
  */
-export const isOwner = (userId, { createdBy } = {}) => userId ? userId === createdBy : false
+export const isOwner = (userId, { createdBy } = {}) =>
+	userId ? userId === createdBy : false;

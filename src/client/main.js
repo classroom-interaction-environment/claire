@@ -1,6 +1,6 @@
-import '../imports/startup/client'
-import './main.html'
+import "../imports/startup/client";
+import "./main.html";
 
 Template.body.onRendered(() => {
-  document.documentElement.setAttribute('data-bs-theme', 'light');
+	document.documentElement.setAttribute("data-bs-theme", "light");
 });

@@ -1,13 +1,13 @@
-import { ensureServer } from '../archUtils'
-import fs from 'node:fs/promises'
+import { ensureServer } from "../archUtils";
+import fs from "node:fs/promises";
 
-ensureServer()
+ensureServer();
 
 /**
  * Full async version using fs.stat
  * @param path
  * @return {Promise<unknown>}
  */
-export const fileExists = function exists (path) {
-  return fs.stat(path)
-}
+export const fileExists = function exists(path) {
+	return fs.stat(path);
+};

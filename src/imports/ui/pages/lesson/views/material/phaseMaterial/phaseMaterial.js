@@ -1,1 +1,1 @@
-import './phaseMaterial.html'
+import "./phaseMaterial.html";

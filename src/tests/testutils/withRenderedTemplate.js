@@ -1,24 +1,28 @@
 /* eslint-env mocha */
-import { Template } from 'meteor/templating'
-import { Blaze } from 'meteor/blaze'
-import { Tracker } from 'meteor/tracker'
+import { Template } from "meteor/templating";
+import { Blaze } from "meteor/blaze";
+import { Tracker } from "meteor/tracker";
 
-const withDiv = function withDiv (callback) {
-  const el = document.createElement('div')
-  document.body.appendChild(el)
-  try {
-    callback(el)
-  }
-  finally {
-    document.body.removeChild(el)
-  }
-}
+const withDiv = function withDiv(callback) {
+	const el = document.createElement("div");
+	document.body.appendChild(el);
+	try {
+		callback(el);
+	} finally {
+		document.body.removeChild(el);
+	}
+};
 
-export const withRenderedTemplate = function withRenderedTemplate (template, data, callback) {
-  withDiv((el) => {
-    const ourTemplate = (typeof template === 'string') ? Template[template] : template
-    Blaze.renderWithData(ourTemplate, data, el)
-    Tracker.flush()
-    callback(el)
-  })
-}
+export const withRenderedTemplate = function withRenderedTemplate(
+	template,
+	data,
+	callback,
+) {
+	withDiv((el) => {
+		const ourTemplate =
+			typeof template === "string" ? Template[template] : template;
+		Blaze.renderWithData(ourTemplate, data, el);
+		Tracker.flush();
+		callback(el);
+	});
+};

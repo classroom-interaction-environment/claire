@@ -1,5 +1,5 @@
-import { Meteor } from 'meteor/meteor'
-import { initLanguage } from '../../../api/language/initLanguage'
+import { Meteor } from "meteor/meteor";
+import { initLanguage } from "../../../api/language/initLanguage";
 
 /*
  * The following procedures ensure a minimal system-level language setup.
@@ -7,5 +7,5 @@ import { initLanguage } from '../../../api/language/initLanguage'
  * However, this default is overridden where needed by the user's locale settings.
  */
 
-const { siteName, defaultLocale } = Meteor.settings.public
-await initLanguage(defaultLocale, { siteName })
+const { siteName, defaultLocale } = Meteor.settings.public;
+await initLanguage(defaultLocale, { siteName });

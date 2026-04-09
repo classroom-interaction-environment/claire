@@ -1,9 +1,9 @@
-import { Meteor } from 'meteor/meteor'
-import { check, Match } from 'meteor/check'
-import { delayedCallback } from '../../utils/delayedCallback'
-import { createLog } from '../../../api/log/createLog'
+import { Meteor } from "meteor/meteor";
+import { check, Match } from "meteor/check";
+import { delayedCallback } from "../../utils/delayedCallback";
+import { createLog } from "../../../api/log/createLog";
 
-const debugLog = createLog({ name: 'callMethod', type: 'debug' })
+const debugLog = createLog({ name: "callMethod", type: "debug" });
 
 /**
  * Provides a Promise that wraps a Meteor method call and allows to hook into several stages of the request.
@@ -18,66 +18,67 @@ const debugLog = createLog({ name: 'callMethod', type: 'debug' })
  * @param debug
  */
 export const callMethod = ({
-  name,
-  connection = Meteor,
-  args = {},
-  timeout,
-  prepare,
-  receive,
-  success,
-  failure,
-  debug
+	name,
+	connection = Meteor,
+	args = {},
+	timeout,
+	prepare,
+	receive,
+	success,
+	failure,
+	debug,
 }) => {
-  const methodName = typeof name === 'object' ? name.name : name
-  check(methodName, String)
-  check(args, Match.Maybe(Object))
-  check(prepare, Match.Maybe(Function))
-  check(receive, Match.Maybe(Function))
-  check(success, Match.Maybe(Function))
-  check(failure, Match.Maybe(Function))
+	const methodName = typeof name === "object" ? name.name : name;
+	check(methodName, String);
+	check(args, Match.Maybe(Object));
+	check(prepare, Match.Maybe(Function));
+	check(receive, Match.Maybe(Function));
+	check(success, Match.Maybe(Function));
+	check(failure, Match.Maybe(Function));
 
-  // at very first we prpeare the call,for example by setting some submission flags
-  if (typeof prepare === 'function') {
-    prepare()
-  }
+	// at very first we prpeare the call,for example by setting some submission flags
+	if (typeof prepare === "function") {
+		prepare();
+	}
 
-  if (debug) {
-    debugLog(methodName, args)
-  }
+	if (debug) {
+		debugLog(methodName, args);
+	}
 
-  // then we create the promise
-  const promise = new Promise((resolve, reject) => {
-    const cb = (error, result) => {
-      if (debug) {
-        debugLog('received', { error, result })
-      }
+	// then we create the promise
+	const promise = new Promise((resolve, reject) => {
+		const cb = (error, result) => {
+			if (debug) {
+				debugLog("received", { error, result });
+			}
 
-      // call receive hook in any case the method has completed
-      if (typeof receive === 'function') {
-        receive()
-      }
+			// call receive hook in any case the method has completed
+			if (typeof receive === "function") {
+				receive();
+			}
 
-      if (error) {
-        return reject(error)
-      }
+			if (error) {
+				return reject(error);
+			}
 
-      return resolve(result)
-    }
+			return resolve(result);
+		};
 
-    const callback = Number.isSafeInteger(timeout) && timeout > 0
-      ? delayedCallback(timeout, cb)
-      : cb
+		const callback =
+			Number.isSafeInteger(timeout) && timeout > 0
+				? delayedCallback(timeout, cb)
+				: cb;
 
-    connection.call(methodName, args, callback)
-  })
+		connection.call(methodName, args, callback);
+	});
 
-  if (typeof success === 'function') {
-    promise.then(success)
-  }
+	if (typeof success === "function") {
+		promise.then(success);
+	}
 
-  if (typeof failure === 'function') {
-    promise.catch(failure)
-  }
+	if (typeof failure === "function") {
+		promise.catch(failure);
+	}
 
-  return promise
-}
+	return promise;
+};

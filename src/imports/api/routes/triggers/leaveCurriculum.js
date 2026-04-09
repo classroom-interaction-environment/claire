@@ -1,3 +1,3 @@
-import { CurriculumSession } from '../../../ui/curriculum/CurriculumSession'
+import { CurriculumSession } from "../../../ui/curriculum/CurriculumSession";
 
-export const leaveCurriculum = () => CurriculumSession.disable()
+export const leaveCurriculum = () => CurriculumSession.disable();

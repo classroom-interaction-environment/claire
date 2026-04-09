@@ -1,3 +1,3 @@
-import { Template } from 'meteor/templating'
+import { Template } from "meteor/templating";
 
-export const templateExists = t => Boolean(Template[t])
+export const templateExists = (t) => Boolean(Template[t]);

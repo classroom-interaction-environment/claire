@@ -6,4 +6,4 @@
  | of these components can potentially
  | render the system unusable.
  */
-import './admin'
+import "./admin";

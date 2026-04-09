@@ -1,4 +1,4 @@
-import { Random } from 'meteor/random'
+import { Random } from "meteor/random";
 
 /**
  *
@@ -12,28 +12,27 @@ import { Random } from 'meteor/random'
  * @return {object}
  */
 export const mockPhaseDoc = async (options = {}, collection) => {
-  const phaseDoc = {
-    _id: options._id ?? Random.id(),
-    createdBy: options.createdBy,
-    title: options.title ?? Random.id(),
-    period: options.period ?? 5,
-    unit: options.unit,
-    plot: options.plot,
-    socialState: options.socialState,
-    method: options.method,
-    references: options.references,
-    notes: options.notes
-  }
+	const phaseDoc = {
+		_id: options._id ?? Random.id(),
+		createdBy: options.createdBy,
+		title: options.title ?? Random.id(),
+		period: options.period ?? 5,
+		unit: options.unit,
+		plot: options.plot,
+		socialState: options.socialState,
+		method: options.method,
+		references: options.references,
+		notes: options.notes,
+	};
 
-  if (options._master) {
-    phaseDoc._master = options._master
-  }
+	if (options._master) {
+		phaseDoc._master = options._master;
+	}
 
+	if (collection) {
+		const phaseId = await collection.insertAsync(phaseDoc);
+		return collection.findOneAsync(phaseId);
+	}
 
-  if (collection) {
-    const phaseId = await collection.insertAsync(phaseDoc)
-    return collection.findOneAsync(phaseId)
-  }
-
-  return phaseDoc
-}
+	return phaseDoc;
+};

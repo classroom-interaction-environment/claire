@@ -1,11 +1,11 @@
-import { check, Match } from 'meteor/check'
-import { createLog } from '../../api/log/createLog'
-import { isContext } from './isContext'
-import { isRegistry } from './isRegistry'
+import { check, Match } from "meteor/check";
+import { createLog } from "../../api/log/createLog";
+import { isContext } from "./isContext";
+import { isRegistry } from "./isRegistry";
 
-const contextMap = new Map()
-const registryMap = new Map()
-const info = createLog({ name: 'ContextBuilder', type: 'info' })
+const contextMap = new Map();
+const registryMap = new Map();
+const info = createLog({ name: "ContextBuilder", type: "info" });
 
 /**
  * Creates contexts by running them through registered pipelines.
@@ -28,7 +28,7 @@ const info = createLog({ name: 'ContextBuilder', type: 'info' })
  * common category-specific properties or methods without inheritance.
  */
 
-export const ContextBuilder = {}
+export const ContextBuilder = {};
 
 /**
  * If you have multiple contexts to run through build pipelines you can
@@ -38,14 +38,14 @@ export const ContextBuilder = {}
  * @return {ContextBuilder} self for chaining
  */
 ContextBuilder.addContext = (context) => {
-  check(context, Match.ObjectIncluding(isContext()))
+	check(context, Match.ObjectIncluding(isContext()));
 
-  if (!contextMap.has(context.name)) {
-    contextMap.set(context.name, { context })
-  }
+	if (!contextMap.has(context.name)) {
+		contextMap.set(context.name, { context });
+	}
 
-  return this
-}
+	return this;
+};
 
 /**
  * Adds a Registry with it's associated pipelines
@@ -54,31 +54,34 @@ ContextBuilder.addContext = (context) => {
  * @param options.pipelines {[function]|undefined} a queue-like list of pipelines
  * @return {ContextBuilder} self for chaining
  */
-ContextBuilder.addRegistry = function addRegistry (registry, options = {}) {
-  check(registry, Match.ObjectIncluding(isRegistry()))
-  check(options, Match.ObjectIncluding({
-    pipelines: Match.Maybe([Function])
-  }))
+ContextBuilder.addRegistry = function addRegistry(registry, options = {}) {
+	check(registry, Match.ObjectIncluding(isRegistry()));
+	check(
+		options,
+		Match.ObjectIncluding({
+			pipelines: Match.Maybe([Function]),
+		}),
+	);
 
-  const { pipelines } = options
-  if (!registryMap.has(registry.name)) {
-    registryMap.set(registry.name, { registry, pipelines: pipelines || [] })
-  }
+	const { pipelines } = options;
+	if (!registryMap.has(registry.name)) {
+		registryMap.set(registry.name, { registry, pipelines: pipelines || [] });
+	}
 
-  return this
-}
+	return this;
+};
 
 /**
  * Runs {ContextBuilder.build} for all contexts, registered via
  * {ContextBuilder.add} against a given build function.
  * @param buildFct
  */
-ContextBuilder.buildAll = function buildAll (buildFct) {
-  info('run build process')
-  contextMap.forEach(({ context }) => {
-    ContextBuilder.build(context, buildFct)
-  })
-}
+ContextBuilder.buildAll = function buildAll(buildFct) {
+	info("run build process");
+	contextMap.forEach(({ context }) => {
+		ContextBuilder.build(context, buildFct);
+	});
+};
 
 /**
  * Runs the context through all pipelines that are associated with it (by
@@ -90,34 +93,34 @@ ContextBuilder.buildAll = function buildAll (buildFct) {
  *        as argument and where you can call your factories to create Methods,
  *        Publications, Collections etc.
  */
-ContextBuilder.build = function build (context, buildCallback) {
-  check(context, Match.ObjectIncluding(isContext()))
-  check(buildCallback, Function)
+ContextBuilder.build = function build(context, buildCallback) {
+	check(context, Match.ObjectIncluding(isContext()));
+	check(buildCallback, Function);
 
-  const contextInfo = createLog({ name: context.name })
-  const allPipelines = []
+	const contextInfo = createLog({ name: context.name });
+	const allPipelines = [];
 
-  // we go through all registries and check for any pipelines
-  registryMap.forEach(({ registry, pipelines }) => {
-    if (registry.hasIdentity(context)) {
-      allPipelines.push(...pipelines)
-      registry.add(context)
-    }
-  })
+	// we go through all registries and check for any pipelines
+	registryMap.forEach(({ registry, pipelines }) => {
+		if (registry.hasIdentity(context)) {
+			allPipelines.push(...pipelines);
+			registry.add(context);
+		}
+	});
 
-  contextInfo(`start build with ${allPipelines.length + 1} pipelines`)
-  allPipelines.forEach(pipeline => {
-    pipeline(context)
-  })
+	contextInfo(`start build with ${allPipelines.length + 1} pipelines`);
+	allPipelines.forEach((pipeline) => {
+		pipeline(context);
+	});
 
-  buildCallback(context)
-}
+	buildCallback(context);
+};
 
 /**
  * Clears all registered contexts, registries and pipelines.
  */
-ContextBuilder.flush = function flush () {
-  info('flush all')
-  contextMap.clear()
-  registryMap.clear()
-}
+ContextBuilder.flush = function flush() {
+	info("flush all");
+	contextMap.clear();
+	registryMap.clear();
+};

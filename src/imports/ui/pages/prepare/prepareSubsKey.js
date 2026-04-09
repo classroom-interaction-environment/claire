@@ -1,1 +1,1 @@
-export const prepareSubsKey = 'prepare'
+export const prepareSubsKey = "prepare";

@@ -1,4 +1,4 @@
-import { Meteor } from 'meteor/meteor'
+import { Meteor } from "meteor/meteor";
 
 /**
  * Decompresses and decodes a URL query parameter, created via {createURLQuery}
@@ -6,11 +6,11 @@ import { Meteor } from 'meteor/meteor'
  * @return {Object} the parses code doc credentials
  */
 export const parseInvitationURLQuery = (queryParams) => {
-  const decoded = decodeURIComponent(queryParams)
-  const decompressed = atob(decoded)
-  const parsed = JSON.parse(decompressed)
-  if (!parsed || !parsed.code) {
-    throw new Meteor.Error('codeInvitation.invalidQueryParams')
-  }
-  return parsed
-}
+	const decoded = decodeURIComponent(queryParams);
+	const decompressed = atob(decoded);
+	const parsed = JSON.parse(decompressed);
+	if (!parsed || !parsed.code) {
+		throw new Meteor.Error("codeInvitation.invalidQueryParams");
+	}
+	return parsed;
+};

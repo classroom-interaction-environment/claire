@@ -1,56 +1,63 @@
-import { Meteor } from 'meteor/meteor'
-import { Template } from 'meteor/templating'
-import { AdminViewStates } from './adminViewStates'
-import { Form } from '../../components/forms/Form'
-import { UserUtils } from '../../../contexts/system/accounts/users/UserUtils'
-import { getQueryParam } from '../../../api/routes/params/getQueryParam'
-import { setQueryParams } from '../../../api/routes/params/setQueryParams'
-import adminLanguage from './i18n/adminLanguage'
-import '../../layout/submenu/submenu'
-import '../../generic/templateLoader/TemplateLoader'
-import './admin.html'
+import { Meteor } from "meteor/meteor";
+import { Template } from "meteor/templating";
+import { AdminViewStates } from "./adminViewStates";
+import { Form } from "../../components/forms/Form";
+import { UserUtils } from "../../../contexts/system/accounts/users/UserUtils";
+import { getQueryParam } from "../../../api/routes/params/getQueryParam";
+import { setQueryParams } from "../../../api/routes/params/setQueryParams";
+import adminLanguage from "./i18n/adminLanguage";
+import "../../layout/submenu/submenu";
+import "../../generic/templateLoader/TemplateLoader";
+import "./admin.html";
 
-const formInitialized = Form.initialized()
+const formInitialized = Form.initialized();
 
 const API = Template.admin.setDependencies({
-  language: adminLanguage
-})
+	language: adminLanguage,
+});
 
 Template.admin.onCreated(function () {
+	this.autorun((computation) => {
+		const userId = Meteor.userId();
+		if (!userId) {
+			return;
+		}
+		this.viewStates = Object.values(AdminViewStates).filter((view) =>
+			UserUtils.hasAtLeastRole(userId, view.role),
+		);
+		this.state.set("viewStatesReady", true);
+		computation.stop();
+	});
 
-  this.autorun(computation => {
-    const userId = Meteor.userId()
-    if (!userId) {
-      return
-    }
-    this.viewStates = Object.values(AdminViewStates).filter(view => UserUtils.hasAtLeastRole(userId, view.role))
-    this.state.set('viewStatesReady', true)
-    computation.stop()
-  })
+	this.autorun(() => {
+		const view = getQueryParam("view");
+		const currentView = AdminViewStates[view] || AdminViewStates.users;
 
-  this.autorun(() => {
-    const view = getQueryParam('view')
-    const currentView = AdminViewStates[view] || AdminViewStates.users
-
-    this.state.set('currentView', currentView.name)
-  })
-})
+		this.state.set("currentView", currentView.name);
+	});
+});
 
 Template.admin.helpers({
-  loadComplete () {
-    return formInitialized.get() && API.initComplete() && Template.getState('viewStatesReady')
-  },
-  submenuData () {
-    const { viewStates } = Template.instance()
-    return viewStates && {
-      views: viewStates,
-      queryParam: 'view',
-      getQueryParam: getQueryParam,
-      updateQueryParam: setQueryParams
-    }
-  },
-  templateAtts () {
-    const currentView = Template.getState('currentView')
-    return AdminViewStates[currentView]
-  }
-})
+	loadComplete() {
+		return (
+			formInitialized.get() &&
+			API.initComplete() &&
+			Template.getState("viewStatesReady")
+		);
+	},
+	submenuData() {
+		const { viewStates } = Template.instance();
+		return (
+			viewStates && {
+				views: viewStates,
+				queryParam: "view",
+				getQueryParam: getQueryParam,
+				updateQueryParam: setQueryParams,
+			}
+		);
+	},
+	templateAtts() {
+		const currentView = Template.getState("currentView");
+		return AdminViewStates[currentView];
+	},
+});

@@ -1,5 +1,5 @@
-import { getUsersCollection } from '../../utils/getUsersCollection'
-import { noop } from '../../../utils/noop'
+import { getUsersCollection } from "../../utils/getUsersCollection";
+import { noop } from "../../../utils/noop";
 
 /**
  *
@@ -10,27 +10,27 @@ import { noop } from '../../../utils/noop'
  * @return {Promise<boolean>}
  */
 export const userExists = async (options = {}) => {
-  if (!options) return false
+	if (!options) return false;
 
-  const { userId, email, debug = noop } = options
-  if (!userId && !email) {
-    return false
-  }
-  let query
+	const { userId, email, debug = noop } = options;
+	if (!userId && !email) {
+		return false;
+	}
+	let query;
 
-  if (userId) {
-    query = { _id: userId }
-  }
+	if (userId) {
+		query = { _id: userId };
+	}
 
-  if (email) {
-    query = { emails: { $elemMatch: { address: email } } }
-  }
+	if (email) {
+		query = { emails: { $elemMatch: { address: email } } };
+	}
 
-  if (!query) {
-    throw new Error('userExists: either userId or email must be provided')
-  }
+	if (!query) {
+		throw new Error("userExists: either userId or email must be provided");
+	}
 
-  const count = await getUsersCollection().countDocuments(query)
-  debug('userExists?', { userId, email }, '=>', count)
-  return count > 0
-}
+	const count = await getUsersCollection().countDocuments(query);
+	debug("userExists?", { userId, email }, "=>", count);
+	return count > 0;
+};

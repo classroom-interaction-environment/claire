@@ -1,50 +1,62 @@
-import { Meteor } from 'meteor/meteor'
-import { getCollection } from '../../../api/utils/getCollection'
+import { Meteor } from "meteor/meteor";
+import { getCollection } from "../../../api/utils/getCollection";
 
 /** @deprecated **/
 export const FormFactory = {
+	getSelectOptions: (collectionName, filter, fields, groupKey, resolver) => {
+		if (!fields || !fields.label || !fields.value) {
+			throw new Meteor.Error(
+				"500",
+				"A fields object with label and value attributes are required to generate select options",
+			);
+		}
 
-  getSelectOptions: (collectionName, filter, fields, groupKey, resolver) => {
-    if (!fields || !fields.label || !fields.value) {
-      throw new Meteor.Error('500', 'A fields object with label and value attributes are required to generate select options')
-    }
+		if (!filter) filter = {};
 
-    if (!filter) filter = {}
+		const label = fields.label;
+		const value = fields.value;
+		const transform = { fields: {} };
+		transform.fields[label] = 1;
+		transform.fields[value] = 1;
+		if (groupKey) {
+			transform.fields[groupKey] = 1;
+		}
 
-    const label = fields.label
-    const value = fields.value
-    const transform = { fields: {} }
-    transform.fields[label] = 1
-    transform.fields[value] = 1
-    if (groupKey) {
-      transform.fields[groupKey] = 1
-    }
+		return () => {
+			const collection = getCollection(collectionName);
+			if (!collection) {
+				throw new Meteor.Error(
+					"500",
+					"A collection is required to generate select options",
+				);
+			}
 
-    return () => {
-      const collection = getCollection(collectionName)
-      if (!collection) {
-        throw new Meteor.Error('500', 'A collection is required to generate select options')
-      }
+			// filter doc fields only by label/value references fields
+			const data = collection.find(filter, transform).fetch();
+			if (!data || data.length === 0) return [];
 
-      // filter doc fields only by label/value references fields
-      const data = collection.find(filter, transform).fetch()
-      if (!data || data.length === 0) return []
+			return groupKey
+				? FormFactory.optionsFromDataWihtGroups(
+						data,
+						label,
+						value,
+						groupKey,
+						collection,
+						resolver,
+					)
+				: FormFactory.optionsFromDataWihtoutGroups(data, label, value);
+		};
+	},
 
-      return groupKey
-        ? FormFactory.optionsFromDataWihtGroups(data, label, value, groupKey, collection, resolver)
-        : FormFactory.optionsFromDataWihtoutGroups(data, label, value)
-    }
-  },
+	optionsFromDataWihtoutGroups(data, label, value) {
+		const ret = [];
+		for (const element of data) {
+			ret.push(this.createOption(element, label, value));
+		}
+		return ret;
+	},
 
-  optionsFromDataWihtoutGroups (data, label, value) {
-    const ret = []
-    for (const element of data) {
-      ret.push(this.createOption(element, label, value))
-    }
-    return ret
-  },
-
-  /*
+	/*
 
    [{
    optgroup: "Fun Years",
@@ -63,52 +75,73 @@ export const FormFactory = {
    ]
    }]
    */
-  optionsFromDataWihtGroups (data, label, value, groupKey, collection, resolver) {
-    const ret = []
-    const groupNames = this.getUniqueGroupNames(data, groupKey)
+	optionsFromDataWihtGroups(
+		data,
+		label,
+		value,
+		groupKey,
+		collection,
+		resolver,
+	) {
+		const ret = [];
+		const groupNames = this.getUniqueGroupNames(data, groupKey);
 
-    for (let groupName of groupNames) {
-      if (typeof groupName === 'undefined') groupName = { $exists: false }
-      const query = {}
-      query[groupKey] = groupName
-      const filteredData = collection.find(query, { sort: { title: 1 } }).fetch()
-      ret.push(this.createOptionsGroup(groupName, filteredData, label, value, resolver))
-    }
+		for (let groupName of groupNames) {
+			if (typeof groupName === "undefined") groupName = { $exists: false };
+			const query = {};
+			query[groupKey] = groupName;
+			const filteredData = collection
+				.find(query, { sort: { title: 1 } })
+				.fetch();
+			ret.push(
+				this.createOptionsGroup(
+					groupName,
+					filteredData,
+					label,
+					value,
+					resolver,
+				),
+			);
+		}
 
-    return ret
-  },
+		return ret;
+	},
 
-  getUniqueGroupNames (data, groupKey) {
-    const mapped = data.map(el => el[groupKey])
-    const unique = [...new Set(mapped)]
-    return unique.sort()
-  },
+	getUniqueGroupNames(data, groupKey) {
+		const mapped = data.map((el) => el[groupKey]);
+		const unique = [...new Set(mapped)];
+		return unique.sort();
+	},
 
-  createOptionsGroup (name, elements, label, value, resolver) {
-    const optGroup = {}
-    optGroup.optgroup = resolver ? resolver(name) : String(name)
-    optGroup.options = []
-    for (const element of elements) {
-      optGroup.options.push(this.createOption(element, label, value))
-    }
-    return optGroup
-  },
+	createOptionsGroup(name, elements, label, value, resolver) {
+		const optGroup = {};
+		optGroup.optgroup = resolver ? resolver(name) : String(name);
+		optGroup.options = [];
+		for (const element of elements) {
+			optGroup.options.push(this.createOption(element, label, value));
+		}
+		return optGroup;
+	},
 
-  createOption (element, label, value) {
-    return {
-      label: element[label],
-      value: element[value]
-    }
-  },
+	createOption(element, label, value) {
+		return {
+			label: element[label],
+			value: element[value],
+		};
+	},
 
-  _i18n: null,
+	_i18n: null,
 
-  _selectFirstOption: null,
+	_selectFirstOption: null,
 
-  getSelectFirstOption: function () {
-    if (!this._i18n || !this._selectFirstOption) { throw new Meteor.Error('500', 'Cannot create select option on missing translation system (i18n, _selectFirstOption') }
+	getSelectFirstOption: function () {
+		if (!this._i18n || !this._selectFirstOption) {
+			throw new Meteor.Error(
+				"500",
+				"Cannot create select option on missing translation system (i18n, _selectFirstOption",
+			);
+		}
 
-    return this._i18n.__(this._selectFirstOption)
-  }
-
-}
+		return this._i18n.__(this._selectFirstOption);
+	},
+};

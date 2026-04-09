@@ -1,80 +1,82 @@
-import { FileTypes } from '../shared/FileTypes'
-import { onServerExec } from '../../../api/utils/archUtils'
-import { FilesTemplates } from '../FilesTemplates'
-import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
-import { translateReactive } from '../../../utils/translateReactive'
-import { getCollection } from '../../../api/utils/getCollection'
+import { FileTypes } from "../shared/FileTypes";
+import { onServerExec } from "../../../api/utils/archUtils";
+import { FilesTemplates } from "../FilesTemplates";
+import { getLocalCollection } from "../../../infrastructure/collection/getLocalCollection";
+import { translateReactive } from "../../../utils/translateReactive";
+import { getCollection } from "../../../api/utils/getCollection";
 
 /**
  * VideoFiles are a material type that is used universally to upload videos,
  * either as classroom material or as item response type.
  */
 export const VideoFiles = {
-  name: 'videoFiles',
-  fieldName: 'videos',
-  label: 'files.videos',
-  icon: 'file-video',
-  debug: true,
+	name: "videoFiles",
+	fieldName: "videos",
+	label: "files.videos",
+	icon: "file-video",
+	debug: true,
 
-  // ///////////////////////////////////////////////////////////////////////////
-  //
-  // BASICS
-  //
-  // ///////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////
+	//
+	// BASICS
+	//
+	// ///////////////////////////////////////////////////////////////////////////
 
-  schema: {},
-  methods: {},
-  publicFields: {},
-  dependencies: [],
+	schema: {},
+	methods: {},
+	publicFields: {},
+	dependencies: [],
 
-  // ///////////////////////////////////////////////////////////////////////////
-  //
-  // CURRICULUM
-  //
-  // ///////////////////////////////////////////////////////////////////////////
-  isCurriculum: true,
+	// ///////////////////////////////////////////////////////////////////////////
+	//
+	// CURRICULUM
+	//
+	// ///////////////////////////////////////////////////////////////////////////
+	isCurriculum: true,
 
-  curriculum: {},
+	curriculum: {},
 
-  // ///////////////////////////////////////////////////////////////////////////
-  //
-  // CLASSROOM
-  //
-  // ///////////////////////////////////////////////////////////////////////////
-  isClassroom: true,
+	// ///////////////////////////////////////////////////////////////////////////
+	//
+	// CLASSROOM
+	//
+	// ///////////////////////////////////////////////////////////////////////////
+	isClassroom: true,
 
-  classroom: {},
+	classroom: {},
 
-  // ///////////////////////////////////////////////////////////////////////////
-  //
-  // FILES
-  //
-  // ///////////////////////////////////////////////////////////////////////////
-  isFilesCollection: true,
+	// ///////////////////////////////////////////////////////////////////////////
+	//
+	// FILES
+	//
+	// ///////////////////////////////////////////////////////////////////////////
+	isFilesCollection: true,
 
-  /**
-   * Files context definitions
-   *
-   * @property debug {boolean} inidicate to debug any upload/download functions
-   * @property bucketName {string} the bucket where binary is stored
-   * @property type {string} the file type
-   * @property extensions {[String]} a list of supported extensions for upload
-   * @property accept {String} a type def string to accept upload files
-   * @property maxSize {number} the max upload size in bytes
-   * @property usePartialResponse {boolean} prefer 206 response; for streaming
-   */
+	/**
+	 * Files context definitions
+	 *
+	 * @property debug {boolean} inidicate to debug any upload/download functions
+	 * @property bucketName {string} the bucket where binary is stored
+	 * @property type {string} the file type
+	 * @property extensions {[String]} a list of supported extensions for upload
+	 * @property accept {String} a type def string to accept upload files
+	 * @property maxSize {number} the max upload size in bytes
+	 * @property usePartialResponse {boolean} prefer 206 response; for streaming
+	 */
 
-  files: {
-    debug: false,
-    bucketName: 'videos',
-    type: FileTypes.video.value,
-    extensions: FileTypes.video.extensions,
-    accept: FileTypes.video.accept,
-    maxSize: 1024 * 1000 * 100, // TODO get from Meteor.settings file
-    usePartialResponse: true,
-    converter: onServerExec(() => require('./converter/videoConvert').videoConvert)
-  }
-}
+	files: {
+		debug: false,
+		bucketName: "videos",
+		type: FileTypes.video.value,
+		extensions: FileTypes.video.extensions,
+		accept: FileTypes.video.accept,
+		maxSize: 1024 * 1000 * 100, // TODO get from Meteor.settings file
+		usePartialResponse: true,
+		converter: onServerExec(
+			() => require("./converter/videoConvert").videoConvert,
+		),
+	},
+};
 
 // ///////////////////////////////////////////////////////////////////////////
 //
@@ -83,60 +85,66 @@ export const VideoFiles = {
 // ///////////////////////////////////////////////////////////////////////////
 
 VideoFiles.material = {
-  noDefaultSchema: true,
-  schema: {
-    _id: {
-      type: String,
-      label: translateReactive('files.file'),
-      autoform: {
-        label: false,
-        afFieldInput: {
-          type: FilesTemplates.upload.type,
-          uploadTemplate: FilesTemplates.upload.template,
-          previewTemplate: 'videoFileRenderer',
-          collection: VideoFiles.name,
-          icon: VideoFiles.icon,
-          maxSize: VideoFiles.files.maxSize,
-          capture: VideoFiles.files.capture,
-          accept: VideoFiles.files.accept// FileTypes.video.extensions.map(ext => `.${ext}`).join(',')
-        }
-      }
-    }
-  },
-  /**
-   * @client
-   */
-  renderer: {
-    main: {
-      name: 'preview',
-      template: 'videoFileRenderer',
-      load: async () => import('./renderer/main/videoFileRenderer'),
-      previewData (targetId) {
-        console.warn(VideoFiles.name, 'previewData is deprecated!')
-        if (!targetId) { return targetId }
-        const subDoc = getCollection(VideoFiles.name).findOne(targetId)
-        return subDoc || getLocalCollection(VideoFiles.name).findOne(targetId)
-      },
-      data ({ materialDoc, document, options }) {
-        const { preview = true, print = false, student = true } = options
-        return Object.assign({}, {
-          title: document.name,
-          meta: materialDoc.name,
-          preview: preview,
-          print: print,
-          student: student
-        }, document)
-      }
-    },
-    list: {
-      name: 'list',
-      template: 'videoFilesListRenderer',
-      load: async () => import('./renderer/list/videoFilesListRenderer')
-    }
-  },
-  async load () {
-    await FilesTemplates.upload.load()
-    await FilesTemplates.renderer.load()
-    return import('../shared/templates/helpers')
-  }
-}
+	noDefaultSchema: true,
+	schema: {
+		_id: {
+			type: String,
+			label: translateReactive("files.file"),
+			autoform: {
+				label: false,
+				afFieldInput: {
+					type: FilesTemplates.upload.type,
+					uploadTemplate: FilesTemplates.upload.template,
+					previewTemplate: "videoFileRenderer",
+					collection: VideoFiles.name,
+					icon: VideoFiles.icon,
+					maxSize: VideoFiles.files.maxSize,
+					capture: VideoFiles.files.capture,
+					accept: VideoFiles.files.accept, // FileTypes.video.extensions.map(ext => `.${ext}`).join(',')
+				},
+			},
+		},
+	},
+	/**
+	 * @client
+	 */
+	renderer: {
+		main: {
+			name: "preview",
+			template: "videoFileRenderer",
+			load: async () => import("./renderer/main/videoFileRenderer"),
+			previewData(targetId) {
+				console.warn(VideoFiles.name, "previewData is deprecated!");
+				if (!targetId) {
+					return targetId;
+				}
+				const subDoc = getCollection(VideoFiles.name).findOne(targetId);
+				return subDoc || getLocalCollection(VideoFiles.name).findOne(targetId);
+			},
+			data({ materialDoc, document, options }) {
+				const { preview = true, print = false, student = true } = options;
+				return Object.assign(
+					{},
+					{
+						title: document.name,
+						meta: materialDoc.name,
+						preview: preview,
+						print: print,
+						student: student,
+					},
+					document,
+				);
+			},
+		},
+		list: {
+			name: "list",
+			template: "videoFilesListRenderer",
+			load: async () => import("./renderer/list/videoFilesListRenderer"),
+		},
+	},
+	async load() {
+		await FilesTemplates.upload.load();
+		await FilesTemplates.renderer.load();
+		return import("../shared/templates/helpers");
+	},
+};

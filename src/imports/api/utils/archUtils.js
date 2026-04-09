@@ -1,11 +1,11 @@
-import { Meteor } from 'meteor/meteor'
+import { Meteor } from "meteor/meteor";
 
 /**
  * Helper to return a value only on server.
  * @param x {*} Value to return on server
  * @return {*|undefined}
  */
-export const onServer = x => Meteor.isServer ? x : undefined
+export const onServer = (x) => (Meteor.isServer ? x : undefined);
 
 /**
  * Helper to execute a function only on server and return its result.
@@ -31,27 +31,27 @@ export const onServer = x => Meteor.isServer ? x : undefined
  * @param fct {function}
  * @return {*|undefined}
  */
-export const onServerExec = fct => Meteor.isServer ? fct() : undefined
+export const onServerExec = (fct) => (Meteor.isServer ? fct() : undefined);
 
 /**
  * Helper to return a value only on client.
  * @param x {*} Value to return on client
  * @return {*|undefined}
  */
-export const onClient = x => Meteor.isClient ? x : undefined
+export const onClient = (x) => (Meteor.isClient ? x : undefined);
 
 /**
  * Helper to execute a function only on client and return its result.
  * @param fct {function}
  * @return {*|undefined}
  */
-export const onClientExec = fct => Meteor.isClient ? fct() : undefined
+export const onClientExec = (fct) => (Meteor.isClient ? fct() : undefined);
 
 /**
  * Helper to automatically execute a function and return its result.
  * @param fct {function}
  */
-export const auto = fct => fct()
+export const auto = (fct) => fct();
 
 /**
  * Isomorphic execution helper to easily write isomorphic code.
@@ -63,14 +63,14 @@ export const auto = fct => fct()
  * @return {*|null}
  */
 export const isomporph = ({ client, server }) => {
-  if (Meteor.isClient && client) {
-    return client()
-  }
-  if (Meteor.isServer && server) {
-    return server()
-  }
-  return null
-}
+	if (Meteor.isClient && client) {
+		return client();
+	}
+	if (Meteor.isServer && server) {
+		return server();
+	}
+	return null;
+};
 
 /**
  * Throws an error if not executed on server.
@@ -81,8 +81,8 @@ export const isomporph = ({ client, server }) => {
  * }
  */
 export const ensureServer = () => {
-  if (!Meteor.isServer) throw new Error('Scope is expected to be server-only!')
-}
+	if (!Meteor.isServer) throw new Error("Scope is expected to be server-only!");
+};
 
 /**
  * Throws an error if not executed on client.
@@ -93,5 +93,5 @@ export const ensureServer = () => {
  * }
  */
 export const ensureClient = () => {
-  if (!Meteor.isClient) throw new Error('Scope is expected to be client-only!')
-}
+	if (!Meteor.isClient) throw new Error("Scope is expected to be client-only!");
+};

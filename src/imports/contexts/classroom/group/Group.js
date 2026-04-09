@@ -1,194 +1,201 @@
-import { Hierarchy } from '../../../api/accounts/roles/Hierarchy'
-import { onServer, onServerExec } from '../../../api/utils/archUtils'
-import { getCollection } from '../../../api/utils/getCollection'
+import { Hierarchy } from "../../../api/accounts/roles/Hierarchy";
+import { onServer, onServerExec } from "../../../api/utils/archUtils";
+import { getCollection } from "../../../api/utils/getCollection";
 
-export const Group = {}
+export const Group = {};
 
-Group.name = 'group'
-Group.label = 'group.title'
-Group.icon = 'users'
-Group.isClassroom = true
+Group.name = "group";
+Group.label = "group.title";
+Group.icon = "users";
+Group.isClassroom = true;
 Group.publicFields = {
-  title: 1,
-  users: 1,
-  maxUsers: 1,
-  isAdhoc: 1,
-  classId: 1,
-  unitId: 1,
-  phases: 1,
-  material: 1,
-  visible: 1
-}
+	title: 1,
+	users: 1,
+	maxUsers: 1,
+	isAdhoc: 1,
+	classId: 1,
+	unitId: 1,
+	phases: 1,
+	material: 1,
+	visible: 1,
+};
 
 /**
  * The group doc schema
  * @type {object}
  */
 Group.schema = {
+	title: {
+		type: String,
+	},
 
-  title: {
-    type: String
-  },
+	/**
+	 * A group requires at least one user. We support single-user groups to ease
+	 * the case, that there is exact one user remaining and can't be added due
+	 * to clash with the maxUsers definitions.
+	 */
 
-  /**
-   * A group requires at least one user. We support single-user groups to ease
-   * the case, that there is exact one user remaining and can't be added due
-   * to clash with the maxUsers definitions.
-   */
+	users: {
+		type: Array,
+		optional: true,
+		label: "group.users",
+		min: 1,
+	},
 
-  users: {
-    type: Array,
-    optional: true,
-    label: 'group.users',
-    min: 1
-  },
+	"users.$": {
+		type: Object,
+	},
 
-  'users.$': {
-    type: Object
-  },
+	"users.$.userId": String,
+	"users.$.role": {
+		type: String,
+		optional: true,
+	},
 
-  'users.$.userId': String,
-  'users.$.role': {
-    type: String,
-    optional: true
-  },
+	/**
+	 * Upper limit of users is optional
+	 */
 
-  /**
-   * Upper limit of users is optional
-   */
+	maxUsers: {
+		type: Number,
+		label: "group.maxUsers",
+		optional: true,
+		min: 0,
+		max: Number.MAX_SAFE_INTEGER,
+	},
 
-  maxUsers: {
-    type: Number,
-    label: 'group.maxUsers',
-    optional: true,
-    min: 0,
-    max: Number.MAX_SAFE_INTEGER
-  },
+	/**
+	 * determines, whether a group has been created
+	 * during a running lesson (ad-hoc).
+	 * In such case it's a temporary group that
+	 * is deleted, if the lesson is reset
+	 */
+	isAdhoc: {
+		type: Boolean,
+		optional: true,
+	},
 
-  /**
-   * determines, whether a group has been created
-   * during a running lesson (ad-hoc).
-   * In such case it's a temporary group that
-   * is deleted, if the lesson is reset
-   */
-  isAdhoc: {
-    type: Boolean,
-    optional: true
-  },
+	/**
+	 * Associate a class
+	 */
 
-  /**
-   * Associate a class
-   */
+	classId: {
+		type: String,
+		optional: true,
+	},
 
-  classId: {
-    type: String,
-    optional: true
-  },
+	/**
+	 * Limit scope to a certain unit, if desired
+	 */
+	unitId: {
+		type: String,
+		optional: true,
+	},
 
-  /**
-   * Limit scope to a certain unit, if desired
-   */
-  unitId: {
-    type: String,
-    optional: true
-  },
+	/**
+	 * Limit scope of group to just certain phases
+	 */
 
-  /**
-   * Limit scope of group to just certain phases
-   */
+	phases: {
+		type: Array,
+		optional: true,
+	},
+	"phases.$": {
+		type: String,
+	},
 
-  phases: {
-    type: Array,
-    optional: true
-  },
-  'phases.$': {
-    type: String
-  },
+	/**
+	 * Associate material with this group.
+	 */
+	material: {
+		type: Array,
+		optional: true,
+	},
 
-  /**
-   * Associate material with this group.
-   */
-  material: {
-    type: Array,
-    optional: true
-  },
+	"material.$": {
+		type: String,
+	},
 
-  'material.$': {
-    type: String
-  },
+	visible: {
+		type: Array,
+		optional: true,
+	},
 
-  visible: {
-    type: Array,
-    optional: true
-  },
+	"visible.$": {
+		type: Object,
+	},
 
-  'visible.$': {
-    type: Object
-  },
+	"visible.$._id": {
+		type: String,
+	},
 
-  'visible.$._id': {
-    type: String
-  },
+	"visible.$.context": {
+		type: String,
+	},
+};
 
-  'visible.$.context': {
-    type: String
-  }
-}
-
-Group.publications = {}
+Group.publications = {};
 
 Group.publications.my = {
-  name: 'group.publications.my',
-  schema: {
-    classId: {
-      type: String,
-      optional: true
-    },
-    unitId: {
-      type: String,
-      optional: true
-    }
-  },
-  run: onServer(async function ({ classId, unitId } = {}) {
-    const { userId } = this
+	name: "group.publications.my",
+	schema: {
+		classId: {
+			type: String,
+			optional: true,
+		},
+		unitId: {
+			type: String,
+			optional: true,
+		},
+	},
+	run: onServer(async function ({ classId, unitId } = {}) {
+		const { userId } = this;
 
-    // option 1: I am creator of these
-    const myGroups = { createdBy: userId }
+		// option 1: I am creator of these
+		const myGroups = { createdBy: userId };
 
-    if (classId) myGroups.classId = classId
-    if (unitId) myGroups.unitId = unitId
+		if (classId) myGroups.classId = classId;
+		if (unitId) myGroups.unitId = unitId;
 
-    // option 2: I am member of these groups
-    const iamMember = { users: { $elemMatch: { userId } } }
+		// option 2: I am member of these groups
+		const iamMember = { users: { $elemMatch: { userId } } };
 
-    if (classId) iamMember.classId = classId
-    if (unitId) iamMember.unitId = unitId
+		if (classId) iamMember.classId = classId;
+		if (unitId) iamMember.unitId = unitId;
 
-    const query = { $or: [myGroups, iamMember] }
-    console.warn('Group.publications.my query:', query, await getCollection(Group.name).countDocuments(query))
-    return getCollection(Group.name).find(query, { fields: Group.publicFields })
-  })
-}
+		const query = { $or: [myGroups, iamMember] };
+		console.warn(
+			"Group.publications.my query:",
+			query,
+			await getCollection(Group.name).countDocuments(query),
+		);
+		return getCollection(Group.name).find(query, {
+			fields: Group.publicFields,
+		});
+	}),
+};
 
 /**
  * @role {student}
  */
 Group.publications.single = {
-  name: 'group.publications.single',
-  schema: {
-    groupId: {
-      type: String
-    }
-  },
-  role: [Hierarchy.student],
-  run: onServer(function ({ groupId }) {
-    const { userId } = this
-    const query = { _id: groupId, users: { $elemMatch: { userId } } }
-    return getCollection(Group.name).find(query, { fields: Group.publicFields })
-  })
-}
+	name: "group.publications.single",
+	schema: {
+		groupId: {
+			type: String,
+		},
+	},
+	role: [Hierarchy.student],
+	run: onServer(function ({ groupId }) {
+		const { userId } = this;
+		const query = { _id: groupId, users: { $elemMatch: { userId } } };
+		return getCollection(Group.name).find(query, {
+			fields: Group.publicFields,
+		});
+	}),
+};
 
-Group.methods = {}
+Group.methods = {};
 
 /**
  * Returns all groups that a teacher owns by given ids
@@ -197,21 +204,21 @@ Group.methods = {}
  * @throws {PermissionDenied} if user has no permission for one of the groups
  */
 Group.methods.get = {
-  name: 'group.methods.get',
-  schema: {
-    ids: Array,
-    'ids.$': String
-  },
-  roles: Hierarchy.teacher,
-  run: onServerExec(() => {
-    const { getGroups } = require('./methods/getGroups')
+	name: "group.methods.get",
+	schema: {
+		ids: Array,
+		"ids.$": String,
+	},
+	roles: Hierarchy.teacher,
+	run: onServerExec(() => {
+		const { getGroups } = require("./methods/getGroups");
 
-    return async function ({ ids }) {
-      const { userId } = this
-      return getGroups({ ids, userId })
-    }
-  })
-}
+		return async function ({ ids }) {
+			const { userId } = this;
+			return getGroups({ ids, userId });
+		};
+	}),
+};
 
 /**
  * Saves a group document. Creates a new doc of it does not exist yet.
@@ -226,71 +233,79 @@ Group.methods.get = {
  * @param visible
  */
 Group.methods.save = {
-  name: 'group.methods.save',
-  schema: Object.assign({
-    _id: {
-      type: String,
-      optional: true
-    }
-  }, Group.schema),
-  roles: Hierarchy.teacher,
-  run: onServerExec(() => {
-    const { saveGroup } = require('./methods/saveGroup')
-    return function (groupDoc) {
-      const { userId } = this
-      return saveGroup({ doc: groupDoc, userId })
-    }
-  })
-}
+	name: "group.methods.save",
+	schema: Object.assign(
+		{
+			_id: {
+				type: String,
+				optional: true,
+			},
+		},
+		Group.schema,
+	),
+	roles: Hierarchy.teacher,
+	run: onServerExec(() => {
+		const { saveGroup } = require("./methods/saveGroup");
+		return function (groupDoc) {
+			const { userId } = this;
+			return saveGroup({ doc: groupDoc, userId });
+		};
+	}),
+};
 
 Group.methods.update = {
-  name: 'group.methods.update',
-  schema: { _id: String, ...Group.schema },
-  roles: Hierarchy.teacher,
-  run: onServerExec(() => {
-    const { updateGroup } = require('./methods/updateGroup')
-    return function (doc) {
-      const { userId } = this
-      return updateGroup({ doc, userId })
-    }
-  })
-}
+	name: "group.methods.update",
+	schema: { _id: String, ...Group.schema },
+	roles: Hierarchy.teacher,
+	run: onServerExec(() => {
+		const { updateGroup } = require("./methods/updateGroup");
+		return function (doc) {
+			const { userId } = this;
+			return updateGroup({ doc, userId });
+		};
+	}),
+};
 
 Group.methods.delete = {
-  name: 'group.methods.delete',
-  schema: { _id: String },
-  roles: Hierarchy.teacher,
-  run: onServerExec(() => {
-    const { deleteGroup } = require('./methods/deleteGroup')
-    return function ({ _id }) {
-      const { userId } = this
-      return deleteGroup({ groupId: _id, userId })
-    }
-  })
-}
+	name: "group.methods.delete",
+	schema: { _id: String },
+	roles: Hierarchy.teacher,
+	run: onServerExec(() => {
+		const { deleteGroup } = require("./methods/deleteGroup");
+		return function ({ _id }) {
+			const { userId } = this;
+			return deleteGroup({ groupId: _id, userId });
+		};
+	}),
+};
 
 Group.methods.toggleMaterial = {
-  name: 'group.methods.toggleMaterial',
-  schema: { _id: String, materialId: String, contextName: String },
-  roles: Hierarchy.teacher,
-  run: onServerExec(() => {
-    const { toggleGroupMaterial } = require('./methods/toggleGroupMaterial')
-    return function ({ _id, materialId, contextName }) {
-      const { userId } = this
-      return toggleGroupMaterial({ groupId: _id, userId, materialId, contextName })
-    }
-  })
-}
+	name: "group.methods.toggleMaterial",
+	schema: { _id: String, materialId: String, contextName: String },
+	roles: Hierarchy.teacher,
+	run: onServerExec(() => {
+		const { toggleGroupMaterial } = require("./methods/toggleGroupMaterial");
+		return function ({ _id, materialId, contextName }) {
+			const { userId } = this;
+			return toggleGroupMaterial({
+				groupId: _id,
+				userId,
+				materialId,
+				contextName,
+			});
+		};
+	}),
+};
 
 Group.methods.users = {
-  name: 'group.methods.users',
-  schema: { groupId: String },
-  role: Hierarchy.student,
-  run: onServerExec(() => {
-    const { getGroupUsers } = require('./methods/getGroupUsers')
-    return function ({ groupId }) {
-      const { userId } = this
-      return getGroupUsers({ groupId, userId })
-    }
-  })
-}
+	name: "group.methods.users",
+	schema: { groupId: String },
+	role: Hierarchy.student,
+	run: onServerExec(() => {
+		const { getGroupUsers } = require("./methods/getGroupUsers");
+		return function ({ groupId }) {
+			const { userId } = this;
+			return getGroupUsers({ groupId, userId });
+		};
+	}),
+};

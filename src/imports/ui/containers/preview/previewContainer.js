@@ -1,54 +1,62 @@
-import { Template } from 'meteor/templating'
-import { callMethod } from '../../controllers/document/callMethod'
-import { ContextRegistry } from '../../../infrastructure/context/ContextRegistry'
-import { Task } from '../../../contexts/curriculum/curriculum/task/Task'
-import { getMaterialRenderer } from '../../../api/material/getMaterialRenderer'
-import './previewContainer.html'
-import { Item } from '../../../contexts/tasks/definitions/items/Item'
+import { Template } from "meteor/templating";
+import { callMethod } from "../../controllers/document/callMethod";
+import { ContextRegistry } from "../../../infrastructure/context/ContextRegistry";
+import { Task } from "../../../contexts/curriculum/curriculum/task/Task";
+import { getMaterialRenderer } from "../../../api/material/getMaterialRenderer";
+import "./previewContainer.html";
+import { Item } from "../../../contexts/tasks/definitions/items/Item";
 
 const API = Template.previewContainer.setDependencies({
-  contexts: [Task], // TODO add more if more are needed
-  useForms: true
-})
+	contexts: [Task], // TODO add more if more are needed
+	useForms: true,
+});
 
 Template.previewContainer.onCreated(function () {
-  const { type, docId, token } = this.data.params
+	const { type, docId, token } = this.data.params;
 
-  this.loadDocument = async (document) => {
-    await Item.initialize()
-    const ctx = ContextRegistry.get(type)
-    const { material } = ctx
-    const { template, load, data } = getMaterialRenderer(material, 'preview')
-    await load()
-    const materialDoc = { name: ctx.name }
-    const options = { preview: true, print: true }
-    const previewData = data({ materialDoc, document, options })
-    const loadComplete = true
-    this.state.set({ previewData, document, template, loadComplete })
-  }
+	this.loadDocument = async (document) => {
+		await Item.initialize();
+		const ctx = ContextRegistry.get(type);
+		const { material } = ctx;
+		const { template, load, data } = getMaterialRenderer(material, "preview");
+		await load();
+		const materialDoc = { name: ctx.name };
+		const options = { preview: true, print: true };
+		const previewData = data({ materialDoc, document, options });
+		const loadComplete = true;
+		this.state.set({ previewData, document, template, loadComplete });
+	};
 
-  callMethod({
-    name: `${type}.methods.preview`,
-    args: {
-      _id: docId,
-      token: token
-    },
-    failure: API.fatal,
-    success: this.loadDocument
-  })
-})
+	callMethod({
+		name: `${type}.methods.preview`,
+		args: {
+			_id: docId,
+			token: token,
+		},
+		failure: API.fatal,
+		success: this.loadDocument,
+	});
+});
 
 Template.previewContainer.helpers({
-  loadComplete () {
-    return Item.isInitialized() && API.initComplete() && Template.getState('loadComplete')
-  },
-  document () {
-    return Template.getState('document')
-  },
-  templateName () {
-    return Item.isInitialized() && API.initComplete() && Template.getState('template')
-  },
-  templateData () {
-    return Template.getState('previewData')
-  }
-})
+	loadComplete() {
+		return (
+			Item.isInitialized() &&
+			API.initComplete() &&
+			Template.getState("loadComplete")
+		);
+	},
+	document() {
+		return Template.getState("document");
+	},
+	templateName() {
+		return (
+			Item.isInitialized() &&
+			API.initComplete() &&
+			Template.getState("template")
+		);
+	},
+	templateData() {
+		return Template.getState("previewData");
+	},
+});

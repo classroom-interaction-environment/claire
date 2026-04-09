@@ -1,13 +1,13 @@
-import { $in } from '../../../../../../api/utils/query/inSelector'
+import { $in } from "../../../../../../api/utils/query/inSelector";
 
 export const entries = (viewState, unitDoc) => {
-  const { collection, field } = viewState
-  const target = (unitDoc[field] || [])
+	const { collection, field } = viewState;
+	const target = unitDoc[field] || [];
 
-  if (target.length === 0) {
-    return null
-  }
+	if (target.length === 0) {
+		return null;
+	}
 
-  const cursor = collection.find({ _id: $in(target) }, { sort: { title: 1 } })
-  return cursor.count() > 0 ? cursor : null
-}
+	const cursor = collection.find({ _id: $in(target) }, { sort: { title: 1 } });
+	return cursor.count() > 0 ? cursor : null;
+};

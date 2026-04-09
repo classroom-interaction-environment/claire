@@ -4,4 +4,5 @@
  * @param teachers
  * @return {boolean}
  */
-export const isTeacher = (userId, { teachers = [] } = {}) => userId ? teachers.includes(userId) : false
+export const isTeacher = (userId, { teachers = [] } = {}) =>
+	userId ? teachers.includes(userId) : false;

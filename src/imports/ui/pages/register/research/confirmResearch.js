@@ -1,41 +1,40 @@
 /* global atob */
-import { Template } from 'meteor/templating'
-import { Users } from '../../../../contexts/system/accounts/users/User'
-import { callMethod } from '../../../controllers/document/callMethod'
-import '../../../generic/fail/fail'
-import './confirmResearch.html'
+import { Template } from "meteor/templating";
+import { Users } from "../../../../contexts/system/accounts/users/User";
+import { callMethod } from "../../../controllers/document/callMethod";
+import "../../../generic/fail/fail";
+import "./confirmResearch.html";
 
 Template.confirmResearch.onCreated(function () {
-  try {
-    const confirmDataBase64 = this.data.params.data
-    const decodedConformData = atob(confirmDataBase64)
-    const decodedURIParams = decodeURIComponent(decodedConformData)
-    const params = new URLSearchParams(decodedURIParams)
-    const { email, token } = Object.fromEntries(params.entries())
-    callMethod({
-      name: Users.methods.confirmResearch,
-      args: { email, token },
-      receive: () => this.state.set('loadComplete', true),
-      failure: error => this.state.set({ error }),
-      success: () => this.state.set('successful', true)
-    })
-  }
-  catch (e) {
-    return this.state.set({
-      error: e,
-      loadComplete: true
-    })
-  }
-})
+	try {
+		const confirmDataBase64 = this.data.params.data;
+		const decodedConformData = atob(confirmDataBase64);
+		const decodedURIParams = decodeURIComponent(decodedConformData);
+		const params = new URLSearchParams(decodedURIParams);
+		const { email, token } = Object.fromEntries(params.entries());
+		callMethod({
+			name: Users.methods.confirmResearch,
+			args: { email, token },
+			receive: () => this.state.set("loadComplete", true),
+			failure: (error) => this.state.set({ error }),
+			success: () => this.state.set("successful", true),
+		});
+	} catch (e) {
+		return this.state.set({
+			error: e,
+			loadComplete: true,
+		});
+	}
+});
 
 Template.confirmResearch.helpers({
-  loadComplete () {
-    return Template.getState('loadComplete')
-  },
-  error () {
-    return Template.getState('error')
-  },
-  successful () {
-    return Template.getState('successful')
-  }
-})
+	loadComplete() {
+		return Template.getState("loadComplete");
+	},
+	error() {
+		return Template.getState("error");
+	},
+	successful() {
+		return Template.getState("successful");
+	},
+});

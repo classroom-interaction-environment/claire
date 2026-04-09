@@ -4,4 +4,5 @@
  * @param students
  * @return {boolean}
  */
-export const isStudent = (userId, { students = [] } = {}) => userId ? students.includes(userId) : false
+export const isStudent = (userId, { students = [] } = {}) =>
+	userId ? students.includes(userId) : false;

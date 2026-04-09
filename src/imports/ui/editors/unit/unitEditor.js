@@ -1,25 +1,25 @@
-import { Template } from 'meteor/templating'
-import { Unit } from '../../../contexts/curriculum/curriculum/unit/Unit'
-import { UnitEditorViewStates } from './UnitEditorViewStates'
-import { DocNotFoundError } from '../../../api/errors/types/DocNotFoundError'
-import { PermissionDeniedError } from '../../../api/errors/types/PermissionDeniedError'
-import { unitEditorSubscriptionKey } from './unitEditorSubscriptionKey'
-import { CurriculumSession } from '../../curriculum/CurriculumSession'
-import { LessonStates } from '../../../contexts/classroom/lessons/LessonStates'
-import { Guide } from '../../tools/guide/Guide'
-import { callMethod } from '../../controllers/document/callMethod'
-import { getQueryParam } from '../../../api/routes/params/getQueryParam'
-import { setQueryParams } from '../../../api/routes/params/setQueryParams'
-import { unitEditorIsMasterMode } from './utils/unitEditorIsMasterMode'
-import { getCollection } from '../../../api/utils/getCollection'
-import unitEditorLanguage from './i18n/unitEditorLanguage'
-import '../../layout/submenu/submenu'
-import '../../components/confirm/confirm'
-import '../../generic/templateLoader/TemplateLoader'
-import '../../components/documentState/documentState'
-import './unitEditor.html'
+import { Template } from "meteor/templating";
+import { Unit } from "../../../contexts/curriculum/curriculum/unit/Unit";
+import { UnitEditorViewStates } from "./UnitEditorViewStates";
+import { DocNotFoundError } from "../../../api/errors/types/DocNotFoundError";
+import { PermissionDeniedError } from "../../../api/errors/types/PermissionDeniedError";
+import { unitEditorSubscriptionKey } from "./unitEditorSubscriptionKey";
+import { CurriculumSession } from "../../curriculum/CurriculumSession";
+import { LessonStates } from "../../../contexts/classroom/lessons/LessonStates";
+import { Guide } from "../../tools/guide/Guide";
+import { callMethod } from "../../controllers/document/callMethod";
+import { getQueryParam } from "../../../api/routes/params/getQueryParam";
+import { setQueryParams } from "../../../api/routes/params/setQueryParams";
+import { unitEditorIsMasterMode } from "./utils/unitEditorIsMasterMode";
+import { getCollection } from "../../../api/utils/getCollection";
+import unitEditorLanguage from "./i18n/unitEditorLanguage";
+import "../../layout/submenu/submenu";
+import "../../components/confirm/confirm";
+import "../../generic/templateLoader/TemplateLoader";
+import "../../components/documentState/documentState";
+import "./unitEditor.html";
 
-const viewStates = Object.values(UnitEditorViewStates)
+const viewStates = Object.values(UnitEditorViewStates);
 
 /*******************************************************************************
  * The unitEditor.js template is an HOC template with mostly container
@@ -34,280 +34,296 @@ const viewStates = Object.values(UnitEditorViewStates)
  *
  ******************************************************************************/
 const API = Template.unitEditor.setDependencies({
-  contexts: [Unit],
-  language: unitEditorLanguage
-})
+	contexts: [Unit],
+	language: unitEditorLanguage,
+});
 
-Template.unitEditor.onCreated(function onUnitEditorCreated () {
-  const instance = this
+Template.unitEditor.onCreated(function onUnitEditorCreated() {
+	const instance = this;
 
-  // ---------------------------------------------------------------------------
-  // 0. Creating guide
-  // ---------------------------------------------------------------------------+
-  Guide.debug({
-    debug: (...args) => console.debug('[Guide]:', ...args)
-  })
-  instance.autorun((c) => {
-    if (!API.initComplete()) return
-    const createStep = ({ name, element, nextView }) => {
-      const step = {
-        elements: element ? [element] : [`.ue-${name}`, `li[data-key="${name}"]`],
-        popover: {
-          title: API.translate(`editor.unit.guide.${name}.title`),
-          description: API.translate(`editor.unit.guide.${name}.text`)
-        }
-      }
-      if (nextView) {
-        step.popover.onNextClick = (_element, _step, options) => {
-          const nextBtn = document.querySelector('.driver-popover-next-btn')
-          nextBtn.disabled = true;
-          setQueryParams({ tab: nextView })
-          instance.state.set('currentViewName', nextView)
-          setTimeout(() => {
-            options.driver.moveNext()
-            nextBtn.disabled = false;
-          }, 750)
-        }
-      }
-      return step
-    }
-    instance.guide = Guide.tour({
-      key: 'unitEditor',
-      showButtons: ['next', 'close'],
-      steps: [
-        {
-          popover: {
-            title: API.translate('editor.unit.guide.welcome.title'),
-            description: API.translate('editor.unit.guide.welcome.text')
-          }
-        },
-        createStep({
-          element: '.submenu',
-          name: 'submenu',
-          nextView: UnitEditorViewStates.summary.name
-        }),
-        createStep({
-          name: UnitEditorViewStates.summary.name,
-          nextView: UnitEditorViewStates.tasks.name
-        }),
-        createStep({
-          name: UnitEditorViewStates.tasks.name,
-          nextView: UnitEditorViewStates.material.name
-        }),
-        createStep({
-          name: UnitEditorViewStates.material.name,
-          nextView: UnitEditorViewStates.phases.name
-        }),
-        createStep({
-          name: UnitEditorViewStates.phases.name,
-          nextView: UnitEditorViewStates.groups.name
-        }),
-        {
-          element: '.to-lesson-button',
-          popover: {
-            title: API.translate(`editor.unit.guide.toLesson.title`),
-            description: API.translate(`editor.unit.guide.toLesson.text`)
-          }
-        }
-      ]
-    })
+	// ---------------------------------------------------------------------------
+	// 0. Creating guide
+	// ---------------------------------------------------------------------------+
+	Guide.debug({
+		debug: (...args) => console.debug("[Guide]:", ...args),
+	});
+	instance.autorun((c) => {
+		if (!API.initComplete()) return;
+		const createStep = ({ name, element, nextView }) => {
+			const step = {
+				elements: element
+					? [element]
+					: [`.ue-${name}`, `li[data-key="${name}"]`],
+				popover: {
+					title: API.translate(`editor.unit.guide.${name}.title`),
+					description: API.translate(`editor.unit.guide.${name}.text`),
+				},
+			};
+			if (nextView) {
+				step.popover.onNextClick = (_element, _step, options) => {
+					const nextBtn = document.querySelector(".driver-popover-next-btn");
+					nextBtn.disabled = true;
+					setQueryParams({ tab: nextView });
+					instance.state.set("currentViewName", nextView);
+					setTimeout(() => {
+						options.driver.moveNext();
+						nextBtn.disabled = false;
+					}, 750);
+				};
+			}
+			return step;
+		};
+		instance.guide = Guide.tour({
+			key: "unitEditor",
+			showButtons: ["next", "close"],
+			steps: [
+				{
+					popover: {
+						title: API.translate("editor.unit.guide.welcome.title"),
+						description: API.translate("editor.unit.guide.welcome.text"),
+					},
+				},
+				createStep({
+					element: ".submenu",
+					name: "submenu",
+					nextView: UnitEditorViewStates.summary.name,
+				}),
+				createStep({
+					name: UnitEditorViewStates.summary.name,
+					nextView: UnitEditorViewStates.tasks.name,
+				}),
+				createStep({
+					name: UnitEditorViewStates.tasks.name,
+					nextView: UnitEditorViewStates.material.name,
+				}),
+				createStep({
+					name: UnitEditorViewStates.material.name,
+					nextView: UnitEditorViewStates.phases.name,
+				}),
+				createStep({
+					name: UnitEditorViewStates.phases.name,
+					nextView: UnitEditorViewStates.groups.name,
+				}),
+				{
+					element: ".to-lesson-button",
+					popover: {
+						title: API.translate(`editor.unit.guide.toLesson.title`),
+						description: API.translate(`editor.unit.guide.toLesson.text`),
+					},
+				},
+			],
+		});
 
-    // guide autostart
-    instance.guide.autostart(({ hasViewed }) => {
-      const instance = Template.instance()
-      const user = Meteor.user()
-      const unitSubComplete = instance.state.get('unitSubComplete')
-      const dependenciesComplete = instance.state.get('dependenciesComplete')
-      console.debug('GUIDE: checking unit editor guide autostart', {
-        user, unitSubComplete, dependenciesComplete
-      })
-      if (unitSubComplete && dependenciesComplete && user) {
-        console.debug('GUIDE: deciding unit editor guide autostart')
-        return hasViewed(user)
-      }
-      else {
-        console.debug('GUIDE: autostart waiting for data')
-      }
-    })
+		// guide autostart
+		instance.guide.autostart(({ hasViewed }) => {
+			const instance = Template.instance();
+			const user = Meteor.user();
+			const unitSubComplete = instance.state.get("unitSubComplete");
+			const dependenciesComplete = instance.state.get("dependenciesComplete");
+			console.debug("GUIDE: checking unit editor guide autostart", {
+				user,
+				unitSubComplete,
+				dependenciesComplete,
+			});
+			if (unitSubComplete && dependenciesComplete && user) {
+				console.debug("GUIDE: deciding unit editor guide autostart");
+				return hasViewed(user);
+			} else {
+				console.debug("GUIDE: autostart waiting for data");
+			}
+		});
 
-    c.stop()
-  })
+		c.stop();
+	});
 
-  // ---------------------------------------------------------------------------
-  // 1. resetting the state to default values
-  // ---------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------
+	// 1. resetting the state to default values
+	// ---------------------------------------------------------------------------
 
-  instance.state.setDefault('currentViewName', UnitEditorViewStates.summary.name)
-  instance.state.setDefault('currentLoadState', '')
-  instance.state.setDefault('unitSubComplete', false)
-  instance.state.setDefault('lessonSubComplete', false)
-  instance.state.setDefault('pocketSubComplete', false)
-  instance.state.setDefault('docNotFound', false)
-  instance.state.setDefault('unitId', null)
-  instance.state.setDefault('unitDoc', null)
-  instance.state.setDefault('lessonDoc', null)
-  instance.state.setDefault('loadComplete', false)
+	instance.state.setDefault(
+		"currentViewName",
+		UnitEditorViewStates.summary.name,
+	);
+	instance.state.setDefault("currentLoadState", "");
+	instance.state.setDefault("unitSubComplete", false);
+	instance.state.setDefault("lessonSubComplete", false);
+	instance.state.setDefault("pocketSubComplete", false);
+	instance.state.setDefault("docNotFound", false);
+	instance.state.setDefault("unitId", null);
+	instance.state.setDefault("unitDoc", null);
+	instance.state.setDefault("lessonDoc", null);
+	instance.state.setDefault("loadComplete", false);
 
-  // ---------------------------------------------------------------------------
-  // 2. we have to reset everything on a changing unit
-  // ---------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------
+	// 2. we have to reset everything on a changing unit
+	// ---------------------------------------------------------------------------
 
-  instance.autorun(() => {
-    const data = Template.currentData()
-    const unitId = data.params.unitId
-    const existingUnitId = instance.state.get('unitId')
+	instance.autorun(() => {
+		const data = Template.currentData();
+		const unitId = data.params.unitId;
+		const existingUnitId = instance.state.get("unitId");
 
-    // reset all internal state settings
-    // on a  new unitId
-    if (unitId !== existingUnitId) {
-      instance.state.clear()
-      instance.state.set('unitId', unitId)
-    }
-  })
+		// reset all internal state settings
+		// on a  new unitId
+		if (unitId !== existingUnitId) {
+			instance.state.clear();
+			instance.state.set("unitId", unitId);
+		}
+	});
 
-  // ---------------------------------------------------------------------------
-  // 3. subscribe to the unit doc, since it will change very often
-  // ---------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------
+	// 3. subscribe to the unit doc, since it will change very often
+	// ---------------------------------------------------------------------------
 
-  instance.autorun(() => {
-    const unitId = instance.state.get('unitId')
-    if (!unitId) return
+	instance.autorun(() => {
+		const unitId = instance.state.get("unitId");
+		if (!unitId) return;
 
-    API.subscribe({
-      key: unitEditorSubscriptionKey,
-      name: Unit.publications.editor.name,
-      args: { unitId },
-      callbacks: {
-        onReady () {
-          API.debug('unitSubComplete')
-          const unitDoc = getCollection(Unit.name).findOne(unitId)
-          if (unitDoc) {
-            instance.state.set({ unitDoc, unitSubComplete: true })
-          }
-          else {
-            instance.state.set('docNotFound', true)
-            API.fatal(new DocNotFoundError(Unit.name, { unitId }))
-          }
+		API.subscribe({
+			key: unitEditorSubscriptionKey,
+			name: Unit.publications.editor.name,
+			args: { unitId },
+			callbacks: {
+				onReady() {
+					API.debug("unitSubComplete");
+					const unitDoc = getCollection(Unit.name).findOne(unitId);
+					if (unitDoc) {
+						instance.state.set({ unitDoc, unitSubComplete: true });
+					} else {
+						instance.state.set("docNotFound", true);
+						API.fatal(new DocNotFoundError(Unit.name, { unitId }));
+					}
 
-          // check for master-access here (but make sure it's also checked on
-          // the server, in methods,s publications, etc
+					// check for master-access here (but make sure it's also checked on
+					// the server, in methods,s publications, etc
 
-          if (unitEditorIsMasterMode(unitDoc)) {
-            if (isCurriculm()) {
-              CurriculumSession.enable()
-            }
-            else {
-              API.fatal(new PermissionDeniedError('errors.notCurriculum', { unitId }))
-            }
-          }
-        }
-      }
-    })
-  })
+					if (unitEditorIsMasterMode(unitDoc)) {
+						if (isCurriculm()) {
+							CurriculumSession.enable();
+						} else {
+							API.fatal(
+								new PermissionDeniedError("errors.notCurriculum", { unitId }),
+							);
+						}
+					}
+				},
+			},
+		});
+	});
 
-  // ---------------------------------------------------------------------------
-  // 4. get class and lesson
-  //
-  // if this unit is linked with a certain class, lesson and pocket, then
-  // load these documents, but don't subscribe, since they won't change
-  // during usage of this editor.
-  // ---------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------
+	// 4. get class and lesson
+	//
+	// if this unit is linked with a certain class, lesson and pocket, then
+	// load these documents, but don't subscribe, since they won't change
+	// during usage of this editor.
+	// ---------------------------------------------------------------------------
 
-  instance.autorun(() => {
-    const unitId = instance.state.get('unitId')
-    if (!unitId) return
+	instance.autorun(() => {
+		const unitId = instance.state.get("unitId");
+		if (!unitId) return;
 
-    callMethod({
-      name: Unit.methods.getEditorDocs.name,
-      args: { unitId },
-      failure: er => API.fatal(er),
-      success: ({ lessonDoc, classDoc, pocketDoc, originalUnitDoc }) => {
-        API.debug('dependencies complete')
-        const dependenciesComplete = true
+		callMethod({
+			name: Unit.methods.getEditorDocs.name,
+			args: { unitId },
+			failure: (er) => API.fatal(er),
+			success: ({ lessonDoc, classDoc, pocketDoc, originalUnitDoc }) => {
+				API.debug("dependencies complete");
+				const dependenciesComplete = true;
 
-        // if we have a lessonDoc associated (non-curriculum modes)
-        // then we can't continue if the lesson is already running or completed
-        if (lessonDoc && (LessonStates.isRunning(lessonDoc) || LessonStates.isCompleted(lessonDoc))) {
-          return API.fatal(new PermissionDeniedError('editor.unit.errors.invalidLessonState', { lessonDoc }))
-        }
+				// if we have a lessonDoc associated (non-curriculum modes)
+				// then we can't continue if the lesson is already running or completed
+				if (
+					lessonDoc &&
+					(LessonStates.isRunning(lessonDoc) ||
+						LessonStates.isCompleted(lessonDoc))
+				) {
+					return API.fatal(
+						new PermissionDeniedError("editor.unit.errors.invalidLessonState", {
+							lessonDoc,
+						}),
+					);
+				}
 
-        instance.state.set({
-          lessonDoc,
-          classDoc,
-          originalUnitDoc,
-          pocketDoc,
-          dependenciesComplete
-        })
-      }
-    })
-  })
-})
+				instance.state.set({
+					lessonDoc,
+					classDoc,
+					originalUnitDoc,
+					pocketDoc,
+					dependenciesComplete,
+				});
+			},
+		});
+	});
+});
 
 Template.unitEditor.onDestroyed(function () {
-  API.dispose(unitEditorSubscriptionKey)
-  this.state.destroy()
-})
+	API.dispose(unitEditorSubscriptionKey);
+	this.state.destroy();
+});
 
 Template.unitEditor.helpers({
-  loadComplete () {
-    if (!API.initComplete()) {
-      return false
-    }
-    const instance = Template.instance()
-    return instance.state.get('unitSubComplete') &&
-      instance.state.get('dependenciesComplete')
-  },
-  unitDoc () {
-    Template.getState('originalUnitDoc')
-    return Template.getState('unitDoc')
-  },
-  submenuData () {
-    const instance = Template.instance()
-    return {
-      views: viewStates,
-      queryParam: 'tab',
-      getQueryParam: getQueryParam,
-      updateQueryParam: setQueryParams,
-      onViewSelected: (currentViewName) => {
-        instance.state.set({ currentViewName })
-      }
-    }
-  },
-  currentView () {
-    const instance = Template.instance()
-    const viewName = instance.state.get('currentViewName')
-    const view = UnitEditorViewStates[viewName]
-    if (!view) return
+	loadComplete() {
+		if (!API.initComplete()) {
+			return false;
+		}
+		const instance = Template.instance();
+		return (
+			instance.state.get("unitSubComplete") &&
+			instance.state.get("dependenciesComplete")
+		);
+	},
+	unitDoc() {
+		Template.getState("originalUnitDoc");
+		return Template.getState("unitDoc");
+	},
+	submenuData() {
+		const instance = Template.instance();
+		return {
+			views: viewStates,
+			queryParam: "tab",
+			getQueryParam: getQueryParam,
+			updateQueryParam: setQueryParams,
+			onViewSelected: (currentViewName) => {
+				instance.state.set({ currentViewName });
+			},
+		};
+	},
+	currentView() {
+		const instance = Template.instance();
+		const viewName = instance.state.get("currentViewName");
+		const view = UnitEditorViewStates[viewName];
+		if (!view) return;
 
-    const unitDoc = instance.state.get('unitDoc')
-    const lessonDoc = instance.state.get('lessonDoc')
-    const pocketDoc = instance.state.get('pocketDoc')
-    const classDoc = instance.state.get('classDoc')
-    const originalUnitDoc = instance.state.get('originalUnitDoc')
-    const templateData = {
-      unitDoc,
-      lessonDoc,
-      pocketDoc,
-      classDoc,
-      originalUnitDoc
-    }
+		const unitDoc = instance.state.get("unitDoc");
+		const lessonDoc = instance.state.get("lessonDoc");
+		const pocketDoc = instance.state.get("pocketDoc");
+		const classDoc = instance.state.get("classDoc");
+		const originalUnitDoc = instance.state.get("originalUnitDoc");
+		const templateData = {
+			unitDoc,
+			lessonDoc,
+			pocketDoc,
+			classDoc,
+			originalUnitDoc,
+		};
 
-    return Object.assign({ templateData }, view)
-  },
-  originalUnit () {
-    return Template.getState('originalUnitDoc')
-  },
-  lessonDoc () {
-    return Template.getState('lessonDoc')
-  },
-  classDoc () {
-    return Template.getState('classDoc')
-  }
-})
+		return Object.assign({ templateData }, view);
+	},
+	originalUnit() {
+		return Template.getState("originalUnitDoc");
+	},
+	lessonDoc() {
+		return Template.getState("lessonDoc");
+	},
+	classDoc() {
+		return Template.getState("classDoc");
+	},
+});
 
 Template.unitEditor.events({
-  'click .help-btn': (event, templateInstance) => {
-    event.preventDefault()
-    templateInstance.guide.start()
-  }
-})
+	"click .help-btn": (event, templateInstance) => {
+		event.preventDefault();
+		templateInstance.guide.start();
+	},
+});

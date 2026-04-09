@@ -1,3 +1,3 @@
 module.exports = {
-  de: () => import('./de.json')
-}
+	de: () => import("./de.json"),
+};

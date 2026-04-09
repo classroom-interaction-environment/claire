@@ -1,1 +1,1 @@
-import './embeddedResourceRenderer.html'
+import "./embeddedResourceRenderer.html";

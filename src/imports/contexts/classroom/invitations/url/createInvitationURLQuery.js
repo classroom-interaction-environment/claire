@@ -8,14 +8,20 @@
  * @param institution optional - The institution the users are related to
  * @return {string} A compressed encoded URI component
  */
-export const createInvitationURLQuery = ({ code, firstName, lastName, email, institution }) => {
-  const params = { code }
+export const createInvitationURLQuery = ({
+	code,
+	firstName,
+	lastName,
+	email,
+	institution,
+}) => {
+	const params = { code };
 
-  if (firstName) params.firstName = firstName
-  if (lastName) params.lastName = lastName
-  if (email) params.email = email
-  if (institution) params.institution = institution
+	if (firstName) params.firstName = firstName;
+	if (lastName) params.lastName = lastName;
+	if (email) params.email = email;
+	if (institution) params.institution = institution;
 
-  const jsonData = JSON.stringify(params)
-  return encodeURIComponent(btoa(jsonData))
-}
+	const jsonData = JSON.stringify(params);
+	return encodeURIComponent(btoa(jsonData));
+};

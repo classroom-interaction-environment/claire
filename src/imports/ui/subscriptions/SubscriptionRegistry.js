@@ -1,49 +1,51 @@
-import { Meteor } from 'meteor/meteor'
+import { Meteor } from "meteor/meteor";
 
-export const SubscriptionRegistry = {}
+export const SubscriptionRegistry = {};
 
-const allSubs = new Map()
+const allSubs = new Map();
 
-const getTemplateSubs = templateName => {
-  const templateSubs = allSubs.get(templateName)
+const getTemplateSubs = (templateName) => {
+	const templateSubs = allSubs.get(templateName);
 
-  if (!templateSubs) {
-    throw new Error(`Expected Template ${templateName} to be registered.`)
-  }
+	if (!templateSubs) {
+		throw new Error(`Expected Template ${templateName} to be registered.`);
+	}
 
-  return templateSubs
-}
+	return templateSubs;
+};
 
-const validateName = name => {
-  if (typeof name !== 'string' || name.length === 0) {
-    throw new Meteor.Error('subscription.error', 'subscription.invalidName', { name })
-  }
-}
+const validateName = (name) => {
+	if (typeof name !== "string" || name.length === 0) {
+		throw new Meteor.Error("subscription.error", "subscription.invalidName", {
+			name,
+		});
+	}
+};
 
 SubscriptionRegistry.registerTemplate = (name) => {
-  validateName(name)
-  if (!allSubs.has(name)) {
-    allSubs.set(name, new Set())
-  }
-  return SubscriptionRegistry
-}
+	validateName(name);
+	if (!allSubs.has(name)) {
+		allSubs.set(name, new Set());
+	}
+	return SubscriptionRegistry;
+};
 
 SubscriptionRegistry.add = (templateName, subscriptionName) => {
-  validateName(templateName)
-  const templateSubs = getTemplateSubs(templateName)
-  templateSubs.add(subscriptionName)
-  return SubscriptionRegistry
-}
+	validateName(templateName);
+	const templateSubs = getTemplateSubs(templateName);
+	templateSubs.add(subscriptionName);
+	return SubscriptionRegistry;
+};
 
 SubscriptionRegistry.remove = (templateName, subscriptionName) => {
-  validateName(templateName)
-  const templateSubs = getTemplateSubs(templateName)
-  templateSubs.delete(subscriptionName)
-  return SubscriptionRegistry
-}
+	validateName(templateName);
+	const templateSubs = getTemplateSubs(templateName);
+	templateSubs.delete(subscriptionName);
+	return SubscriptionRegistry;
+};
 
 SubscriptionRegistry.getAll = (templateName) => {
-  validateName(templateName)
-  const templateSubs = getTemplateSubs(templateName)
-  return templateSubs.values()
-}
+	validateName(templateName);
+	const templateSubs = getTemplateSubs(templateName);
+	return templateSubs.values();
+};

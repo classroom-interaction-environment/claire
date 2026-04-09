@@ -1,3 +1,3 @@
-import { Router } from '../Router'
+import { Router } from "../Router";
 
-export const getQueryParam = key => Router.queryParam(key)
+export const getQueryParam = (key) => Router.queryParam(key);

@@ -1,8 +1,8 @@
-import { Template } from 'meteor/templating'
-import { Shared } from '../helpers/shared'
-import { Task } from '../../../../contexts/curriculum/curriculum/task/Task'
-import '../pagecontent/pageContent'
-import './taskPages.html'
+import { Template } from "meteor/templating";
+import { Shared } from "../helpers/shared";
+import { Task } from "../../../../contexts/curriculum/curriculum/task/Task";
+import "../pagecontent/pageContent";
+import "./taskPages.html";
 
 /*******************************************************************************
  * UPDATE DECEMBER 2025
@@ -13,43 +13,45 @@ import './taskPages.html'
  *******************************************************************************/
 
 Template.taskPages.setDependencies({
-  contexts: [Task]
-})
-
+	contexts: [Task],
+});
 
 Template.taskPages.onCreated(function () {
-  this.state.set('currentIndex', 0)
+	this.state.set("currentIndex", 0);
 
-  // bind fct
-  Shared.updatePage = (index, page) => {
-    this.state.set('currentIndex', index)
-    this.state.set('currentPage', page)
-  }
+	// bind fct
+	Shared.updatePage = (index, page) => {
+		this.state.set("currentIndex", index);
+		this.state.set("currentPage", page);
+	};
 
-  this.autorun(() => {
-    const data = Template.currentData()
-    const { taskDoc } = data
+	this.autorun(() => {
+		const data = Template.currentData();
+		const { taskDoc } = data;
 
-    if (!this.state.get('currentPage')) {
-      this.state.set('currentPage', (taskDoc.pages?.[0]) || {
-        title: '',
-        content: []
-      })
-    }
+		if (!this.state.get("currentPage")) {
+			this.state.set(
+				"currentPage",
+				taskDoc.pages?.[0] || {
+					title: "",
+					content: [],
+				},
+			);
+		}
 
-    this.state.set('taskDoc', taskDoc)
-    this.state.set('pages', taskDoc.pages)
-  })
-})
+		this.state.set("taskDoc", taskDoc);
+		this.state.set("pages", taskDoc.pages);
+	});
+});
 
 Template.taskPages.helpers({
-  currentPage () {
-    return Template.getState('currentPage')
-  },
-  currentIndex () {
-    return Template.getState('currentIndex')
-  },
-  task () {
-    return Template.getState('taskDoc')
-  },
-})
+	currentPage() {
+		return Template.getState("currentPage");
+	},
+	currentIndex() {
+		return Template.getState("currentIndex");
+	},
+	task() {
+		return Template.getState("taskDoc");
+	},
+});

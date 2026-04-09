@@ -1,4 +1,4 @@
-import { currentLanguage } from './currentLanguage'
+import { currentLanguage } from "./currentLanguage";
 
 /**
  * Transforms a Date to localeDateString with the current
@@ -9,10 +9,10 @@ import { currentLanguage } from './currentLanguage'
  * @param any {Date} the date to be formatted
  * @return {string} the locale date
  */
-export const toLocaleDate = any => {
-  const current = currentLanguage()
+export const toLocaleDate = (any) => {
+	const current = currentLanguage();
 
-  return (current)
-    ? new Date(any).toLocaleString(current.isoCode, current.localeDateOptions)
-    : new Date(any).toLocaleString()
-}
+	return current
+		? new Date(any).toLocaleString(current.isoCode, current.localeDateOptions)
+		: new Date(any).toLocaleString();
+};

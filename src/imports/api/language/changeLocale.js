@@ -1,4 +1,4 @@
-import { i18n } from './language'
+import { i18n } from "./language";
 
 /**
  * Changes the current locale for our i18n system to the given language (code)
@@ -17,28 +17,28 @@ import { i18n } from './language'
  * @param locale {string} 2-char code of the locale (en, de, fr etc).
  * @return {Promise<void>}
  */
-export const changeLocale = async locale => {
-  const availableLanguages = await import('./config/availableLanguages')
+export const changeLocale = async (locale) => {
+	const availableLanguages = await import("./config/availableLanguages");
 
-  if (!availableLanguages[locale]) {
-    throw new Error(`Unsupported locale ${locale}`)
-  }
+	if (!availableLanguages[locale]) {
+		throw new Error(`Unsupported locale ${locale}`);
+	}
 
-  // we only load the base-definitions
-  // if this hasn't already been done
-  if (!loaded.has(locale)) {
-    const { load } = availableLanguages[locale]
-    const definitions = await load()
+	// we only load the base-definitions
+	// if this hasn't already been done
+	if (!loaded.has(locale)) {
+		const { load } = availableLanguages[locale];
+		const definitions = await load();
 
-    i18n.addl10n({ [locale]: definitions })
-    loaded.add(locale)
-  }
+		i18n.addl10n({ [locale]: definitions });
+		loaded.add(locale);
+	}
 
-  i18n.setLocale(locale)
-}
+	i18n.setLocale(locale);
+};
 
 /**
  * @private
  * @type {Set<string>}
  */
-const loaded = new Set()
+const loaded = new Set();

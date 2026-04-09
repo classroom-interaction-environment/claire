@@ -1,329 +1,336 @@
-import { Meteor } from 'meteor/meteor'
-import { Template } from 'meteor/templating'
-import { Lesson } from '../../../contexts/classroom/lessons/Lesson'
-import { SchoolClass } from '../../../contexts/classroom/schoolclass/SchoolClass'
-import { LessonViewStates } from './viewStates'
-import { MyStudents } from '../../controllers/MyStudents'
-import { LessonMaterial } from '../../controllers/LessonMaterial'
-import { Users } from '../../../contexts/system/accounts/users/User'
-import { TimeUnit } from '../../../contexts/curriculum/curriculum/types/TimeUnit'
-import { Group } from '../../../contexts/classroom/group/Group'
-import { TaskWorkingState } from '../../../contexts/tasks/state/TaskWorkingState'
-import { LessonStates } from '../../../contexts/classroom/lessons/LessonStates'
-import { ProfileImages } from '../../../contexts/files/image/ProfileImages'
-import { Unit } from '../../../contexts/curriculum/curriculum/unit/Unit'
-import { Phase } from '../../../contexts/curriculum/curriculum/phase/Phase'
-import { lessonSubKey } from './lessonSubKey'
-import { Material } from '../../../contexts/material/Material'
+import { Meteor } from "meteor/meteor";
+import { Template } from "meteor/templating";
+import { Lesson } from "../../../contexts/classroom/lessons/Lesson";
+import { SchoolClass } from "../../../contexts/classroom/schoolclass/SchoolClass";
+import { LessonViewStates } from "./viewStates";
+import { MyStudents } from "../../controllers/MyStudents";
+import { LessonMaterial } from "../../controllers/LessonMaterial";
+import { Users } from "../../../contexts/system/accounts/users/User";
+import { TimeUnit } from "../../../contexts/curriculum/curriculum/types/TimeUnit";
+import { Group } from "../../../contexts/classroom/group/Group";
+import { TaskWorkingState } from "../../../contexts/tasks/state/TaskWorkingState";
+import { LessonStates } from "../../../contexts/classroom/lessons/LessonStates";
+import { ProfileImages } from "../../../contexts/files/image/ProfileImages";
+import { Unit } from "../../../contexts/curriculum/curriculum/unit/Unit";
+import { Phase } from "../../../contexts/curriculum/curriculum/phase/Phase";
+import { lessonSubKey } from "./lessonSubKey";
+import { Material } from "../../../contexts/material/Material";
 
-import { dataTarget } from '../../utils/dataTarget'
-import { findUnassociatedMaterial } from '../../../api/utils/findUnassociatedMaterial'
-import { callMethod } from '../../controllers/document/callMethod'
-import { getCollection } from '../../../api/utils/getCollection'
-import { getLocalCollection } from '../../../infrastructure/collection/getLocalCollection'
-import { loadIntoCollection } from '../../../infrastructure/loading/loadIntoCollection'
-import lessonLanguage from './i18n/lessonLanguage'
+import { dataTarget } from "../../utils/dataTarget";
+import { findUnassociatedMaterial } from "../../../api/utils/findUnassociatedMaterial";
+import { callMethod } from "../../controllers/document/callMethod";
+import { getCollection } from "../../../api/utils/getCollection";
+import { getLocalCollection } from "../../../infrastructure/collection/getLocalCollection";
+import { loadIntoCollection } from "../../../infrastructure/loading/loadIntoCollection";
+import lessonLanguage from "./i18n/lessonLanguage";
 
-import '../../components/lesson/status/lessonStatus'
-import './views/info/info'
-import './views/safeguard/lessonSafeguard'
-import './views/material/lessonMaterial'
-import './lesson.html'
+import "../../components/lesson/status/lessonStatus";
+import "./views/info/info";
+import "./views/safeguard/lessonSafeguard";
+import "./views/material/lessonMaterial";
+import "./lesson.html";
 
-const _lessonViewStates = Object.values(LessonViewStates)
+const _lessonViewStates = Object.values(LessonViewStates);
 
 const API = Template.lesson.setDependencies({
-  contexts: [ProfileImages, Unit, Lesson, Phase, SchoolClass, Users],
-  language: lessonLanguage
-})
+	contexts: [ProfileImages, Unit, Lesson, Phase, SchoolClass, Users],
+	language: lessonLanguage,
+});
 
-const LessonCollection = getCollection(Lesson.name)
-const SchoolClassCollection = getCollection(SchoolClass.name)
+const LessonCollection = getCollection(Lesson.name);
+const SchoolClassCollection = getCollection(SchoolClass.name);
 
 Template.lesson.onCreated(function () {
-  const onError = err => API.fatal(err)
-  const instance = this
-  instance.state.set('view', LessonViewStates.material.name)
+	const onError = (err) => API.fatal(err);
+	const instance = this;
+	instance.state.set("view", LessonViewStates.material.name);
 
-  // ============================================================================
-  // SUBSCRIPTIONS
-  //
-  // We will subscribe to documents, that often change:
-  //
-  // - lessonDoc
-  // - classDoc
-  // - users
-  // - profile images
-  // - task working states (progress for edited tasks)
-  //
-  // ============================================================================
+	// ============================================================================
+	// SUBSCRIPTIONS
+	//
+	// We will subscribe to documents, that often change:
+	//
+	// - lessonDoc
+	// - classDoc
+	// - users
+	// - profile images
+	// - task working states (progress for edited tasks)
+	//
+	// ============================================================================
 
-  // lessonDoc
+	// lessonDoc
 
-  instance.autorun(() => {
-    const data = Template.currentData()
-    const { lessonId } = data.params
-    if (!lessonId) {
-      return
-    }
+	instance.autorun(() => {
+		const data = Template.currentData();
+		const { lessonId } = data.params;
+		if (!lessonId) {
+			return;
+		}
 
-    API.subscribe({
-      name: Lesson.publications.single,
-      args: { _id: lessonId },
-      key: lessonSubKey,
-      callbacks: {
-        onError,
-        onReady () {
-          const lessonDoc = LessonCollection.findOne(lessonId)
-          const { classId } = lessonDoc
-          MyStudents.setClass(classId)
-          instance.state.set({ lessonDoc })
-        }
-      }
-    })
-  })
+		API.subscribe({
+			name: Lesson.publications.single,
+			args: { _id: lessonId },
+			key: lessonSubKey,
+			callbacks: {
+				onError,
+				onReady() {
+					const lessonDoc = LessonCollection.findOne(lessonId);
+					const { classId } = lessonDoc;
+					MyStudents.setClass(classId);
+					instance.state.set({ lessonDoc });
+				},
+			},
+		});
+	});
 
-  // task working state
+	// task working state
 
-  instance.autorun(() => {
-    const lessonDoc = instance.state.get('lessonDoc')
-    if (!lessonDoc) return
-    if (LessonStates.isIdle(lessonDoc)) {
-      return instance.state.set('taskWorkingStatesSubReady', true)
-    }
+	instance.autorun(() => {
+		const lessonDoc = instance.state.get("lessonDoc");
+		if (!lessonDoc) return;
+		if (LessonStates.isIdle(lessonDoc)) {
+			return instance.state.set("taskWorkingStatesSubReady", true);
+		}
 
-    const lessonId = lessonDoc._id
+		const lessonId = lessonDoc._id;
 
-    API.subscribe({
-      name: TaskWorkingState.publications.byLesson,
-      args: { lessonId },
-      key: lessonSubKey,
-      callbacks: {
-        onError,
-        onReady () {
-          instance.state.set('taskWorkingStatesSubReady', true)
-        }
-      }
-    })
-  })
+		API.subscribe({
+			name: TaskWorkingState.publications.byLesson,
+			args: { lessonId },
+			key: lessonSubKey,
+			callbacks: {
+				onError,
+				onReady() {
+					instance.state.set("taskWorkingStatesSubReady", true);
+				},
+			},
+		});
+	});
 
-  // classDoc
+	// classDoc
 
-  instance.autorun(() => {
-    const lessonDoc = instance.state.get('lessonDoc')
-    if (!lessonDoc) return
+	instance.autorun(() => {
+		const lessonDoc = instance.state.get("lessonDoc");
+		if (!lessonDoc) return;
 
-    const { classId } = lessonDoc
-    API.subscribe({
-      name: SchoolClass.publications.single,
-      args: { _id: classId },
-      key: lessonSubKey,
-      callbacks: {
-        onError
-      }
-    })
-  })
+		const { classId } = lessonDoc;
+		API.subscribe({
+			name: SchoolClass.publications.single,
+			args: { _id: classId },
+			key: lessonSubKey,
+			callbacks: {
+				onError,
+			},
+		});
+	});
 
-  // ============================================================================
-  // METHOD CALLS
-  //
-  // For "static" documents, that won't change, we will use a Meteor method to
-  // load them:
-  //
-  // - unitDoc
-  // - phases
-  // - material
-  //
-  // ============================================================================
+	// ============================================================================
+	// METHOD CALLS
+	//
+	// For "static" documents, that won't change, we will use a Meteor method to
+	// load them:
+	//
+	// - unitDoc
+	// - phases
+	// - material
+	//
+	// ============================================================================
 
-  // users
+	// users
 
-  instance.autorun(() => {
-    const lessonDoc = instance.state.get('lessonDoc')
-    const classId = lessonDoc?.classId
-    const classDoc = classId && SchoolClassCollection.findOne(classId)
+	instance.autorun(() => {
+		const lessonDoc = instance.state.get("lessonDoc");
+		const classId = lessonDoc?.classId;
+		const classDoc = classId && SchoolClassCollection.findOne(classId);
 
-    if (!classDoc) return
+		if (!classDoc) return;
 
-    API.subscribe({
-      name: Users.publications.byClass,
-      args: { classId },
-      key: lessonSubKey,
-      callbacks: {
-        onError,
-        onReady () {
-          instance.state.set('usersReady', true)
-          loadIntoCollection({
-            name: ProfileImages.methods.byClass,
-            args: { classId },
-            collection: getLocalCollection(ProfileImages.name),
-            failure: API.notify,
-            success: () => instance.state.set('profileImagesReady', true)
-          })
-        }
-      }
-    })
-  })
+		API.subscribe({
+			name: Users.publications.byClass,
+			args: { classId },
+			key: lessonSubKey,
+			callbacks: {
+				onError,
+				onReady() {
+					instance.state.set("usersReady", true);
+					loadIntoCollection({
+						name: ProfileImages.methods.byClass,
+						args: { classId },
+						collection: getLocalCollection(ProfileImages.name),
+						failure: API.notify,
+						success: () => instance.state.set("profileImagesReady", true),
+					});
+				},
+			},
+		});
+	});
 
-  // the material is only loaded ONCE, when the unitDoc is available
-  // otherwise we would load the material on every update the lessonDoc rceives
-  instance.autorun(computation => {
-    const lessonDoc = instance.state.get('lessonDoc')
-    if (!lessonDoc?.unit) return
+	// the material is only loaded ONCE, when the unitDoc is available
+	// otherwise we would load the material on every update the lessonDoc rceives
+	instance.autorun((computation) => {
+		const lessonDoc = instance.state.get("lessonDoc");
+		if (!lessonDoc?.unit) return;
 
-    const unitId = lessonDoc.unit
+		const unitId = lessonDoc.unit;
 
-    callMethod({
-      name: Unit.methods.get,
-      args: { _id: unitId },
-      failure: onError,
-      success: async unitDoc => {
-        if (unitDoc) {
-          instance.state.set({ unitDoc })
-        }
-        else {
-          instance.state.set({ docNotFound: true })
-        }
-        const material = await loadTeacherMaterial(unitDoc, instance)
-        const { unassociatedMaterial } = material
-        instance.state.set({ unassociatedMaterial, unitDoc: material.unitDoc })
-        computation.stop()
-      }
-    })
-  })
+		callMethod({
+			name: Unit.methods.get,
+			args: { _id: unitId },
+			failure: onError,
+			success: async (unitDoc) => {
+				if (unitDoc) {
+					instance.state.set({ unitDoc });
+				} else {
+					instance.state.set({ docNotFound: true });
+				}
+				const material = await loadTeacherMaterial(unitDoc, instance);
+				const { unassociatedMaterial } = material;
+				instance.state.set({ unassociatedMaterial, unitDoc: material.unitDoc });
+				computation.stop();
+			},
+		});
+	});
 
-  instance.autorun(() => {
-    const unitDoc = instance.state.get('unitDoc')
-    const lessonDoc = instance.state.get('lessonDoc')
-    const classId = lessonDoc?.classId
+	instance.autorun(() => {
+		const unitDoc = instance.state.get("unitDoc");
+		const lessonDoc = instance.state.get("lessonDoc");
+		const classId = lessonDoc?.classId;
 
-    if (!classId || !unitDoc) {
-      return
-    }
+		if (!classId || !unitDoc) {
+			return;
+		}
 
-    API.subscribe({
-      name: Group.publications.my,
-      args: { unitId: unitDoc._id, classId },
-      key: lessonSubKey,
-      callbacks: {
-        onError: API.fatal,
-        onReady: () => {
-          instance.state.set({ groupSubscriptionComplete: true })
-        }
-      }
-    })
-  })
-})
+		API.subscribe({
+			name: Group.publications.my,
+			args: { unitId: unitDoc._id, classId },
+			key: lessonSubKey,
+			callbacks: {
+				onError: API.fatal,
+				onReady: () => {
+					instance.state.set({ groupSubscriptionComplete: true });
+				},
+			},
+		});
+	});
+});
 
 Template.lesson.helpers({
-  viewStates () {
-    return _lessonViewStates
-  },
-  active (viewName) {
-    return Template.getState('view') === viewName
-  },
-  loadComplete () {
-    if (!API.initComplete()) {
-      return false
-    }
+	viewStates() {
+		return _lessonViewStates;
+	},
+	active(viewName) {
+		return Template.getState("view") === viewName;
+	},
+	loadComplete() {
+		if (!API.initComplete()) {
+			return false;
+		}
 
-    const instance = Template.instance()
-    return instance.state.get('lessonDoc') &&
-      instance.state.get('usersReady') &&
-      instance.state.get('taskWorkingStatesSubReady') &&
-      instance.state.get('unitDoc')
-  },
-  unit () {
-    return Template.getState('unitDoc')
-  },
-  classDoc () {
-    const lessonDoc = Template.getState('lessonDoc')
-    return lessonDoc && SchoolClassCollection.findOne(lessonDoc.classId)
-  },
-  lessonDoc () {
-    return Template.getState('lessonDoc')
-  },
-  timeUnit (num) {
-    return TimeUnit.resolve(num)
-  },
-  completed () {
-    const doc = Template.getState('lessonDoc')
-    return doc?.completed
-  },
-  lessonUploads () {
-    // return LessonUploadsCollection.find()
-  },
-  lesson () {
-    return Template.getState('lessonDoc')
-  },
-  currenTemplate () {
-    const view = Template.getState('view')
-    return view && LessonViewStates[view] && LessonViewStates[view].template
-  },
-  currentData () {
-    const instance = Template.instance()
-    const lessonDoc = instance.state.get('lessonDoc')
-    const classDoc = lessonDoc && SchoolClassCollection.findOne(lessonDoc.classId)
-    const unitDoc = instance.state.get('unitDoc')
-    const unassociatedMaterial = instance.state.get('unassociatedMaterial')
-    return { lessonDoc, classDoc, unitDoc, unassociatedMaterial }
-  },
-  inviteOptions () {
-    const lessonDoc = Template.getState('lessonDoc')
-    const toggleInvite = Template.getState('invitationModalVisible')
+		const instance = Template.instance();
+		return (
+			instance.state.get("lessonDoc") &&
+			instance.state.get("usersReady") &&
+			instance.state.get("taskWorkingStatesSubReady") &&
+			instance.state.get("unitDoc")
+		);
+	},
+	unit() {
+		return Template.getState("unitDoc");
+	},
+	classDoc() {
+		const lessonDoc = Template.getState("lessonDoc");
+		return lessonDoc && SchoolClassCollection.findOne(lessonDoc.classId);
+	},
+	lessonDoc() {
+		return Template.getState("lessonDoc");
+	},
+	timeUnit(num) {
+		return TimeUnit.resolve(num);
+	},
+	completed() {
+		const doc = Template.getState("lessonDoc");
+		return doc?.completed;
+	},
+	lessonUploads() {
+		// return LessonUploadsCollection.find()
+	},
+	lesson() {
+		return Template.getState("lessonDoc");
+	},
+	currenTemplate() {
+		const view = Template.getState("view");
+		return view && LessonViewStates[view] && LessonViewStates[view].template;
+	},
+	currentData() {
+		const instance = Template.instance();
+		const lessonDoc = instance.state.get("lessonDoc");
+		const classDoc =
+			lessonDoc && SchoolClassCollection.findOne(lessonDoc.classId);
+		const unitDoc = instance.state.get("unitDoc");
+		const unassociatedMaterial = instance.state.get("unassociatedMaterial");
+		return { lessonDoc, classDoc, unitDoc, unassociatedMaterial };
+	},
+	inviteOptions() {
+		const lessonDoc = Template.getState("lessonDoc");
+		const toggleInvite = Template.getState("invitationModalVisible");
 
-    if (!toggleInvite || !lessonDoc) {
-      return
-    }
-    const { classId } = lessonDoc
-    const institution = Meteor.user().institution
-    return { classId, institution }
-  },
-  invitationModalVisible () {
-    return Template.instance().state.get('invitationModalVisible')
-  }
-})
+		if (!toggleInvite || !lessonDoc) {
+			return;
+		}
+		const { classId } = lessonDoc;
+		const institution = Meteor.user().institution;
+		return { classId, institution };
+	},
+	invitationModalVisible() {
+		return Template.instance().state.get("invitationModalVisible");
+	},
+});
 
 Template.lesson.events({
-  'click .lesson-main-tab' (event, templateInstance) {
-    event.preventDefault()
-    const target = dataTarget(event, templateInstance)
-    templateInstance.state.set('view', target)
-  },
-  'click .show-invitations-button' (event, templateInstance) {
-    event.preventDefault()
-    import('../../components/inviteStudents/inviteStudents')
-      .then(() => {
-        templateInstance.state.set('invitationModalVisible', true)
-        templateInstance.$('#inviteToClassModal').modal('show')
-      })
-      .catch(e => API.notify(e))
-  },
-  'hidden.bs.modal #inviteToClassModal' (_event, templateInstance) {
-    templateInstance.state.set('invitationModalVisible', false)
-  }
-})
+	"click .lesson-main-tab"(event, templateInstance) {
+		event.preventDefault();
+		const target = dataTarget(event, templateInstance);
+		templateInstance.state.set("view", target);
+	},
+	"click .show-invitations-button"(event, templateInstance) {
+		event.preventDefault();
+		import("../../components/inviteStudents/inviteStudents")
+			.then(() => {
+				templateInstance.state.set("invitationModalVisible", true);
+				templateInstance.$("#inviteToClassModal").modal("show");
+			})
+			.catch((e) => API.notify(e));
+	},
+	"hidden.bs.modal #inviteToClassModal"(_event, templateInstance) {
+		templateInstance.state.set("invitationModalVisible", false);
+	},
+});
 
 const loadTeacherMaterial = async (unitDoc) => {
-  const material = await LessonMaterial.load(unitDoc)
-  API.debug('material loaded', material)
+	const material = await LessonMaterial.load(unitDoc);
+	API.debug("material loaded", material);
 
-  // update the phases on the unit document
-  if (unitDoc.phases && unitDoc.phases.length > 0) {
-    unitDoc.phases = unitDoc.phases
-      .map(phaseId => {
-        const materialDocs = Material.getDocuments(Phase.name, phaseId)
-        const phaseDoc = materialDocs[0]
-        if (!phaseDoc) {
-          console.warn('expected phase doc by phaseId', phaseId, 'got', phaseDoc)
-        }
-        return phaseDoc
-      })
-      // there is sometimes the case that the value above results in a null value
-      // which completely crashes the further processing chain
-      .filter(phase => !!phase)
-  }
+	// update the phases on the unit document
+	if (unitDoc.phases && unitDoc.phases.length > 0) {
+		unitDoc.phases = unitDoc.phases
+			.map((phaseId) => {
+				const materialDocs = Material.getDocuments(Phase.name, phaseId);
+				const phaseDoc = materialDocs[0];
+				if (!phaseDoc) {
+					console.warn(
+						"expected phase doc by phaseId",
+						phaseId,
+						"got",
+						phaseDoc,
+					);
+				}
+				return phaseDoc;
+			})
+			// there is sometimes the case that the value above results in a null value
+			// which completely crashes the further processing chain
+			.filter((phase) => !!phase);
+	}
 
-  const unassociatedMaterial = findUnassociatedMaterial(unitDoc)
-  return { unitDoc, unassociatedMaterial }
-}
+	const unassociatedMaterial = findUnassociatedMaterial(unitDoc);
+	return { unitDoc, unassociatedMaterial };
+};

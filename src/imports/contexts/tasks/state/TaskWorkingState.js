@@ -1,100 +1,117 @@
-import { UserUtils } from '../../system/accounts/users/UserUtils'
-import { onServerExec } from '../../../api/utils/archUtils'
+import { UserUtils } from "../../system/accounts/users/UserUtils";
+import { onServerExec } from "../../../api/utils/archUtils";
 
 export const TaskWorkingState = {
-  name: 'taskWorkingState',
-  label: 'taskWorkingState.title',
-  icon: 'dots',
-  isClassroom: true
-}
+	name: "taskWorkingState",
+	label: "taskWorkingState.title",
+	icon: "dots",
+	isClassroom: true,
+};
 
 TaskWorkingState.errors = {
-  taskNotEditable: 'taskWorkingState.taskNotEditable'
-}
+	taskNotEditable: "taskWorkingState.taskNotEditable",
+};
 
 TaskWorkingState.schema = {
-  lessonId: String,
-  taskId: String,
-  groupId: {
-    type: String,
-    optional: true
-  },
-  complete: {
-    type: Boolean,
-    optional: true
-  },
-  page: {
-    type: Number,
-    optional: true
-  },
-  progress: {
-    type: Number,
-    optional: true
-  }
-}
+	lessonId: String,
+	taskId: String,
+	groupId: {
+		type: String,
+		optional: true,
+	},
+	complete: {
+		type: Boolean,
+		optional: true,
+	},
+	page: {
+		type: Number,
+		optional: true,
+	},
+	progress: {
+		type: Number,
+		optional: true,
+	},
+};
 
 TaskWorkingState.publicFields = {
-  createdBy: 1,
-  lessonId: 1,
-  taskId: 1,
-  progress: 1
-}
+	createdBy: 1,
+	lessonId: 1,
+	taskId: 1,
+	progress: 1,
+};
 
-TaskWorkingState.dependencies = []
+TaskWorkingState.dependencies = [];
 
-TaskWorkingState.methods = {}
+TaskWorkingState.methods = {};
 
 TaskWorkingState.methods.saveState = {
-  name: 'taskWorkingState.methods.saveState',
-  schema: TaskWorkingState.schema,
-  run: onServerExec(() => {
-    const { saveTaskWorkingState } = require('./methods/saveTaskWorkingState')
+	name: "taskWorkingState.methods.saveState",
+	schema: TaskWorkingState.schema,
+	run: onServerExec(() => {
+		const { saveTaskWorkingState } = require("./methods/saveTaskWorkingState");
 
-    return async function ({ lessonId, taskId, groupId, complete, page, progress }) {
-      const { userId } = this
-      return saveTaskWorkingState({ lessonId, taskId, groupId, complete, page, progress, userId })
-    }
-  })
-}
+		return async function ({
+			lessonId,
+			taskId,
+			groupId,
+			complete,
+			page,
+			progress,
+		}) {
+			const { userId } = this;
+			return saveTaskWorkingState({
+				lessonId,
+				taskId,
+				groupId,
+				complete,
+				page,
+				progress,
+				userId,
+			});
+		};
+	}),
+};
 
-TaskWorkingState.publications = {}
+TaskWorkingState.publications = {};
 
 /**
  * Get all working states for tasks of my lesson. Teacher only
  */
 TaskWorkingState.publications.byLesson = {
-  name: 'taskWorkingState.publications.byLesson',
-  schema: {
-    lessonId: String
-  },
-  run: onServerExec(() => {
-    const { taskWorkingStateByLesson } = require('./methods/byLesson')
-    return async function ({ lessonId }) {
-      const { userId } = this
-      return taskWorkingStateByLesson({ lessonId, userId })
-    }
-  }),
-  roles: [UserUtils.roles.teacher]
-}
+	name: "taskWorkingState.publications.byLesson",
+	schema: {
+		lessonId: String,
+	},
+	run: onServerExec(() => {
+		const { taskWorkingStateByLesson } = require("./methods/byLesson");
+		return async function ({ lessonId }) {
+			const { userId } = this;
+			return taskWorkingStateByLesson({ lessonId, userId });
+		};
+	}),
+	roles: [UserUtils.roles.teacher],
+};
 
 TaskWorkingState.publications.myTask = {
-  name: 'taskWorkingState.publications.myTask',
-  schema: {
-    lessonId: String,
-    taskId: {
-      type: String,
-      optional: true
-    },
-    groupId: {
-      type: String,
-      optional: true
-    }
-  },
-  run: onServerExec(() => {
-    const { getMyTaskWorkingState } = require('./methods/getMyTaskWorkingState')
-    return async function ({ lessonId, taskId, groupId }) {
-      const { userId } = this
-      return getMyTaskWorkingState({ lessonId, taskId, groupId, userId })
-    }
-  })
-}
+	name: "taskWorkingState.publications.myTask",
+	schema: {
+		lessonId: String,
+		taskId: {
+			type: String,
+			optional: true,
+		},
+		groupId: {
+			type: String,
+			optional: true,
+		},
+	},
+	run: onServerExec(() => {
+		const {
+			getMyTaskWorkingState,
+		} = require("./methods/getMyTaskWorkingState");
+		return async function ({ lessonId, taskId, groupId }) {
+			const { userId } = this;
+			return getMyTaskWorkingState({ lessonId, taskId, groupId, userId });
+		};
+	}),
+};

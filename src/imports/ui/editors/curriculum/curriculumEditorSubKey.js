@@ -1,1 +1,1 @@
-export const curriculumEditorSubKey = 'curriculumEditor'
+export const curriculumEditorSubKey = "curriculumEditor";

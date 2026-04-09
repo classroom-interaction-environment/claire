@@ -1,82 +1,81 @@
-import { createLog } from '../../../../api/log/createLog'
-import fs from 'node:fs/promises'
-import { fileExists } from '../../../../api/utils/filesystem/fileExists'
+import { createLog } from "../../../../api/log/createLog";
+import fs from "node:fs/promises";
+import { fileExists } from "../../../../api/utils/filesystem/fileExists";
 
-const info = createLog({ name: 'audioConvert' })
-const disableVideo = '-vn'
-const samplingFreq = '-ar 44100'
-const audioChannel = '-ac 2'
-const audioBitRate = '-b:a 128k'
-const mp3LameCodec = '-codec:a libmp3lame'
-const mp3Extension = 'mp3'
+const info = createLog({ name: "audioConvert" });
+const disableVideo = "-vn";
+const samplingFreq = "-ar 44100";
+const audioChannel = "-ac 2";
+const audioBitRate = "-b:a 128k";
+const mp3LameCodec = "-codec:a libmp3lame";
+const mp3Extension = "mp3";
 
 const buildCommand = ({ path, output }) => {
-  const cmd = `-i ${path} 
+	const cmd = `-i ${path} 
       ${disableVideo}
       ${samplingFreq}
       ${audioChannel}
       ${audioBitRate}
       ${mp3LameCodec}
-      ${output}`
-  return cmd.replace(/[\n\s]+/g, ' ') // make all multiple space single space
+      ${output}`;
+	return cmd.replace(/[\n\s]+/g, " "); // make all multiple space single space
+};
+
+export const audioConvert = async function audioConvert(uploadedFile) {
+	const { _id, size, path, extension, name, _storagePath } = uploadedFile;
+
+	// if we have already an mp3 we can skip all this, even if the bitrate is
+	// very high, since compatibility is more important than performance
+	if (extension === mp3Extension) return uploadedFile;
+
+	// run ffmpeg command
+	const compressedPath = `${_storagePath}/${_id}.${mp3Extension}`;
+	const command = buildCommand({ path, output: compressedPath });
+
+	await ffmpeg(command);
+	const mp3Stats = await fileExists(compressedPath);
+
+	if (mp3Stats.size >= size) {
+		info("compressed file size is >= original size");
+	}
+
+	// we replace original as we don't want to support other formats than mp3
+	// when it comes to streaming/downloading them to different browsers/devices
+	uploadedFile.versions.original = {
+		path: compressedPath,
+		size: mp3Stats.size,
+		type: "audio/mpeg",
+		extension: mp3Extension,
+		meta: {},
+	};
+
+	const extensionIndex = name.lastIndexOf(".");
+	const baseName = name.substring(0, extensionIndex - 1);
+	const modifier = {
+		$set: {
+			name: `${baseName}.${mp3Extension}`,
+			size: mp3Stats.size,
+			type: "audio/mpeg",
+			path: compressedPath,
+			mime: "audio/mpeg",
+			"mime-type": "audio/mpeg",
+			ext: mp3Extension,
+			extension: mp3Extension,
+			extensionWithDot: `.${mp3Extension}`,
+		},
+	};
+
+	modifier.$set["versions.original"] = uploadedFile.versions.original;
+
+	await this.collection.updateAsync(uploadedFile._id, modifier);
+	await fs.rm(path);
+
+	// we need to return the updated file
+	return this.collection.findOneAsync(uploadedFile._id);
+};
+
+async function ffmpeg(command) {
+	const _ffmpeg = await import("ffmpeg-cli");
+	info("ffmpeg", command);
+	return _ffmpeg.run(command);
 }
-
-export const audioConvert = async function audioConvert (uploadedFile) {
-  const { _id, size, path, extension, name, _storagePath } = uploadedFile
-
-  // if we have already an mp3 we can skip all this, even if the bitrate is
-  // very high, since compatibility is more important than performance
-  if (extension === mp3Extension) return uploadedFile
-
-  // run ffmpeg command
-  const compressedPath = `${_storagePath}/${_id}.${mp3Extension}`
-  const command = buildCommand({ path, output: compressedPath })
-
-  await ffmpeg(command)
-  const mp3Stats = await fileExists(compressedPath)
-
-  if (mp3Stats.size >= size) {
-    info('compressed file size is >= original size')
-  }
-
-  // we replace original as we don't want to support other formats than mp3
-  // when it comes to streaming/downloading them to different browsers/devices
-  uploadedFile.versions.original = {
-    path: compressedPath,
-    size: mp3Stats.size,
-    type: 'audio/mpeg',
-    extension: mp3Extension,
-    meta: {}
-  }
-
-  const extensionIndex = name.lastIndexOf('.')
-  const baseName = name.substring(0, extensionIndex - 1)
-  const modifier = {
-    $set: {
-      name: `${baseName}.${mp3Extension}`,
-      size: mp3Stats.size,
-      type: 'audio/mpeg',
-      path: compressedPath,
-      mime: 'audio/mpeg',
-      'mime-type': 'audio/mpeg',
-      ext: mp3Extension,
-      extension: mp3Extension,
-      extensionWithDot: `.${mp3Extension}`
-    }
-  }
-
-  modifier.$set['versions.original'] = uploadedFile.versions.original
-
-  await this.collection.updateAsync(uploadedFile._id, modifier)
-  await fs.rm(path)
-
-  // we need to return the updated file
-  return this.collection.findOneAsync(uploadedFile._id)
-}
-
-async function ffmpeg (command) {
-  const _ffmpeg = await import('ffmpeg-cli')
-  info('ffmpeg', command)
-  return _ffmpeg.run(command)
-}
-

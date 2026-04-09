@@ -1,1 +1,1 @@
-export const getObjectType = o => Object.prototype.toString.call(o)
+export const getObjectType = (o) => Object.prototype.toString.call(o);

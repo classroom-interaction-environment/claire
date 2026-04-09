@@ -1,14 +1,14 @@
-import { Tracker } from 'meteor/tracker'
-import { Schema } from '../../../../../api/schema/Schema'
-import { Curriculum } from '../../../../../contexts/curriculum/Curriculum'
-import { Material } from '../../../../../contexts/material/Material'
-import { getMaterialRenderer } from '../../../../../api/material/getMaterialRenderer'
-import { getLocalCollection } from '../../../../../infrastructure/collection/getLocalCollection'
-import { unitEditorMaterialNames } from '../../utils/unitEditorMaterialNames'
-import { isMetaMaterial } from '../../utils/isMetaMaterial'
+import { Tracker } from "meteor/tracker";
+import { Schema } from "../../../../../api/schema/Schema";
+import { Curriculum } from "../../../../../contexts/curriculum/Curriculum";
+import { Material } from "../../../../../contexts/material/Material";
+import { getMaterialRenderer } from "../../../../../api/material/getMaterialRenderer";
+import { getLocalCollection } from "../../../../../infrastructure/collection/getLocalCollection";
+import { unitEditorMaterialNames } from "../../utils/unitEditorMaterialNames";
+import { isMetaMaterial } from "../../utils/isMetaMaterial";
 
-const defaultSchema = Curriculum.getDefaultSchema()
-const materialSchema = schema => Object.assign({}, defaultSchema, schema)
+const defaultSchema = Curriculum.getDefaultSchema();
+const materialSchema = (schema) => Object.assign({}, defaultSchema, schema);
 
 /**
  * Use to create subview definitions of the material view.
@@ -17,31 +17,31 @@ const materialSchema = schema => Object.assign({}, defaultSchema, schema)
  * need to dynamically generate subviews here.
  */
 
-export const MaterialSubviews = {}
+export const MaterialSubviews = {};
 
 /**
  * Returns the default name of the subview to load of no subview is defined to
  * load.
  * @return {string} name of the subview
  */
-MaterialSubviews.defaultViewName = () => unitEditorMaterialNames()[0].name
+MaterialSubviews.defaultViewName = () => unitEditorMaterialNames()[0].name;
 
 /**
  * Returns a list of names for all available materials.
  * @return {{name, label}[]}
  */
 MaterialSubviews.names = () => {
-  return unitEditorMaterialNames()
-}
+	return unitEditorMaterialNames();
+};
 
 /**
  *
  * @param name
  * @return {*}
  */
-MaterialSubviews.getContext = name => {
-  return Material.get(name)
-}
+MaterialSubviews.getContext = (name) => {
+	return Material.get(name);
+};
 
 /**
  * Determines, whether a subview can exist for this material, without creating
@@ -50,10 +50,10 @@ MaterialSubviews.getContext = name => {
  * @return {boolean} true if exists, otherwise false
  */
 
-MaterialSubviews.exists = name => {
-  const material = Material.get(name)
-  return material && !isMetaMaterial(material)
-}
+MaterialSubviews.exists = (name) => {
+	const material = Material.get(name);
+	return material && !isMetaMaterial(material);
+};
 
 /**
  * Creates a new subview for a given Material context. That subview is used
@@ -86,49 +86,49 @@ MaterialSubviews.exists = name => {
  * }}
  */
 MaterialSubviews.create = ({ name }) => {
-  const context = Material.get(name)
-  const material = context?.material
+	const context = Material.get(name);
+	const material = context?.material;
 
-  if (!material) {
-    throw new Error(`Could not get material for context by name [${name}]`)
-  }
+	if (!material) {
+		throw new Error(`Could not get material for context by name [${name}]`);
+	}
 
-  // we need the list and main/preview renderer for each material type
-  const previewRenderer = getMaterialRenderer(material, 'preview')
-  const listRenderer = getMaterialRenderer(material, 'list')
+	// we need the list and main/preview renderer for each material type
+	const previewRenderer = getMaterialRenderer(material, "preview");
+	const listRenderer = getMaterialRenderer(material, "list");
 
-  // connect all functionality that is necessary to create forms
-  // and load documents from the collections
-  const loadMaterialFn = material.load || (doc => doc)
-  const collection = getLocalCollection(context.name)
-  const subViewSchema = material.noDefaultSchema
-    ? material.schema
-    : materialSchema(material.schema)
+	// connect all functionality that is necessary to create forms
+	// and load documents from the collections
+	const loadMaterialFn = material.load || ((doc) => doc);
+	const collection = getLocalCollection(context.name);
+	const subViewSchema = material.noDefaultSchema
+		? material.schema
+		: materialSchema(material.schema);
 
-  return {
-    context: context,
-    collection: collection,
-    previewRenderer: previewRenderer,
-    listRenderer: listRenderer,
-    info: material.info || {},
-    editable: material.editable || false,
-    preview: material.preview,
-    field: context.fieldName,
-    subscription: context.publications.editor.name,
-    schema: Schema.create(subViewSchema, { tracker: Tracker }),
-    hooks: {
-      beforeInsert: material.beforeInsert || (x => x),
-      onCreated: material.onCreated || noOp,
-      formOpen: material.formOpen || noOp,
-      formClosed: material.formClosed || noOp
-    },
-    loaded: false,
-    load: async () => {
-      await loadMaterialFn()
-      await previewRenderer.load()
-      await listRenderer.load()
-    }
-  }
-}
+	return {
+		context: context,
+		collection: collection,
+		previewRenderer: previewRenderer,
+		listRenderer: listRenderer,
+		info: material.info || {},
+		editable: material.editable || false,
+		preview: material.preview,
+		field: context.fieldName,
+		subscription: context.publications.editor.name,
+		schema: Schema.create(subViewSchema, { tracker: Tracker }),
+		hooks: {
+			beforeInsert: material.beforeInsert || ((x) => x),
+			onCreated: material.onCreated || noOp,
+			formOpen: material.formOpen || noOp,
+			formClosed: material.formClosed || noOp,
+		},
+		loaded: false,
+		load: async () => {
+			await loadMaterialFn();
+			await previewRenderer.load();
+			await listRenderer.load();
+		},
+	};
+};
 
-const noOp = () => {}
+const noOp = () => {};

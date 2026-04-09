@@ -1,2 +1,2 @@
-import '../../components/langselect/langselect'
-import './loggedoutNav.html'
+import "../../components/langselect/langselect";
+import "./loggedoutNav.html";

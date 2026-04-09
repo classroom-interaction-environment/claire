@@ -1,5 +1,5 @@
-import { check, Match } from 'meteor/check'
-import { getInvitationOffset } from './getInvitationOffset'
+import { check, Match } from "meteor/check";
+import { getInvitationOffset } from "./getInvitationOffset";
 /**
  * Checks, whether a code doc is expired. Checks for validity and expiration date.
  * @param codeDoc {object}
@@ -8,19 +8,22 @@ import { getInvitationOffset } from './getInvitationOffset'
  * @param codeDoc.expires {Number} - the number of days until expiration
  * @return {boolean} true if
  */
-export const invitationExpired = codeDoc => {
-  check(codeDoc, Match.ObjectIncluding({
-    createdAt: Date,
-    expires: Number
-  }))
+export const invitationExpired = (codeDoc) => {
+	check(
+		codeDoc,
+		Match.ObjectIncluding({
+			createdAt: Date,
+			expires: Number,
+		}),
+	);
 
-  const { invalid, createdAt, expires } = codeDoc
+	const { invalid, createdAt, expires } = codeDoc;
 
-  if (invalid) {
-    return true
-  }
+	if (invalid) {
+		return true;
+	}
 
-  const now = Date.now()
-  const expirationDate = getInvitationOffset(new Date(createdAt), expires)
-  return (now - expirationDate) >= 0
-}
+	const now = Date.now();
+	const expirationDate = getInvitationOffset(new Date(createdAt), expires);
+	return now - expirationDate >= 0;
+};

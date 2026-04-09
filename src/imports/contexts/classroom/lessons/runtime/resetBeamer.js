@@ -1,6 +1,6 @@
-import { check } from 'meteor/check'
-import { Beamer } from '../../../beamer/Beamer'
-import { getCollection } from '../../../../api/utils/getCollection'
+import { check } from "meteor/check";
+import { Beamer } from "../../../beamer/Beamer";
+import { getCollection } from "../../../../api/utils/getCollection";
 
 // Devnote: Could be easily extended by parameters like referenceId, context, itemId, classId
 
@@ -13,30 +13,35 @@ import { getCollection } from '../../../../api/utils/getCollection'
  * @return {number} the amount of references, that have been reset
  */
 export const resetBeamer = async ({ lessonId, userId }) => {
-  check(lessonId, String)
-  check(userId, String)
+	check(lessonId, String);
+	check(userId, String);
 
-  const BeamerCollection = getCollection(Beamer.name)
-  const beamerDoc = await BeamerCollection.findOneAsync({ createdBy: userId })
+	const BeamerCollection = getCollection(Beamer.name);
+	const beamerDoc = await BeamerCollection.findOneAsync({ createdBy: userId });
 
-  // no beamer doc exists
-  if (!beamerDoc) return -1
+	// no beamer doc exists
+	if (!beamerDoc) return -1;
 
-  if (beamerDoc.references && beamerDoc.references.length > 0) {
-    // let all references remain, that are not associated with the lessonId
-    const updatedReferences = beamerDoc.references.filter(ref => ref.lessonId !== lessonId)
-    const diff = beamerDoc.references.length - updatedReferences.length
+	if (beamerDoc.references && beamerDoc.references.length > 0) {
+		// let all references remain, that are not associated with the lessonId
+		const updatedReferences = beamerDoc.references.filter(
+			(ref) => ref.lessonId !== lessonId,
+		);
+		const diff = beamerDoc.references.length - updatedReferences.length;
 
-    if (diff > 0) {
-      const modifier = { $set: { references: updatedReferences } }
-      const updated = await BeamerCollection.updateAsync(beamerDoc._id, modifier)
-      return updated && diff
-    }
+		if (diff > 0) {
+			const modifier = { $set: { references: updatedReferences } };
+			const updated = await BeamerCollection.updateAsync(
+				beamerDoc._id,
+				modifier,
+			);
+			return updated && diff;
+		}
 
-    // there were references but none are related to lessonId
-    return 0
-  }
+		// there were references but none are related to lessonId
+		return 0;
+	}
 
-  // beamer doc exists but there a no references to update
-  return 0
-}
+	// beamer doc exists but there a no references to update
+	return 0;
+};

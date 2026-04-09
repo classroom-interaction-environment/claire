@@ -5,6 +5,6 @@
  * @return {number} the unix timestamp as integer
  */
 export const getInvitationOffset = (date, days) => {
-  const offset = days * 86400000 // days in ms
-  return date.getTime() + offset
-}
+	const offset = days * 86400000; // days in ms
+	return date.getTime() + offset;
+};

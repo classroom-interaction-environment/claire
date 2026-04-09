@@ -5,6 +5,6 @@
  * @return {*}
  */
 export const isGroupMember = (userId, groupDoc) => {
-  const users = groupDoc?.users
-  return users?.find(u => u && u.userId === userId)
-}
+	const users = groupDoc?.users;
+	return users?.find((u) => u && u.userId === userId);
+};

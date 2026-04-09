@@ -1,4 +1,4 @@
 /* eslint-env mocha */
-describe('Unit', () => {
-  require('./Unit.tests')
-})
+describe("Unit", () => {
+	require("./Unit.tests");
+});

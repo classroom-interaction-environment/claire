@@ -1,23 +1,23 @@
-import { Meteor } from 'meteor/meteor'
-import { Lesson } from '../Lesson'
-import { SchoolClass } from '../../schoolclass/SchoolClass'
-import { Phase } from '../../../curriculum/curriculum/phase/Phase'
-import { Unit } from '../../../curriculum/curriculum/unit/Unit'
-import { LessonErrors } from '../LessonErrors'
-import { checkIsTeacher } from '../helpers/checkIsTeacher'
-import { getCollection } from '../../../../api/utils/getCollection'
-import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
-import { createDocCloner } from '../../../../api/utils/document/createDocCloner'
-import { mapAsync } from '../../../../api/utils/async/mapAsync'
+import { Meteor } from "meteor/meteor";
+import { Lesson } from "../Lesson";
+import { SchoolClass } from "../../schoolclass/SchoolClass";
+import { Phase } from "../../../curriculum/curriculum/phase/Phase";
+import { Unit } from "../../../curriculum/curriculum/unit/Unit";
+import { LessonErrors } from "../LessonErrors";
+import { checkIsTeacher } from "../helpers/checkIsTeacher";
+import { getCollection } from "../../../../api/utils/getCollection";
+import { createDocGetter } from "../../../../api/utils/document/createDocGetter";
+import { createDocCloner } from "../../../../api/utils/document/createDocCloner";
+import { mapAsync } from "../../../../api/utils/async/mapAsync";
 
-const getClassDoc = createDocGetter(SchoolClass)
-const getPhaseDoc = createDocGetter(Phase)
-const getUnitDoc = createDocGetter(Unit)
+const getClassDoc = createDocGetter(SchoolClass);
+const getPhaseDoc = createDocGetter(Phase);
+const getUnitDoc = createDocGetter(Unit);
 
 // for creating local copies of masters
-const clonePhase = createDocCloner(Phase)
-const cloneUnit = createDocCloner(Unit)
-const isCustomUnit = (unitDoc = {}) => unitDoc.pocket === '__custom__'
+const clonePhase = createDocCloner(Phase);
+const cloneUnit = createDocCloner(Unit);
+const isCustomUnit = (unitDoc = {}) => unitDoc.pocket === "__custom__";
 /**
  * Creates a new lesson for a unit and creates a local copy of the unit plus
  * it's phases and tasks (but not other materials).
@@ -31,66 +31,71 @@ const isCustomUnit = (unitDoc = {}) => unitDoc.pocket === '__custom__'
  */
 
 export const createLesson = async ({ classId, unitId, userId } = {}) => {
-  // check class membership at very first, because
-  // only class teachers and admins can create a new lesson
-  const classDoc = await getClassDoc(classId)
-  await checkIsTeacher({ userId, classDoc })
+	// check class membership at very first, because
+	// only class teachers and admins can create a new lesson
+	const classDoc = await getClassDoc(classId);
+	await checkIsTeacher({ userId, classDoc });
 
-  const unitDoc = await getUnitDoc(unitId)
+	const unitDoc = await getUnitDoc(unitId);
 
-  let finalUnitId
-  let finalUnitDoc
+	let finalUnitId;
+	let finalUnitDoc;
 
-  // custom units require no cloning as there is no "original"
-  if (isCustomUnit(unitDoc)) {
-    finalUnitId = unitId
-    finalUnitDoc = unitDoc
-  }
+	// custom units require no cloning as there is no "original"
+	if (isCustomUnit(unitDoc)) {
+		finalUnitId = unitId;
+		finalUnitDoc = unitDoc;
+	}
 
-  // otherwise clone the original unit if it's not a custom unit
-  else {
-    finalUnitId = await cloneUnit(unitId)
-    finalUnitDoc = await getUnitDoc(finalUnitId)
-  }
+	// otherwise clone the original unit if it's not a custom unit
+	else {
+		finalUnitId = await cloneUnit(unitId);
+		finalUnitDoc = await getUnitDoc(finalUnitId);
+	}
 
-  // clone all referenced phases and make new phase point to new unit
-  // and the new unit contain the new phases
-  const modifier = { $set: { unit: finalUnitId } }
-  const newPhases = await mapAsync(finalUnitDoc.phases ?? [], phaseId => clonePhase(phaseId, modifier))
+	// clone all referenced phases and make new phase point to new unit
+	// and the new unit contain the new phases
+	const modifier = { $set: { unit: finalUnitId } };
+	const newPhases = await mapAsync(finalUnitDoc.phases ?? [], (phaseId) =>
+		clonePhase(phaseId, modifier),
+	);
 
-  if (finalUnitDoc.phases && finalUnitDoc.phases.length !== newPhases.length) {
-    throw new Meteor.Error('errors.unexpected', JSON.stringify({
-      expected: finalUnitDoc.phases,
-      actual: newPhases
-    }))
-  }
+	if (finalUnitDoc.phases && finalUnitDoc.phases.length !== newPhases.length) {
+		throw new Meteor.Error(
+			"errors.unexpected",
+			JSON.stringify({
+				expected: finalUnitDoc.phases,
+				actual: newPhases,
+			}),
+		);
+	}
 
-  for (const phaseId of newPhases) {
-    const phaseDoc = await getPhaseDoc(phaseId)
-    if (phaseDoc.unit === unitId) {
-      throw new Meteor.Error(LessonErrors.unexpectedPhaseLink, {
-        phaseId,
-        expected: finalUnitId,
-        actual: unitId
-      })
-    }
-  }
+	for (const phaseId of newPhases) {
+		const phaseDoc = await getPhaseDoc(phaseId);
+		if (phaseDoc.unit === unitId) {
+			throw new Meteor.Error(LessonErrors.unexpectedPhaseLink, {
+				phaseId,
+				expected: finalUnitId,
+				actual: unitId,
+			});
+		}
+	}
 
-  if (newPhases && newPhases.length > 0) {
-    await getCollection(Unit.name).updateAsync(finalUnitDoc, {
-      $set: {
-        phases: newPhases,
-        _original: unitId
-      }
-    })
-  }
+	if (newPhases && newPhases.length > 0) {
+		await getCollection(Unit.name).updateAsync(finalUnitDoc, {
+			$set: {
+				phases: newPhases,
+				_original: unitId,
+			},
+		});
+	}
 
-  // create the lesson with the new and old unit referenced
-  const lessonId = await getCollection(Lesson.name).insertAsync({
-    classId,
-    unit: finalUnitId,
-    unitOriginal: unitId
-  })
+	// create the lesson with the new and old unit referenced
+	const lessonId = await getCollection(Lesson.name).insertAsync({
+		classId,
+		unit: finalUnitId,
+		unitOriginal: unitId,
+	});
 
-  return { lessonId, unitId: finalUnitId }
-}
+	return { lessonId, unitId: finalUnitId };
+};

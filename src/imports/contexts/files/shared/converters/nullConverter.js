@@ -1,3 +1,3 @@
-export const nullConverter = function idleConverter (fileRef) {
-  return fileRef
-}
+export const nullConverter = function idleConverter(fileRef) {
+	return fileRef;
+};

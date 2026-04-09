@@ -1,82 +1,85 @@
-import { $in } from '../../utils/query/inSelector'
-import { onServer } from '../../utils/archUtils'
-import { getCollection } from '../../utils/getCollection'
-import { DefaultFields } from '../../defaults/schema'
+import { $in } from "../../utils/query/inSelector";
+import { onServer } from "../../utils/archUtils";
+import { getCollection } from "../../utils/getCollection";
+import { DefaultFields } from "../../defaults/schema";
 
-const defaultPublicFields = { ...DefaultFields }
+const defaultPublicFields = { ...DefaultFields };
 
-export const createMyMethod = ({ name, publicFields = {}, schema, isFilesCollection }) => {
-  const methodName = `${name}.methods.my`
-  const methodSchema = {
-    limit: {
-      type: Number,
-      max: 1000,
-      optional: true
-    },
-    ids: {
-      type: Array,
-      optional: true
-    },
-    'ids.$': String
-  }
-  const mySchema = Object.assign(methodSchema)
+export const createMyMethod = ({
+	name,
+	publicFields = {},
+	schema,
+	isFilesCollection,
+}) => {
+	const methodName = `${name}.methods.my`;
+	const methodSchema = {
+		limit: {
+			type: Number,
+			max: 1000,
+			optional: true,
+		},
+		ids: {
+			type: Array,
+			optional: true,
+		},
+		"ids.$": String,
+	};
+	const mySchema = Object.assign(methodSchema);
 
-  return {
-    name: methodName,
-    schema: mySchema,
-    run: onServer(async function ({ limit, ids, ...customFields }) {
-      const { userId, log } = this
-      const collection = getCollection(name)
-      const fsQuery = isFilesCollection
-        ? { userId }
-        : { createdBy: userId }
+	return {
+		name: methodName,
+		schema: mySchema,
+		run: onServer(async function ({ limit, ids, ...customFields }) {
+			const { userId, log } = this;
+			const collection = getCollection(name);
+			const fsQuery = isFilesCollection ? { userId } : { createdBy: userId };
 
-      const query = Object.assign(customFields, fsQuery)
+			const query = Object.assign(customFields, fsQuery);
 
-      if (ids?.length) {
-        query._id = $in(ids)
-      }
+			if (ids?.length) {
+				query._id = $in(ids);
+			}
 
-      const projection = {
-        fields: {
-          ...defaultPublicFields,
-          ...publicFields
-        }
-      }
+			const projection = {
+				fields: {
+					...defaultPublicFields,
+					...publicFields,
+				},
+			};
 
-      if (limit) {
-        projection.limit = limit
-      }
+			if (limit) {
+				projection.limit = limit;
+			}
 
-      const cursor = collection.find(query, projection)
-      // log(JSON.stringify(query), '=>', cursor.count())
+			const cursor = collection.find(query, projection);
+			// log(JSON.stringify(query), '=>', cursor.count())
 
-      // we often create documents as "fork" of originals, so we need to
-      // publish the originals, too!
-      const uniqueOriginals = new Set()
-      cursor.forEach(doc => {
-        if (typeof doc._original === 'string') {
-          uniqueOriginals.add(doc._original)
-        }
-      })
+			// we often create documents as "fork" of originals, so we need to
+			// publish the originals, too!
+			const uniqueOriginals = new Set();
+			cursor.forEach((doc) => {
+				if (typeof doc._original === "string") {
+					uniqueOriginals.add(doc._original);
+				}
+			});
 
-      // skip, if there are no originals
-      // with the initial cursor
-      if (uniqueOriginals.size === 0) {
-        const found = await cursor.fetchAsync()
-        log(`${JSON.stringify(query)} => ${found.length}`)
-      }
+			// skip, if there are no originals
+			// with the initial cursor
+			if (uniqueOriginals.size === 0) {
+				const found = await cursor.fetchAsync();
+				log(`${JSON.stringify(query)} => ${found.length}`);
+			}
 
-      // we need to merge the query with our new added ids
-      const originals = Array.from(uniqueOriginals)
-      const originalsQuery = { _id: $in(originals) }
-      const mergedQuery = { $or: [query, originalsQuery] }
-      const mergedFound = collection.find(mergedQuery, projection).fetchAsync()
+			// we need to merge the query with our new added ids
+			const originals = Array.from(uniqueOriginals);
+			const originalsQuery = { _id: $in(originals) };
+			const mergedQuery = { $or: [query, originalsQuery] };
+			const mergedFound = collection.find(mergedQuery, projection).fetchAsync();
 
-      log(`${JSON.stringify(mergedQuery)} => ${mergedFound.length}`)
-      return mergedFound
-    }),
-    timeInterval: 10000,
-    numRequests: 100
-  }
-}
+			log(`${JSON.stringify(mergedQuery)} => ${mergedFound.length}`);
+			return mergedFound;
+		}),
+		timeInterval: 10000,
+		numRequests: 100,
+	};
+};

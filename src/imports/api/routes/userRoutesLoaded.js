@@ -1,3 +1,3 @@
-import { ReactiveVar } from 'meteor/reactive-var'
+import { ReactiveVar } from "meteor/reactive-var";
 
-export const userRoutesLoaded = new ReactiveVar(false)
+export const userRoutesLoaded = new ReactiveVar(false);

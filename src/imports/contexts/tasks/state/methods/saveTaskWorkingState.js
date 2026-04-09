@@ -1,17 +1,17 @@
-import { Meteor } from 'meteor/meteor'
-import { TaskWorkingState } from '../TaskWorkingState'
-import { Task } from '../../../curriculum/curriculum/task/Task'
-import { LessonStates } from '../../../classroom/lessons/LessonStates'
-import { Group } from '../../../classroom/group/Group'
-import { Features } from '../../../../api/config/Features'
-import { LessonErrors } from '../../../classroom/lessons/LessonErrors'
-import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
-import { ensureDocumentExists } from '../../../../api/utils/document/ensureDocumentExists'
-import { getCollection } from '../../../../api/utils/getCollection'
-import { getDocsForMember } from '../../../classroom/lessons/helpers/getDocsForMember'
+import { Meteor } from "meteor/meteor";
+import { TaskWorkingState } from "../TaskWorkingState";
+import { Task } from "../../../curriculum/curriculum/task/Task";
+import { LessonStates } from "../../../classroom/lessons/LessonStates";
+import { Group } from "../../../classroom/group/Group";
+import { Features } from "../../../../api/config/Features";
+import { LessonErrors } from "../../../classroom/lessons/LessonErrors";
+import { createDocGetter } from "../../../../api/utils/document/createDocGetter";
+import { ensureDocumentExists } from "../../../../api/utils/document/ensureDocumentExists";
+import { getCollection } from "../../../../api/utils/getCollection";
+import { getDocsForMember } from "../../../classroom/lessons/helpers/getDocsForMember";
 
-const checkTaskDoc = createDocGetter({ name: Task.name, optional: false })
-const getGroupDoc = createDocGetter({ name: Group.name, optional: false })
+const checkTaskDoc = createDocGetter({ name: Task.name, optional: false });
+const getGroupDoc = createDocGetter({ name: Group.name, optional: false });
 
 /**
  * Saves a current task working state.
@@ -24,76 +24,108 @@ const getGroupDoc = createDocGetter({ name: Group.name, optional: false })
  * @param progress
  * @return {*}
  */
-export const saveTaskWorkingState = async ({ lessonId, taskId, groupId, complete, page, progress, userId } = {}) => {
-  const { lessonDoc } = await getDocsForMember({ userId, lessonId, isStudent: true })
+export const saveTaskWorkingState = async ({
+	lessonId,
+	taskId,
+	groupId,
+	complete,
+	page,
+	progress,
+	userId,
+} = {}) => {
+	const { lessonDoc } = await getDocsForMember({
+		userId,
+		lessonId,
+		isStudent: true,
+	});
 
-  ensureDocumentExists({
-    document: lessonDoc,
-    docId: lessonId,
-    userId: userId
-  })
+	ensureDocumentExists({
+		document: lessonDoc,
+		docId: lessonId,
+		userId: userId,
+	});
 
-  if (!LessonStates.isRunning(lessonDoc)) {
-    throw new Meteor.Error(LessonErrors.unexpectedState, LessonErrors.expectedRunning)
-  }
+	if (!LessonStates.isRunning(lessonDoc)) {
+		throw new Meteor.Error(
+			LessonErrors.unexpectedState,
+			LessonErrors.expectedRunning,
+		);
+	}
 
-  // look for task doc and throw if no doc found by id
-  await checkTaskDoc(taskId)
+	// look for task doc and throw if no doc found by id
+	await checkTaskDoc(taskId);
 
-  // if we have a group we need to get the groupDoc, too
-  let groupDoc
+	// if we have a group we need to get the groupDoc, too
+	let groupDoc;
 
-  if (groupId) {
-    Features.ensure('groups')
-    groupDoc = groupId && await getGroupDoc(groupId)
-    ensureDocumentExists({
-      document: groupDoc,
-      name: Group.name,
-      docId: groupId,
-      userId: userId
-    })
-  }
+	if (groupId) {
+		Features.ensure("groups");
+		groupDoc = groupId && (await getGroupDoc(groupId));
+		ensureDocumentExists({
+			document: groupDoc,
+			name: Group.name,
+			docId: groupId,
+			userId: userId,
+		});
+	}
 
-  const groupVisible = groupDoc?.visible
-  const allMaterial = (groupVisible || []).concat(lessonDoc.visibleStudent || [])
-  const taskIsVisible = allMaterial.find(entry => entry._id === taskId)
+	const groupVisible = groupDoc?.visible;
+	const allMaterial = (groupVisible || []).concat(
+		lessonDoc.visibleStudent || [],
+	);
+	const taskIsVisible = allMaterial.find((entry) => entry._id === taskId);
 
-  // also check if this task is even editable = visible to students
-  if (!taskIsVisible) {
-    throw new Meteor.Error(TaskWorkingState.errors.taskNotEditable, 'taskWorkingState.notVisible', { taskId })
-  }
+	// also check if this task is even editable = visible to students
+	if (!taskIsVisible) {
+		throw new Meteor.Error(
+			TaskWorkingState.errors.taskNotEditable,
+			"taskWorkingState.notVisible",
+			{ taskId },
+		);
+	}
 
-  const TaskWorkingStateCollection = getCollection(TaskWorkingState.name)
-  const taskWorkingStateQuery = { createdBy: userId, lessonId, taskId }
+	const TaskWorkingStateCollection = getCollection(TaskWorkingState.name);
+	const taskWorkingStateQuery = { createdBy: userId, lessonId, taskId };
 
-  if (groupId) {
-    taskWorkingStateQuery.groupId = groupId
-  }
+	if (groupId) {
+		taskWorkingStateQuery.groupId = groupId;
+	}
 
-  const taskWorkingStateDoc = await TaskWorkingStateCollection.findOneAsync(taskWorkingStateQuery)
+	const taskWorkingStateDoc = await TaskWorkingStateCollection.findOneAsync(
+		taskWorkingStateQuery,
+	);
 
-  // create a new task working state if none exists yet
-  if (!taskWorkingStateDoc) {
-    const newTaskWorkingStateDoc = { lessonId, taskId, complete, page, progress }
+	// create a new task working state if none exists yet
+	if (!taskWorkingStateDoc) {
+		const newTaskWorkingStateDoc = {
+			lessonId,
+			taskId,
+			complete,
+			page,
+			progress,
+		};
 
-    if (groupId) {
-      newTaskWorkingStateDoc.groupId = groupId
-    }
+		if (groupId) {
+			newTaskWorkingStateDoc.groupId = groupId;
+		}
 
-    return TaskWorkingStateCollection.insertAsync(newTaskWorkingStateDoc)
-  }
+		return TaskWorkingStateCollection.insertAsync(newTaskWorkingStateDoc);
+	}
 
-  // or update the existing one
-  else {
-    // TODO add a safety check to prevent updating tas kworking state document from other users
-    const updated = await TaskWorkingStateCollection.updateAsync(taskWorkingStateDoc._id, {
-      $set: { complete, page, progress }
-    })
+	// or update the existing one
+	else {
+		// TODO add a safety check to prevent updating tas kworking state document from other users
+		const updated = await TaskWorkingStateCollection.updateAsync(
+			taskWorkingStateDoc._id,
+			{
+				$set: { complete, page, progress },
+			},
+		);
 
-    if (!updated) {
-      throw new Meteor.Error('errors.updateFailed', taskWorkingStateDoc._id)
-    }
+		if (!updated) {
+			throw new Meteor.Error("errors.updateFailed", taskWorkingStateDoc._id);
+		}
 
-    return updated
-  }
-}
+		return updated;
+	}
+};

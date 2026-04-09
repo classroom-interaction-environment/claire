@@ -1,4 +1,4 @@
 /* eslint-env mocha */
-describe('Admin', () => {
-  require('./Admin.tests')
-})
+describe("Admin", () => {
+	require("./Admin.tests");
+});

@@ -1,11 +1,9 @@
-import { Meteor } from 'meteor/meteor'
-import { Task } from '../../../../contexts/curriculum/curriculum/task/Task'
-import { getCollection } from '../../../../api/utils/getCollection'
+import { Meteor } from "meteor/meteor";
+import { Task } from "../../../../contexts/curriculum/curriculum/task/Task";
+import { getCollection } from "../../../../api/utils/getCollection";
 
 if (Meteor.settings.patch?.renameFullImagePaths) {
-  const TaskCollection = getCollection(Task.name)
+	const TaskCollection = getCollection(Task.name);
 
-  TaskCollection.find().forEach(_taskDoc => {
-
-  })
+	TaskCollection.find().forEach((_taskDoc) => {});
 }

@@ -1,6 +1,6 @@
-import { Schema } from '../../../api/schema/Schema'
-import { Fields } from '../../../api/fields/Fields'
-import { Defaults } from '../../../api/defaults/Defaults'
+import { Schema } from "../../../api/schema/Schema";
+import { Fields } from "../../../api/fields/Fields";
+import { Defaults } from "../../../api/defaults/Defaults";
 
 /*
  * Initializes all field-level defaults that are required for validating
@@ -11,6 +11,6 @@ import { Defaults } from '../../../api/defaults/Defaults'
  * information.
  */
 
-Schema.extendOptions(Defaults.schemaOptions())
-Schema.setDefault(Defaults.schema())
-Fields.setDefault(Defaults.fields())
+Schema.extendOptions(Defaults.schemaOptions());
+Schema.setDefault(Defaults.schema());
+Fields.setDefault(Defaults.fields());

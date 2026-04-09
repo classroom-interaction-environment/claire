@@ -1,1 +1,1 @@
-import './literatureListRenderer.html'
+import "./literatureListRenderer.html";

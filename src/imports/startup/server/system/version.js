@@ -1,14 +1,14 @@
 /* global Assets */
-import { Meteor } from 'meteor/meteor'
-import { VersionStore } from '../../../contexts/system/version/server/store'
+import { Meteor } from "meteor/meteor";
+import { VersionStore } from "../../../contexts/system/version/server/store";
 
 Meteor.startup(async () => {
-  try {
-    const versionFile = await Assets.getTextAsync('version')
-    const split = versionFile.split('-')
-    VersionStore.tag = split[0]
-    VersionStore.commit = split[1]
-  } catch (e) {
-    console.error(e)
-  }
-})
+	try {
+		const versionFile = await Assets.getTextAsync("version");
+		const split = versionFile.split("-");
+		VersionStore.tag = split[0];
+		VersionStore.commit = split[1];
+	} catch (e) {
+		console.error(e);
+	}
+});

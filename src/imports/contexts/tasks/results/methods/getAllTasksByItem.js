@@ -1,6 +1,6 @@
-import { TaskResults } from '../TaskResults'
-import { getCollection } from '../../../../api/utils/getCollection'
-import { getDocsForMember } from '../../../classroom/lessons/helpers/getDocsForMember'
+import { TaskResults } from "../TaskResults";
+import { getCollection } from "../../../../api/utils/getCollection";
+import { getDocsForMember } from "../../../classroom/lessons/helpers/getDocsForMember";
 
 /**
  * Creates a query for all given references that contain the combination of lessonId, taskId and itemId.
@@ -11,12 +11,12 @@ import { getDocsForMember } from '../../../classroom/lessons/helpers/getDocsForM
  * @returns {Mongo.Cursor}
  */
 export const getAllTasksByItem = async ({ userId, references }) => {
-  const query = { $or: [] }
+	const query = { $or: [] };
 
-  for (const { lessonId, taskId, itemId } of references) {
-    await getDocsForMember({ userId, lessonId })
-    query.$or.push({ lessonId, taskId, itemId })
-  }
+	for (const { lessonId, taskId, itemId } of references) {
+		await getDocsForMember({ userId, lessonId });
+		query.$or.push({ lessonId, taskId, itemId });
+	}
 
-  return getCollection(TaskResults.name).find(query)
-}
+	return getCollection(TaskResults.name).find(query);
+};
