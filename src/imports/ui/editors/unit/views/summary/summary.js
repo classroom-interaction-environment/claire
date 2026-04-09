@@ -120,7 +120,6 @@ const forms = {
       })
     },
     onSubmit ({ doc, originalDoc, templateInstance }) {
-      debugger
       const updateDoc = toUpdateDoc(originalDoc, doc)
 
       return updateContextDoc({
@@ -138,7 +137,7 @@ const forms = {
 
 const buildObjectiveTree = (docs, parentId = null) => {
   return docs
-    .filter(doc => doc.parent == parentId)
+    .filter(doc => doc.parent === parentId)
     .map(doc => ({
       ...doc,
       children: buildObjectiveTree(docs, doc._id)
@@ -146,8 +145,7 @@ const buildObjectiveTree = (docs, parentId = null) => {
 }
 
 Template.uesummary.onCreated(async function () {
-  const instance = this
-  const { data } = instance
+  const { data } = this
   const { unitDoc, classDoc, pocketDoc, preview } = data
 
   // first, make a sanity check for all required docs. It's job of the parent
@@ -157,9 +155,9 @@ Template.uesummary.onCreated(async function () {
     return API.fatal(new DocNotFoundError(undefined, { unitDoc }))
   }
   // detect all material, that is linked to the unit but not to any phase of it
-  instance.state.set({ preview })
+  this.state.set({ preview })
 
-  instance.createBaseData = ({ unitDoc }) => {
+  this.createBaseData = ({ unitDoc }) => {
     // create on overview list of any basic information
     const baseData = []
 
@@ -195,29 +193,29 @@ Template.uesummary.onCreated(async function () {
       value: unitDoc.description || API.translate('common.noDescription')
     })
 
-    instance.state.set({ baseData })
+    this.state.set({ baseData })
   }
 
   await loadIntoCollection({
     name: Dimension.methods.editor,
     collection: getLocalCollection(Dimension.name),
-    success: () => instance.state.set('dimensionsComplete', true)
+    success: () => this.state.set('dimensionsComplete', true)
   })
   await loadIntoCollection({
     name: Objective.methods.editor,
     collection: getLocalCollection(Objective.name),
-    success: () => instance.state.set('objectivesComplete', true)
+    success: () => this.state.set('objectivesComplete', true)
   })
 
   // if unit doc changes, we update the associated dimensions
-  instance.autorun(() => {
+  this.autorun(() => {
     const unitDoc = Template.currentData().unitDoc
-    instance.createBaseData({ unitDoc })
+    this.createBaseData({ unitDoc })
     const dimensionIds = unitDoc?.dimensions || []
     const dimensions = getLocalCollection(Dimension.name).find({ _id: { $in: dimensionIds } }).fetch()
     const objectiveIds = unitDoc?.objectives || []
     const objectives = getLocalCollection(Objective.name).find({ _id: { $in: objectiveIds } }).fetch()
-    instance.state.set({ dimensions, objectives })
+    this.state.set({ dimensions, objectives })
   })
 })
 

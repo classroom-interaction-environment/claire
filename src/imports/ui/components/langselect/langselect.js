@@ -12,8 +12,7 @@ const API = Template.langselect.setDependencies({
 })
 
 Template.langselect.onCreated(function () {
-  const instance = this
-  loadAvailable(instance).catch(API.notify)
+  loadAvailable(this).catch(API.notify)
 })
 
 const loadAvailable = async (instance) => {
@@ -31,7 +30,7 @@ Template.langselect.helpers({
     if (!languages) return currentLang
 
     const locale = languages.find(l => l.code === currentLang)
-    return (locale && locale.icon) || currentLang
+    return (locale?.icon) || currentLang
   },
   availableLanguages () {
     return Template.getState('availableLanguages')

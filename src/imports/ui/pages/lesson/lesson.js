@@ -60,7 +60,7 @@ Template.lesson.onCreated(function () {
 
   // lessonDoc
 
-  instance.autorun(function () {
+  instance.autorun(() => {
     const data = Template.currentData()
     const { lessonId } = data.params
     if (!lessonId) {
@@ -192,7 +192,7 @@ Template.lesson.onCreated(function () {
     })
   })
 
-  instance.autorun(function () {
+  instance.autorun(() => {
     const unitDoc = instance.state.get('unitDoc')
     const lessonDoc = instance.state.get('lessonDoc')
     const classId = lessonDoc?.classId
@@ -248,7 +248,7 @@ Template.lesson.helpers({
   },
   completed () {
     const doc = Template.getState('lessonDoc')
-    return doc && doc.completed
+    return doc?.completed
   },
   lessonUploads () {
     // return LessonUploadsCollection.find()
@@ -299,7 +299,7 @@ Template.lesson.events({
       })
       .catch(e => API.notify(e))
   },
-  'hidden.bs.modal #inviteToClassModal' (event, templateInstance) {
+  'hidden.bs.modal #inviteToClassModal' (_event, templateInstance) {
     templateInstance.state.set('invitationModalVisible', false)
   }
 })

@@ -4,8 +4,7 @@ import { contrastColor } from '../../utils/color/contrastColor'
 import './dimension.html'
 
 Template.dimension.onCreated(function () {
-  const instance = this
-  const { data } = instance
+  const { data } = this
   const attributes = new Map()
 
   if (data.title) {
@@ -27,7 +26,7 @@ Template.dimension.onCreated(function () {
     }
   })
 
-  instance.state.set({
+  this.state.set({
     attributes: Object.fromEntries(attributes.entries())
   })
 })

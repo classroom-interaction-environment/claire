@@ -62,7 +62,7 @@ Template.taskEditor.onCreated(function () {
         }
       }
       if (nextView) {
-        step.popover.onNextClick = (element, step, options) => {
+        step.popover.onNextClick = (_element, _step, options) => {
           const nextBtn = document.querySelector('.driver-popover-next-btn')
           nextBtn.disabled = true;
           setQueryParams({ task: nextView })
@@ -93,7 +93,7 @@ Template.taskEditor.onCreated(function () {
           popover: {
             title: API.translate(`editor.task.guide.elements.title`),
             description: API.translate(`editor.task.guide.elements.text`),
-            onNextClick: (element, step, options) => {
+            onNextClick: (_element, _step, options) => {
               const nextBtn = document.querySelector('.driver-popover-next-btn')
               nextBtn.disabled = true;
               const contentBtn = document.querySelector('.add-content-entry[data-target="item"]')
@@ -110,7 +110,7 @@ Template.taskEditor.onCreated(function () {
           popover: {
             title: API.translate(`editor.task.guide.items.title`),
             description: API.translate(`editor.task.guide.items.text`),
-            onNextClick: (element, step, options) => {
+            onNextClick: (_element, _step, options) => {
               const nextBtn = document.querySelector('.driver-popover-next-btn')
               nextBtn.disabled = true;
               API.hideModal('pageContentAddModal')
@@ -138,7 +138,7 @@ Template.taskEditor.onCreated(function () {
           popover: {
             title: API.translate(`editor.task.guide.leave.title`),
             description: API.translate(`editor.task.guide.leave.text`),
-            onNextClick: (element, step, options) => {
+            onNextClick: (_element, _step, options) => {
               instance.state.set('currentViewName', TaskEditorViewStates.pages.name)
               setTimeout(() =>  {
                 options.driver.moveNext()
@@ -150,7 +150,7 @@ Template.taskEditor.onCreated(function () {
     })
 
     // guide autostart
-    instance.guide.autostart(({ hasViewed, start, stop }) => {
+    instance.guide.autostart(({ hasViewed /*, start, stop */ }) => {
       const instance = Template.instance()
       const user = Meteor.user()
       if (instance.state.get('taskComplete') &&
@@ -258,18 +258,16 @@ Template.taskEditor.onCreated(function () {
 })
 
 Template.taskEditor.onRendered(function () {
-  const instance = this
-  instance.helpListener = function () {
-    instance.guide.start()
+  this.helpListener = () => {
+    this.guide.start()
   }
-  document.querySelector('.te-help-btn').addEventListener('click', instance.helpListener)
+  document.querySelector('.te-help-btn').addEventListener('click', this.helpListener)
 })
 
 Template.taskEditor.onDestroyed(function () {
-  const instance = this
-  document.querySelector('.te-help-btn').removeEventListener('click', instance.helpListener)
+  document.querySelector('.te-help-btn').removeEventListener('click', this.helpListener)
   API.dispose(taskEditorSubKey)
-  instance.state.destroy()
+  this.state.destroy()
 })
 
 Template.taskEditor.helpers({
@@ -342,7 +340,7 @@ Template.taskEditor.events({
     const task = getCollection(Task.name).findOne(value)
     templateInstance.state.set('taskId', task._id)
   },
-  'submit #basicDataForm' (event, templateInstance) {
+  'submit #basicDataForm' (event, _templateInstance) {
     event.preventDefault()
     console.warn('remove this?')
   },

@@ -25,7 +25,7 @@ const curriclumSchema = {
   }
 }
 
-export const curriculumPipeline = createPipeline(Curriculum.name, function (context) {
+export const curriculumPipeline = createPipeline(Curriculum.name, (context) => {
   Curriculum.setIdentity(context)
 
   // CREATING SCHEMA

@@ -47,7 +47,9 @@ export const loadIntoCollection = ({
       ? docs
       : [docs]
 
-    docs.forEach(doc => collection.upsert(doc._id, { $set: doc }))
+    for (const doc of docs) {
+      collection.upsert(doc._id, { $set: doc })
+    }
 
     if (typeof success === 'function') {
       success(docs)

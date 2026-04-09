@@ -3,7 +3,7 @@ import sinon from 'sinon'
 
 const _methods = {}
 
-const callHandler = function (name, ...args) {
+const callHandler = (name, ...args) => {
   if (Meteor.isServer) {
     return _methods[name](...args)
   }
@@ -48,7 +48,7 @@ function clear () {
   _stubbed = false
 }
 
-export const stubMethod = function (name, handler) {
+export const stubMethod = (name, handler) => {
   if (!name || !handler) {
     console.error('Invalid args', name, handler)
     throw new Error('Invalid args')
@@ -61,7 +61,7 @@ export const stubMethod = function (name, handler) {
   _methods[name] = handler
 }
 
-export const unstubMethod = function (name) {
+export const unstubMethod = (name) => {
   if (!name) return clear()
   delete _methods[name]
   if (Object.keys(_methods).length === 0) {

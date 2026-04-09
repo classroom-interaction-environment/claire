@@ -38,7 +38,7 @@ const internal = {
  * @return {function}
  */
 export const createLog = ({ name, type = 'log', devOnly = false, inTests = false }) => {
-  if (!Object.prototype.hasOwnProperty.call(internal, type)) {
+  if (!Object.hasOwn(internal, type)) {
     throw new TypeError(`Unsupported log type ${type}.`)
   }
 

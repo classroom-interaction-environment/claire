@@ -37,7 +37,7 @@ Template.nav.events({
     const activeCategory = dataTarget(event, templateInstance, 'link')
     templateInstance.state.set('active', activeCategory)
   },
-  'click .navbar-navlink' (event, templateInstance) {
+  'click .navbar-navlink' (_event, templateInstance) {
     const $target = templateInstance.$('#collapsibleNavbar')
     $target.collapse('hide')
   },

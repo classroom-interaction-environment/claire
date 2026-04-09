@@ -27,7 +27,7 @@ export const getFilesLink = ({ file, name, collection, version = 'original' }) =
   else {
     const fCollection = collection ?? (name && getFilesCollection(name))
     console.debug('getFilesLink:', version, file)
-    link = fCollection && fCollection.link(file, version)
+    link = fCollection?.link(file, version)
   }
 
   if (!link) {

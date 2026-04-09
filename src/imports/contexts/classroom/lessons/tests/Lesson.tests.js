@@ -48,7 +48,6 @@ import { DocumentFiles } from '../../../files/document/DocumentFiles'
 import { EmbeddedResource } from '../../../resources/web/embedded/EmbeddedResource'
 import { Literature } from '../../../resources/web/literature/Literature'
 import { LinkedResource } from '../../../resources/web/linked/LinkedResource'
-import { getMaterialContexts } from '../../../material/initMaterial'
 import { Dimension } from '../../../curriculum/curriculum/dimension/Dimension'
 import { Objective } from '../../../curriculum/curriculum/objective/Objective'
 import { Pocket } from '../../../curriculum/curriculum/pocket/Pocket'
@@ -657,7 +656,7 @@ describe(Lesson.name, () => {
         const entries = Object.entries(materialRemoved)
         expect(entries.length).to.equal(8)
 
-        entries.forEach(([context, removeCount]) => {
+        entries.forEach(([_context, removeCount]) => {
           expect(removeCount).to.equal(0)
         })
 
@@ -667,7 +666,7 @@ describe(Lesson.name, () => {
       it('removes custom material only if it\'s not used by other lessons')
       it('removes groups, associated with this lesson', async () => {
         const userId = Random.id()
-        let unitDoc = await mockUnitDoc({ _master: true, createdBy: userId }, UnitCollection)
+        const unitDoc = await mockUnitDoc({ _master: true, createdBy: userId }, UnitCollection)
         const unitId = unitDoc._id
         const lessonId = Random.id()
         const classId = Random.id()

@@ -2,8 +2,7 @@ import { Template } from 'meteor/templating'
 import './icon.html'
 
 Template.icon.onCreated(function () {
-  const instance = this
-  const { data } = instance
+  const { data } = this
 
   const fw = data.fw ? 'fa-fw' : ''
   const type = data.type || 'fas'
@@ -16,7 +15,7 @@ Template.icon.onCreated(function () {
   const attributes = {}
   attributes.class = `fa ${fw} ${type} ${spin} ${pulse} fa-${name} ${customClasses}`
 
-  instance.state.set({ attributes })
+  this.state.set({ attributes })
 })
 
 Template.icon.helpers({

@@ -125,30 +125,28 @@ Template.afGroupText.onCreated(function () {
 })
 
 Template.afGroupText.onDestroyed(function () {
-  const instance = this
 
-  if (instance.state.get('subscribed')) {
+  if (this.state.get('subscribed')) {
     API.dispose(subKey)
   }
 
-  if (instance.observer) {
-    instance.observer.stop()
+  if (this.observer) {
+    this.observer.stop()
   }
 })
 
 Template.afGroupText.onRendered(function () {
-  const instance = this
 
-  instance.autorun(c => {
-    const itemId = instance.state.get('itemId')
-    if (!instance.state.get('subReady') || !itemId) {
+  this.autorun(c => {
+    const itemId = this.state.get('itemId')
+    if (!this.state.get('subReady') || !itemId) {
       return
     }
 
     const myDoc = getCollection(TaskResults.name).findOne({ itemId, createdBy: Meteor.userId() })
 
     if (myDoc) {
-      setTimeout(() => instance.$('.my-text').val(myDoc.response[0]), 300)
+      setTimeout(() => this.$('.my-text').val(myDoc.response[0]), 300)
     }
 
     // clear computation since this is just for the initial value
@@ -183,7 +181,7 @@ Template.afGroupText.helpers({
 })
 
 Template.afGroupText.events({
-  'input .my-text': debounce(function (event, templateInstance) {
+  'input .my-text': debounce((event, _templateInstance) => {
     $(event.currentTarget).closest('form').submit()
   }, 300),
   'click .group-member-tab' (event, templateInstance) {

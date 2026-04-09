@@ -1,6 +1,6 @@
 /* global __meteor_runtime_config__ */
 import { Meteor } from 'meteor/meteor'
-import crypto from 'crypto'
+import crypto from 'node:crypto'
 import { WebApp } from 'meteor/webapp'
 import { Autoupdate } from 'meteor/autoupdate'
 import { check } from 'meteor/check'
@@ -28,7 +28,7 @@ export function cspOptions (externalHostUrls = []) {
     })
 
     // add client versions to __meteor_runtime_config__
-    Object.keys(WebApp.clientPrograms).forEach(arch => {
+    for (const arch of Object.keys(WebApp.clientPrograms)) {
       __meteor_runtime_config__.versions[arch] = {
         version: Autoupdate.autoupdateVersion || WebApp.clientPrograms[arch].version(),
         versionRefreshable: Autoupdate.autoupdateVersion || WebApp.clientPrograms[arch].versionRefreshable(),
@@ -36,7 +36,7 @@ export function cspOptions (externalHostUrls = []) {
         // comment the following line if you use Meteor < 2.0
         versionReplaceable: Autoupdate.autoupdateVersion || WebApp.clientPrograms[arch].versionReplaceable()
       }
-    })
+    }
 
     const runtimeConfigScript = `__meteor_runtime_config__ = JSON.parse(decodeURIComponent("${encodeURIComponent(JSON.stringify(runtimeConfig))}"))`
     return crypto.createHash('sha256').update(runtimeConfigScript).digest('base64')

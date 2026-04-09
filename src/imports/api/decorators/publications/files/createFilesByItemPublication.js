@@ -9,7 +9,7 @@ export const createFilesByItemPublication = ({ name }) => ({
       taskId: String,
       itemId: String
     },
-    run: onServer(function ({ lessonId, taskId, itemId }) {
+    run: onServer(({ lessonId, taskId, itemId }) => {
       const query = {
         'meta.lessonId': lessonId,
         'meta.taskId': taskId,

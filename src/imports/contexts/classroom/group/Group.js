@@ -203,8 +203,8 @@ Group.methods.get = {
     'ids.$': String
   },
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { getGroups } from './methods/getGroups'
+  run: onServerExec(() => {
+    const { getGroups } = require('./methods/getGroups')
 
     return async function ({ ids }) {
       const { userId } = this
@@ -234,8 +234,8 @@ Group.methods.save = {
     }
   }, Group.schema),
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { saveGroup } from './methods/saveGroup'
+  run: onServerExec(() => {
+    const { saveGroup } = require('./methods/saveGroup')
     return function (groupDoc) {
       const { userId } = this
       return saveGroup({ doc: groupDoc, userId })
@@ -247,8 +247,8 @@ Group.methods.update = {
   name: 'group.methods.update',
   schema: { _id: String, ...Group.schema },
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { updateGroup } from './methods/updateGroup'
+  run: onServerExec(() => {
+    const { updateGroup } = require('./methods/updateGroup')
     return function (doc) {
       const { userId } = this
       return updateGroup({ doc, userId })
@@ -260,8 +260,8 @@ Group.methods.delete = {
   name: 'group.methods.delete',
   schema: { _id: String },
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { deleteGroup } from './methods/deleteGroup'
+  run: onServerExec(() => {
+    const { deleteGroup } = require('./methods/deleteGroup')
     return function ({ _id }) {
       const { userId } = this
       return deleteGroup({ groupId: _id, userId })
@@ -273,8 +273,8 @@ Group.methods.toggleMaterial = {
   name: 'group.methods.toggleMaterial',
   schema: { _id: String, materialId: String, contextName: String },
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { toggleGroupMaterial } from './methods/toggleGroupMaterial'
+  run: onServerExec(() => {
+    const { toggleGroupMaterial } = require('./methods/toggleGroupMaterial')
     return function ({ _id, materialId, contextName }) {
       const { userId } = this
       return toggleGroupMaterial({ groupId: _id, userId, materialId, contextName })
@@ -286,8 +286,8 @@ Group.methods.users = {
   name: 'group.methods.users',
   schema: { groupId: String },
   role: Hierarchy.student,
-  run: onServerExec(function () {
-    import { getGroupUsers } from './methods/getGroupUsers'
+  run: onServerExec(() => {
+    const { getGroupUsers } = require('./methods/getGroupUsers')
     return function ({ groupId }) {
       const { userId } = this
       return getGroupUsers({ groupId, userId })

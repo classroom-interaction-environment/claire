@@ -16,9 +16,9 @@ const events = {
 let debugActive = false
 const eventKeys = Object.keys(events)
 const callbacks = {}
-eventKeys.forEach(key => {
+for (const key in eventKeys) {
   callbacks[key] = []
-})
+}
 
 SyncPipeline.events = events
 SyncPipeline.on = (name, cb) => callbacks[name].push(cb)
@@ -30,7 +30,9 @@ SyncPipeline.complete = (key, optionalArgs) => {
   if (debugActive) {
     debug(`complete [${key}]`)
   }
-  callbacks[key].forEach(cb => cb(optionalArgs))
+  for (const cb of callbacks[key]) {
+    cb(optionalArgs)
+  }
   callbacks[key] = []
 }
 SyncPipeline.done = () => {

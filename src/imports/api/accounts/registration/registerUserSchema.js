@@ -40,7 +40,7 @@ export const userNameSchema = ({ label, min = 4, max = 32, regExp = passwordRegE
   min: min,
   max: max,
   autoform: onClient({
-    hint: i18n.reactive('form.allowedChars') + ': a-z A-Z 0-9 @ _ - .'
+    hint: `${i18n.reactive('form.allowedChars')}: a-z A-Z 0-9 @ _ - .`
   })
 })
 
@@ -56,9 +56,9 @@ export const codeSchema = ({ max = 20, label, autofocus, autocomplete } = {}) =>
 
 let roleSchema
 
-;(function () {
-  import { Hierarchy } from '../roles/Hierarchy'
-  import { getHighestRole } from '../roles/getHighestRole'
+;(() => {
+  const { Hierarchy } = require('../roles/Hierarchy')
+  const { getHighestRole } = require('../roles/getHighestRole')
   const rolesList = Object.values(Hierarchy)
   let mappedRoles
 
@@ -68,7 +68,7 @@ let roleSchema
     allowedValues: rolesList,
     autoform: onClient({
       firstOption: () => i18n.reactive('form.selectOne'),
-      options: (function () {
+      options: (() => {
         // lazy init mapped roles on client
         if (!mappedRoles) {
           mappedRoles = rolesList.map(role => ({
@@ -77,7 +77,7 @@ let roleSchema
           }))
         }
 
-        return function () {
+        return () => {
           const userId = Meteor.userId()
           const highest = getHighestRole(userId)
           const index = mappedRoles.findIndex(entry => entry.value === highest)

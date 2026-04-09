@@ -14,8 +14,7 @@ const API = Template.videoResultsRenderer.setDependencies({
 const VideoFilesCollection = getFilesCollection(VideoFiles.name)
 
 Template.videoResultsRenderer.onCreated(function () {
-  const instance = this
-  const { lessonId, taskId, itemId } = instance.data
+  const { lessonId, taskId, itemId } = this.data
 
   API.subscribe({
     name: VideoFiles.publications.byItem,
@@ -24,7 +23,7 @@ Template.videoResultsRenderer.onCreated(function () {
     callbacks: {
       onError: error => {
         API.notify(error)
-        instance.state.set('loadComplete', true)
+        this.state.set('loadComplete', true)
       },
       onReady: () => {
         API.debug('sub complete')
@@ -32,7 +31,7 @@ Template.videoResultsRenderer.onCreated(function () {
     }
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const videos = getResponseFiles({
       filesCollection: VideoFilesCollection,
       versions: ['original'],
@@ -41,11 +40,11 @@ Template.videoResultsRenderer.onCreated(function () {
       itemId
     })
     const hasVideos = !!(videos?.length)
-    instance.state.set({ videos, hasVideos })
+    this.state.set({ videos, hasVideos })
   })
 })
 
-Template.videoResultsRenderer.onDestroyed(function () {
+Template.videoResultsRenderer.onDestroyed(() => {
   API.dispose('videoResultKey')
 })
 
@@ -77,7 +76,7 @@ Template.videoResultsRenderer.events({
     const { prev, next } = getPrevAndNext(id, videos)
     templateInstance.state.set({ prev, next })
   },
-  'click .cssbox-close' (event, templateInstance) {
+  'click .cssbox-close' (_event, templateInstance) {
     templateInstance.state.set({ prev: null, next: null })
   },
   'error source' (event, templateInstance) {

@@ -19,36 +19,35 @@ const getQueryParamKey = instance => instance.data.queryParam || 'v'
  */
 
 Template.submenu.onCreated(function () {
-  const instance = this
 
-  const { onViewSelected, views } = instance.data
-  instance.getViewByName = name => views.find(view => view.name === name)
+  const { onViewSelected, views } = this.data
+  this.getViewByName = name => views.find(view => view.name === name)
 
-  const queryParamKey = getQueryParamKey(instance)
+  const queryParamKey = getQueryParamKey(this)
   const initialView = views[0]?.name
-  const { getQueryParam } = instance.data
+  const { getQueryParam } = this.data
 
   // if there are no reactive queryParams supported we simply skip
   // and use the default internal instance.state variant
   if (typeof getQueryParam !== 'function') {
-    instance.state.set('current', initialView)
-    onViewSelected && onViewSelected(initialView)
+    this.state.set('current', initialView)
+    onViewSelected?.(initialView)
     return
   }
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const queryParam = getQueryParam(queryParamKey)
-    const currentQueryParam = instance.state.get('current')
+    const currentQueryParam = this.state.get('current')
 
     if (!queryParam) {
-      instance.state.set('current', initialView)
-      onViewSelected && onViewSelected(initialView)
+      this.state.set('current', initialView)
+      onViewSelected?.(initialView)
       return
     }
 
-    if (queryParam !== currentQueryParam && instance.getViewByName(queryParam)) {
-      instance.state.set('current', queryParam)
-      onViewSelected && onViewSelected(queryParam)
+    if (queryParam !== currentQueryParam && this.getViewByName(queryParam)) {
+      this.state.set('current', queryParam)
+      onViewSelected?.(queryParam)
     }
   })
 })
@@ -90,7 +89,7 @@ Template.submenu.events({
 
     if (typeof updateQueryParam !== 'function') {
       templateInstance.state.set({ current })
-      onViewSelected && onViewSelected(current)
+      onViewSelected?.(current)
     }
 
     const queryParamKey = getQueryParamKey(templateInstance)

@@ -23,13 +23,15 @@ Schema.extendOptions = options => {
 Schema.create = function create (obj, options = {}) {
   const SchemaClass = Schema.provider
   const instance = new SchemaClass(obj, { ..._defaultOptions, ...options })
-  onCreateStack.forEach(fct => fct(instance))
+  for (const fct of onCreateStack) {
+    fct(instance)
+  }
   return instance
 }
 
 const onCreateStack = []
 
-Schema.onCreate = function (fct) {
+Schema.onCreate = (fct) => {
   onCreateStack.push(fct)
 }
 
@@ -56,7 +58,7 @@ Schema.getDefault = function getDefault () {
 
 let _defaultOptions = {}
 
-Schema.setDefaultOptions = function (options) {
+Schema.setDefaultOptions = (options) => {
   debug('extend default options', options)
   _defaultOptions = options
 }
@@ -73,7 +75,7 @@ Schema.withDefault = function withDefault (obj, options) {
   return Schema.create(schema, options)
 }
 
-Schema.setLanguage = function ({ translate }) {
+Schema.setLanguage = ({ translate }) => {
   debug('set language', translate)
   _translate = translate
 }

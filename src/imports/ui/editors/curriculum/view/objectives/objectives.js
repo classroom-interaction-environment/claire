@@ -23,7 +23,9 @@ const getAllChildren = (parent) => {
 
   children.forEach(docId => {
     out.add(docId)
-    getAllChildren(docId).forEach(_id => out.add(_id))
+    getAllChildren(docId).forEach(_id => {
+      out.add(_id)
+    })
   })
 
   // edge case, if there was an undefined entry
@@ -39,20 +41,19 @@ const API = Template.curriculumObjectives.setDependencies({
 const objectiveSchema = API.createSchema(Objective.schema, { withDefault: true })
 
 Template.curriculumObjectives.onCreated(function () {
-  const instance = this
-  instance.objectives = new Mongo.Collection(null)
+  this.objectives = new Mongo.Collection(null)
 
   API.subscribe({
     key: curriculumEditorSubKey,
     name: Objective.publications.curriculum.name,
     callbacks: {
       onError: API.notify,
-      onReady: () => instance.state.set('loadComplete', true)
+      onReady: () => this.state.set('loadComplete', true)
     }
   })
 })
 
-Template.curriculumObjectives.onDestroyed(function () {
+Template.curriculumObjectives.onDestroyed(() => {
   expanded.clear()
 })
 
@@ -139,7 +140,7 @@ Template.curriculumObjectives.events({
         })
       })
   },
-  'hidden.bs.modal' (event, templateInstance) {
+  'hidden.bs.modal' (_event, templateInstance) {
     formReset('editObjectiveForm')
     templateInstance.state.set({
       editDoc: null,

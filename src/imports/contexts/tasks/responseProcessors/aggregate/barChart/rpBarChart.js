@@ -14,18 +14,17 @@ const baseLayout = {
 }
 
 Template.rpBarChart.onRendered(function () {
-  const instance = this
-  const { api } = instance.data
-  const plotTarget = instance.$('.sc-plot-target').get(0)
+  const { api } = this.data
+  const plotTarget = this.$('.sc-plot-target').get(0)
 
   // expensive init at first renderer
   Plotly.newPlot(plotTarget, [], baseLayout, config)
 
-  api.onResize(function () {
+  api.onResize(() => {
     Plotly.relayout(plotTarget, baseLayout, config)
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     const { choices = [], results, api } = data
     const dataType = api.dataType()
@@ -107,14 +106,14 @@ Template.rpBarChart.onRendered(function () {
     }
 
     Plotly.react(plotTarget, [plotData])
-    instance.state.set('sampleSize', sampleSize)
+    this.state.set('sampleSize', sampleSize)
   })
 })
 
 Template.rpBarChart.helpers({
   sampleSize () {
     const data = Template.instance().data
-    return data.results && data.results
-      .filter(entry => entry.response && entry.response.length > 0).length
+    return data.results
+      ?.filter(entry => entry.response && entry.response.length > 0).length
   }
 })

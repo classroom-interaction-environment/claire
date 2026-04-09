@@ -37,8 +37,8 @@ export const createMaterialEdit = ({ API, templateInstance, onBefore = noop, onC
       // give additional context to the onCreated hook
       // to allow contexts to decide, what to do when a new doc
       // is created
-      const onCreated = (viewState.onCreated || viewState.hooks?.onCreated || function () {
-      }).bind({
+      const onCreated = (viewState.onCreated || viewState.hooks?.onCreated || (() => {
+      })).bind({
         redirect,
         isMasterMaterial,
         isMasterMode

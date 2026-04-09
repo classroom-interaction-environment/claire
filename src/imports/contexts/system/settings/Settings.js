@@ -3,8 +3,6 @@ import { i18n } from '../../../api/language/language'
 import { Themes } from '../../../api/themes/Themes'
 import { getCollection } from '../../../api/utils/getCollection'
 import { onClientExec, onServer, onServerExec } from '../../../api/utils/archUtils'
-import { getFilesCollection } from '../../../api/utils/getFilesCollection'
-import { AppImages } from '../../files/image/AppImages'
 import { getFilesLink } from '../../files/getFilesLink'
 
 const reactive = label => () => i18n.get(label)
@@ -93,9 +91,9 @@ export const Settings = {
     mainLogo: {
       type: String,
       optional: true,
-      autoform: onClientExec(function () {
-        import { FilesTemplates } from '../../files/FilesTemplates'
-        import { AppImages } from '../../files/image/AppImages'
+      autoform: onClientExec(() => {
+        const { FilesTemplates } = require('../../files/FilesTemplates')
+        const { AppImages } = require('../../files/image/AppImages')
 
         return {
           label: false,
@@ -117,9 +115,9 @@ export const Settings = {
     },
     'logos.$': {
       type: String,
-      autoform: onClientExec(function () {
-        import { AppImages } from '../../files/image/AppImages'
-        import { Files } from '../../files/Files'
+      autoform: onClientExec(() => {
+        const { AppImages } = require('../../files/image/AppImages')
+        const { Files } = require('../../files/Files')
 
         return {
           type: 'fileUpload',
@@ -149,7 +147,7 @@ export const Settings = {
   publications: {}
 }
 
-onClientExec(function () {
+onClientExec(() => {
   const { ReactiveVar } = require('meteor/reactive-var')
   const settingsDoc = new ReactiveVar(null)
 
@@ -160,11 +158,9 @@ onClientExec(function () {
     })
   }
 
-  Settings.helpers.get = function () {
-    return settingsDoc.get()
-  }
+  Settings.helpers.get = () => settingsDoc.get()
 
-  Settings.helpers.update = function (doc, callback) {
+  Settings.helpers.update = (doc, callback) => {
     Meteor.call(Settings.methods.updateSettings.name, doc, (err, res) => {
       if (err) return callback(err)
       if (!res) return callback(new Error('errors.updateFailed'))
@@ -179,7 +175,7 @@ Settings.methods = {
     name: 'settings.methods.get',
     schema: null,
     isPublic: true,
-    run: onServer(function () {
+    run: onServer(() => {
       const SettingsCollection = getCollection(Settings.name)
       return SettingsCollection.findOneAsync()
     })
@@ -189,7 +185,7 @@ Settings.methods = {
     schema: Settings.schema,
     timeInterval: 1000,
     numRequests: 1,
-    run: onServer(async function ({ ui, imprint, privacy, terms, termsStudent, contact, research, researchOptions, mainLogo, logos }) {
+    run: onServer(async ({ ui, imprint, privacy, terms, termsStudent, contact, research, researchOptions, mainLogo, logos }) => {
       const SettingsCollection = getCollection(Settings.name)
       const settingsDoc = await SettingsCollection.findOneAsync()
 
@@ -221,10 +217,10 @@ Settings.methods.logo = {
   name: 'settings.methods.logo',
   schema: null,
   isPublic: true,
-  run: onServerExec(function () {
-    import { AppImages } from '../../files/image/AppImages'
-    import { getCollection } from '../../../api/utils/getCollection'
-    import { getFilesCollection } from '../../../api/utils/getFilesCollection'
+  run: onServerExec(() => {
+    const { AppImages } = require('../../files/image/AppImages')
+    const { getCollection } = require('../../../api/utils/getCollection')
+    const { getFilesCollection } = require('../../../api/utils/getFilesCollection')
 
     return async () => {
       const SettingsCollection = getCollection(Settings.name)

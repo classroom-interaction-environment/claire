@@ -11,33 +11,34 @@ import './userGroupSelect.html'
 Template.afUserGroupSelect.setDependencies()
 
 Template.afUserGroupSelect.onCreated(function () {
-  const instance = this
-  const isUpdate = instance.data.value === ''
-  instance.state.set('selectedUsers', [])
-  instance.state.set('isUpdate', isUpdate)
+  const isUpdate = this.data.value === ''
+  this.state.set('selectedUsers', [])
+  this.state.set('isUpdate', isUpdate)
   // const { minCount, maxCount } = instance.data
-  const { builder, allMaterial } = instance.data.atts
+  const { builder, allMaterial } = this.data.atts
   const { users = [], roles = [], material = [], maxUsers, materialForAllGroups } = builder
   const materialOptions = (allMaterial || []).filter(({ value }) => material.includes(value))
 
   /**
    * @type GroupBuilder
    */
-  instance.builder = builder
-  instance.state.set({ roles, maxUsers, materialOptions, materialForAllGroups })
+  this.builder = builder
+  this.state.set({ roles, maxUsers, materialOptions, materialForAllGroups })
 
   // on internal changes
-  instance.autorun(() => {
-    instance.state.set('editTitle', false)
+  this.autorun(() => {
+    this.state.set('editTitle', false)
     const groups = builder.groups.get()
     const assignedUsers = new Set()
 
-    groups.forEach((group, i) => {
-      (group.users || []).forEach(user => assignedUsers.add(user.userId))
+    groups.forEach((group, _i) => {
+      (group.users || []).forEach(user => {
+        assignedUsers.add(user.userId)
+      })
     })
 
     const resolvedUsers = getUsers({ users, assignedUsers })
-    instance.state.set({ users: resolvedUsers, hasUsers: resolvedUsers.length > 0 })
+    this.state.set({ users: resolvedUsers, hasUsers: resolvedUsers.length > 0 })
   })
 })
 
@@ -61,8 +62,7 @@ const titleSchema = Schema.create({
 })
 
 Template.afUserGroupSelect.onRendered(function () {
-  const instance = this
-  updateInput(instance)
+  updateInput(this)
 })
 
 Template.afUserGroupSelect.helpers({
@@ -108,7 +108,7 @@ Template.afUserGroupSelect.helpers({
     return options.filter(({ value }) => !material.includes(value))
   },
   inputAtts () {
-    const { builder, allMaterial, ...atts } = Template.currentData().atts
+    const { builder: _, allMaterial: _2, ...atts } = Template.currentData().atts
     return atts
   },
   roles () {
@@ -116,7 +116,7 @@ Template.afUserGroupSelect.helpers({
   },
   allGroups () {
     const { builder } = Template.instance()
-    return builder && builder.groups.get()
+    return builder?.groups.get()
   },
   isOver (index, role) {
     const dragOverIndex = Template.getState('dragOverIndex')
@@ -194,7 +194,7 @@ Template.afUserGroupSelect.events({
   'dragenter .user-dropzone' (event, templateInstance) {
     const index = Number.parseInt(dataTarget(event, templateInstance, 'index'), 10)
     const role = dataTarget(event, templateInstance, 'role') || undefined
-    const isDraggable = event.relatedTarget && event.relatedTarget.getAttribute('draggable')
+    const isDraggable = event.relatedTarget?.getAttribute('draggable')
 
     if (isDraggable) {
       overDraggable = true

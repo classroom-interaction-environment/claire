@@ -90,15 +90,11 @@ Literature.material = {
   renderer: {
     list: {
       template: 'literatureListRenderer',
-      load: async function () {
-        return import('./renderer/list/literatureListRenderer')
-      }
+      load: async () => import('./renderer/list/literatureListRenderer')
     },
     main: {
       template: 'literatureRenderer',
-      load: async function () {
-        return import('./renderer/main/literatureRenderer')
-      },
+      load: async () => import('./renderer/main/literatureRenderer'),
       data: ({ materialDoc, document, options = {} }) => {
         const { print = false, preview = true, student = false } = options
         const { name } = materialDoc

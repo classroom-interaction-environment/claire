@@ -4,7 +4,7 @@ import { getCollection } from '../../../api/utils/getCollection'
 /** @deprecated **/
 export const FormFactory = {
 
-  getSelectOptions: function (collectionName, filter, fields, groupKey, resolver) {
+  getSelectOptions: (collectionName, filter, fields, groupKey, resolver) => {
     if (!fields || !fields.label || !fields.value) {
       throw new Meteor.Error('500', 'A fields object with label and value attributes are required to generate select options')
     }
@@ -20,7 +20,7 @@ export const FormFactory = {
       transform.fields[groupKey] = 1
     }
 
-    return function () {
+    return () => {
       const collection = getCollection(collectionName)
       if (!collection) {
         throw new Meteor.Error('500', 'A collection is required to generate select options')

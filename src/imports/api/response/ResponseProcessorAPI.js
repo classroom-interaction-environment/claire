@@ -31,7 +31,9 @@ const apiMap = new Map()
 // registering a global resize listener and distribute the event
 // to all listening components using in a debounced fashion
 const resizeListeners = new Map()
-const onResize = debounce(event => resizeListeners.forEach(callback => callback(event)), 200)
+const onResize = debounce(event => resizeListeners.forEach(callback => {
+  callback(event)
+}), 200)
 window.addEventListener('resize', onResize)
 
 // for grid layout changes we use the reactive grid method from the Beamer class
@@ -39,7 +41,9 @@ window.addEventListener('resize', onResize)
 Tracker.autorun(() => {
   const grid = Beamer.doc.grid()
   setTimeout(() => {
-    resizeListeners.forEach(callback => callback(grid))
+    resizeListeners.forEach(callback => {
+      callback(grid)
+    })
   }, 500)
 })
 
@@ -55,12 +59,12 @@ ResponseProcessorAPI.getActions = responseId => {
 
 ResponseProcessorAPI.callAction = (actionId, targetId, event, templateInstance) => {
   const handler = actionHandlers.get(actionId)
-  if (handler && handler[targetId]) {
+  if (handler?.[targetId]) {
     handler[targetId].call(templateInstance, event)
   }
 }
 
-ResponseProcessorAPI.create = (itemData, templateInstance) => {
+ResponseProcessorAPI.create = (itemData, _templateInstance) => {
   const { meta, lessonId, taskId, itemId } = itemData
   const context = ResponseProcessorLoader.get(itemData)
 
@@ -93,7 +97,7 @@ ResponseProcessorAPI.create = (itemData, templateInstance) => {
       dataTypes: () => ResponseDataTypes,
       dataType: () => dataType,
       responseId: () => actionId,
-      registerAction: function ({ id, type, icon, label, visible = true, handler }) {
+      registerAction: ({ id, type, icon, label, visible = true, handler }) => {
         const currentActions = actions.get(actionId) || {}
         currentActions[id] = { id, type, icon, label, visible }
         actions.set(actionId, currentActions)
@@ -114,7 +118,7 @@ ResponseProcessorAPI.create = (itemData, templateInstance) => {
         }
         return getCollection(context.name).findOne(query)
       }) : noop,
-      onResize: function (callback) {
+      onResize: (callback) => {
         resizeListeners.set(actionId, callback)
       },
       save: methods && (({ doc, prepare, receive, failure, success }) => {
@@ -129,7 +133,7 @@ ResponseProcessorAPI.create = (itemData, templateInstance) => {
           success: success
         })
       }),
-      dispose: function () {
+      dispose: () => {
         if (publications) {
           SubsManager.unsubscribe(publications.byItem.name)
         }

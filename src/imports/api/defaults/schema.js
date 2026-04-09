@@ -31,7 +31,7 @@ DefaultSchema.updatedBy = {
   },
   resolve (value) {
     const user = Meteor.users.findOne(value)
-    return (user && user.username) || value
+    return (user?.username) || value
   }
 }
 
@@ -63,7 +63,7 @@ DefaultSchema.createdBy = {
   },
   resolve (value) {
     const user = Meteor.users.findOne(value)
-    return (user && user.username) || value
+    return (user?.username) || value
   }
 }
 
@@ -114,8 +114,7 @@ DefaultSchema._archivedAt = {
 DefaultSchema._shared = {
   type: Array,
   optional: true,
-  autoform: { type: 'hidden' },
-  label: 'defaults.shared'
+  autoform: { type: 'hidden' }, label: 'defaults.shared'
 }
 
 DefaultSchema['_shared.$'] = {
@@ -125,11 +124,15 @@ DefaultSchema['_shared.$'] = {
 const DefaultFields = {}
 
 // create a default field key for every schema field
-Object.keys(DefaultSchema).forEach(key => !key.includes('.') && Object.defineProperty(DefaultFields, key, {
-  value: 1,
-  writable: false,
-  enumerable: true,
-  configurable: false
-}))
+Object.keys(DefaultSchema).forEach(key => {
+  if (!key.includes('.')) {
+    Object.defineProperty(DefaultFields, key, {
+      value: 1,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    })
+  }
+})
 
 export { DefaultFields }

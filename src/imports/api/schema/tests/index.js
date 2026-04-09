@@ -1,4 +1,4 @@
 /* eslint-env mocha */
-describe('Schema', function () {
-  import './Schema.tests'
+describe('Schema', () => {
+  require('./Schema.tests')
 })

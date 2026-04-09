@@ -10,10 +10,9 @@ import './verifyEmail.html'
 const by1000 = dely(1000)
 
 Template.verifyEmail.onCreated(function () {
-  const instance = this
-  instance.state = new ReactiveDict()
+  this.state = new ReactiveDict()
 
-  const { verificationToken } = instance.data.params
+  const { verificationToken } = this.data.params
   Accounts.verifyEmail(verificationToken, by1000((err) => {
     if (err) {
       if (err.reason.indexOf('Verify email link expired') > -1) {
@@ -23,7 +22,7 @@ Template.verifyEmail.onCreated(function () {
         console.error(err)
       }
     }
-    instance.state.set({ error: err, loadComplete: true })
+    this.state.set({ error: err, loadComplete: true })
   }))
 })
 

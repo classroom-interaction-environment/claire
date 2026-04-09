@@ -22,7 +22,6 @@ const buildCommand = ({ path, output }) => {
 }
 
 export const audioConvert = async function audioConvert (uploadedFile) {
-  const filesCollection = this
   const { _id, size, path, extension, name, _storagePath } = uploadedFile
 
   // if we have already an mp3 we can skip all this, even if the bitrate is
@@ -68,11 +67,11 @@ export const audioConvert = async function audioConvert (uploadedFile) {
 
   modifier.$set['versions.original'] = uploadedFile.versions.original
 
-  await filesCollection.collection.updateAsync(uploadedFile._id, modifier)
+  await this.collection.updateAsync(uploadedFile._id, modifier)
   await fs.rm(path)
 
   // we need to return the updated file
-  return filesCollection.collection.findOneAsync(uploadedFile._id)
+  return this.collection.findOneAsync(uploadedFile._id)
 }
 
 async function ffmpeg (command) {

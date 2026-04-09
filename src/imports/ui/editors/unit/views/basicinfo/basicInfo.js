@@ -41,7 +41,6 @@ const basicInfoSchema = API.createSchema({
 })
 
 Template.uebasicInfo.onCreated(function () {
-  const instance = this
 
   callMethod({
     name: Dimension.methods.editor,
@@ -54,7 +53,7 @@ Template.uebasicInfo.onCreated(function () {
         DimensionCollection.upsert({ _id: doc._id }, { $set: doc })
       })
 
-      instance.state.set('loadComplete', true)
+      this.state.set('loadComplete', true)
     }
   })
 })

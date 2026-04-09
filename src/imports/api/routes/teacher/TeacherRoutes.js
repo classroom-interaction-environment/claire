@@ -11,7 +11,7 @@ import { leaveCurriculum } from '../triggers/leaveCurriculum'
  */
 export const TeacherRoutes = {}
 
-const studentTrigger = function () {}
+const studentTrigger = () => {}
 
 const loginTrigger = createLoginTrigger(Routes.login)
 
@@ -151,7 +151,7 @@ TeacherRoutes.lessons = {
 // ////////////////////////////////////////////////////////////////////////////////////////////////
 
 TeacherRoutes.unitEditor = {
-  path: (unitId = ':unitId', tab, sub, isCurriculum) => {
+  path: (unitId = ':unitId', tab, sub, _isCurriculum) => {
     const queryParams = {}
     if (typeof tab === 'string') queryParams.tab = tab
     if (typeof sub === 'string') queryParams.sub = sub

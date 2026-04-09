@@ -23,9 +23,7 @@ export const AudioFiles = {
     accept: FileTypes.audio.accept,
     maxSize: 1024 * 1000 * 50,
     usePartialResponse: true,
-    converter: onServerExec(function () {
-      return require('./converter/audioConvert').audioConvert
-    })
+    converter: onServerExec(() => require('./converter/audioConvert').audioConvert)
   }
 }
 
@@ -56,13 +54,11 @@ AudioFiles.material = {
   renderer: {
     list: {
       template: 'audioFileListRenderer',
-      load: async function () {
-        return import('./renderer/list/audio')
-      }
+      load: async () => import('./renderer/list/audio')
     },
     main: {
       template: 'audioFileRenderer',
-      load: async function () {
+      load: async () => {
         await import('../shared/templates/helpers')
         return import('./renderer/main/audioFileRenderer')
       },

@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 
-export const getHost = function () {
+export const getHost = () => {
   if (Meteor.isServer) {
     return process.env.CURRICULUM_HOST || Meteor.settings.curriculum.host
   }

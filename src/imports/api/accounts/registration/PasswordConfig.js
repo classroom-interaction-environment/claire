@@ -114,35 +114,35 @@ class PasswordConfig {
 
   rules () {
     const target = map.get(this.id)
-    return target && target.rules
+    return target?.rules
   }
 
   min () {
     const target = map.get(this.id)
-    const min = target && target.min
-    return exists(min && min.value) ? min.value : min
+    const min = target?.min
+    return exists(min?.value) ? min.value : min
   }
 
   max () {
     const target = map.get(this.id)
-    const max = target && target.max
-    return exists(max && max.value) ? max.value : max
+    const max = target?.max
+    return exists(max?.value) ? max.value : max
   }
 
   allowedChars () {
     const target = map.get(this.id)
-    const allowedChars = target && target.allowedChars
-    return exists(allowedChars && allowedChars.value) ? allowedChars.value : allowedChars
+    const allowedChars = target?.allowedChars
+    return exists(allowedChars?.value) ? allowedChars.value : allowedChars
   }
 
   icon () {
     const target = map.get(this.id)
-    return target && target.icon
+    return target?.icon
   }
 
   confirm () {
     const target = map.get(this.id)
-    return target && target.confirm
+    return target?.confirm
   }
 
   blacklist ({ list, message }) {

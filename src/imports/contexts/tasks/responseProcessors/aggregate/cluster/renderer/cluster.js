@@ -17,17 +17,16 @@ const API = Template.rpCluster.setDependencies({
 })
 
 Template.rpCluster.onCreated(function () {
-  const instance = this
-  instance.state.set('values', [])
-  instance.state.set('quadrants', [])
-  instance.state.set('quadrantEdit', -1)
-  instance.state.set('fontSize', 24)
-  instance.state.set('bgColor', 'white')
+  this.state.set('values', [])
+  this.state.set('quadrants', [])
+  this.state.set('quadrantEdit', -1)
+  this.state.set('fontSize', 24)
+  this.state.set('bgColor', 'white')
 
-  instance.initialized = false
+  this.initialized = false
 
   // add the displayable values from the result data
-  instance.autorun(function () {
+  this.autorun(() => {
     const data = Template.currentData()
     const results = []
 
@@ -47,19 +46,19 @@ Template.rpCluster.onCreated(function () {
       })
     })
 
-    instance.state.set('values', results)
+    this.state.set('values', results)
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const beamerDoc = Beamer.doc.get()
     if (!beamerDoc) return
     const bgColor = beamerDoc.ui?.background
     if (bgColor) {
-      instance.state.set({ bgColor })
+      this.state.set({ bgColor })
     }
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     const rpApi = data.api
 
@@ -74,7 +73,7 @@ Template.rpCluster.onCreated(function () {
       itemId
     })
 
-    instance.state.set({
+    this.state.set({
       clusterDoc: loadedClusterDoc,
       loadComplete: true
     })
@@ -82,17 +81,15 @@ Template.rpCluster.onCreated(function () {
 })
 
 Template.rpCluster.onDestroyed(function () {
-  const instance = this
-  const { Interact } = instance.data.api
-  Interact.dispose({ target: '#cluster-parent', templateInstance: instance })
-  instance.state.clear()
-  instance.data.api.dispose()
-  instance.initialized = false
+  const { Interact } = this.data.api
+  Interact.dispose({ target: '#cluster-parent', templateInstance: this })
+  this.state.clear()
+  this.data.api.dispose()
+  this.initialized = false
 })
 
 Template.rpCluster.onRendered(function () {
-  const instance = this
-  const { api } = instance.data
+  const { api } = this.data
   const { Interact } = api
 
   // register edit action button to response-processor-api
@@ -101,35 +98,35 @@ Template.rpCluster.onRendered(function () {
     type: 'outline-primary',
     icon: 'edit',
     label: 'actions.edit',
-    handler: function (event) {
+    handler: (event) => {
       event.preventDefault()
-      const edit = instance.state.get('edit')
-      instance.state.set('edit', !edit)
+      const edit = this.state.get('edit')
+      this.state.set('edit', !edit)
     }
   })
 
   // on window resize we need to re-calculate the positions of the elements
-  api.onResize(function (/* event */) {
+  api.onResize((/* event */) => {
     API.debug('on resize')
-    const edit = instance.state.get('edit')
-    const currentContainer = instance.$(edit ? '#cluster-parent' : '#preview-parent')
+    const edit = this.state.get('edit')
+    const currentContainer = this.$(edit ? '#cluster-parent' : '#preview-parent')
     const currentWidth = currentContainer.width()
     const currentHeight = currentContainer.height()
-    instance.state.set('currentWidth', currentWidth)
-    instance.state.set('currentHeight', currentHeight)
+    this.state.set('currentWidth', currentWidth)
+    this.state.set('currentHeight', currentHeight)
 
-    updateLayout(instance)
+    updateLayout(this)
   })
 
   const onEnd = (/* event */) => {
-    saveCluster({ templateInstance: instance })
+    saveCluster({ templateInstance: this })
   }
 
   // Initialize the interaction handler for dragging the elements
 
   Interact.init({
     restrictTarget: '#cluster-parent',
-    templateInstance: instance,
+    templateInstance: this,
     onEnd
   })
 
@@ -151,26 +148,26 @@ Template.rpCluster.onRendered(function () {
   //   }, 300)
   // })
 
-  instance.autorun(() => {
-    const edit = instance.state.get('edit')
+  this.autorun(() => {
+    const edit = this.state.get('edit')
     setTimeout(() => {
-      const currentContainer = instance.$(edit ? '#cluster-parent' : '#preview-parent')
+      const currentContainer = this.$(edit ? '#cluster-parent' : '#preview-parent')
       const currentWidth = currentContainer.width()
       const currentHeight = currentContainer.height()
       API.debug('update container dimensions', { currentWidth, currentHeight })
-      instance.state.set('currentWidth', currentWidth)
-      instance.state.set('currentHeight', currentHeight)
+      this.state.set('currentWidth', currentWidth)
+      this.state.set('currentHeight', currentHeight)
     }, 100)
   })
 
-  instance.autorun(() => {
-    instance.state.get('edit') // activate tracker
-    updateLayout(instance)
+  this.autorun(() => {
+    this.state.get('edit') // activate tracker
+    updateLayout(this)
   })
 })
 
 const isOverflown = ({ clientHeight, scrollHeight }) => scrollHeight > clientHeight
-const resizeText = ({ element, elements, minSize = 10, maxSize = 512, step = 0.5, unit = 'px' }) => {
+const _resizeText = ({ element, elements, minSize = 10, maxSize = 512, step = 0.5, unit = 'px' }) => {
   (elements || [element]).forEach(el => {
     let i = minSize
     let overflow = false
@@ -211,7 +208,7 @@ Template.rpCluster.helpers({
   },
   username (id) {
     const user = Meteor.users.findOne(id)
-    return user && user.username
+    return user?.username
   },
   showVisibilityButton () {
     return Template.instance().state.get('isTeacher') && Template.instance().state.get('showVisibilityButton')
@@ -308,7 +305,7 @@ Template.rpCluster.events({
     event.preventDefault()
     const { Interact } = templateInstance.data.api
     const elements = templateInstance.$('.draggable')
-    elements.each((index, element) => {
+    elements.each((_index, element) => {
       Interact.transform(element, 0, 0, 0, 0)
       templateInstance.$(element).css('background-color', defaultBg)
     })
@@ -341,9 +338,9 @@ Template.rpCluster.events({
     }
 
     const draggables = Array.from(document.querySelectorAll('.draggable'))
-    const mapped = draggables.map(function (element) {
+    const mapped = draggables.map((element) => {
       const zIndex = element.style.zIndex
-      return parseInt(zIndex) || 1
+      return parseInt(zIndex, 10) || 1
     })
 
     const maxZ = Math.max.apply(null, mapped)
@@ -371,23 +368,23 @@ Template.rpCluster.events({
       const clusterDoc = templateInstance.state.get('clusterDoc')
       const options = clusterDoc.elements.find(el => el.id === id) || {}
       console.debug(options.c)
-      if (options.c && options.c.startsWith('rgb(')) {
+      if (options.c?.startsWith('rgb(')) {
         options.c = rgbToHex(...(options.c.match(/\d+/g).map(Number)))
       }
       templateInstance.state.set({ options })
     }
   },
-  'input #font-size-range': debounce(function (event, templateInstance) {
+  'input #font-size-range': debounce((event, templateInstance) => {
     const fontSize = Number.parseInt(event.target.value, 10)
     templateInstance.state.set({ fontSize })
   }, 10),
-  'input #color-input': debounce(function (event, templateInstance) {
+  'input #color-input': debounce((event, templateInstance) => {
     const elementId = event.target.getAttribute('data-element')
     const element = templateInstance.$(document.getElementById(elementId))
     element.data('c', event.target.value)
     element.css('background-color', event.target.value)
   }, 30),
-  'blur .entry-options' (event, templateInstance) {
+  'blur .entry-options' (_event, templateInstance) {
     templateInstance.state.set('optionTarget', null)
     templateInstance.state.set('options', null)
     saveCluster({ templateInstance })
@@ -409,12 +406,12 @@ function saveCluster ({ templateInstance }) {
   let c
   let id
 
-  $draggables.each((index, element) => {
+  $draggables.each((_index, element) => {
     id = element.getAttribute('id')
     x = parseFloat(element.getAttribute('data-x'))
     y = parseFloat(element.getAttribute('data-y'))
-    if (isNaN(x)) x = undefined
-    if (isNaN(y)) y = undefined
+    if (Number.isNaN(x)) x = undefined
+    if (Number.isNaN(y)) y = undefined
     c = element.getAttribute('data-c') || element.style.backgroundColor
     elements.push({ x, y, c, id })
   })
@@ -453,7 +450,7 @@ function updateLayout (templateInstance) {
   let newy = 0
 
   const draggables = templateInstance.$('.draggable')
-  draggables.each((index, element) => {
+  draggables.each((_index, element) => {
     tmp = _elements[element.id]
 
     if (!tmp) {

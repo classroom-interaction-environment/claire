@@ -11,7 +11,7 @@ const randomContext = () => ({
 
 const randomRegistry = (id = Random.id(6)) => ({
   name: Random.id(6),
-  hasIdentity: ctx => id,
+  hasIdentity: _ctx => id,
   add: () => {}
 })
 
@@ -35,7 +35,7 @@ describe('ContextBuilder', () => {
       ContextBuilder.addContext(ctx)
 
       let called = false
-      ContextBuilder.buildAll(function (context) {
+      ContextBuilder.buildAll((context) => {
         expect(context).to.equal(ctx)
         called = true
       })
@@ -60,7 +60,7 @@ describe('ContextBuilder', () => {
       const registry = randomRegistry(id)
       const context = randomContext()
       let called = false
-      const pipelines = [function (ctx) {
+      const pipelines = [(ctx) => {
         expect(ctx).to.equal(context)
         called = true
       }]

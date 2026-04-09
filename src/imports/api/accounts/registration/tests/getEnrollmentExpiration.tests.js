@@ -5,7 +5,7 @@ import { getEnrollmentExpiration } from '../getEnrollmentExpiration'
 
 const { passwordEnrollTokenExpirationInDays } = Meteor.settings.accounts.config
 
-describe(getEnrollmentExpiration.name, function () {
+describe(getEnrollmentExpiration.name, () => {
   it('returns the given expiration of days in ms from given date', () => {
     const now = new Date()
     const expires = getEnrollmentExpiration(now)

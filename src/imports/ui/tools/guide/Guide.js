@@ -9,7 +9,7 @@ export const Guide = {}
 Guide.hasViewed = (key, user) => {
   if (internal.debug) {
     internal.debug('hasViewed', key, user?.ui?.guide, user?.ui?.guide?.[key])
-    if (internal.hasViewed.hasOwnProperty(key)) {
+    if (Object.hasOwn(internal.hasViewed, key)) {
       internal.debug('hasViewed use override', key, internal.hasViewed[key])
       return internal.hasViewed[key]
     }

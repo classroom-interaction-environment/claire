@@ -24,21 +24,17 @@ const contexts = new Map(Object.entries({
   item: ItemRef
 }))
 
-Text.register = function (context) {
+Text.register = (context) => {
   contexts.set(context.name, context)
 }
 
-Text.load = function (context) {
-  return typeof context.load === 'function'
+Text.load = (context) => typeof context.load === 'function'
     ? context.load()
     : undefined
-}
 
 Text.renderer = {
   template: 'textRenderer',
-  load: async function () {
-    return import('../../../../ui/renderer/text/textRenderer')
-  }
+  load: async () => import('../../../../ui/renderer/text/textRenderer')
 }
 
 ITaskDefinition(Text, contexts)

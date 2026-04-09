@@ -58,24 +58,23 @@ const SchemaCache = {
 }
 
 Template.taskPageContent.onCreated(function () {
-  const instance = this
-  instance.state.setDefault('addContent', false)
-  instance.state.setDefault('addContentIndex', -1)
-  instance.state.setDefault('addMeta', false)
-  instance.state.setDefault('applyReady', false)
-  instance.state.setDefault('contentType', null)
-  instance.state.setDefault('contentMeta', null)
-  instance.state.setDefault('showSchemas', {})
-  instance.state.setDefault('contentType', null)
-  instance.state.setDefault('editContentType', null)
-  instance.state.setDefault('editContentType', null)
-  instance.state.setDefault('currentIndex', -1)
-  instance.state.setDefault('currentContent', null)
-  instance.state.setDefault('header', null)
-  instance.state.setDefault('footer', null)
-  instance.state.setDefault('loadComplete', false)
+  this.state.setDefault('addContent', false)
+  this.state.setDefault('addContentIndex', -1)
+  this.state.setDefault('addMeta', false)
+  this.state.setDefault('applyReady', false)
+  this.state.setDefault('contentType', null)
+  this.state.setDefault('contentMeta', null)
+  this.state.setDefault('showSchemas', {})
+  this.state.setDefault('contentType', null)
+  this.state.setDefault('editContentType', null)
+  this.state.setDefault('editContentType', null)
+  this.state.setDefault('currentIndex', -1)
+  this.state.setDefault('currentContent', null)
+  this.state.setDefault('header', null)
+  this.state.setDefault('footer', null)
+  this.state.setDefault('loadComplete', false)
 
-  instance.autorun(function () {
+  this.autorun(() => {
     if (!tasksInitialized.get() || !itemsInitialized.get() || !filesInitialized.get()) {
       return // skip until loaded
     }
@@ -93,7 +92,7 @@ Template.taskPageContent.onCreated(function () {
       footer
     })
 
-    instance.state.set({
+    this.state.set({
       task: task,
       header: header,
       footer: footer,
@@ -102,7 +101,7 @@ Template.taskPageContent.onCreated(function () {
       loadComplete: true
     })
 
-    setTimeout(() => instance.state.set('currentContent', currentContent))
+    setTimeout(() => this.state.set('currentContent', currentContent))
   })
 })
 
@@ -128,10 +127,10 @@ Template.taskPageContent.onRendered(function onTemplateRendered () {
       ghostClass: 'bg-primary', // 'task-content-sortable-ghost',
       forceFallback: true, // TODO find a way without this
       swapThreshold: 1,
-      onStart: function () {
+      onStart: () => {
         instance.state.set('dragging', true)
       },
-      onEnd: function (/* evt */) {
+      onEnd: (/* evt */) => {
         const indices = []
 
         instance.$('.task-content-move-entry-cursor').each(function () {
@@ -187,7 +186,7 @@ Template.taskPageContent.onRendered(function onTemplateRendered () {
     if (typeof selectedTargetIndex !== 'undefined' && selectedTargetIndex > -1) {
       setTimeout(() => {
         const $target = instance.$('.selected-pagecontent-element')
-        if ($target && $target.get(0)) {
+        if ($target?.get(0)) {
           $target.get(0).scrollIntoView({ behavior: 'smooth' })
         }
       }, 150)
@@ -302,7 +301,7 @@ Template.taskPageContent.helpers({
   addContentCategory () {
     const category = Template.getState('addContentCategory')
     const contentTypes = TaskDefinitions.helpers.contentTypes()
-    return contentTypes && contentTypes.find(entry => entry.value === category)
+    return contentTypes?.find(entry => entry.value === category)
   },
   canBeMadePersistent (attributesDoc = {}) {
     const collection = getCollection(attributesDoc.meta)
@@ -545,7 +544,7 @@ Template.taskPageContent.events({
       })
     }
   },
-  'hidden.bs.modal #pageContentAddModal' (event, templateInstance) {
+  'hidden.bs.modal #pageContentAddModal' (_event, templateInstance) {
     templateInstance.state.set('addContent', false)
     templateInstance.state.set('addContentIndex', -1)
     templateInstance.state.set('newElement', null)
@@ -574,7 +573,7 @@ Template.taskPageContent.events({
   /// ///////////////////////////////////////////////////////////////
   // EDIT ATTRIBUTES
   /// ///////////////////////////////////////////////////////////////
-  'hidden.bs.modal #pageContentEditModal' (event, templateInstance) {
+  'hidden.bs.modal #pageContentEditModal' (_event, templateInstance) {
     templateInstance.state.set('editTarget', null)
     templateInstance.state.set('editAttributes', null)
     templateInstance.state.set('editPreview', null)
@@ -598,7 +597,7 @@ Template.taskPageContent.events({
     templateInstance.state.set('editAttributes', targetId)
     templateInstance.$('#pageContentEditModal').modal('show')
   },
-  'click .preview-attributes-form-button' (event, templateInstance) {
+  'click .preview-attributes-form-button' (_event, templateInstance) {
     templateInstance.state.set({ editPreview: null, submitting: true })
     const insertDoc = AutoForm.getFormValues('attributesForm').insertDoc
     if (!insertDoc) {
@@ -764,7 +763,7 @@ Template.taskPageContent.events({
           const filesDoc = getLocalCollection(contentElement.meta).findOne(contentElement._id)
 
           // if the files doc could not be found we try to remove it anyway
-          const linkedTask = filesDoc && filesDoc.meta.taskId
+          const linkedTask = filesDoc?.meta.taskId
 
           if (linkedTask === task._original) {
             API.log('skip removing doc, because it is part of _original')

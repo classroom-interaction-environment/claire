@@ -118,7 +118,7 @@ Template.studentGroup.onCreated(function () {
   })
 })
 
-Template.studentGroup.onDestroyed(function () {
+Template.studentGroup.onDestroyed(() => {
   API.dispose('studentGroupSub')
 })
 

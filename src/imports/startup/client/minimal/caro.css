@@ -233,7 +233,7 @@ p {
 }
 
 fieldset .list-group .list-group-item {
-  border: 0 !important;
+  border: 0;
   padding: 0;
 }
 
@@ -255,7 +255,7 @@ input[type='checkbox'] + label {
 
 .btn.disabled,
 .btn:disabled {
-  opacity: 0.25 !important;
+  opacity: 0.25;
 }
 
 .fade-in-500 {

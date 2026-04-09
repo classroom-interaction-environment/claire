@@ -68,8 +68,8 @@ export const Resolvers = {
   },
 
   sortByName (a, b) {
-    const c = (a && a.lastName) || ''
-    const d = (b && b.lastName) || ''
+    const c = (a?.lastName) || ''
+    const d = (b?.lastName) || ''
     return c.localeCompare(d)
   },
 

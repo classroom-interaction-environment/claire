@@ -15,8 +15,6 @@ export const PieChart = {
   ],
   renderer: {
     template: 'rpPieChart',
-    load: async function () {
-      return import('./rpPieChart')
-    }
+    load: async () => import('./rpPieChart')
   }
 }

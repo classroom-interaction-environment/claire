@@ -31,7 +31,7 @@ Template.joinClass.helpers({
 })
 
 Template.joinClass.events({
-  'closed.bs.modal #global-code-modal' (event, templateInstance) {
+  'closed.bs.modal #global-code-modal' (_event, templateInstance) {
     templateInstance.state.set('successful', false)
   },
   'submit #joinClassForm' (event, templateInstance) {

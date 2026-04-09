@@ -8,9 +8,10 @@
 	"files": {
 		"ignoreUnknown": false,
 		"includes": [
-			"**",
-			"!.*/**",
-			"!node_modules/**"
+			"imports/**/*.js",
+			"server/**/*.js",
+			"tests/**/*.js",
+			"client/**/*.js"
 		]
 	},
 	"formatter": {

@@ -8,9 +8,8 @@ import './fileRenderer.html'
 const API = Template.fileRenderer.setDependencies()
 
 Template.fileRenderer.onCreated(function () {
-  const instance = this
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     if (!data) { return }
 
@@ -34,7 +33,7 @@ Template.fileRenderer.onCreated(function () {
 
     // loading renderer template
 
-    if (instance.state.get(contextName)) { return } // skip already loaded
+    if (this.state.get(contextName)) { return } // skip already loaded
 
     const renderer = Files.helpers.getRenderer(contextName)
     const { template, load } = renderer
@@ -44,7 +43,7 @@ Template.fileRenderer.onCreated(function () {
       .catch(e => API.notify(e))
       .then(() => {
         API.log(template, 'loaded')
-        instance.state.set({ [contextName]: template })
+        this.state.set({ [contextName]: template })
       })
   })
 })

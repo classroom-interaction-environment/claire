@@ -8,20 +8,19 @@ const API = Template.itemResultText.setDependencies({
 })
 
 Template.itemResultText.onCreated(function () {
-  const instance = this
-  const { api } = instance.data
+  const { api } = this.data
 
-  instance.state.setDefault('showHiddenAnswers', false)
+  this.state.setDefault('showHiddenAnswers', false)
 
   const toggleAllUsersHandler = event => {
     event.preventDefault()
-    const showHidden = instance.state.get('showHiddenAnswers')
-    instance.state.set('showHiddenAnswers', !showHidden)
+    const showHidden = this.state.get('showHiddenAnswers')
+    this.state.set('showHiddenAnswers', !showHidden)
   }
 
-  instance.autorun(() => {
-    const showsHidden = instance.state.get('showHiddenAnswers')
-    const textDoc = instance.state.get('textDoc')
+  this.autorun(() => {
+    const showsHidden = this.state.get('showHiddenAnswers')
+    const textDoc = this.state.get('textDoc')
     const shouldBeVisible = textDoc?.hiddenAnswers?.length > 0
 
     api.registerAction({
@@ -34,13 +33,13 @@ Template.itemResultText.onCreated(function () {
     })
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     if (!api.subscriptions.ready()) {
       return
     }
 
     const textDoc = api.document()
-    instance.state.set({ textDoc })
+    this.state.set({ textDoc })
   })
 })
 

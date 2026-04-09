@@ -42,25 +42,24 @@ const taskInit = TaskDefinitions.initialize()
 const rpInit = ResponseProcessorLoader.initialize()
 
 Template.present.onCreated(function () {
-  const instance = this
-  instance.state.setDefault('references', [])
-  instance.allUsers = new ReactiveSet()
+  this.state.setDefault('references', [])
+  this.allUsers = new ReactiveSet()
 
   // ----------------------------------------------------------------------------
   // check if beamer is complete
   // ----------------------------------------------------------------------------
-  instance.autorun(() => {
+  this.autorun(() => {
     if (!Meteor.userId()) return
     const beamerDoc = Beamer.doc.get()
     if (beamerDoc) {
-      instance.state.set('beamerComplete', true)
+      this.state.set('beamerComplete', true)
     }
   })
 
   // ----------------------------------------------------------------------------
   // load all related lessons
   // ----------------------------------------------------------------------------
-  instance.autorun(() => {
+  this.autorun(() => {
     const beamerDoc = Beamer.doc.get()
     if (!beamerDoc) return
 
@@ -73,15 +72,15 @@ Template.present.onCreated(function () {
     const lessonIds = new Set()
     const referencedLessons = new Set()
 
-    references.forEach(ref => {
+    for (const ref of references) {
       if (getLocalCollection(Lesson.name).find(ref.lessonId).count() === 0) {
         lessonIds.add(ref.lessonId)
       }
       referencedLessons.add(ref.lessonId)
-    })
+    }
 
     if (lessonIds.size === 0) {
-      return instance.state.set({ lessonIds: [...referencedLessons], lessonsComplete: true })
+      return this.state.set({ lessonIds: [...referencedLessons], lessonsComplete: true })
     }
 
     loadIntoCollection({
@@ -90,14 +89,14 @@ Template.present.onCreated(function () {
       failure: API.fatal,
       debug: API.debug,
       collection: getLocalCollection(Lesson.name),
-      success: () => instance.state.set({ lessonIds: [...referencedLessons], lessonsComplete: true })
+      success: () => this.state.set({ lessonIds: [...referencedLessons], lessonsComplete: true })
     })
   })
 
   // ----------------------------------------------------------------------------
   // subscribe to all items
   // ----------------------------------------------------------------------------
-  instance.autorun(() => {
+  this.autorun(() => {
     const beamerDoc = Beamer.doc.get()
     if (!Item.isInitialized() || !API.initComplete() || !beamerDoc) return
 
@@ -106,7 +105,7 @@ Template.present.onCreated(function () {
     if (!references) return
 
     API.debug('subscribe to all items for beamer')
-    instance.state.set('itemsComplete', false)
+    this.state.set('itemsComplete', false)
 
     const itemRefsForSub = references
       .filter(ref => ref.itemId)
@@ -119,7 +118,7 @@ Template.present.onCreated(function () {
       })
 
     if (itemRefsForSub.length === 0) {
-      return instance.state.set('itemsComplete', true)
+      return this.state.set('itemsComplete', true)
     }
 
     API.subscribe({
@@ -130,7 +129,7 @@ Template.present.onCreated(function () {
         onError: API.notify,
         onReady: () => {
           API.debug('subscribed', getCollection(TaskResults).find().fetch())
-          instance.state.set('itemsComplete', true)
+          this.state.set('itemsComplete', true)
         }
       }
     })
@@ -139,13 +138,13 @@ Template.present.onCreated(function () {
   // ----------------------------------------------------------------------------
   // load all associated units
   // ----------------------------------------------------------------------------
-  instance.autorun(() => {
+  this.autorun(() => {
     const beamerDoc = Beamer.doc.get()
-    const lessonDocComplete = instance.state.get('lessonsComplete')
+    const lessonDocComplete = this.state.get('lessonsComplete')
     if (!beamerDoc || !lessonDocComplete) return
     API.debug('load associated units')
 
-    const lessonIds = instance.state.get('lessonIds') || []
+    const lessonIds = this.state.get('lessonIds') || []
     const unitIds = new Set()
 
     getLocalCollection(Lesson.name).find({ _id: $in(lessonIds) }).forEach(lessonDoc => {
@@ -156,7 +155,7 @@ Template.present.onCreated(function () {
 
     const complete = () => {
       API.debug('all associated units loaded')
-      instance.state.set('unitsComplete', true)
+      this.state.set('unitsComplete', true)
     }
 
     if (unitIds.size === 0) {
@@ -176,16 +175,16 @@ Template.present.onCreated(function () {
   // ----------------------------------------------------------------------------
   // load all associated references into local collections
   // ----------------------------------------------------------------------------
-  instance.autorun(async () => {
+  this.autorun(async () => {
     const beamerDoc = Beamer.doc.get()
 
     if (!beamerDoc?.references?.length) {
       // prevent infinite loading by setting references loaded to true
-      return instance.state.set('referenceDocsLoaded', true)
+      return this.state.set('referenceDocsLoaded', true)
     }
 
     // set to false to trigger next autorun, when this is complete
-    instance.state.set('referenceDocsLoaded', false)
+    this.state.set('referenceDocsLoaded', false)
 
     const allCtxDocs = {}
     beamerDoc.references.forEach(({ context, referenceId }) => {
@@ -206,12 +205,12 @@ Template.present.onCreated(function () {
       })
     }
 
-    instance.state.set('referenceDocsLoaded', true)
+    this.state.set('referenceDocsLoaded', true)
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const beamerDoc = Beamer.doc.get()
-    const referenceDocsLoaded = instance.state.get('referenceDocsLoaded')
+    const referenceDocsLoaded = this.state.get('referenceDocsLoaded')
 
     if (!referenceDocsLoaded || !beamerDoc || !Item.isInitialized() || !Files.isInitialized() || !rpInit.get()) {
       return API.debug('resolving references not ready yet', {
@@ -251,7 +250,7 @@ Template.present.onCreated(function () {
       return ref
     })
 
-    instance.state.set({
+    this.state.set({
       resolvedReferences: resolvedReferences,
       materialComplete: true
     })
@@ -262,10 +261,10 @@ Template.present.onCreated(function () {
   // ----------------------------------------------------------------------------
   const cachedRefs = new Map()
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const beamerDoc = Beamer.doc.get()
-    const resolvedReferences = instance.state.get('resolvedReferences')
-    const itemsComplete = instance.state.get('itemsComplete')
+    const resolvedReferences = this.state.get('resolvedReferences')
+    const itemsComplete = this.state.get('itemsComplete')
     const initialized = taskInit.get()
 
     if (!Item.isInitialized() || !beamerDoc || !initialized || !resolvedReferences || !itemsComplete) return
@@ -281,20 +280,20 @@ Template.present.onCreated(function () {
     // and find those relevant to be resolved regarding their response processors
     // Add them to the queue to be loaded in a Promise
     const referenceQueue = []
-    resolvedReferences.forEach(ref => {
+    for (const ref of resolvedReferences) {
       const materialDoc = { name: ref.context }
 
       // load any remaining preview templates
-      LessonMaterial.loadPreviewTemplate(materialDoc, instance)
+      LessonMaterial.loadPreviewTemplate(materialDoc, this)
         .catch(e => API.notify(e))
         .then(() => {
           API.debug('preview template loaded for ', ref.context)
-          instance.state.set(ref.context, true)
+          this.state.set(ref.context, true)
         })
 
       // skip all non-task references here
       if (!ref.context === Task.name || !ref.itemId) {
-        return false
+        continue
       }
 
       //
@@ -307,7 +306,7 @@ Template.present.onCreated(function () {
       if (cachedRefs.has(ref.itemId)) {
         const cached = cachedRefs.get(ref.itemId)
         if (cached.responseProcessor && cached.responseProcessor === ref.responseProcessor) {
-          return false
+          continue
         }
       }
 
@@ -326,7 +325,7 @@ Template.present.onCreated(function () {
 
         return false
       })
-    })
+    }
 
     Promise.all(referenceQueue.map(async obj => {
       const { entry: item, ref } = obj
@@ -346,8 +345,10 @@ Template.present.onCreated(function () {
 
       // extract user ids from responses and add them to the reactive set
       // in order to subscribe to their usernames
-      responseProcessorData.data.results.forEach(doc => instance.allUsers.add(doc.createdBy))
-      instance.state.set(itemId, responseProcessorData)
+      responseProcessorData.data.results.forEach(doc => {
+        this.allUsers.add(doc.createdBy)
+      })
+      this.state.set(itemId, responseProcessorData)
 
       // return itemId for caching
       return { itemId, responseProcessor }
@@ -355,12 +356,14 @@ Template.present.onCreated(function () {
       .catch(e => API.notify(e))
       .then(resolvedRefs => {
         API.debug('all response processors loaded for beamer')
-        resolvedRefs.forEach(({ itemId, responseProcessor }) => cachedRefs.set(itemId, { responseProcessor }))
+        resolvedRefs.forEach(({ itemId, responseProcessor }) => {
+          cachedRefs.set(itemId, { responseProcessor })
+        })
       })
   })
 
-  instance.autorun(() => {
-    const allUsers = instance.allUsers.all()
+  this.autorun(() => {
+    const allUsers = this.allUsers.all()
     if (allUsers.length === 0) return
 
     API.subscribe({
@@ -369,32 +372,31 @@ Template.present.onCreated(function () {
       key: 'beamerSubKey',
       callbacks: {
         onError: API.notify,
-        onReady: () => instance.state.set('usersReady', true)
+        onReady: () => this.state.set('usersReady', true)
       }
     })
   })
 })
 
 Template.present.onRendered(function () {
-  const instance = this
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const beamerDoc = Beamer.doc.get()
     if (!beamerDoc) return
-    const bgRef = beamerDoc && beamerDoc.ui.background
+    const bgRef = beamerDoc?.ui.background
     const colorState = bgRef
       ? backgroundColors[bgRef]
       : backgroundColors.light
 
     const $main = global.$('.main-beamer-container')
-    if (instance.bgCache || instance.tcCache) {
-      $main.removeClass(instance.bgCache)
-      $main.removeClass(instance.tcCache)
+    if (this.bgCache || this.tcCache) {
+      $main.removeClass(this.bgCache)
+      $main.removeClass(this.tcCache)
     }
-    instance.bgCache = `bg-${colorState.className}`
-    instance.tcCache = `text-${colorState.text}`
-    $main.addClass(instance.bgCache)
-    $main.addClass(instance.tcCache)
+    this.bgCache = `bg-${colorState.className}`
+    this.tcCache = `text-${colorState.text}`
+    $main.addClass(this.bgCache)
+    $main.addClass(this.tcCache)
   })
 })
 
@@ -426,11 +428,11 @@ Template.present.helpers({
   },
   async colClass () {
     const layout = await Beamer.doc.grid()
-    return layout && layout.colClass
+    return layout?.colClass
   },
   async rowClass () {
     const layout = await Beamer.doc.grid()
-    return layout && layout.rowClass
+    return layout?.rowClass
   },
   beamerDoc () {
     return Beamer.doc.get()
@@ -457,7 +459,7 @@ Template.present.helpers({
   responseProcessorLoaded (itemId) {
     return itemId && Template.getState(itemId)
   },
-  responseProcessor ({ itemId, document, referenceId, lessonId, context }) {
+  responseProcessor ({ itemId }) {
     if (!rpInit.get()) { return }
     const instance = Template.instance()
     const rp = instance.state.get(itemId)
@@ -497,11 +499,11 @@ Template.present.helpers({
 })
 
 Template.present.events({
-  'click .remove-code-button': async function (event) {
+  'click .remove-code-button': async (event) => {
     event.preventDefault()
     await Beamer.doc.code(null)
   },
-  'click .remove-reference-button': async function (event, templateInstance) {
+  'click .remove-reference-button': async (event, templateInstance) => {
     event.preventDefault()
     const context = dataTarget(event, templateInstance, 'context')
     const lessonId = dataTarget(event, templateInstance, 'lesson')
@@ -545,7 +547,7 @@ Template.present.events({
     ResponseProcessorAPI.callAction(actionId, id, event, templateInstance)
   },
   // we allow users to change the
-  'click .select-rp-button': async function (event, templateInstance) {
+  'click .select-rp-button': async (event, templateInstance) => {
     event.preventDefault()
 
     const itemId = dataTarget(event, templateInstance, 'item')

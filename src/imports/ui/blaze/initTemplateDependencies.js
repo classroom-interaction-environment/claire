@@ -34,20 +34,18 @@ export const initTemplateDependencies = function initTemplate ({
   onComplete = () => {}
 }) {
   // we wrap all the imports here to fasten-up the client-bundle interpreter
-  import { Template } from 'meteor/templating'
-  import { Tracker } from 'meteor/tracker'
-  import { i18n } from '../../api/language/language'
-  import { getCollection } from '../../api/utils/getCollection'
-  import { getLocalCollection } from '../../infrastructure/collection/getLocalCollection'
-  import { initContext } from '../../startup/client/contexts/initContext'
-  import { setFatalError } from '../components/fatal/fatal'
-  import { createLog } from '../../api/log/createLog'
-  import { initOnce } from '../../infrastructure/loading/initOnce'
-  import { initLanguage } from '../../api/language/initLanguage'
-  import { initForms } from '../components/forms/Form'
-
-  const template = this
-  template.initComplete = new ReactiveVar(false)
+  const { Template } = require('meteor/templating')
+  const { Tracker } = require('meteor/tracker')
+  const { i18n } = require('../../api/language/language')
+  const { getCollection } = require('../../api/utils/getCollection')
+  const { getLocalCollection } = require('../../infrastructure/collection/getLocalCollection')
+  const { initContext } = require('../../startup/client/contexts/initContext')
+  const { setFatalError } = require('../components/fatal/fatal')
+  const { createLog } = require('../../api/log/createLog')
+  const { initOnce } = require('../../infrastructure/loading/initOnce')
+  const { initLanguage } = require('../../api/language/initLanguage')
+  const { initForms } = require('../components/forms/Form')
+  this.initComplete = new ReactiveVar(false)
 
   // this will be used to store all reactive sources
   // and to check whether all our init routines have been completed
@@ -55,7 +53,7 @@ export const initTemplateDependencies = function initTemplate ({
   const onDestroy = []
 
   // logs
-  const { viewName } = template
+  const { viewName } = this
   const log = createLog({ name: viewName })
   const warn = createLog({ name: viewName, type: 'warn' })
   const debugLog = debug
@@ -64,9 +62,9 @@ export const initTemplateDependencies = function initTemplate ({
   debugLog('init')
 
   const api = {}
-  template.api = api
+  this.api = api
 
-  api.initComplete = () => template.initComplete.get()
+  api.initComplete = () => this.initComplete.get()
   api.notify = notify
   api.ensureDocument = ensureDocument
   api.createSchema = createSchema
@@ -100,7 +98,9 @@ export const initTemplateDependencies = function initTemplate ({
     dispose: (key, { onError = console.error } = {}) => {
       try {
         clearSubs(key)
-        onDestroy.forEach(fn => fn())
+        for (const onDestroyFunc of onDestroy) {
+          onDestroyFunc()
+        }
         onDestroy.length = 0
       }
       catch (e) {
@@ -111,20 +111,20 @@ export const initTemplateDependencies = function initTemplate ({
 
   const complete = () => {
     debugLog('init complete')
-    template.initComplete.set(true)
+    this.initComplete.set(true)
     onComplete()
   }
 
   // We use a convention to provide the respective collections by using
   // the context name, make it's first character uppercase and add a
   // "Collection" suffix to it. Example: 'units' => 'UnitsCollection'
-  contexts.forEach(ctx => {
+  for (const ctx of contexts) {
     debugLog('init ctx', ctx.name)
     initContext(ctx)
-  })
+  }
 
   const errorHandler = onError || createLog({
-    name: template.view.name,
+    name: this.view.name,
     type: 'error',
     devOnly: false
   })
@@ -170,14 +170,14 @@ export const initTemplateDependencies = function initTemplate ({
       }
 
       const handleLocaleChange = () => {
-        template.initComplete.set(false)
+        this.initComplete.set(false)
         addTranslations()
           .catch(e => {
             setFatalError(e)
             errorHandler(e)
           })
           .then(() => {
-            setTimeout(() => template.initComplete.set(true), 300)
+            setTimeout(() => this.initComplete.set(true), 300)
           })
       }
 
@@ -200,22 +200,21 @@ export const initTemplateDependencies = function initTemplate ({
 
   // instance-level
 
-  template.onCreated(function () {
-    const instance = this
-    instance._lookup = new Map()
+  this.onCreated(function () {
+    this._lookup = new Map()
 
-    instance.lookup = selector => {
-      if (!instance._lookup.has(selector)) {
-        const component = instance.$(selector)
+    this.lookup = selector => {
+      if (!this._lookup.has(selector)) {
+        const component = this.$(selector)
         if (!component) {
           warn('no component found for lookup:', selector)
         }
         else {
-          instance._lookup.set(selector, component)
+          this._lookup.set(selector, component)
         }
       }
 
-      return instance._lookup.get(selector)
+      return this._lookup.get(selector)
     }
   })
 

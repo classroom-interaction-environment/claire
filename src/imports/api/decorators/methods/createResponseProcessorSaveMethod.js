@@ -5,7 +5,7 @@ import { createDocGetter } from '../../utils/document/createDocGetter'
 import { isMemberOfLesson } from '../../../contexts/classroom/lessons/runtime/isMemberOfLesson'
 import { Lesson } from '../../../contexts/classroom/lessons/Lesson'
 
-export const createResponseProcessorSaveMethod = function ({ name, schema }) {
+export const createResponseProcessorSaveMethod = ({ name, schema }) => {
   const getLessonDoc = createDocGetter({ name: Lesson.name })
   return {
     name: `${name}.methods.saveResponseProduct`,

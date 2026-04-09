@@ -23,7 +23,6 @@ const dimensionSchema = API.createSchema(Dimension.schema)
  */
 
 Template.curriculumHeuristics.onCreated(function () {
-  const instance = this
 
   formReset('editDimensionForm')
 
@@ -32,7 +31,7 @@ Template.curriculumHeuristics.onCreated(function () {
     name: Dimension.publications.curriculum.name,
     callbacks: {
       onError: API.notify,
-      onReady: instance.state.set('loadComplete', true)
+      onReady: this.state.set('loadComplete', true)
     }
   })
 })
@@ -65,7 +64,7 @@ Template.curriculumHeuristics.helpers({
 })
 
 Template.curriculumHeuristics.events({
-  'hidden.bs.modal' (event, templateInstance) {
+  'hidden.bs.modal' (_event, templateInstance) {
     templateInstance.state.set('showForm', false)
   },
   'click .create-dimension-button' (event, templateInstance) {

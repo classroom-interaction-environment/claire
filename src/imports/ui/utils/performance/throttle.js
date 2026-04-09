@@ -1,10 +1,9 @@
 export const throttle = (fn, until) => {
   let lastTime = 0
   return function (...args) {
-    const self = this
-    let now = new Date()
+    const now = new Date()
     if (now - lastTime >= until) {
-      fn.call(self, ...args)
+      fn.call(this, ...args)
       lastTime = now
     }
   }

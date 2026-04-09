@@ -7,7 +7,7 @@ import { createResponseProcessorSaveMethod } from '../../../api/decorators/metho
 const baseSchema = () => ({ lessonId: String, taskId: String, itemId: String })
 const withBaseSchema = schema => Object.assign({}, baseSchema(), schema)
 
-export const responseProcessorPipeline = createPipeline('ResponseProcessors', function (context, api) {
+export const responseProcessorPipeline = createPipeline('ResponseProcessors', (context, api) => {
   // if the context is not intended to "save" any results
   // we simply skip creating any methods or publications
   if (!context.schema) {

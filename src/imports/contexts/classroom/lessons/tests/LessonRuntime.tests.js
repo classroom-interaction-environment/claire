@@ -16,7 +16,7 @@ import { AudioFiles } from '../../../files/audio/AudioFiles'
 import { DocumentFiles } from '../../../files/document/DocumentFiles'
 import { Users } from '../../../system/accounts/users/User'
 import { VideoFiles } from '../../../files/video/VideoFiles'
-import { stub, restoreAll } from '../../../../../tests/testutils/stub'
+import { restoreAll } from '../../../../../tests/testutils/stub'
 import { Group } from '../../group/Group'
 import { createGroupDoc } from '../../../../../tests/testutils/doc/createGroupDoc'
 import { resetBeamer } from '../runtime/resetBeamer'
@@ -155,7 +155,9 @@ describe('lesson runtime helpers', () => {
   describe(removeDocuments.name, () => {
     it('removes no documents if there are no docs for a given lesson', async () => {
       const removed = await removeDocuments({ lessonId: Random.id() })
-      Object.values(removed).forEach(removedCount => expect(removedCount).to.equal(0))
+      for (const removedCount of Object.values(removed)) {
+        expect(removedCount).to.equal(0)
+      }
     })
     it('removed documents, if there are docs for a given lesson', async () => {
       const lessonId = Random.id()

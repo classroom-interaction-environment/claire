@@ -16,7 +16,7 @@ function parse (serialized) {
 }
 
 function changed (v) {
-  v && v.changed()
+  v?.changed()
 }
 
 function ensure (value, deps) {

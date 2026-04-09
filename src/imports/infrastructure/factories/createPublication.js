@@ -9,32 +9,31 @@ import { logRuntimeEndpoints } from '../../api/mixins/logRuntimeEndpoints'
 export const createPublication = createPublicationFactory({
   schemaFactory: Schema.create,
   mixins: [checkPermissions, logRuntimeEndpoints],
-  async onError (publicationRuntimeError, mixinsObject) {
-    const env = this
+  async onError (publicationRuntimeError, _mixinsObject) {
 
-    if (!env) {
+    if (!this) {
       throw publicationRuntimeError
       // throw new Error(`Publication called without context in ${mixinsObject?.name}; error msg: ${publicationRuntimeError.message}`)
     }
 
-    error(`runtime error caught in publication [${env._name}]`, publicationRuntimeError)
+    error(`runtime error caught in publication [${this._name}]`, publicationRuntimeError)
 
     // assign id to it, so clients can point to a specific
     // error document, in case the error is too generic
     const errorId = await logError({
       error: publicationRuntimeError,
-      createdBy: env.userId,
+      createdBy: this.userId,
       createdAt: new Date(),
       isClient: false,
       isServer: true,
       isMethod: false,
       isPublication: true,
-      source: env._name
+      source: this._name
     })
 
-    addErrorDetails(publicationRuntimeError, { errorId, source: env._name })
+    addErrorDetails(publicationRuntimeError, { errorId, source: this._name })
 
-    publicationRuntimeError.source = env._name
+    publicationRuntimeError.source = this._name
 
     if (publicationRuntimeError.errorType === 'Meteor.Error' || publicationRuntimeError.isClientSafe) {
       return publicationRuntimeError

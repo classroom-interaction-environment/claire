@@ -7,33 +7,25 @@ export const UnitEditorViewStates = {
     name: 'summary',
     label: 'editor.unit.summary',
     template: 'uesummary',
-    load: async function () {
-      return import('./views/summary/summary')
-    }
+    load: async () => import('./views/summary/summary')
   },
   tasks: {
     name: 'tasks',
     label: 'editor.unit.tasks.title',
     template: 'uetasks',
-    load: async function () {
-      return import('./views/tasks/tasks')
-    }
+    load: async () => import('./views/tasks/tasks')
   },
   material: {
     name: 'material',
     label: 'editor.unit.material.title',
     template: 'uematerial',
-    load: async function () {
-      return import('./views/material/material')
-    }
+    load: async () => import('./views/material/material')
   },
   phases: {
     name: 'phases',
     label: 'editor.unit.phases.title',
     template: 'uephases',
-    load: async function () {
-      return import('./views/phases/phases')
-    }
+    load: async () => import('./views/phases/phases')
   }
 }
 
@@ -52,8 +44,6 @@ if (isAdmin()) {
     label: 'editor.unit.codeView',
     template: 'uecodeView',
     roles: [Hierarchy.admin],
-    load: async function () {
-      return import('./views/codeView/codeViedw')
-    }
+    load: async () => import('./views/codeView/codeViedw')
   }
 }

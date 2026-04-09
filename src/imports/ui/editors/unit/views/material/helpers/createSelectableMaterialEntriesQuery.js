@@ -17,7 +17,7 @@ const selectedEntriesSort = { sort: { title: 1 } }
  * @param userId
  * @return {*|null}
  */
-export const createSelectableMaterialEntriesQuery = function (viewState, unitDoc, unitDocOriginal, userId = Meteor.userId()) {
+export const createSelectableMaterialEntriesQuery = (viewState, unitDoc, unitDocOriginal, userId = Meteor.userId()) => {
   const { collection, field } = viewState
 
   let originalUnit = unitDocOriginal || getCollection(Unit.name).findOne(unitDoc._original) || getLocalCollection(Unit.name).findOne(unitDoc._original)

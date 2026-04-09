@@ -63,7 +63,7 @@ export const createGetDoc = deprecate(({ name } = {}, { checkOwner = true } = {}
  * @param checkOwner determines, whether the document is to be checked for ownership
  * @returns {function} A function to update documents by _id and modifier
  */
-export const createUpdateDoc = deprecate(function ({ name } = {}, { checkOwner = true } = {}) {
+export const createUpdateDoc = deprecate(({ name } = {}, { checkOwner = true } = {}) => {
   check(name, String)
 
   /**

@@ -3,7 +3,7 @@ import { ContextBuilder } from '../../../infrastructure/datastructures/ContextBu
 import { buildPipeline } from '../../../infrastructure/pipelines/server/buildPipeline'
 import { createLog } from '../../../api/log/createLog'
 
-ContextBuilder.buildAll(function (context) {
+ContextBuilder.buildAll((context) => {
   const useDebug = Meteor.isDevelopment && context.debug
   const options = {
     collection: true,

@@ -9,12 +9,11 @@ export const lazyInitialize = loadFunction => {
   let product
 
   return function (...args) {
-    const self = this
 
     if (!product) {
       product = loadFunction()
     }
 
-    return product.apply(self, args)
+    return product.apply(this, args)
   }
 }

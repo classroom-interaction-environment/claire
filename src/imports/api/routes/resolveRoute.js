@@ -5,5 +5,5 @@ export const resolveRoute = function resolve (key, ...optionalArgs) {
   if (!route) {
     return Routes.notFound.path()
   }
-  return route && route.path(...optionalArgs)
+  return route?.path(...optionalArgs)
 }

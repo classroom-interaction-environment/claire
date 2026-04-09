@@ -7,7 +7,6 @@
 export const deprecate = (fn, explicitName) => {
   const name = explicitName || fn.name || 'function'
   return function (...args) {
-    debugger
     console.warn(`DEPRECATION WARNING: ${name} is deprecated and will be removed in future versions.`)
     return fn.apply(this, args)
   }

@@ -7,7 +7,7 @@ import { getInvitationOffset } from './getInvitationOffset'
  * @return {number} a unix timestamp as integer
  */
 export const invitationTimeLeft = (createdAt, expires) => {
-  const now = new Date().getTime()
+  const now = Date.now()
   const expirationDate = getInvitationOffset(new Date(createdAt), expires)
   return expirationDate - now
 }

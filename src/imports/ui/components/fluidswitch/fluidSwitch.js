@@ -5,12 +5,12 @@ import { Notify } from '../notifications/Notify'
 import './fluidSwitch.html'
 
 Template.fluidSwitch.events({
-  'click .toggle-container-fluid' (event, templateInstance) {
+  'click .toggle-container-fluid' (_event, _templateInstance) {
     const user = Meteor.user()
     if (!user) {
       return Notify.add(new Error('user.notLoggedIn'))
     }
-    const fluid = user.ui && user.ui.fluid
+    const fluid = user.ui?.fluid
     Meteor.call(Users.methods.updateUI.name, { fluid: !fluid }, (err) => {
       if (err) {
         Notify.add(err)

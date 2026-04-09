@@ -23,7 +23,7 @@ Tracker.autorun(computation => {
   const langInit = i18n.initialized()
   if (!user || !langInit) { return }
 
-  if (user.locale && user.locale.lang) {
+  if (user.locale?.lang) {
     i18n.setLocale(user.locale.lang)
   }
 

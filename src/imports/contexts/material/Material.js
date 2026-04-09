@@ -50,7 +50,7 @@ Material.getContextNameForField = function getContextNameForField (fieldName) {
  * @param transform
  * @return {any}
  */
-Material.getDocuments = function (contextName, query, transform) {
+Material.getDocuments = (contextName, query, transform) => {
   const collection = getLocalCollection(contextName)
   if (!collection) throw new Error(`expected local collection by name ${contextName}`)
 

@@ -21,7 +21,7 @@ ContextBuilder
 
 export const initContext = (context, buildFct) => {
   if (!ContextRegistry.has(context.name)) {
-    ContextBuilder.build(context, function () {
+    ContextBuilder.build(context, () => {
       (buildFct || buildPipeline)(context, {
         collection: true,
         filesCollection: true

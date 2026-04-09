@@ -1,4 +1,4 @@
 /* eslint-env mocha */
-describe('SchoolClass', function () {
-  import './SchoolClass.tests'
+describe('SchoolClass', () => {
+  require('./SchoolClass.tests')
 })

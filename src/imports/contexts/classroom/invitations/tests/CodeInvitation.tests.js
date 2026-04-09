@@ -10,7 +10,7 @@ import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
 import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
 import { onClientExec, onServerExec } from '../../../../api/utils/archUtils'
 import { createCodeDoc } from '../../../../../tests/testutils/doc/createCodeDoc'
-import { stub, restoreAll } from '../../../../../tests/testutils/stub'
+import { restoreAll } from '../../../../../tests/testutils/stub'
 import { getInvitationOffset } from '../validation/getInvitationOffset'
 import { invitationTimeLeft } from '../validation/invitationTimeLeft'
 import { invitationExpired } from '../validation/invitationExpired'
@@ -20,7 +20,6 @@ import { getInvitationStatus } from '../validation/getInvitationStatus'
 import { createInvitationURLQuery } from '../url/createInvitationURLQuery'
 import { parseInvitationURLQuery } from '../url/parseInvitationURLQuery'
 import { expectThrow } from '../../../../../tests/testutils/expectThrow'
-import { stubUser } from '../../../../../tests/testutils/stubUser'
 
 describe(CodeInvitation.name, () => {
   describe('helpers (now refactored into functions)', () => {
@@ -174,13 +173,13 @@ describe(CodeInvitation.name, () => {
   })
 
   onServerExec(() => {
-    import {
+    const {
       mockCollections,
       clearCollections,
       restoreAllCollections
-    } from '../../../../../tests/testutils/mockCollection'
-    import { exampleUser } from '../../../../../tests/testutils/exampleUser'
-    import { unstubUser, stubUser } from '../../../../../tests/testutils/stubUser'
+    } = require('../../../../../tests/testutils/mockCollection')
+    const { exampleUser } = require('../../../../../tests/testutils/exampleUser')
+    const { unstubUser, stubUser } = require('../../../../../tests/testutils/stubUser')
 
     let CodeCollection
     let SchoolClassCollection

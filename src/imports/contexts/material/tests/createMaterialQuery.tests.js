@@ -3,8 +3,8 @@ import { expect } from 'chai'
 import { Random } from 'meteor/random'
 import { createMaterialQuery } from '../createMaterialQuery'
 
-describe(createMaterialQuery.name, function () {
-  it('creates a new material query', function () {
+describe(createMaterialQuery.name, () => {
+  it('creates a new material query', () => {
     const ids = [Random.id(), Random.id()]
     const userId = Random.id()
 

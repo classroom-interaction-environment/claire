@@ -12,10 +12,9 @@ const API = Template.previewContainer.setDependencies({
 })
 
 Template.previewContainer.onCreated(function () {
-  const instance = this
-  const { type, docId, token } = instance.data.params
+  const { type, docId, token } = this.data.params
 
-  instance.loadDocument = async (document) => {
+  this.loadDocument = async (document) => {
     await Item.initialize()
     const ctx = ContextRegistry.get(type)
     const { material } = ctx
@@ -25,7 +24,7 @@ Template.previewContainer.onCreated(function () {
     const options = { preview: true, print: true }
     const previewData = data({ materialDoc, document, options })
     const loadComplete = true
-    instance.state.set({ previewData, document, template, loadComplete })
+    this.state.set({ previewData, document, template, loadComplete })
   }
 
   callMethod({
@@ -35,7 +34,7 @@ Template.previewContainer.onCreated(function () {
       token: token
     },
     failure: API.fatal,
-    success: instance.loadDocument
+    success: this.loadDocument
   })
 })
 

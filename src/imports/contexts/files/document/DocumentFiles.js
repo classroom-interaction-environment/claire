@@ -23,9 +23,7 @@ export const DocumentFiles = {
     maxSize: 1024 * 1000 * 50,
     usePartialResponse: false,
     accept: FileTypes.document.accept,
-    converter: onServerExec(function () {
-      return require('./converter/documentConverter').documentConverter
-    })
+    converter: onServerExec(() => require('./converter/documentConverter').documentConverter)
   }
 }
 
@@ -55,13 +53,11 @@ DocumentFiles.material = {
   renderer: {
     list: {
       template: 'documentFilesListRenderer',
-      load: async function () {
-        return import('./renderer/list/documentFilesListRenderer')
-      }
+      load: async () => import('./renderer/list/documentFilesListRenderer')
     },
     main: {
       template: 'documentFileRenderer',
-      load: async function () {
+      load: async () => {
         await import('../shared/templates/helpers')
         return import('./renderer/main/documentFileRenderer')
       },

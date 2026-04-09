@@ -118,26 +118,25 @@ const API = Template.codeRegister.setDependencies({
 })
 
 Template.codeRegister.onCreated(function () {
-  const instance = this
-  if (!instance.fail) {
-    instance.fail = function (err) {
-      instance.state.set('registerFailed', err)
-      instance.wizard.clear(true)
-      instance.wizard.pushView(ViewStates.failed, ViewStates.failed)
-      instance.state.set('loadComplete', true)
+  if (!this.fail) {
+    this.fail = (err) => {
+      this.state.set('registerFailed', err)
+      this.wizard.clear(true)
+      this.wizard.pushView(ViewStates.failed, ViewStates.failed)
+      this.state.set('loadComplete', true)
     }
   }
 
-  instance.wizard = Wizard.create({
+  this.wizard = Wizard.create({
     defaultState: ViewStates.basics
   })
 
-  instance.autorun(() => {
-    if (instance.wizard.isCurrentState(ViewStates.password)) {
+  this.autorun(() => {
+    if (this.wizard.isCurrentState(ViewStates.password)) {
       // get previous credentials and
       // build a custom rule that forbids to use previous credentials
-      const { firstName, lastName } = instance.state.get('basicCredentials')
-      const { email } = instance.state.get('usernameDoc')
+      const { firstName, lastName } = this.state.get('basicCredentials')
+      const { email } = this.state.get('usernameDoc')
       const emailSplit = tokenizeEmail(email)
       const emailPrefix = emailSplit.prefix
       const emailDomain = emailSplit.domain
@@ -187,13 +186,13 @@ Template.codeRegister.onCreated(function () {
       if (err) {
         // if there is an error during the check we
         // immediately switch to the failed state
-        return instance.fail(err)
+        return this.fail(err)
       }
 
       if (!validCodeDoc) {
         // if the code is invalid or expired, we
         // immediately switch to the failed state
-        return instance.fail(new Meteor.Error())
+        return this.fail(new Meteor.Error())
       }
 
       const finalParams = Object.assign({}, parsed, validCodeDoc)
@@ -230,15 +229,15 @@ Template.codeRegister.onCreated(function () {
       }
 
       // otherwise we start the new registration wizard
-      instance.state.set('queryParams', finalParams)
-      instance.state.set('loadComplete', true)
+      this.state.set('queryParams', finalParams)
+      this.state.set('loadComplete', true)
     })
   }
   catch (e) {
     // as fallback we handle any error during this process as failed
     // and also switch to the failed state
     console.error(e)
-    instance.fail(new Meteor.Error('codeInvitation.invalidLink', 'codeInvitation.invalidLinkReason'))
+    this.fail(new Meteor.Error('codeInvitation.invalidLink', 'codeInvitation.invalidLinkReason'))
   }
 })
 
@@ -391,7 +390,7 @@ Template.codeRegister.events({
       })
     })
   },
-  'click .success-button' (event, templateInstance) {
+  'click .success-button' (event, _templateInstance) {
     event.preventDefault()
     Router.go(Routes.root.path())
   },

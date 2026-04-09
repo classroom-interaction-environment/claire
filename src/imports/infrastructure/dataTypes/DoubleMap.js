@@ -7,12 +7,11 @@
 
 class DoubleMap {
   constructor (obj = {}) {
-    const self = this
-    self.keys = new Map()
-    self.vals = new Map()
+    this.keys = new Map()
+    this.vals = new Map()
 
     Object.entries(obj).forEach(([key, value]) => {
-      self.set(key, value)
+      this.set(key, value)
     })
   }
 

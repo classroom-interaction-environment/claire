@@ -1,6 +1,6 @@
 import { $in } from '../../../../../../api/utils/query/inSelector'
 
-export const entries = function (viewState, unitDoc) {
+export const entries = (viewState, unitDoc) => {
   const { collection, field } = viewState
   const target = (unitDoc[field] || [])
 

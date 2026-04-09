@@ -4,18 +4,16 @@ import { gmexec } from '../../shared/converters/gmexec'
 let im
 
 // convert -density 150 presentation.pdf[0] -quality 90 test.jpg
-export const documentConverter = async function (fileRef, options) {
+export const documentConverter = async function (fileRef, _options) {
   if (!fileRef.isPDF) {
     return fileRef
   }
-
-  const filesCollection = this
   await fileExists(fileRef.path)
 
   if (!im) im = require('gm').subClass({ imageMagick: true })
 
   let document
-  const thumbnailPath = `${(filesCollection.storagePath(fileRef))}/thumbnail-${fileRef._id}.png`
+  const thumbnailPath = `${(this.storagePath(fileRef))}/thumbnail-${fileRef._id}.png`
 
   try {
     document = im(fileRef.path)
@@ -65,7 +63,7 @@ export const documentConverter = async function (fileRef, options) {
   // update the files doc
   const updateDoc = { $set: {} }
   updateDoc.$set['versions.thumbnail'] = fileRef.versions.thumbnail
-  await filesCollection.collection.updateAsync(fileRef._id, updateDoc)
+  await this.collection.updateAsync(fileRef._id, updateDoc)
 
   return fileRef
 }

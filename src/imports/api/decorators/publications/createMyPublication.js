@@ -2,8 +2,7 @@ import { onServer } from '../../utils/archUtils'
 import { getCollection } from '../../utils/getCollection'
 import { $in } from '../../utils/query/inSelector'
 
-export const createMyPublication = function ({ name, publicFields, schema, isFilesCollection }) {
-  return {
+export const createMyPublication = ({ name, publicFields, schema, isFilesCollection }) => ({
     name: `${name}.publications.my`,
     schema: Object.assign({
       limit: {
@@ -46,5 +45,4 @@ export const createMyPublication = function ({ name, publicFields, schema, isFil
     }),
     timeInterval: 10000,
     numRequests: 100
-  }
-}
+  })

@@ -7,7 +7,7 @@ import { getCollection } from '../../../api/utils/getCollection'
 import { initContext } from '../contexts/initContext'
 import { Notify } from '../../../ui/components/notifications/Notify'
 
-Template.registerHelper('codeOnBeamer', function (compareCode) {
+Template.registerHelper('codeOnBeamer', (compareCode) => {
   if (!compareCode) return false
   const beamerDoc = Beamer.doc.get()
   return beamerDoc && beamerDoc.invitationCode === compareCode

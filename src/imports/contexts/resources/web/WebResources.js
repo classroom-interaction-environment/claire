@@ -21,9 +21,7 @@ WebResources.contexts = {
 
 WebResources.renderer = {
   template: 'webResourceRenderer',
-  load: async function () {
-    return import('./renderer/webResourceRenderer')
-  }
+  load: async () => import('./renderer/webResourceRenderer')
 }
 
 WebResources.helpers = {
@@ -41,9 +39,9 @@ WebResources.helpers = {
 //
 /// /////////////////////////////////////////////////////////////////////////////////////////////
 
-onClientExec(function () {
-  import { ReactiveVar } from 'meteor/reactive-var'
-  import { ITaskDefinition } from '../../tasks/definitions/ITaskDefinition'
+onClientExec(() => {
+  const { ReactiveVar } = require('meteor/reactive-var')
+  const { ITaskDefinition } = require('../../tasks/definitions/ITaskDefinition')
   const init = new ReactiveVar(false)
 
   async function initialize () {
@@ -56,7 +54,7 @@ onClientExec(function () {
    * @deprecated
    * @param initContexts
    */
-  WebResources.initialize = function (initContexts) {
+  WebResources.initialize = (initContexts) => {
     if (!init.get()) {
       initialize()
         .then(res => {

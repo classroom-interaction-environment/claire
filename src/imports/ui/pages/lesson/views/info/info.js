@@ -16,19 +16,18 @@ const API = Template.lessonInfo.setDependencies({
 })
 
 Template.lessonInfo.onCreated(function () {
-  const instance = this
 
-  instance.onStudentRemove = (options) => {
+  this.onStudentRemove = (options) => {
     API.log('on student removed', options)
   }
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const { classDoc } = Template.currentData()
     if (!classDoc) {
       return
     }
     const students = getUsersCollection().find({ _id: { $in: classDoc.students ?? [] } }).fetch()
-    instance.state.set({ students })
+    this.state.set({ students })
   })
 })
 

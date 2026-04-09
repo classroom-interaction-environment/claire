@@ -11,7 +11,7 @@ import { DocNotFoundError } from '../../errors/types/DocNotFoundError'
  * @returns {function(...*):Promise<object>} An async function to retrieve documents by query
  */
 
-export const createDocGetter = function (options) {
+export const createDocGetter = (options) => {
   check(options, Match.ObjectIncluding({
     name: String,
     optional: Match.Maybe(Boolean)

@@ -125,7 +125,7 @@ Template.formModal.events({
       templateInstance.state.set('submitting', false)
     }
   },
-  'hidden.bs.modal' (event, templateInstance) {
+  'hidden.bs.modal' (_event, templateInstance) {
     const formState = state.get()
     const cachedResult = resultCache.get(formState)
     const customKey = templateInstance.state.get('customKey')

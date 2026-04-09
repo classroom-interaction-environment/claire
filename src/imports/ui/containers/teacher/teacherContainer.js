@@ -1,6 +1,4 @@
-import { Template } from 'meteor/templating'
-import { Beamer } from '../../../contexts/beamer/Beamer'
-import { Routes } from '../../../api/routes/Routes'
+
 import '../../layout/navSide/navSide'
 import '../../layout/main/main'
 import '../../layout/routeInfo/routeInfo'

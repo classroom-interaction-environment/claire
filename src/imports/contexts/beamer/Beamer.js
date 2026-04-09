@@ -3,17 +3,17 @@ import { onClientExec } from '../../api/utils/archUtils'
 import { callMethod } from '../../ui/controllers/document/callMethod'
 import { getCollection } from '../../api/utils/getCollection'
 
-onClientExec(function () {
-  import { check, Match } from 'meteor/check'
-  import { ReactiveVar } from 'meteor/reactive-var'
-  import { openWindow } from '../../ui/utils/browser/windowUtils'
+onClientExec(() => {
+  const { check, Match } = require('meteor/check')
+  const { ReactiveVar } = require('meteor/reactive-var')
+  const { openWindow } = require('../../ui/utils/browser/windowUtils')
   const beamerReady = new ReactiveVar(false)
   const windowRef = new ReactiveVar(null)
   const windowIdStore = new ReactiveVar(null)
   const windowUrlStore = new ReactiveVar(null)
   let timerId
 
-  const fallbackCallback = (err) => {
+  const _fallbackCallback = (err) => {
     if (err) {
       console.error(err)
     }
@@ -209,7 +209,7 @@ onClientExec(function () {
   Beamer.doc.code = async (invitationCode) => {
     if (typeof invitationCode === 'undefined') {
       const doc = Beamer.doc.get()
-      return doc && doc.invitationCode
+      return doc?.invitationCode
     }
     else {
       return Beamer.doc.update({ invitationCode })
@@ -273,7 +273,7 @@ onClientExec(function () {
    * @type {object}
    */
   Beamer.actions = {
-    debug (value) {
+    debug (_value) {
     },
     async init (beamerLocation, {
       windowId,

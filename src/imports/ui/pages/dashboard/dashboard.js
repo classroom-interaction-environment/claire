@@ -33,8 +33,7 @@ const toDocId = doc => doc._id
 const byTitle = (a, b) => a.title.localeCompare(b.title)
 
 Template.dashboard.onCreated(function () {
-  const instance = this
-  instance.state.set({
+  this.state.set({
     selectedClass: null,
     showStudents: null,
     deleting: null,
@@ -66,7 +65,7 @@ Template.dashboard.onCreated(function () {
     }
   })
 
-  instance.updateLessonCounts = () => {
+  this.updateLessonCounts = () => {
     const classIds = getCollection(SchoolClass.name).find().map(toDocId)
     if (classIds.length === 0) {
       return
@@ -77,24 +76,24 @@ Template.dashboard.onCreated(function () {
       name: Lesson.methods.counts,
       args: { classIds },
       failure: API.notify,
-      success: lessonCounts => instance.state.set({ lessonCounts })
+      success: lessonCounts => this.state.set({ lessonCounts })
     })
   }
 
   // STEP 2
   // get initial counts for the lessons from method
   // so we can display these without subscriptions required
-  instance.autorun(() => instance.updateLessonCounts())
+  this.autorun(() => this.updateLessonCounts())
 
   // STEP 3
   // if a class is opened / extended, we need live updates on the lessons
-  instance.autorun(() => {
-    const classId = instance.state.get('classId')
+  this.autorun(() => {
+    const classId = this.state.get('classId')
     const classDoc = classId && getCollection(SchoolClass.name).findOne(classId)
 
     if (!classId || typeof classDoc !== 'object') {
       // unset / cleanup
-      instance.state.set('lessonsLoaded', null)
+      this.state.set('lessonsLoaded', null)
       API.unsubscribe(Lesson.publications.byClass)
       return
     }
@@ -130,8 +129,8 @@ Template.dashboard.onCreated(function () {
 
   // when a students invitation modal is active then we have
   // to get the users (but no need to subscribe here)
-  instance.autorun(async () => {
-    const classId = instance.state.get('studentsClassId')
+  this.autorun(async () => {
+    const classId = this.state.get('studentsClassId')
     const classDoc = classId && getCollection(SchoolClass.name).findOne(classId)
 
     if (!classId || typeof classDoc !== 'object') {
@@ -171,20 +170,20 @@ Template.dashboard.onCreated(function () {
       { sort }).fetch()
 
     // show modal already here
-    instance.state.set({ showStudents })
+    this.state.set({ showStudents })
 
     // optional: load profile images
     const ProfileImagesCollection = getLocalCollection(ProfileImages.name)
     const skipProfileImages = []
     const userProfileImages = []
-    showStudents.students.concat(showStudents.teachers).forEach(userDoc => {
+    for (const userDoc of showStudents.students.concat(showStudents.teachers)) {
       if (userDoc.profileImage) {
         userProfileImages.push(userDoc.profileImage)
       }
       if (ProfileImagesCollection.find(userDoc.profileImage).count()) {
         skipProfileImages.push(userDoc.profileImage)
       }
-    })
+    }
 
     if (userProfileImages.length > 0 && skipProfileImages.length !== userProfileImages.length) {
       const profileImageArgs = { classId }
@@ -313,14 +312,14 @@ Template.dashboard.helpers({
   }
 })
 
-Template.dashboard.onDestroyed(function () {
+Template.dashboard.onDestroyed(() => {
   getLocalCollection(Lesson.name).remove({})
   getLocalCollection(Unit.name).remove({})
   API.dispose('dashboardSubKey')
 })
 
 Template.dashboard.events({
-  'click .create-class-btn' (event, templateInstance) {
+  'click .create-class-btn' (event, _templateInstance) {
     event.preventDefault()
   },
   // ------------------------------------------------------------------------------------------------------
@@ -333,7 +332,7 @@ Template.dashboard.events({
     const classId = dataTarget(event, templateInstance)
     templateInstance.state.set({ studentsClassId: classId })
   },
-  'hidden.bs.modal #showStudentsModal' (event, templateInstance) {
+  'hidden.bs.modal #showStudentsModal' (_event, templateInstance) {
     templateInstance.state.set('studentsClassId', null)
   },
   // ------------------------------------------------------------------------------------------------------
@@ -349,7 +348,7 @@ Template.dashboard.events({
       inviteClass: classId
     })
   },
-  'hidden.bs.modal #inviteToClassModal' (event, templateInstance) {
+  'hidden.bs.modal #inviteToClassModal' (_event, templateInstance) {
     templateInstance.state.set({
       invitationModalVisible: false,
       inviteClass: null

@@ -3,7 +3,7 @@ import './docnotfound.html'
 
 export const docnotfoundClassName = 'document-not-found'
 
-Template.docnotfound.onCreated(function () {})
+Template.docnotfound.onCreated(() => {})
 
 Template.docnotfound.helpers({
   className () {

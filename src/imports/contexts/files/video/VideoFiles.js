@@ -72,9 +72,7 @@ export const VideoFiles = {
     accept: FileTypes.video.accept,
     maxSize: 1024 * 1000 * 100, // TODO get from Meteor.settings file
     usePartialResponse: true,
-    converter: onServerExec(function () {
-      return require('./converter/videoConvert').videoConvert
-    })
+    converter: onServerExec(() => require('./converter/videoConvert').videoConvert)
   }
 }
 
@@ -112,9 +110,7 @@ VideoFiles.material = {
     main: {
       name: 'preview',
       template: 'videoFileRenderer',
-      load: async function () {
-        return import('./renderer/main/videoFileRenderer')
-      },
+      load: async () => import('./renderer/main/videoFileRenderer'),
       previewData (targetId) {
         console.warn(VideoFiles.name, 'previewData is deprecated!')
         if (!targetId) { return targetId }
@@ -135,9 +131,7 @@ VideoFiles.material = {
     list: {
       name: 'list',
       template: 'videoFilesListRenderer',
-      load: async function () {
-        return import('./renderer/list/videoFilesListRenderer')
-      }
+      load: async () => import('./renderer/list/videoFilesListRenderer')
     }
   },
   async load () {

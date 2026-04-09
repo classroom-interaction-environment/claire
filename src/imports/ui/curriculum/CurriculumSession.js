@@ -14,7 +14,9 @@ CurriculumSession.enable = () => {
   debug('enable', current)
   if (current) { return }
   session.set(true)
-  handlers.forEach(handler => handler(true))
+  handlers.forEach(handler => {
+    handler(true)
+  })
 }
 
 CurriculumSession.disable = () => {
@@ -22,7 +24,9 @@ CurriculumSession.disable = () => {
   debug('disable', current)
   if (!current) { return }
   session.set(false)
-  handlers.forEach(handler => handler(false))
+  handlers.forEach(handler => {
+    handler(false)
+  })
 }
 
 CurriculumSession.isSession = () => session.get()

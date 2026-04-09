@@ -43,8 +43,7 @@ TemplateLoader.enable()
  * @return {TemplateInstance.api}
  */
 Template.prototype.setDependencies = function (options = {}) {
-  const template = this
-  const { viewName } = template
+  const { viewName } = this
 
   if (completeStates.has(viewName)) {
     throw new Error('Template setDependencies called multiple times. This should never occur.')
@@ -54,7 +53,7 @@ Template.prototype.setDependencies = function (options = {}) {
     options.debug = true
   }
 
-  const api = initTemplateDependencies.call(template, options)
+  const api = initTemplateDependencies.call(this, options)
   completeStates.set(viewName, api.initComplete)
   return api
 }
@@ -64,7 +63,7 @@ const completeStates = new Map()
 // to ease-up init-checks (so Templates won't need to declare helpers for that
 // all the time) we add this global helper, which we can use in templates
 // together with: {{#onLoaded loaded=templateLoaded}}...{{/onLoaded}}
-Template.registerHelper('templateLoaded', function () {
+Template.registerHelper('templateLoaded', () => {
   const instance = Template.instance()
   const templateName = instance.view.name.split('.')[1]
   const template = Template[templateName]

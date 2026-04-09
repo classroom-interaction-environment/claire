@@ -23,9 +23,8 @@ const API = Template.login.setDependencies({
 })
 
 Template.login.onCreated(function () {
-  const instance = this
 
-  instance.autorun(() => {
+  this.autorun(() => {
     if (!API.initComplete()) {
       return
     }
@@ -78,19 +77,18 @@ Template.login.onCreated(function () {
       }
     }))
 
-    instance.state.set('schemasCreated', true)
+    this.state.set('schemasCreated', true)
   })
 })
 
 Template.login.onRendered(function () {
-  const instance = this
 
   const codeEnter = Router.queryParam('c')
   if (codeEnter) {
-    instance.$('#registerCodeModal').modal('show')
+    this.$('#registerCodeModal').modal('show')
   }
   else {
-    const input = instance.$('input[data-schema-key="email"]')
+    const input = this.$('input[data-schema-key="email"]')
     input.focus()
     input.focus()
     input.focus()
@@ -143,7 +141,7 @@ Template.login.events({
     // fail and want to send a reset link
     const values = getFormData('loginForm')
 
-    if (values.email && values.email.includes('@')) {
+    if (values.email?.includes('@')) {
       templateInstance.state.set('resetEmail', { email: values.email })
     }
 
@@ -178,7 +176,7 @@ Template.login.events({
     event.preventDefault()
     templateInstance.$('#registerCodeModal').modal('show')
   },
-  'submit #codeForm': async function (event, templateInstance) {
+  'submit #codeForm': async (event, templateInstance) => {
     event.preventDefault()
     const codeFormSchema = schemas.get('codeFormSchema')
     const insertDoc = formIsValid(codeFormSchema, 'codeForm', false, API.debug)

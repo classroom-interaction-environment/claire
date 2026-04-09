@@ -28,9 +28,7 @@ export const MethodTypes = {
   _arr: null,
   toArr () {
     if (!this._arr) {
-      this._arr = Object.values(this.entries).sort(function (a, b) {
-        return a.value - b.value
-      })
+      this._arr = Object.values(this.entries).sort((a, b) => a.value - b.value)
     }
     return this._arr
   },

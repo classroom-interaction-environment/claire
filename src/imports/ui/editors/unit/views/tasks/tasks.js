@@ -32,39 +32,38 @@ const TaskEditor = {
 }
 
 Template.uetasks.onCreated(function () {
-  const instance = this
 
   // ===========================================================================
   // 1. load subview
   // ===========================================================================
   const subView = MaterialSubviews.create({ name: Task.name })
-  instance.getViewState = () => subView
+  this.getViewState = () => subView
 
   const { load } = subView
   load()
     .catch(e => API.fatal(e))
     .then(() => {
       subView.loaded = true
-      instance.state.set('loadComplete', true)
+      this.state.set('loadComplete', true)
     })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const { unitDoc, originalUnitDoc } = Template.currentData()
     const originalRequired = !!(unitDoc?._original)
     const originalProvided = originalRequired ? !!originalUnitDoc : true
     if (!unitDoc || !originalProvided) return
 
     const taskIds = unitDoc[Task.fieldName] ?? []
-    const originalIds = (originalUnitDoc || {})[Task.fieldName] ?? []
+    const originalIds = originalUnitDoc?.[Task.fieldName] ?? []
     const ids = unique([...taskIds, ...originalIds])
-    if (ids.length === 0) return instance.state.set('dataComplete', true)
+    if (ids.length === 0) return this.state.set('dataComplete', true)
     loadIntoCollection({
       name: Task.methods.all,
       collection: getLocalCollection(Task.name),
       args: { ids },
       failure: API.fatal,
       success: () => {
-        instance.state.set({
+        this.state.set({
           dataComplete: true,
           hasDocuments: getLocalCollection(Task.name).find({ _id: $in(taskIds) }).count() > 0
         })
@@ -78,14 +77,14 @@ Template.uetasks.onCreated(function () {
 
   // if the unit doc changes we need to subscribe to the phases, because
   // we need on every material the option to add / remove it to/from phases
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     const { unitDoc, originalUnitDoc } = data
     const phaseQuery = { _id: $in(unitDoc.phases || []) }
     const cb = {
       onReady: () => {
         const phases = (unitDoc.phases || []).map(phaseId => getCollection(Phase.name).findOne(phaseId))
-        instance.state.set({
+        this.state.set({
           phases: phases,
           phaseSubComplete: true
         })
@@ -102,19 +101,19 @@ Template.uetasks.onCreated(function () {
 
     // note, that data.originalUnitDoc may not be present
     // when editing unit master docs (curriculum docs)
-    instance.state.set({ unitDoc, originalUnitDoc })
+    this.state.set({ unitDoc, originalUnitDoc })
   })
 
   // ===========================================================================
   // Actions
   // ===========================================================================
-  instance.edit = createMaterialEdit({
+  this.edit = createMaterialEdit({
     API,
-    templateInstance: instance,
-    onBefore: ({ materialId }) => instance.state.set('selectForEdit', materialId),
+    templateInstance: this,
+    onBefore: ({ materialId }) => this.state.set('selectForEdit', materialId),
     onComplete: async ({ insertDoc }) => {
       await TaskEditor.load()
-      instance.state.set({ edit: insertDoc, selectForEdit: null })
+      this.state.set({ edit: insertDoc, selectForEdit: null })
     }
   })
 })
@@ -131,7 +130,7 @@ Template.uetasks.helpers({
     return Template.getState('creating') || Template.getState('edit') || Template.getState('selectForEdit')
   },
 
-  showHeaderButtons (entries) {
+  showHeaderButtons (_entries) {
     if (!API.initComplete()) {
       return false
     }
@@ -181,7 +180,7 @@ Template.uetasks.events({
     templateInstance.state.set('editTitle', true)
     API.showModal('edit-title-modal')
   },
-  'hidden.bs.modal #edit-title-modal' (event, templateInstance) {
+  'hidden.bs.modal #edit-title-modal' (_event, templateInstance) {
     templateInstance.state.set('editTitle', null)
   },
   'submit #editTitleForm' (event, templateInstance) {

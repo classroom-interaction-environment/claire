@@ -3,7 +3,7 @@ import './nodocs.html'
 
 export const nodocsClassName = 'no-entries-warning'
 
-Template.nodocs.onCreated(function () {})
+Template.nodocs.onCreated(() => {})
 
 Template.nodocs.helpers({
   className () {

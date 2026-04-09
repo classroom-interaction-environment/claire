@@ -36,7 +36,7 @@ export const quadrantToDropzone = (quadrant) => {
       draggableElement.classList.remove('can-drop')
       $(draggableElement).css('background-color', '#d4d4d4')
     },
-    ondrop (event) {
+    ondrop (_event) {
       // set new color
     },
     ondropdeactivate (event) {

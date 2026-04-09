@@ -24,18 +24,17 @@ const API = Template.enrollAccount.setDependencies({
 let enrollmentSchema
 
 Template.enrollAccount.onCreated(function () {
-  const instance = this
-  const { data } = instance
+  const { data } = this
   const token = data.params.verificationToken
   const reason = 'enroll'
   const queryDataBase64 = decodeURIComponent(data.queryParams.d)
   const queryDataDecoded = window.atob(queryDataBase64)
   const queryDataJson = JSON.parse(queryDataDecoded)
 
-  const email = queryDataJson && queryDataJson[0]
+  const email = queryDataJson?.[0]
   if (!email) return API.notify(new Error('login.resetPassword.emailExpected'))
 
-  instance.state.set({ email })
+  this.state.set({ email })
 
   const setupForm = () => {
     const emailSplit = tokenizeEmail(email)
@@ -105,7 +104,7 @@ Template.enrollAccount.onCreated(function () {
 
   Meteor.call(Users.methods.checkResetpasswordToken.name, { email, token, reason }, (err) => {
     if (err) {
-      instance.state.set('error', err)
+      this.state.set('error', err)
     }
 
     else {
@@ -113,7 +112,7 @@ Template.enrollAccount.onCreated(function () {
     }
 
     // always
-    instance.state.set({
+    this.state.set({
       loadComplete: true,
       doc: { email }
     })

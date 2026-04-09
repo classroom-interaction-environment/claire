@@ -1,4 +1,4 @@
-import { Meteor } from 'meteor/meteor'
+
 import { LessonErrors } from '../../../classroom/lessons/LessonErrors'
 import { LessonStates } from '../../../classroom/lessons/LessonStates'
 import { Task } from '../../../curriculum/curriculum/task/Task'

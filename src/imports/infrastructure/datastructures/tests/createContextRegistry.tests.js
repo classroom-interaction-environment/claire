@@ -3,8 +3,8 @@ import { createContextRegistry } from '../createContextRegistry'
 import { Random } from 'meteor/random'
 import { expect } from 'chai'
 
-describe(createContextRegistry.name, function () {
-  it('throws if options is not correct', function () {
+describe(createContextRegistry.name, () => {
+  it('throws if options is not correct', () => {
     [
       ['name', {}],
       ['hasIdentity', { name: Random.id(6) }]
@@ -13,7 +13,7 @@ describe(createContextRegistry.name, function () {
         .to.throw(`Match error: Missing key '${name}'`)
     })
   })
-  it('creates a new registry', function () {
+  it('creates a new registry', () => {
     const name = Random.id(6)
     const reg = createContextRegistry({
       name: name,
@@ -25,7 +25,7 @@ describe(createContextRegistry.name, function () {
     expect(reg.hasIdentity()).to.equal(name)
     expect(reg.foo).to.equal('bar')
   })
-  it('provides basic registry functionality', function () {
+  it('provides basic registry functionality', () => {
     const ctxName = Random.id(6)
     const regName = Random.id(6)
     const reg = createContextRegistry({

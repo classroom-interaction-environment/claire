@@ -5,14 +5,13 @@ import './legal.html'
 const allLegal = Settings.legal
 
 Template.legal.onCreated(function () {
-  const instance = this
-  instance.autorun(() => {
+  this.autorun(() => {
     const { type } = Template.currentData().params
     const settingsDoc = Settings.helpers.get()
     const otherLegal = Object.keys(allLegal).filter(key => key !== type)
 
-    instance.state.set({
-      value: settingsDoc && settingsDoc[type],
+    this.state.set({
+      value: settingsDoc?.[type],
       label: type,
       others: otherLegal
     })

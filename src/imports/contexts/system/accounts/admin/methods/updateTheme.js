@@ -7,7 +7,7 @@ const { express } = WebApp
 const ROOT = '/assets/app/theme/'
 const sourcePath = (name = 'default.css') => nodePath.join(process.cwd(), ROOT, name)
 
-const ThemeCollection = createCollection({
+const _ThemeCollection = createCollection({
   name: 'themes',
   schema: {
     name: {
@@ -93,7 +93,7 @@ WebApp.handlers.use('/app-theme', express.static(sourcePath(), {
   index: false,
   maxAge: '1d',
   redirect: false,
-  setHeaders: function (res, path, stat) {
+  setHeaders: (res, _path, _stat) => {
     res.set('Cache-Control', 'no-store')
     res.set('Content-Type', 'text/css; charset=utf-8')
   }

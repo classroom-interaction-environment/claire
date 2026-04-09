@@ -34,73 +34,70 @@ const API = Template.lessonMaterial.setDependencies({
 })
 
 Template.lessonMaterial.onCreated(function () {
-  const instance = this
-  instance.state.set('hasGroups', {})
-  instance.state.set('updating', {})
-  instance.state.set('downloading', {})
-  instance.state.set('showResults', {})
-  instance.currentItems = new ReactiveVar()
+  this.state.set('hasGroups', {})
+  this.state.set('updating', {})
+  this.state.set('downloading', {})
+  this.state.set('showResults', {})
+  this.currentItems = new ReactiveVar()
 
-  instance.updating = function (key, value) {
-    const updating = instance.state.get('updating')
+  this.updating = (key, value) => {
+    const updating = this.state.get('updating')
     updating[key] = value
-    instance.state.set('updating', updating)
+    this.state.set('updating', updating)
   }
 
-  instance.isUpdating = function (key) {
-    const updating = instance.state.get('updating')
+  this.isUpdating = (key) => {
+    const updating = this.state.get('updating')
     return updating[key]
   }
 
-  instance.downloading = function (key, value) {
-    const downloading = instance.state.get('downloading')
+  this.downloading = (key, value) => {
+    const downloading = this.state.get('downloading')
     downloading[key] = value
-    instance.state.set('downloading', downloading)
+    this.state.set('downloading', downloading)
   }
 
-  instance.isDownloading = function (key) {
-    const downloading = instance.state.get('downloading')
+  this.isDownloading = (key) => {
+    const downloading = this.state.get('downloading')
     return downloading[key]
   }
 
-  instance.isActiveStudent = (materialId, groupMaterial) => {
-    if (groupMaterial && groupMaterial.some(m => m._id === materialId)) {
+  this.isActiveStudent = (materialId, groupMaterial) => {
+    if (groupMaterial?.some(m => m._id === materialId)) {
       return true
     }
 
-    const { lessonDoc } = instance.data
-    return lessonDoc &&
-      lessonDoc.visibleStudent &&
-      lessonDoc.visibleStudent.find(ref => ref._id === materialId)
+    const { lessonDoc } = this.data
+    return lessonDoc?.visibleStudent?.find(ref => ref._id === materialId)
   }
 
-  instance.showResults = (materialId, groupId) => {
+  this.showResults = (materialId, groupId) => {
     const states = Template.getState('showResults')
     let showId = materialId
     if (typeof groupId === 'string') {
       showId += groupId
     }
-    return states && states[showId]
+    return states?.[showId]
   }
 
-  instance.resultButtonDisabled = (materialName) => {
-    const { lessonDoc } = instance.data
+  this.resultButtonDisabled = (materialName) => {
+    const { lessonDoc } = this.data
     return !lessonDoc || LessonStates.isIdle(lessonDoc) || materialName !== Task.name
   }
 
-  instance.isIdle = () => {
-    const { lessonDoc } = instance.data
+  this.isIdle = () => {
+    const { lessonDoc } = this.data
     return LessonStates.isIdle(lessonDoc)
   }
 
-  instance.isOnBeamer = (referenceId, itemId) => {
-    const { lessonDoc } = instance.data
-    const lessonId = lessonDoc && lessonDoc._id
+  this.isOnBeamer = (referenceId, itemId) => {
+    const { lessonDoc } = this.data
+    const lessonId = lessonDoc?._id
     return lessonId && Beamer.doc.has({ referenceId, lessonId, itemId })
   }
 
-  const unitId = instance.data.unitDoc._id
-  instance.autorun(() => {
+  const unitId = this.data.unitDoc._id
+  this.autorun(() => {
     const hasGroups = {}
     getCollection(Group.name).find({ unitId }).forEach(groupDoc => {
       if (groupDoc.phases?.length) {
@@ -113,7 +110,7 @@ Template.lessonMaterial.onCreated(function () {
         hasGroups.global = true
       }
     })
-    instance.state.set({ hasGroups })
+    this.state.set({ hasGroups })
   })
 
   // ==========================================================================
@@ -123,20 +120,20 @@ Template.lessonMaterial.onCreated(function () {
   // we want to resolve references only once, so we get all material refs
   // and add them by id to a dict, which we then can use to access by id
 
-  instance.references = new ReactiveDict()
+  this.references = new ReactiveDict()
   const addReference = reference => {
     console.debug('add ref?')
-    if (!instance.references.get(reference.document)) {
+    if (!this.references.get(reference.document)) {
       console.debug('=> yes, add ref', reference)
       const refDoc = resolveMaterialReference(reference)
       if (!refDoc) {
         console.warn('could not resolve', reference.document)
       }
-      instance.references.set(reference.document, refDoc)
+      this.references.set(reference.document, refDoc)
     }
   }
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     const { unitDoc, unassociatedMaterial } = data
     const allRefs = new Map()
@@ -154,7 +151,9 @@ Template.lessonMaterial.onCreated(function () {
       return
     }
     console.debug(allRefs)
-    allRefs.forEach(ref => addReference(ref))
+    allRefs.forEach(ref => {
+      addReference(ref)
+    })
   })
 })
 
@@ -241,7 +240,7 @@ Template.lessonMaterial.helpers({
     const { lessonDoc } = Template.instance().data
     return LessonStates.canComplete(lessonDoc)
   },
-  downloading (phaseId, referenceId) {
+  downloading (_phaseId, referenceId) {
     return Template.instance().isDownloading(referenceId)
   },
   isNotIdle () {
@@ -458,7 +457,7 @@ Template.lessonMaterial.events({
   //  CLEAR PREVIEW
   //
   // ===========================================================================
-  'hidden.bs.modal #lesson-material-preview-modal' (event, templateInstance) {
+  'hidden.bs.modal #lesson-material-preview-modal' (_event, templateInstance) {
     templateInstance.state.set({
       previewTarget: null,
       previewData: null
@@ -470,7 +469,7 @@ Template.lessonMaterial.events({
   //  PRINT MATERIAL FROM PREVIEW
   //
   // ===========================================================================
-  'click .print-material-preview-button' (event, templateInstance) {
+  'click .print-material-preview-button' (event, _templateInstance) {
     event.preventDefault()
     printHTMLElement('preview-material-target')
   },
@@ -575,7 +574,7 @@ Template.lessonMaterial.events({
   //  TOGGLE BEAMER
   //
   // ===========================================================================
-  'hidden.bs.modal #lesson-beamer-preview-modal' (event, templateInstance) {
+  'hidden.bs.modal #lesson-beamer-preview-modal' (_event, templateInstance) {
     templateInstance.state.set({
       currentTaskId: null,
       currentTaskDoc: null
@@ -618,7 +617,7 @@ Template.lessonMaterial.events({
       context,
       itemId,
       responseProcessor
-    }, delayedCallback(300, (err, res) => {
+    }, delayedCallback(300, (err, _res) => {
       templateInstance.state.set('sendingToBeamer', null)
       if (err) return API.notify(err)
     }))
@@ -632,7 +631,7 @@ Template.lessonMaterial.events({
 
     // if we have this item currently displayed and it has a defined RP
     // then we only want to update the response processor on the reference
-    if (beamerDoc && beamerDoc.references) {
+    if (beamerDoc?.references) {
       const index = beamerDoc.references.findIndex(r => r.itemId === itemId)
       const beamerReference = beamerDoc.references[index]
 

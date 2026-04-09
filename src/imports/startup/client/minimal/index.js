@@ -15,7 +15,7 @@ setTimeout(async () => {
   await import('./fontawesome')
 }, 50)
 
-const globalDragDropHandler = function (e) {
+const globalDragDropHandler = (e) => {
   e.preventDefault()
 }
 

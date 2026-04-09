@@ -4,6 +4,6 @@ import './colorSelector.html'
 Template.colorSelector.helpers({
   content () {
     const { data } = Template.instance()
-    return data && data.colors
+    return data?.colors
   }
 })

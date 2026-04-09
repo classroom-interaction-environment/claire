@@ -38,23 +38,22 @@ Template.fatal.helpers({
 })
 
 Template.fatal.onRendered(function () {
-  const instance = this
-  instance.autorun(() => {
+  this.autorun(() => {
     const target = state.get('target')
     const open = state.get('open')
     if (open || !target) return
 
-    const $modal = instance.$(`#${target}`)
+    const $modal = this.$(`#${target}`)
     if (!$modal || !$modal.get(0)) {
       throw new Error(`Unexpected missing modal for "${target}"`)
     }
     $modal.modal('show')
-    instance.state.set('open', true)
+    this.state.set('open', true)
   })
 })
 
 Template.fatal.events({
-  'hidden.bs.modal' (event, templateInstance) {
+  'hidden.bs.modal' (_event, templateInstance) {
     templateInstance.state.set('open', false)
   }
 })
@@ -74,7 +73,7 @@ export const setFatalError = debounce((error = new Error(), { modalId = 'fatal-e
 
   const proto = details && Object.prototype.toString.call(details)
   if (proto === '[object Array]') {
-    const found = details.find(entry => Object.hasOwnProperty.call(entry, 'errorId'))
+    const found = details.find(entry => Object.hasOwn(entry, 'errorId'))
     errorId = found.errorId
     source = found.source
   }

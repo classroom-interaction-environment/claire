@@ -6,28 +6,24 @@ import { defaultContainer } from '../../../ui/containers/default/defaultContaine
 
 Router.setDefaultTarget(defaultContainer)
 
-Object.values(Routes).forEach(route => Router.register(route))
+Object.values(Routes).forEach(route => {
+  Router.register(route)
+})
 
 // TODO move global helpers into own file that can be loaded by template via `loaders`
 
-Template.registerHelper('route', function (key, ...optionalArgs) {
-  return resolveRoute(key, ...optionalArgs)
-})
+Template.registerHelper('route', (key, ...optionalArgs) => resolveRoute(key, ...optionalArgs))
 
-Template.registerHelper('routeDef', function (key) {
-  return Routes[key]
-})
+Template.registerHelper('routeDef', (key) => Routes[key])
 
-Template.registerHelper('referrer', function () {
+Template.registerHelper('referrer', () => {
   const location = Router.location()
   return encodeURIComponent(location)
 })
 
-Template.registerHelper('encodeURIComponent', function (value) {
-  return encodeURIComponent(value)
-})
+Template.registerHelper('encodeURIComponent', (value) => encodeURIComponent(value))
 
-Template.registerHelper('join', function (char, ...args) {
+Template.registerHelper('join', (char, ...args) => {
   args.pop()
   return args.join(char)
 })

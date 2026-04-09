@@ -155,9 +155,7 @@ Template.task.onCreated(function () {
       lessonDoc.visibleStudent &&
       lessonDoc.visibleStudent.find(docByTaskId)
 
-    const isGroupVisible = groupDoc &&
-      groupDoc.visible &&
-      groupDoc.visible.find(docByTaskId)
+    const isGroupVisible = groupDoc?.visible?.find(docByTaskId)
 
     if (!isVisible && !isGroupVisible) {
       instance.state.set('taskDoc', null)
@@ -286,7 +284,9 @@ Template.task.onCreated(function () {
       if (loadError) {
         return instance.onLoadError(loadError)
       }
-      unitDocs.forEach(doc => insertUpdate(UnitCollection, doc))
+      unitDocs.forEach(doc => {
+        insertUpdate(UnitCollection, doc)
+      })
       const unitDoc = UnitCollection.findOne(lessonDoc.unit)
       instance.state.set('unitDoc', unitDoc)
     })
@@ -362,7 +362,7 @@ Template.task.helpers({
   },
   lessonId () {
     const lessonDoc = Template.instance().state.get('lessonDoc')
-    return lessonDoc && lessonDoc._id
+    return lessonDoc?._id
   },
   taskNotVisible () {
     return Template.instance().state.get('taskNotVisible')
@@ -411,7 +411,7 @@ Template.task.helpers({
   },
   lessonTitle () {
     const unitDoc = Template.getState('unitDoc')
-    return unitDoc && unitDoc.title
+    return unitDoc?.title
   },
   lessonStatusData () {
     const instance = Template.instance()
@@ -424,8 +424,7 @@ Template.task.helpers({
 })
 
 Template.task.onDestroyed(function () {
-  const instance = this
-  if (instance.state.get('taskSubscribed')) {
+  if (this.state.get('taskSubscribed')) {
     API.dispose(taskSubKey)
   }
 })

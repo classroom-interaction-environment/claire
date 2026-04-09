@@ -16,10 +16,9 @@ updateSchemas.set('role', Schema.create(Admin.methods.updateRole.schema, { track
 const API = Template.adminUsers.setDependencies({})
 
 Template.adminUsers.onCreated(function () {
-  const instance = this
-  instance.state.set('showInst', undefined)
+  this.state.set('showInst', undefined)
 
-  instance.loadUsers = ({ ids } = {}) => {
+  this.loadUsers = ({ ids } = {}) => {
     const args = {}
     if (ids) {
       args.ids = ids
@@ -31,9 +30,9 @@ Template.adminUsers.onCreated(function () {
       failure: API.notify,
       success: users => {
         const showInst = {}
-        const institutions = instance.state.get('institutions') || {}
+        const institutions = this.state.get('institutions') || {}
 
-        users.forEach(userDoc => {
+        for (const userDoc of users) {
           const { institution } = userDoc
           if (!institution) {
             institutions[undefined] = (institutions[undefined] || [])
@@ -48,11 +47,11 @@ Template.adminUsers.onCreated(function () {
           }
 
           showInst[institution] = true
-          instance.users.upsert({ _id: userDoc._id }, { $set: { ...userDoc } })
-        })
+          this.users.upsert({ _id: userDoc._id }, { $set: { ...userDoc } })
+        }
 
         const loadUsersComplete = true
-        instance.state.set({ institutions, showInst, loadUsersComplete })
+        this.state.set({ institutions, showInst, loadUsersComplete })
       }
     })
   }
@@ -63,19 +62,19 @@ Template.adminUsers.onCreated(function () {
     success: names => {
       const institutionNames = names.filter(name => !!name).sort((a, b) => a.localeCompare(b))
       const institutions = {}
-      institutionNames.forEach(name => {
+      for (const name of institutionNames) {
         institutions[name] = {}
-      })
+      }
       const loadComplete = true
-      instance.state.set({ institutions, institutionNames, loadComplete })
+      this.state.set({ institutions, institutionNames, loadComplete })
     }
   })
 
-  instance.autorun(() => {
-    const institution = instance.state.get('showInst')
+  this.autorun(() => {
+    const institution = this.state.get('showInst')
     if (institution === undefined) { return }
     if (institution === null) {
-      return instance.state.set('loadUsers', false)
+      return this.state.set('loadUsers', false)
     }
 
     API.subscribe({
@@ -85,7 +84,7 @@ Template.adminUsers.onCreated(function () {
       callbacks: {
         onError: API.fatal,
         onReady: () => {
-          setTimeout(() => instance.state.set('loadUsers', false), 300)
+          setTimeout(() => this.state.set('loadUsers', false), 300)
         }
       }
     })
@@ -106,16 +105,16 @@ Template.adminUsers.helpers({
     return Meteor.users.find({ institution })
   },
   getUserEmail (user) {
-    return user && user.emails ? user.emails[0].address : ''
+    return user?.emails ? user.emails[0].address : ''
   },
   isVerified (user) {
-    return user && user.emails && user.emails[0].verified === true
+    return user?.emails && user.emails[0].verified === true
   },
   getUserGroups (roles) {
     return roles && Object.keys(roles)
   },
   getUserRoles (roles, group) {
-    return roles && roles[group]
+    return roles?.[group]
   },
   isMe (userId) {
     return userId === Meteor.userId()
@@ -179,7 +178,7 @@ Template.adminUsers.events({
     const userId = dataTarget(event, templateInstance)
 
     templateInstance.state.set('submitting', userId)
-    Meteor.call(Admin.methods.reinvite.name, { userId }, (err, res) => {
+    Meteor.call(Admin.methods.reinvite.name, { userId }, (err, _res) => {
       templateInstance.state.set('submitting', null)
       if (err) {
         return API.notify(err)
@@ -200,7 +199,7 @@ Template.adminUsers.events({
         if (!result) return
 
         templateInstance.state.set('submitting', targetId)
-        Meteor.call(Admin.methods.removeUser.name, { _id: targetId }, function (err, res) {
+        Meteor.call(Admin.methods.removeUser.name, { _id: targetId }, (err, _res) => {
           templateInstance.state.set('submitting', null)
           if (err) {
             API.notify(err)
@@ -211,7 +210,7 @@ Template.adminUsers.events({
         })
       })
   },
-  'click .create-user-button' (event, templateInstance) {
+  'click .create-user-button' (event, _templateInstance) {
     event.preventDefault()
     API.showModal('createUserModal')
   },

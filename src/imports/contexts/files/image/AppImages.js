@@ -25,9 +25,7 @@ export const AppImages = {
   // this is not material, so we attach renderer on top-level
   renderer: onClient({
     template: 'imageFileRenderer',
-    load: async function () {
-      return import('./renderer/main/imageFileRenderer')
-    }
+    load: async () => import('./renderer/main/imageFileRenderer')
   }),
 
   files: {
@@ -36,9 +34,7 @@ export const AppImages = {
     accept: FileTypes.image.accept,
     maxSize: 1024 * 1000 * 6,
     usePartialResponse: false,
-    converter: onServerExec(function () {
-      return require('./converter/imageConvert').imageConvert
-    })
+    converter: onServerExec(() => require('./converter/imageConvert').imageConvert)
   }
 }
 
@@ -47,15 +43,13 @@ export const AppImages = {
  * and cache the images in a closed-scoped reactive var.
  */
 
-onClientExec(function () {
+onClientExec(() => {
   const { ReactiveVar } = require('meteor/reactive-var')
   const appImages = new ReactiveVar()
 
-  AppImages.helpers.get = function () {
-    return appImages.get()
-  }
+  AppImages.helpers.get = () => appImages.get()
 
-  AppImages.helpers.init = function (callback) {
+  AppImages.helpers.init = (callback) => {
     Meteor.call(AppImages.methods.get.name, {}, (err, res) => {
       if (err) return callback(err)
       appImages.set(res)
@@ -72,9 +66,7 @@ AppImages.publications.all = {
   name: 'appImages.publications.all',
   admin: true,
   schema: {},
-  run: onServer(function () {
-    return getCollection(AppImages.name).find()
-  })
+  run: onServer(() => getCollection(AppImages.name).find())
 }
 
 /**
@@ -86,7 +78,5 @@ AppImages.methods.get = {
   name: 'appImages.methods.get',
   schema: {},
   isPublic: true,
-  run: onServer(function () {
-    return getCollection(AppImages.name).find().fetchAsync()
-  })
+  run: onServer(() => getCollection(AppImages.name).find().fetchAsync())
 }

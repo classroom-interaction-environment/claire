@@ -3,7 +3,7 @@ import { Classroom } from './Classroom'
 import { createMyMethod } from '../../api/decorators/methods/createMyMethod'
 import { createMyPublication } from '../../api/decorators/publications/createMyPublication'
 
-export const classroomPipeline = createPipeline(Classroom.name, function (context) {
+export const classroomPipeline = createPipeline(Classroom.name, (context) => {
   Classroom.setIdentity(context)
 
   const classRoomMethods = {}

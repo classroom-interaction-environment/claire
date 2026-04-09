@@ -3,7 +3,7 @@ import { toolTipEvents } from '../utils/tooltipUtils'
 import '../icon/icon'
 import './actionbutton.html'
 
-Template.actionButton.onCreated(function () {})
+Template.actionButton.onCreated(() => {})
 
 Template.actionButton.helpers({
   dataAtts () {

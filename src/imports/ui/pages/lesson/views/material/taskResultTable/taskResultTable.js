@@ -17,10 +17,9 @@ Item.initialize().catch(API.notify)
 Files.initialize(true)
 
 Template.taskResultTable.onCreated(function () {
-  const instance = this
-  instance.currentItems = new ReactiveVar()
-  const { taskDoc, userIds } = instance.data
-  instance.state.set({
+  this.currentItems = new ReactiveVar()
+  const { taskDoc, userIds } = this.data
+  this.state.set({
     showItems: {},
     userIds,
     taskDoc
@@ -28,12 +27,12 @@ Template.taskResultTable.onCreated(function () {
 
   // wait until items are initialized and then resolve all items
   // for the current taskDoc
-  instance.autorun(computation => {
+  this.autorun(computation => {
     if (!Item.isInitialized() || !Files.isInitialized()) {
       return
     }
 
-    instance.currentItems.set(getAllItemsInTask(taskDoc))
+    this.currentItems.set(getAllItemsInTask(taskDoc))
     computation.stop()
   })
 })

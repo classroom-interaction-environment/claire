@@ -5,12 +5,11 @@ import { cursor } from '../../../../../api/utils/cursor'
 import './stats.html'
 
 Template.adminStats.onCreated(function () {
-  const instance = this
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const handle = Meteor.subscribe('meteor_facts')
     if (handle.ready()) {
-      instance.state.set('loadComplete', true)
+      this.state.set('loadComplete', true)
     }
   })
 })

@@ -5,8 +5,8 @@ import { createLog } from '../../log/createLog'
 import { Lesson } from '../../../contexts/classroom/lessons/Lesson'
 
 export const createByItemPublication = ({ name }) => {
-  import { isMemberOfLesson } from '../../../contexts/classroom/lessons/runtime/isMemberOfLesson'
-  import { createDocGetter } from '../../utils/document/createDocGetter'
+  const { isMemberOfLesson } = require('../../../contexts/classroom/lessons/runtime/isMemberOfLesson')
+  const { createDocGetter } = require('../../utils/document/createDocGetter')
   const getLessonDoc = createDocGetter({ name: Lesson.name, optional: false })
   log('[createByItemPublication]:', name)
   return {

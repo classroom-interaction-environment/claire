@@ -123,7 +123,7 @@ MaterialSubviews.create = ({ name }) => {
       formClosed: material.formClosed || noOp
     },
     loaded: false,
-    load: async function () {
+    load: async () => {
       await loadMaterialFn()
       await previewRenderer.load()
       await listRenderer.load()

@@ -8,8 +8,6 @@ import { LessonErrors } from '../../../classroom/lessons/LessonErrors'
 import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
 import { ensureDocumentExists } from '../../../../api/utils/document/ensureDocumentExists'
 import { getCollection } from '../../../../api/utils/getCollection'
-import { LessonHelpers } from '../../../classroom/lessons/LessonHelpers'
-import { notMigrated } from '../../../../infrastructure/functions/notMIgrated'
 import { getDocsForMember } from '../../../classroom/lessons/helpers/getDocsForMember'
 
 const checkTaskDoc = createDocGetter({ name: Task.name, optional: false })

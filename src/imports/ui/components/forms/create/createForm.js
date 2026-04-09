@@ -45,7 +45,7 @@ Template.createForm.events({
       API.hideModal('createModal')
     }))
   },
-  'hidden.bs.modal #createModal' (event, templateInstance) {
+  'hidden.bs.modal #createModal' (_event, templateInstance) {
     if (templateInstance.onCreated) {
       const result = templateInstance.state.get('result')
       templateInstance.onCreated(result)

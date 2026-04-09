@@ -12,8 +12,7 @@ const API = Template.documentResultsRenderer.setDependencies({
 const DocumentFilesCollection = getFilesCollection(DocumentFiles.name)
 
 Template.documentResultsRenderer.onCreated(function () {
-  const instance = this
-  const { lessonId, taskId, itemId } = instance.data
+  const { lessonId, taskId, itemId } = this.data
   API.subscribe({
     name: DocumentFiles.publications.byItem,
     args: { lessonId, taskId, itemId },
@@ -21,7 +20,7 @@ Template.documentResultsRenderer.onCreated(function () {
     callbacks: {
       onError: error => {
         API.notify(error)
-        instance.state.set('loadComplete', true)
+        this.state.set('loadComplete', true)
       },
       onReady: () => {
         API.debug('sub complete')
@@ -29,7 +28,7 @@ Template.documentResultsRenderer.onCreated(function () {
     }
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const documents = getResponseFiles({
       filesCollection: DocumentFilesCollection,
       versions: ['original'],
@@ -38,11 +37,11 @@ Template.documentResultsRenderer.onCreated(function () {
       itemId
     })
     const hasDocs = !!(documents?.length)
-    instance.state.set({ documents, hasDocs })
+    this.state.set({ documents, hasDocs })
   })
 })
 
-Template.documentResultsRenderer.onDestroyed(function () {
+Template.documentResultsRenderer.onDestroyed(() => {
   API.dispose('documentResultsSub')
 })
 

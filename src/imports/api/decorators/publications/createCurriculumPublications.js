@@ -17,7 +17,7 @@ export const createCurriculumPublications = function createCurriculumPublication
           optional: true
         }
       }, schema),
-      run: onServer(function ({ limit, ...customFields }) {
+      run: onServer(({ limit, ...customFields }) => {
         const query = Object.assign(customFields, { _master: true })
         const projection = { fields: fields }
 

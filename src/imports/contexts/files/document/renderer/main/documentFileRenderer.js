@@ -15,8 +15,7 @@ const API = Template.documentFileRenderer.setDependencies({
 API.useFallback = false
 
 Template.documentFileRenderer.onCreated(function () {
-  const instance = this
-  instance.deleteFile = createDeleteFile({
+  this.deleteFile = createDeleteFile({
     context: DocumentFiles,
     onSuccess: () => API.notify(true),
     onError: API.notify
@@ -24,8 +23,7 @@ Template.documentFileRenderer.onCreated(function () {
 })
 
 Template.documentFileRenderer.onRendered(function () {
-  const instance = this
-  const { data } = instance
+  const { data } = this
 
   if (data?.isPDF) {
     const pdfUrl = getFilesLink({
@@ -33,7 +31,7 @@ Template.documentFileRenderer.onRendered(function () {
       name: DocumentFiles.name
     })
 
-    instance.state.set({ pdfUrl })
+    this.state.set({ pdfUrl })
 
     if (PDFObject.supportsPDFs) {
       PDFObject.embed(pdfUrl, document.querySelector('.pdf-target'), {
@@ -53,11 +51,11 @@ Template.documentFileRenderer.onRendered(function () {
       })
 
       setTimeout(() => {
-        const $pdfObject = instance.$('.pdfobject')
+        const $pdfObject = this.$('.pdfobject')
 
         if ($pdfObject.get(0)) {
           API.log('PDF rendered natively')
-          instance.state.set('rendered', true)
+          this.state.set('rendered', true)
         }
       }, 500)
     }

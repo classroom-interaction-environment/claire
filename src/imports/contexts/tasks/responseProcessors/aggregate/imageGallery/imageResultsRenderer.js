@@ -14,8 +14,7 @@ const API = Template.imageResultsRenderer.setDependencies({
 const ImageFilesCollection = getFilesCollection(ImageFiles.name)
 
 Template.imageResultsRenderer.onCreated(function () {
-  const instance = this
-  const { lessonId, taskId, itemId } = instance.data
+  const { lessonId, taskId, itemId } = this.data
 
   API.subscribe({
     name: ImageFiles.publications.byItem,
@@ -24,7 +23,7 @@ Template.imageResultsRenderer.onCreated(function () {
     callbacks: {
       onError: error => {
         API.notify(error)
-        instance.state.set('loadComplete', true)
+        this.state.set('loadComplete', true)
       },
       onReady: () => {
         API.debug('sub complete')
@@ -32,7 +31,7 @@ Template.imageResultsRenderer.onCreated(function () {
     }
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const images = getResponseFiles({
       filesCollection: ImageFilesCollection,
       versions: ['thumbnail', 'original'],
@@ -41,11 +40,11 @@ Template.imageResultsRenderer.onCreated(function () {
       itemId
     })
     const hasImages = !!(images?.length)
-    instance.state.set({ images, hasImages })
+    this.state.set({ images, hasImages })
   })
 })
 
-Template.imageResultsRenderer.onDestroyed(function () {
+Template.imageResultsRenderer.onDestroyed(() => {
   API.dispose('imageResultKey')
 })
 
@@ -77,7 +76,7 @@ Template.imageResultsRenderer.events({
     const { prev, next } = getPrevAndNext(id, images)
     templateInstance.state.set({ prev, next })
   },
-  'click .cssbox-close' (event, templateInstance) {
+  'click .cssbox-close' (_event, templateInstance) {
     templateInstance.state.set({ prev: null, next: null })
   }
 })

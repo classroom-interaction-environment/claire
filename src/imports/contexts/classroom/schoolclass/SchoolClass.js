@@ -69,9 +69,7 @@ SchoolClass.schema = {
             _id: 1,
             username: 1
           }
-        }).fetch().map(function (el) {
-          return { value: el._id, label: el.username }
-        })
+        }).fetch().map((el) => ({ value: el._id, label: el.username }))
       }
     }
   },
@@ -91,9 +89,7 @@ SchoolClass.schema = {
             _id: 1,
             username: 1
           }
-        }).fetch().map(function (el) {
-          return { value: el._id, label: el.username }
-        })
+        }).fetch().map((el) => ({ value: el._id, label: el.username }))
       }
     }
   }
@@ -116,7 +112,7 @@ SchoolClass.methods.get = {
     _id: String
   },
   run: onServerExec(() => {
-    import { getSchoolClass } from './methods/getSchoolClas'
+    const { getSchoolClass } = require('./methods/getSchoolClas')
     return async function ({ _id }) {
       const { userId } = this
       return getSchoolClass({ classId: _id, userId })
@@ -140,7 +136,7 @@ SchoolClass.methods.my = {
     'ids.$': String
   },
   run: onServerExec(() => {
-    import { getMyClasses } from './methods/getMyClasses'
+    const { getMyClasses } = require('./methods/getMyClasses')
     return async function myClasses ({ ids }) {
       const { userId } = this
       return getMyClasses({ userId, ids })
@@ -162,7 +158,7 @@ SchoolClass.methods.create = {
   },
   role: Hierarchy.teacher,
   run: onServerExec(() => {
-    import { createSchoolClass } from './helpers/createSchoolClass'
+    const { createSchoolClass } = require('./helpers/createSchoolClass')
     return async function createClass ({ title, timeFrame }) {
       const { userId } = this
       return createSchoolClass({ title, timeFrame, userId })
@@ -180,8 +176,8 @@ SchoolClass.methods.update = {
     title: SchoolClass.schema.title
   },
   role: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { checkEditPermission } from '../../../api/document/checkEditPermissions'
+  run: onServerExec(() => {
+    const { checkEditPermission } = require('../../../api/document/checkEditPermissions')
 
     return async function createClass ({ _id, title }) {
       const { userId } = this
@@ -215,8 +211,8 @@ SchoolClass.methods.remove = {
     _id: String
   },
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { removeClass } from './methods/removeClass'
+  run: onServerExec(() => {
+    const { removeClass } = require('./methods/removeClass')
 
     return function ({ _id }) {
       const { userId, log } = this
@@ -238,7 +234,7 @@ SchoolClass.methods.addStudent = {
   },
   roles: Hierarchy.teacher,
   run: onServerExec(() => {
-    import { addStudent } from './methods/addStudent'
+    const { addStudent } = require('./methods/addStudent')
 
     return async function ({ classId, userId }) {
       const teacherId = this.userId
@@ -259,7 +255,7 @@ SchoolClass.methods.removeStudent = {
   },
   roles: Hierarchy.teacher,
   run: onServerExec(() => {
-    import { removeStudent } from './methods/removeStudent'
+    const { removeStudent } = require('./methods/removeStudent')
     return async function ({ classId, userId }) {
       const teacherId = this.userId
       return removeStudent({ classId, userId, teacherId })

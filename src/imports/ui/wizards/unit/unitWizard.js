@@ -37,7 +37,6 @@ createUnitSchemaDefinitions.classId = Object.assign({}, SchoolClass.schema.title
 const createUnitSchema = Schema.create(createUnitSchemaDefinitions)
 
 Template.unitWizard.onCreated(async function () {
-  const instance = this
 
   API.subscribe({
     name: Lesson.publications.my,
@@ -55,7 +54,7 @@ Template.unitWizard.onCreated(async function () {
     running: new Set()
   }
 
-  instance.autorun(async () => {
+  this.autorun(async () => {
     getCollection(Lesson.name).find({}, { sort: { updatedAt: -1 } }).forEach(lessonDoc => {
       if (LessonStates.isCompleted(lessonDoc)) {
         lessons.completed.add(lessonDoc.unit)
@@ -123,7 +122,7 @@ Template.unitWizard.onCreated(async function () {
       return unitDoc
     })
 
-    instance.state.set({
+    this.state.set({
       idleUnits,
       runningUnits,
       completedUnits,
@@ -132,7 +131,7 @@ Template.unitWizard.onCreated(async function () {
   })
 })
 
-Template.unitWizard.onDestroyed(function () {
+Template.unitWizard.onDestroyed(() => {
   API.dispose('unitWizardKey')
 })
 
@@ -168,7 +167,7 @@ Template.unitWizard.helpers({
 })
 
 Template.unitWizard.events({
-  'click .create-unit-btn' (event, templateInstance) {
+  'click .create-unit-btn' (event, _templateInstance) {
     event.preventDefault()
     FormModal.show({
       action: 'create',

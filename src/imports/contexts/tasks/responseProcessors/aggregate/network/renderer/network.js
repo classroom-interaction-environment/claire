@@ -3,18 +3,17 @@ import { Network } from '../Network'
 import vis from 'vis-network/standalone/index'
 import 'vis-network/dist/dist/vis-network.css'
 
-const API = Template.rpNetwork.setDependencies({
+const _API = Template.rpNetwork.setDependencies({
   context: [Network],
   debug: true
 })
 
 Template.rpNetwork.onRendered(function () {
-  const instance = this
 
-  instance.autorun(function () {
+  this.autorun(() => {
     const templateData = Template.currentData()
     const nodeData = templateData.results
-      .map(resultDoc => {
+      .flatMap(resultDoc => {
         return resultDoc.response.map((response, index) => {
           return {
             id: `${resultDoc._id}-${index}`,
@@ -24,11 +23,10 @@ Template.rpNetwork.onRendered(function () {
           }
         })
       })
-      .flat()
 
     const nodes = new vis.DataSet(nodeData)
 
-    const container = instance.$('.vis-base-container').get(0)
+    const container = this.$('.vis-base-container').get(0)
     // provide the data in the vis format
     const data = { nodes, edges: undefined }
     const options = {
@@ -43,7 +41,7 @@ Template.rpNetwork.onRendered(function () {
         keyboard: true
       }
     }
-    const net = new vis.Network(container, data, options)
+    const _net = new vis.Network(container, data, options)
     setTimeout(() => {
 
     }, 3000)

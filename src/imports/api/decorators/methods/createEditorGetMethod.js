@@ -28,7 +28,7 @@ export const createEditorGetMethod = ({ name, isFilesCollection }) => {
     role: Hierarchy.teacher,
     timeInterval: 500,
     numRequests: 1,
-    run: onServer(function ({ meta }) {
+    run: onServer(({ meta }) => {
       const query = {}
 
       if (isFilesCollection && meta) {

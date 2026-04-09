@@ -6,12 +6,12 @@ import { insertHook, updateHook, getUpdateStamps } from '../collectionHooks'
 import { expect, assert } from 'chai'
 import { restoreAll, stub } from '../../../../tests/testutils/stub'
 
-describe('collection hooks', function () {
-  afterEach(function () {
+describe('collection hooks', () => {
+  afterEach(() => {
     restoreAll()
   })
 
-  it('getUpdateStamps', function () {
+  it('getUpdateStamps', () => {
     const userId = Random.id()
     stub(Meteor, 'userId', () => userId)
     const updateStamps = getUpdateStamps()
@@ -22,7 +22,7 @@ describe('collection hooks', function () {
     expect(getUpdateStamps().updatedBy).to.equal(userId)
   })
 
-  it('insertHook alters the doc as expected', function () {
+  it('insertHook alters the doc as expected', () => {
     const userId = Random.id()
     const title = Random.id()
     const doc = { title }
@@ -37,7 +37,7 @@ describe('collection hooks', function () {
     expect(doc.title).to.equal(title)
   })
 
-  it('updateHook alters the doc as expected', function () {
+  it('updateHook alters the doc as expected', () => {
     const userId = Random.id()
     stub(DDP._CurrentMethodInvocation, 'get', () => ({ userId }))
 
@@ -50,7 +50,7 @@ describe('collection hooks', function () {
     expect(modifier.$set.updatedBy).to.equal(userId)
   })
 
-  it('updateHook cleans double update entries as expected', function () {
+  it('updateHook cleans double update entries as expected', () => {
     const userId = Random.id()
     stub(DDP._CurrentMethodInvocation, 'get', () => ({ userId }))
     const modifier = {

@@ -32,8 +32,7 @@ const _master = true
 const ascendingIndex = { index: 1 }
 
 Template.curriculumPockets.onCreated(function () {
-  const instance = this
-  instance.expanded = new ReactiveDict()
+  this.expanded = new ReactiveDict()
 
   const dimensionSub = API.subscribe({
     key: curriculumEditorSubKey,
@@ -48,9 +47,9 @@ Template.curriculumPockets.onCreated(function () {
     name: Pocket.publications.curriculum.name
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     if (dimensionSub.ready() && unitSub.ready() && pocketSub.ready()) {
-      setTimeout(() => instance.state.set('loadComplete', true), 500)
+      setTimeout(() => this.state.set('loadComplete', true), 500)
     }
   })
 })
@@ -121,7 +120,7 @@ Template.curriculumPockets.onRendered(function () {
         handle: '.unit-sort-handle',
         ghostClass: 'blue-background-class',
         draggable: '.unit-entry',
-        onEnd: async function (evt) {
+        onEnd: async (evt) => {
           const indices = []
 
           instance.$(evt.target).find('li').each(function (i) {
@@ -202,7 +201,7 @@ Template.curriculumPockets.events({
 
     API.showModal('editUnitModal')
   },
-  'hidden.bs.modal' (event, templateInstance) {
+  'hidden.bs.modal' (_event, templateInstance) {
     formReset('editPocketModal')
     templateInstance.state.set({ editDoc: null })
   },
@@ -260,7 +259,7 @@ Template.curriculumPockets.events({
         })
 
         await sleep(100)
-        const indices = $.map(templateInstance.$('.unit-entry'), function (el) {
+        const indices = $.map(templateInstance.$('.unit-entry'), (el) => {
           const $element = templateInstance.$(el)
           return {
             _id: $element.data('target'),

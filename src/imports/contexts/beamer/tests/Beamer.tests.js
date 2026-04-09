@@ -1,10 +1,10 @@
 /* global describe it beforeEach afterEach */
 import { Random } from 'meteor/random'
-import { assert, expect } from 'chai'
+import { expect } from 'chai'
 import { Beamer } from '../Beamer'
 import { Users } from '../../system/accounts/users/User'
 import { isContext } from '../../../../tests/testutils/isContext'
-import { onClientExec, onServerExec } from '../../../api/utils/archUtils'
+import { onServerExec } from '../../../api/utils/archUtils'
 import {
   clearCollections,
   mockCollections,

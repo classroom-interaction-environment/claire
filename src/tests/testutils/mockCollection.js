@@ -71,7 +71,7 @@ export const restoreAllCollections = async () => {
 
 const clearCollection = async ({ name }) => {
   const collection = originals.get(name)
-  return collection && collection.removeAsync({})
+  return collection?.removeAsync({})
 }
 
 export const clearCollections = async (...contexts) => {

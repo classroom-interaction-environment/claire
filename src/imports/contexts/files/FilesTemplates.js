@@ -4,7 +4,7 @@ export const FilesTemplates = {
     template: 'afCustomFileUpload',
     // type: 'fileUpload',
     // template: 'caroFileUpload',
-    load: async function () {
+    load: async () => {
       // await import('meteor/ostrio:autoform-files')
       return import('./shared/templates/upload/fileUpload')
       // return import('./shared/templates/fileUpload')
@@ -12,8 +12,6 @@ export const FilesTemplates = {
   },
   renderer: {
     template: 'otherFilePreview', // TODO rename to filePreviewFallback
-    load: async function () {
-      return import('./shared/templates/otherFilePreview')
-    }
+    load: async () => import('./shared/templates/otherFilePreview')
   }
 }

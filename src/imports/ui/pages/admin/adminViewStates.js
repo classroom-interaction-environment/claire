@@ -6,35 +6,27 @@ export const AdminViewStates = {
     role: UserUtils.roles.schoolAdmin,
     label: 'admin.users.title',
     template: 'adminUsers',
-    load: async function () {
-      return import('./views/users/users')
-    }
+    load: async () => import('./views/users/users')
   },
   settings: {
     name: 'settings',
     role: UserUtils.roles.admin,
     label: 'admin.settings.title',
     template: 'adminSettings',
-    load: async function () {
-      return import('./views/settings/settings')
-    }
+    load: async () => import('./views/settings/settings')
   },
   stats: {
     name: 'stats',
     role: UserUtils.roles.admin,
     label: 'admin.stats.title',
     template: 'adminStats',
-    load: async function () {
-      return import('./views/stats/stats')
-    }
+    load: async () => import('./views/stats/stats')
   },
   logs: {
     name: 'logs',
     role: UserUtils.roles.schoolAdmin,
     label: 'admin.logs.title',
     template: 'adminLogs',
-    load: async function () {
-      return import('./views/log/log')
-    }
+    load: async () => import('./views/log/log')
   }
 }

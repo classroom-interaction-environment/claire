@@ -41,37 +41,36 @@ const API = Template.afCustomFileUpload.setDependencies({
 })
 
 Template.afCustomFileUpload.onCreated(function () {
-  const instance = this
-  instance.id = randomId()
-  instance.state = new ReactiveDict({ showUpload: true })
+  this.id = randomId()
+  this.state = new ReactiveDict({ showUpload: true })
 
-  const { atts, value } = instance.data
+  const { atts, value } = this.data
   const isPreview = atts.preview
 
   if (atts.previewRenderer) {
     atts.previewRenderer.load()
       .catch(API.notify)
       .then(() => {
-        instance.state.set('previewTemplate', atts.previewRenderer.template)
+        this.state.set('previewTemplate', atts.previewRenderer.template)
       })
   }
 
-  instance.insertConfig = atts.insertConfig
-  instance.state.set(atts)
-  instance.formId = AutoForm.getFormId()
-  instance.collection = getLocalCollection(atts.collection)
-  instance.files = new ReactiveDict()
-  instance.uploads = new Map()
-  instance.views = {
+  this.insertConfig = atts.insertConfig
+  this.state.set(atts)
+  this.formId = AutoForm.getFormId()
+  this.collection = getLocalCollection(atts.collection)
+  this.files = new ReactiveDict()
+  this.uploads = new Map()
+  this.views = {
     select: 'select',
     preUploadError: 'preUploadError'
   }
 
-  instance.setView = (name) => instance.state.set({
+  this.setView = (name) => this.state.set({
     view: name,
     error: null
   })
-  instance.setView(instance.views.select)
+  this.setView(this.views.select)
 
   // ===========================================================================
   // DRAG / DROP
@@ -80,15 +79,15 @@ Template.afCustomFileUpload.onCreated(function () {
   // drag handling
   let dragCounter = 0
 
-  instance.dragEnter = () => {
+  this.dragEnter = () => {
     if (dragCounter++ === 0) {
-      instance.state.set('dragOver', true)
+      this.state.set('dragOver', true)
     }
   }
 
-  instance.dragLeave = () => {
+  this.dragLeave = () => {
     if (--dragCounter === 0) {
-      instance.state.set('dragOver', false)
+      this.state.set('dragOver', false)
     }
   }
 
@@ -96,18 +95,18 @@ Template.afCustomFileUpload.onCreated(function () {
   // VALIDATION
   // ===========================================================================
 
-  instance.validate = (files) => {
+  this.validate = (files) => {
     const { accept, multiple, maxSize } = atts
     API.log('validate files', files)
 
     if (!multiple && files.length > 1) {
-      return instance.state.set({
+      return this.state.set({
         error: {
           error: 'form.fileUpload.preUploadError',
           reason: 'form.fileUpload.noMultiple',
           details: { length: files.length }
         },
-        view: instance.views.preUploadError
+        view: this.views.preUploadError
       })
     }
 
@@ -121,19 +120,19 @@ Template.afCustomFileUpload.onCreated(function () {
 
       if (!typeIsAccepted && !endingAccepted) {
         API.log('file invalid', { typeIsAccepted, endingAccepted, accept })
-        instance.state.set({
+        this.state.set({
           error: {
             error: 'form.fileUpload.preUploadError',
             reason: 'form.fileUpload.notAccepted',
             details: { type: file.type, name: file.name, accept }
           },
-          view: instance.views.preUploadError
+          view: this.views.preUploadError
         })
         return false
       }
 
       if (file.size > maxSize) {
-        instance.state.set({
+        this.state.set({
           error: {
             error: 'form.fileUpload.preUploadError',
             reason: 'form.fileUpload.sizeExceeded',
@@ -142,7 +141,7 @@ Template.afCustomFileUpload.onCreated(function () {
               maxSize: (maxSize / 1000000).toFixed(2)
             }
           },
-          view: instance.views.preUploadError
+          view: this.views.preUploadError
         })
         return false
       }
@@ -157,20 +156,20 @@ Template.afCustomFileUpload.onCreated(function () {
    *
    * @param event
    */
-  instance.prepareUpload = event => {
-    instance.state.set('dragOver', false)
+  this.prepareUpload = event => {
+    this.state.set('dragOver', false)
     dragCounter = 0
 
     const files = getFiles(event)
-    const valid = instance.validate(files)
+    const valid = this.validate(files)
 
     if (!valid) {
       return
     }
 
-    files.forEach(file => {
+    for (const file of files) {
       file.id = randomId()
-      instance.files.set(file.id, {
+      this.files.set(file.id, {
         id: file.id,
         name: file.name,
         type: file.type,
@@ -179,43 +178,43 @@ Template.afCustomFileUpload.onCreated(function () {
       })
 
       if (isPreview) {
-        return instance.setFileProps(file.id, { progress: 100, complete: true, doc: {}, isPreview })
+        this.setFileProps(file.id, { progress: 100, complete: true, doc: {}, isPreview })
+      } else {
+        const upload = this.uploadFile(file)
+
+        this.autorun(computation => {
+          const progress = Number.parseInt(upload.progress.get(), 10)
+          const state = upload.state.get()
+
+          if (progress >= 100 || ['completed', 'aborted'].includes(state)) {
+            computation.stop()
+            this.setFileProps(file.id, { complete: true })
+          }
+          else {
+            this.setFileProps(file.id, { progress })
+          }
+        })
       }
-
-      const upload = instance.uploadFile(file)
-
-      instance.autorun(computation => {
-        const progress = Number.parseInt(upload.progress.get(), 10)
-        const state = upload.state.get()
-
-        if (progress >= 100 || ['completed', 'aborted'].includes(state)) {
-          computation.stop()
-          instance.setFileProps(file.id, { complete: true })
-        }
-        else {
-          instance.setFileProps(file.id, { progress })
-        }
-      })
-    })
+    }
   }
 
-  instance.setFileProps = (fileId, values) => {
-    const stateFile = instance.files.get(fileId)
+  this.setFileProps = (fileId, values) => {
+    const stateFile = this.files.get(fileId)
     Object.assign(stateFile, values)
-    instance.files.set(fileId, stateFile)
+    this.files.set(fileId, stateFile)
   }
 
   // ===========================================================================
   // UPLOAD
   // ===========================================================================
 
-  instance.uploadFile = file => {
-    API.log(instance.id, 'upload', file)
-    const uploadOptions = Object.assign({}, defaultInsertOpts, instance.insertConfig, { file: file })
+  this.uploadFile = file => {
+    API.log(this.id, 'upload', file)
+    const uploadOptions = Object.assign({}, defaultInsertOpts, this.insertConfig, { file: file })
     const filesCollection = getFilesCollection(atts.collection)
     const upload = filesCollection.insert(uploadOptions, false)
     const onError = error => {
-      instance.setFileProps(file.id, {
+      this.setFileProps(file.id, {
         error: {
           error: error.error,
           reason: error.reason || error.message,
@@ -224,14 +223,14 @@ Template.afCustomFileUpload.onCreated(function () {
       })
     }
     upload.on('error', onError)
-    upload.on('end', function (error, doc) {
+    upload.on('end', (error, doc) => {
       if (error) {
         return onError(error)
       }
 
-      instance.setFileProps(file.id, { doc, progress: 100, complete: true })
-      instance.updateField({
-        id: instance.id,
+      this.setFileProps(file.id, { doc, progress: 100, complete: true })
+      this.updateField({
+        id: this.id,
         value: doc._id,
         multiple: atts.multiple
       })
@@ -246,8 +245,8 @@ Template.afCustomFileUpload.onCreated(function () {
   // AF FIELD
   // ===========================================================================
 
-  instance.updateField = ({ id, value, remove = false, isMultiple = false }) => {
-    const $input = instance.$(`#afFileHiddenInput-${id}`)
+  this.updateField = ({ id, value, remove = false, isMultiple = false }) => {
+    const $input = this.$(`#afFileHiddenInput-${id}`)
     if (!isMultiple) {
       const newValue = (remove && $input.val() === value)
         ? null
@@ -272,8 +271,8 @@ Template.afCustomFileUpload.onCreated(function () {
     $input.trigger('input', all)
   }
 
-  instance.autorun(() => {
-    const files = instance.files.all()
+  this.autorun(() => {
+    const files = this.files.all()
     const values = Object.values(files)
 
     // if at least one of the files has neither a doc (complete)
@@ -281,7 +280,7 @@ Template.afCustomFileUpload.onCreated(function () {
     const complete = values.every(file => !!file.doc || !!file.error)
     const uploading = values.length > 0 && !complete
     const showUpload = values.length === 0 || uploading || atts.multiple
-    instance.state.set({ uploading, showUpload })
+    this.state.set({ uploading, showUpload })
   })
 
   // ===========================================================================
@@ -303,7 +302,7 @@ Template.afCustomFileUpload.onCreated(function () {
       await loadIntoCollection({
         name: `${atts.collection}.methods.my`,
         args: { ids: [value] },
-        failure: error => instance.setFileProps(value, {
+        failure: error => this.setFileProps(value, {
           error: {
             error: error.error,
             reason: error.reason || error.message,
@@ -316,18 +315,18 @@ Template.afCustomFileUpload.onCreated(function () {
           // file has been deleted, then we raise a warning and clear
           // the file object to allow a new upload to take place
           if (!docs?.length) {
-            return instance.files.delete(value)
+            return this.files.delete(value)
           }
-          instance.files.set(value, { name: docs[0].name, complete: true, progress: 100 })
-          instance.setFileProps(value, { doc: docs[0] })
+          this.files.set(value, { name: docs[0].name, complete: true, progress: 100 })
+          this.setFileProps(value, { doc: docs[0] })
         }
       })
     }
 
     // 2. get file and load into state file
     else {
-      instance.files.set(value, { name: doc.name, complete: true, progress: 100 })
-      instance.files.set(value, { doc })
+      this.files.set(value, { name: doc.name, complete: true, progress: 100 })
+      this.files.set(value, { doc })
     }
   }
 
@@ -344,11 +343,11 @@ Template.afCustomFileUpload.onRendered(function () {
   const hiddenInput = document.getElementById(`afFileHiddenInput-${instance.id}`)
   const fieldset = hiddenInput.closest('fieldset')
   const observer = new window.MutationObserver(function callback (mutationList) {
-    mutationList.forEach(function (mutation) {
+    for (const mutation of mutationList) {
       if (mutation.type === 'attributes' && mutation.attributeName === 'disabled') {
         instance.state.set({ disabled: mutation.target.disabled })
       }
-    })
+    }
   })
   observer.observe(fieldset, {
     attributeFilter: ['disabled'],
@@ -367,8 +366,7 @@ Template.afCustomFileUpload.onRendered(function () {
 })
 
 Template.afCustomFileUpload.onDestroyed(function () {
-  const instance = this
-  instance.files.destroy()
+  this.files.destroy()
 })
 
 Template.afCustomFileUpload.helpers({
@@ -412,7 +410,7 @@ Template.afCustomFileUpload.helpers({
   },
   deleting (id) {
     const deleting = Template.getState('deleting')
-    return deleting && deleting[id]
+    return deleting?.[id]
   },
   previewData (file) {
     return Template.getState('previewTemplate') && file?.doc
@@ -429,7 +427,7 @@ Template.afCustomFileUpload.helpers({
 })
 
 Template.afCustomFileUpload.events({
-  'dragenter .upload-drop-zone' (event, templateInstance) {
+  'dragenter .upload-drop-zone' (_event, templateInstance) {
     templateInstance.dragEnter()
   },
   'dragover .upload-drop-zone' (event) {
@@ -437,7 +435,7 @@ Template.afCustomFileUpload.events({
     // Prevent default behavior (Prevent file from being opened)
     event.preventDefault()
   },
-  'dragleave .upload-drop-zone' (event, templateInstance) {
+  'dragleave .upload-drop-zone' (_event, templateInstance) {
     templateInstance.dragLeave()
   },
   'drop .upload-drop-zone' (event, templateInstance) {
@@ -554,5 +552,5 @@ function isAccepted (type, accept) {
 
   const split = type.split('/')
 
-  return allowed.includes(split[0] + '/*') || allowed.includes(split[1])
+  return allowed.includes(`${split[0]}/*`) || allowed.includes(split[1])
 }

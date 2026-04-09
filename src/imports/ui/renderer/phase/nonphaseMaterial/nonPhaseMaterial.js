@@ -8,10 +8,9 @@ const byCollection = (a, b) => {
 }
 
 Template.nonPhaseMaterial.onCreated(function () {
-  const instance = this
-  instance.state.set('inline', !!instance.data.inline)
+  this.state.set('inline', !!this.data.inline)
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     const inlineToggle = data.inlineToggle
     const inline = data.inline
@@ -19,15 +18,15 @@ Template.nonPhaseMaterial.onCreated(function () {
     // update inline value only reactively
     // if we have not activated the toggle
     if (!inlineToggle) {
-      instance.state.set('inline', !!inline)
+      this.state.set('inline', !!inline)
     }
   })
 })
 
 Template.nonPhaseMaterial.helpers({
   references (refList = []) {
-    return refList && refList
-      .sort(byCollection)
+    return refList
+      ?.sort(byCollection)
       .map(refObj => resolveMaterialReference(refObj))
   },
   inlineActive () {

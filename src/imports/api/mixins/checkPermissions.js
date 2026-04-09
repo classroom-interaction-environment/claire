@@ -10,7 +10,7 @@ import { isAdmin } from '../../ui/blaze/helpers'
 
 const minimalRole = getMinimalRole()
 
-export const checkPermissions = function (options) {
+export const checkPermissions = (options) => {
   if (options.isPublic) { return options }
 
   // configurations for this mixins:
@@ -25,8 +25,7 @@ export const checkPermissions = function (options) {
 
   const runFct = options.run
   options.run = async function run (...args) {
-    const environment = this
-    const { userId } = environment
+    const { userId } = this
 
     // default check for every user: logged in
     if (!userId) {
@@ -53,13 +52,13 @@ export const checkPermissions = function (options) {
     }
 
     /** @deprecated import as standalone method */
-    environment.checkDoc = (document, docId, userId) => {
+    this.checkDoc = (document, docId, userId) => {
       console.warn(`[${options.name}]: this.checkDoc is deprecated, import it as standalone method!`)
       return ensureDocumentExists({ document, docId, userId })
     }
 
     /** @deprecated import as standalone method */
-    environment.checkOwner = function (document) {
+    this.checkOwner = (document) => {
       console.warn(`[${options.name}]: this.checkOwner is deprecated, import it as standalone method!`)
       if (!userOwnsDocument(document, userId)) {
         throw new PermissionDeniedError('errors.accessDenied', {
@@ -69,7 +68,7 @@ export const checkPermissions = function (options) {
     }
 
     // run function if all pass
-    return runFct.apply(environment, args)
+    return runFct.apply(this, args)
   }
 
   return options

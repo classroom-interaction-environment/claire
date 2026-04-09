@@ -10,7 +10,7 @@ describe(ContextRegistry.name, () => {
 
   describe(ContextRegistry.validate.name, () => {
     it('validates a context against a minimal schema', () => {
-      const name = Random.id(6)
+      const _name = Random.id(6)
       const label = Random.id(6)
       const icon = Random.id(6)
 

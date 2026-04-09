@@ -14,14 +14,14 @@ const cache = new Map()
  * @param debug {boolean} optional debug messages
  * @return {Mongo.Collection} a local Mongo.Collection
  */
-export const getLocalCollection = function (name, { debug } = {}) {
+export const getLocalCollection = (name, { debug } = {}) => {
   if (!cache.has(name)) {
     if (debug) {
       logDebug('create new for', name)
     }
     const localCollection = new Mongo.Collection(null)
 
-    localCollection.add = function (doc) {
+    localCollection.add = (doc) => {
       if (!doc._id || localCollection.find(doc._id).count() === 0) {
         return localCollection.insert(doc)
       }

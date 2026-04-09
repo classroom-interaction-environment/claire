@@ -7,12 +7,11 @@ Template.caroForm.setDependencies({})
 const forminitialized = Form.initialized()
 
 Template.caroForm.onRendered(function () {
-  const instance = this
-  const schema = instance.data.schema._schema
+  const schema = this.data.schema._schema
 
   const autofocus = Object.keys(schema).find(key => {
     const entry = schema[key]
-    return (entry.autoform && entry.autoform.autofocus)
+    return (entry.autoform?.autofocus)
   })
 
   if (autofocus) {
@@ -58,7 +57,7 @@ Template.caroForm.helpers({
 })
 
 Template.caroForm.events({
-  'submit form' (event, templateInstance) {
+  'submit form' (_event, templateInstance) {
     templateInstance.$('.collapse').collapse('show')
   }
 })

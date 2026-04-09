@@ -26,12 +26,12 @@ export const Curriculum = createContextRegistry({
   }
 })
 
-Curriculum.load = function ({ name }, query, callback) {
+Curriculum.load = ({ name }, query, callback) => {
   const context = curriculumContexts.get(name)
   Meteor.call(context.methods.all.name, query, callback)
 }
 
-Curriculum.flush = function ({ name }, ids) {
+Curriculum.flush = ({ name }, ids) => {
   const Collection = getCollection(name)
   return Collection._collection.remove({ _id: ids })
 }

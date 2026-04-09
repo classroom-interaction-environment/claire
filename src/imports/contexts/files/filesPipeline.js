@@ -11,7 +11,7 @@ import { createEditorGetMethod } from '../../api/decorators/methods/createEditor
 import { createMyMethod } from '../../api/decorators/methods/createMyMethod'
 import { createUploadPublication } from '../../api/decorators/publications/files/createUploadPublication'
 
-export const filesPipeline = createPipeline(Files.name, function (filesContext, api) {
+export const filesPipeline = createPipeline(Files.name, (filesContext, api) => {
   filesContext.schema = Object.assign({}, filesContext.schema, FilesDefaults.schema())
   filesContext.publicFields = Object.assign({}, filesContext.publicFields, FilesDefaults.fields())
   filesContext.methods = filesContext.methods || {}

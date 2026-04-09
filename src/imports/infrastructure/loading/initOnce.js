@@ -11,7 +11,7 @@ const cache = new Map()
  * @param onError
  * @return {any}
  */
-export const initOnce = function (asyncInitFunc, { onError, debug = () => {}, name, options } = {}) {
+export const initOnce = (asyncInitFunc, { onError, debug = () => {}, name, options } = {}) => {
   if (cache.has(asyncInitFunc)) {
     return cache.get(asyncInitFunc)
   }

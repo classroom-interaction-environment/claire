@@ -8,12 +8,12 @@ import { Router } from '../../../api/routes/Router'
 // triggers i18n reactivity on template-level
 // which allows us to write three dots until the template-level
 // language has been initialized / loaded
-Template.registerHelper('i18n', function (...args) {
+Template.registerHelper('i18n', (...args) => {
   const instance = Template.instance()
   const templateName = instance.view.name.split('.')[1]
   const template = Template[templateName]
 
-  if (template && template.initComplete && !template.initComplete.get()) {
+  if (template?.initComplete && !template.initComplete.get()) {
     return '...'
   }
 
@@ -30,9 +30,7 @@ Template.registerHelper('i18n', function (...args) {
   return i18n.get(...args)
 })
 
-Template.registerHelper('i18nInitialized', function () {
-  return i18n.initialized()
-})
+Template.registerHelper('i18nInitialized', () => i18n.initialized())
 
 const { siteName, defaultLocale } = Meteor.settings.public
 

@@ -2,9 +2,9 @@
 import { expect } from 'chai'
 import { getFullName, getCredentialsAsBuffer } from '../common'
 
-describe('common', function () {
-  describe(getFullName.name, function () {
-    it('returns the full name', function () {
+describe('common', () => {
+  describe(getFullName.name, () => {
+    it('returns the full name', () => {
       const user = {
         firstName: 'John',
         lastName: 'Doe'
@@ -13,8 +13,8 @@ describe('common', function () {
     })
   })
 
-  describe(getCredentialsAsBuffer.name, function () {
-    it('returns a buffer from the user object', function () {
+  describe(getCredentialsAsBuffer.name, () => {
+    it('returns a buffer from the user object', () => {
       const user = {
         firstName: 'John',
         lastName: 'Doe',

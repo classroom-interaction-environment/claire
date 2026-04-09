@@ -6,22 +6,21 @@ import './disconnected.html'
 const API = Template.disconnected.setDependencies()
 
 Template.disconnected.onRendered(function () {
-  const instance = this
-  instance.autorun(() => {
+  this.autorun(() => {
     const status = Meteor.status()
     if (!status.connected) {
       API.log('[Connection]: disconnected, check in 1000ms if still disconnected')
       setTimeout(() => {
         if (Meteor.status().connected === false) {
           API.log('[Connection]: still disconnected')
-          instance.$('#global-disconnected-modal').modal('show')
+          this.$('#global-disconnected-modal').modal('show')
         }
       }, 1000)
     }
     else {
       API.log('[Connection]: connected')
       setTimeout(() => {
-        instance.$('#global-disconnected-modal').modal('hide')
+        this.$('#global-disconnected-modal').modal('hide')
       }, 1000)
     }
   })

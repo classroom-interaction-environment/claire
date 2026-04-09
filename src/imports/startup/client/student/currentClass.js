@@ -14,7 +14,7 @@ Meteor.startup(() => {
     const user = Meteor.user()
     if (!user) return
 
-    const classId = user.ui && user.ui.classId
+    const classId = user.ui?.classId
     if (classId) CurrentClass.set(classId)
 
     computation.stop()

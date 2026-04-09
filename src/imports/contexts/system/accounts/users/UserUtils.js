@@ -133,7 +133,7 @@ export const UserUtils = {
  * @param scope {String} the institutional scope of the curriculum permission
  * @return {Boolean} true / false
  */
-UserUtils.isCurriculum = deprecate(async function (userId = Meteor.userId(), scope) {
+UserUtils.isCurriculum = deprecate(async (userId = Meteor.userId(), scope) => {
   let finalScope
   if (!scope) {
     const user = getUsersCollection().findOneAsync(userId)
@@ -154,18 +154,16 @@ UserUtils.isCurriculum = deprecate(async function (userId = Meteor.userId(), sco
 })
 
 UserUtils.isAdmin = deprecate(isomporph({
-  client: function () {
-    return function isAdmin (userId = Meteor.userId()) {
+  client: () => function isAdmin (userId = Meteor.userId()) {
       if (!userId) return false
       const user = getUsersCollection().findOne(userId)
 
       if (!user) return false
       return Roles.userIsInRole(userId, UserUtils.roles.admin, user.institution)
-    }
-  },
+    },
 
-  server: function () {
-    import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
+  server: () => {
+    const { userIsAdmin } = require('../../../../api/accounts/admin/userIsAdmin')
 
     return function isAdmin (userId = Meteor.userId()) {
       if (!userId) return false

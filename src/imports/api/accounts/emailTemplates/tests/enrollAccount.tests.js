@@ -6,13 +6,13 @@ import { getEnrollAccountSubject, getEnrollAccountText } from '../enrollAccount'
 import { stub, restoreAll } from '../../../../../tests/testutils/stub'
 import { i18n } from '../../../language/language'
 
-describe('enroll account', function () {
-  afterEach(function () {
+describe('enroll account', () => {
+  afterEach(() => {
     restoreAll()
   })
 
-  describe(getEnrollAccountSubject.name, function () {
-    it('returns the subject for a user\'s locale', function () {
+  describe(getEnrollAccountSubject.name, () => {
+    it('returns the subject for a user\'s locale', () => {
       const siteName = Random.id(6)
       const defaultLocale = Random.id(6)
       const user = { locale: Random.id(6) }
@@ -29,7 +29,7 @@ describe('enroll account', function () {
       })
       expect(subject(user)).to.equal('accounts.enroll.subject')
     })
-    it('returns the subject for a default locale as fallback', function () {
+    it('returns the subject for a default locale as fallback', () => {
       const siteName = Random.id(6)
       const defaultLocale = Random.id(6)
       const user = { locale: Random.id(6) }
@@ -51,8 +51,8 @@ describe('enroll account', function () {
     })
   })
 
-  describe(getEnrollAccountText.name, function () {
-    it('returns the enrollment text for the current user', function () {
+  describe(getEnrollAccountText.name, () => {
+    it('returns the enrollment text for the current user', () => {
       const expiration = Random.id()
       const defaultLocale = Random.id()
       const user = {

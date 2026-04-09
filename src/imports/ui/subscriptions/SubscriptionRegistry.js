@@ -20,7 +20,7 @@ const validateName = name => {
   }
 }
 
-SubscriptionRegistry.registerTemplate = function (name) {
+SubscriptionRegistry.registerTemplate = (name) => {
   validateName(name)
   if (!allSubs.has(name)) {
     allSubs.set(name, new Set())
@@ -28,21 +28,21 @@ SubscriptionRegistry.registerTemplate = function (name) {
   return SubscriptionRegistry
 }
 
-SubscriptionRegistry.add = function (templateName, subscriptionName) {
+SubscriptionRegistry.add = (templateName, subscriptionName) => {
   validateName(templateName)
   const templateSubs = getTemplateSubs(templateName)
   templateSubs.add(subscriptionName)
   return SubscriptionRegistry
 }
 
-SubscriptionRegistry.remove = function (templateName, subscriptionName) {
+SubscriptionRegistry.remove = (templateName, subscriptionName) => {
   validateName(templateName)
   const templateSubs = getTemplateSubs(templateName)
   templateSubs.delete(subscriptionName)
   return SubscriptionRegistry
 }
 
-SubscriptionRegistry.getAll = function (templateName) {
+SubscriptionRegistry.getAll = (templateName) => {
   validateName(templateName)
   const templateSubs = getTemplateSubs(templateName)
   return templateSubs.values()

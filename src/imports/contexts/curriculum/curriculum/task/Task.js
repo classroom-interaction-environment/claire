@@ -37,7 +37,9 @@ export const Task = {
       }
 
       resolve(taskDoc.header)
-      taskDoc.pages.forEach(page => resolve(page))
+      for (const page of taskDoc.pages) {
+        resolve(page)
+      }
       resolve(taskDoc.footer)
 
       return deps
@@ -74,7 +76,7 @@ Task.schema = {
     optional: true,
     displayType: DisplayTypes.number,
     resolve (value) {
-      return (value && value.content && value.content.length) || 0
+      return (value?.content?.length) || 0
     },
     label: Lang.translateReactive('task.header.title')
   },
@@ -166,7 +168,7 @@ Task.helpers = {
       }]
     }
   },
-  pagesSchema (schemaCreator) {
+  pagesSchema (_schemaCreator) {
     throw new Error('not implemented') // TODO implement to validate pagecontent
   }
 
@@ -193,31 +195,27 @@ Task.layout = {
   }
 }
 
-onClientExec(function () {
+onClientExec(() => {
   Object.assign(Task.material, {
     info: {
       create: 'task.createInfo'
     },
     editable: false, // basically because we prove a cusom edit button here
     schema: {},
-    beforeInsert: function (insertDoc) {
+    beforeInsert: (insertDoc) => {
       // all default data may be overridden by insertDoc
       return Object.assign({}, Task.helpers.createData(), insertDoc)
     },
     renderer: {
       list: {
         template: 'taskListRenderer',
-        load: async function () {
-          return import('./renderer/list/taskListRenderer')
-        }
+        load: async () => import('./renderer/list/taskListRenderer')
       },
       main: {
         template: 'taskRenderer',
-        load: async function () {
-          return import('./renderer/main/taskRenderer')
-        },
+        load: async () => import('./renderer/main/taskRenderer'),
         /** @deprecated use data **/
-        previewData: function (targetId, instance) {
+        previewData: function (targetId, _instance) {
           console.warn('previewData is deprecated')
           if (!targetId) return
 

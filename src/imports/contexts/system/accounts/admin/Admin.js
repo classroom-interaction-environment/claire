@@ -32,11 +32,11 @@ Admin.methods.reinvite = {
     userId: String
   },
   roles: [Hierarchy.admin, Hierarchy.schoolAdmin],
-  run: onServerExec(function () {
-    import { Accounts } from 'meteor/accounts-base'
-    import { userExists } from '../../../../api/accounts/user/userExists'
+  run: onServerExec(() => {
+    const { Accounts } = require('meteor/accounts-base')
+    const { userExists } = require('../../../../api/accounts/user/userExists')
 
-    return async function ({ userId }) {
+    return async ({ userId }) => {
       if (!await userExists({ userId })) {
         throw new Meteor.Error('errors.docNotFound', 'errors.userNotExists', { userId })
       }
@@ -49,7 +49,7 @@ Admin.methods.reinvite = {
 Admin.methods.createUser = {
   name: 'admin.methods.createUser',
   roles: [Hierarchy.admin, Hierarchy.schoolAdmin],
-  schema: (function () {
+  schema: (() => {
     const {
       emailSchema,
       firstNameSchema,
@@ -66,13 +66,13 @@ Admin.methods.createUser = {
       institution: institutionSchema()
     }
   })(),
-  run: onServerExec(function () {
-    import { Accounts } from 'meteor/accounts-base'
-    import { UserFactory } from '../../../../api/accounts/registration/UserFactory'
-    import { createAdmin } from '../../../../api/accounts/admin/createAdmin'
-    import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
-    import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
-    import { correctName } from '../../../../api/utils/correctName'
+  run: onServerExec(() => {
+    const { Accounts } = require('meteor/accounts-base')
+    const { UserFactory } = require('../../../../api/accounts/registration/UserFactory')
+    const { createAdmin } = require('../../../../api/accounts/admin/createAdmin')
+    const { userIsAdmin } = require('../../../../api/accounts/admin/userIsAdmin')
+    const { PermissionDeniedError } = require('../../../../api/errors/types/PermissionDeniedError')
+    const { correctName } = require('../../../../api/utils/correctName')
 
     return async function ({ role, firstName, lastName, email, institution }) {
       const willBeAdmin = role === Hierarchy.admin
@@ -115,12 +115,12 @@ Admin.methods.removeUser = {
   schema: {
     _id: String // TODO change to userId
   },
-  run: onServerExec(function () {
-    import { rollbackAccount } from '../../../../api/accounts/registration/rollbackAccount'
-    import { userExists } from '../../../../api/accounts/user/userExists'
-    import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
-    import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
-    import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
+  run: onServerExec(() => {
+    const { rollbackAccount } = require('../../../../api/accounts/registration/rollbackAccount')
+    const { userExists } = require('../../../../api/accounts/user/userExists')
+    const { userIsAdmin } = require('../../../../api/accounts/admin/userIsAdmin')
+    const { PermissionDeniedError } = require('../../../../api/errors/types/PermissionDeniedError')
+    const { DocNotFoundError } = require('../../../../api/errors/types/DocNotFoundError')
 
     return async function ({ _id }) {
       if (!await userExists({ userId: _id })) {
@@ -145,8 +145,8 @@ Admin.methods.removeUser = {
 Admin.methods.updateRole = {
   name: 'admin.methods.updateRole',
   roles: [Hierarchy.admin, Hierarchy.schoolAdmin],
-  schema: (function () {
-    import { roleSchema } from '../../../../api/accounts/registration/registerUserSchema'
+  schema: (() => {
+    const { roleSchema } = require('../../../../api/accounts/registration/registerUserSchema')
 
     return {
       userId: {
@@ -160,15 +160,15 @@ Admin.methods.updateRole = {
       }
     }
   })(),
-  run: onServerExec(function () {
-    import { Roles } from 'meteor/alanning:roles'
-    import { createAdmin } from '../../../../api/accounts/admin/createAdmin'
-    import { removeAdmin } from '../../../../api/accounts/admin/removeAdmin'
-    import { userExists } from '../../../../api/accounts/user/userExists'
-    import { userIsAdmin } from '../../../../api/accounts/admin/userIsAdmin'
-    import { getCollection } from '../../../../api/utils/getCollection'
-    import { roleExists } from '../../../../api/accounts/roles/roleExists'
-    import { Users } from '../users/User'
+  run: onServerExec(() => {
+    const { Roles } = require('meteor/alanning:roles')
+    const { createAdmin } = require('../../../../api/accounts/admin/createAdmin')
+    const { removeAdmin } = require('../../../../api/accounts/admin/removeAdmin')
+    const { userExists } = require('../../../../api/accounts/user/userExists')
+    const { userIsAdmin } = require('../../../../api/accounts/admin/userIsAdmin')
+    const { getCollection } = require('../../../../api/utils/getCollection')
+    const { roleExists } = require('../../../../api/accounts/roles/roleExists')
+    const { Users } = require('../users/User')
 
     return async function ({ userId, role, group }) {
       const adminId = this.userId
@@ -216,11 +216,11 @@ Admin.methods.users = {
     },
     'ids.$': String
   },
-  run: onServerExec(function () {
-    import { Users } from '../users/User'
-    import { getCollection } from '../../../../api/utils/getCollection'
+  run: onServerExec(() => {
+    const { Users } = require('../users/User')
+    const { getCollection } = require('../../../../api/utils/getCollection')
 
-    return async function ({ ids }) {
+    return async ({ ids }) => {
       const query = {}
       if (ids?.length) {
         query._id = { $in: ids }
@@ -234,8 +234,8 @@ Admin.methods.getInstitutions = {
   name: 'admin.methods.getInstitutions',
   roles: [Hierarchy.schoolAdmin],
   schema: {},
-  run: onServerExec(function () {
-    import { getAllInstitutions } from './getAllInstitutions'
+  run: onServerExec(() => {
+    const { getAllInstitutions } = require('./getAllInstitutions')
     return function () {
       const { userId } = this
 
@@ -257,8 +257,8 @@ Admin.methods.updateTheme = {
       optional: true
     }
   },
-  run: onServerExec(function () {
-    import { updateTheme } from './methods/updateTheme'
+  run: onServerExec(() => {
+    const { updateTheme } = require('./methods/updateTheme')
     return async function ({ theme, reset = false }) {
       const { userId } = this
       return updateTheme({ userId, theme, reset })
@@ -274,8 +274,7 @@ Admin.publications.usersByInstitution = {
     institution: String
   },
   roles: [Hierarchy.schoolAdmin],
-  run: onServer(function ({ institution }) {
-    return Meteor.users.find({ institution }, {
+  run: onServer(({ institution }) => Meteor.users.find({ institution }, {
       fields: {
         username: 1,
         emails: 1,
@@ -286,6 +285,5 @@ Admin.publications.usersByInstitution = {
         presence: 1,
         institution: 1
       }
-    })
-  })
+    }))
 }

@@ -104,9 +104,7 @@ Template.media.onCreated(function () {
       lessonDoc.visibleStudent.find(byMediaId)
 
     const groupDoc = getCollection(Group.name).findOne(groupId)
-    const isGroupVisible = groupDoc &&
-      groupDoc.visible &&
-      groupDoc.visible.find(byMediaId)
+    const isGroupVisible = groupDoc?.visible?.find(byMediaId)
 
     if (!isVisible && !isGroupVisible) {
       return instance.state.set({

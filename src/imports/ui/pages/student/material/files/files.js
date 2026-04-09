@@ -124,9 +124,7 @@ Template.files.onCreated(function () {
       lessonDoc.visibleStudent.find(byFileId)
 
     const groupDoc = getCollection(Group.name).findOne(groupId)
-    const isGroupVisible = groupDoc &&
-      groupDoc.visible &&
-      groupDoc.visible.find(byFileId)
+    const isGroupVisible = groupDoc?.visible?.find(byFileId)
 
     if (!isVisible && !isGroupVisible) {
       return instance.state.set({

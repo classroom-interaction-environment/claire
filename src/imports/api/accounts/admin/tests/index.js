@@ -1,7 +1,7 @@
 /* eslint-env mocha */
-describe('admin', function () {
-  import './adminExists.tests'
-  import './createAdmin.tests'
-  import './userIsAdmin.tests'
-  import './removeAdmin.tests'
+describe('admin', () => {
+  require('./adminExists.tests')
+  require('./createAdmin.tests')
+  require('./userIsAdmin.tests')
+  require('./removeAdmin.tests')
 })

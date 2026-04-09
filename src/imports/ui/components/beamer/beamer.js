@@ -11,7 +11,7 @@ Template.beamer.helpers({
 })
 
 Template.beamer.events({
-  'click .global-beamer-button': async function(event, templateInstance) {
+  'click .global-beamer-button': async (event, templateInstance) => {
     event.preventDefault()
     if (Beamer.status()) {
       templateInstance.$('#beamerControlDialog').modal('show')

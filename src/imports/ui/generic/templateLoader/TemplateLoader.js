@@ -24,9 +24,8 @@ const warn = createLog({
  */
 
 Template.TemplateLoader.onCreated(function () {
-  const instance = this
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     if (!data) return
 
@@ -40,7 +39,7 @@ Template.TemplateLoader.onCreated(function () {
     const loaded = loadTemplate({ template, load })
 
     // TODO use template as dict key
-    instance.state.set('loadComplete', loaded.get())
+    this.state.set('loadComplete', loaded.get())
   })
 })
 

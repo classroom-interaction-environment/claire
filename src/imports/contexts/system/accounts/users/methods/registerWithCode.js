@@ -78,7 +78,7 @@ export const registerWithCode = async ({ code, email, firstName, lastName, passw
         userId,
         teacherId
       })
-    } catch (e) {
+    } catch (_e) {
       studentAdded = false
     }
 

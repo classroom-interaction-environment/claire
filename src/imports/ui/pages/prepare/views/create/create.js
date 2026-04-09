@@ -54,17 +54,17 @@ const ViewStates = {
 }
 
 Template.createClass.onCreated(function () {
-  const instance = this
-  instance.state.set('disabledDimensions', [])
+  this.state.set('disabledDimensions', [])
 
   // open all pockets by default
   const pocketOpen = { __custom__: true }
 
-  getLocalCollection(Pocket.name).find().forEach(pocketDoc => {
-    pocketOpen[pocketDoc._id] = true
-  })
 
-  instance.state.set({ pocketOpen })
+  for (const pocketDoc of getLocalCollection(Pocket.name).find().fetch()) {
+    pocketOpen[pocketDoc._id] = true
+  }
+
+  this.state.set({ pocketOpen })
 
   // create new wizard instance and
   // make wizard available in helpers/events
@@ -72,36 +72,36 @@ Template.createClass.onCreated(function () {
     defaultState: ViewStates.choose
   })
 
-  instance.wizard = wizard
+  this.wizard = wizard
 
   const userId = Meteor.userId()
 
   // load all my SchoolClasses
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const schoolClasses = getLocalCollection(SchoolClass.name).find({ createdBy: userId })
-    const schoolClassesComplete = instance.state.get('schoolClassesComplete')
+    const schoolClassesComplete = this.state.get('schoolClassesComplete')
 
     if (!schoolClassesComplete) {
       const hasClasses = schoolClasses.count() > 0
-      instance.state.set('hasClasses', hasClasses)
+      this.state.set('hasClasses', hasClasses)
       if (!hasClasses) {
         wizard.clear(true)
         wizard.pushView(ViewStates.create)
       }
-      instance.state.set('schoolClassesComplete', true)
+      this.state.set('schoolClassesComplete', true)
     }
   })
 
   // load phases and material in case a unit has been selected
   let materialInitialized = false
 
-  instance.autorun(() => {
+  this.autorun(() => {
     if (!wizard.isCurrentState(ViewStates.phases)) {
       return
     }
 
-    const unit = instance.state.get('selectedUnit')
+    const unit = this.state.get('selectedUnit')
     if (!unit) return
 
     const unitDoc = getLocalCollection(Unit.name).findOne(unit)
@@ -109,7 +109,7 @@ Template.createClass.onCreated(function () {
 
     // unset states to display loading indicators
 
-    instance.state.set({
+    this.state.set({
       phaseLoaded: false,
       associatedPhases: null,
       unassociatedMaterial: null
@@ -118,7 +118,10 @@ Template.createClass.onCreated(function () {
     // init material contexts if not done yet
 
     if (!materialInitialized) {
-      getMaterialContexts().forEach(ctx => API.initContext(ctx))
+      const materialContexts = getMaterialContexts()
+      for (const ctx of materialContexts) {
+        API.initContext(ctx)
+      }
       materialInitialized = true
     }
 
@@ -126,7 +129,7 @@ Template.createClass.onCreated(function () {
       .then((result) => {
       const unassociatedMaterial = findUnassociatedMaterial(unitDoc)
 
-      instance.state.set({
+      this.state.set({
         associatedPhases: result.phases,
         unassociatedMaterial: unassociatedMaterial,
         phaseLoaded: true
@@ -137,26 +140,24 @@ Template.createClass.onCreated(function () {
 })
 
 Template.createClass.onDestroyed(function () {
-  const instance = this
-  instance.state.clear()
+  this.state.clear()
 })
 
 Template.createClass.onRendered(function () {
-  const instance = this
 
-  instance.autorun(() => {
-    if (instance.wizard.isCurrentState(ViewStates.unit)) {
+  this.autorun(() => {
+    if (this.wizard.isCurrentState(ViewStates.unit)) {
       setTimeout(() => dragscroll.reset(), 100)
     }
   })
 
-  instance.autorun(() => {
-    if (instance.wizard.isCurrentState(ViewStates.choose)) {
-      instance.$('.prepare-class-select').val(null)
-      instance.state.set('selectedClass', null)
+  this.autorun(() => {
+    if (this.wizard.isCurrentState(ViewStates.choose)) {
+      this.$('.prepare-class-select').val(null)
+      this.state.set('selectedClass', null)
     }
-    if (instance.wizard.isCurrentState(ViewStates.unit)) {
-      instance.state.set('selectedUnit', null)
+    if (this.wizard.isCurrentState(ViewStates.unit)) {
+      this.state.set('selectedUnit', null)
     }
   })
 })
@@ -255,7 +256,7 @@ Template.createClass.helpers({
   },
   dimensionDisabled (dimensionId) {
     const disabledDimensions = Template.getState('disabledDimensions')
-    return disabledDimensions && disabledDimensions.includes(dimensionId)
+    return disabledDimensions?.includes(dimensionId)
   },
   phaseLoaded () {
     return Template.getState('phaseLoaded')
@@ -357,7 +358,7 @@ Template.createClass.events({
       API.notify(e)
     }
   },
-  'hidden.bs.modal' (event, templateInstance) {
+  'hidden.bs.modal' (_event, templateInstance) {
     templateInstance.state.set({ previewMaterial: null })
   }
 })

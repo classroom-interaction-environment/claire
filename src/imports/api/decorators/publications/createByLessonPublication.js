@@ -1,12 +1,11 @@
 import { Meteor } from 'meteor/meteor'
 import { onServer } from '../../utils/archUtils'
 import { getCollection } from '../../utils/getCollection'
-import { createDocGetter } from '../../utils/document/createDocGetter'
 import { Lesson } from '../../../contexts/classroom/lessons/Lesson'
 
 export const createByLessonPublication = ({ name }) => {
-  import { isMemberOfLesson } from '../../../contexts/classroom/lessons/runtime/isMemberOfLesson'
-  import { createDocGetter } from '../../utils/document/createDocGetter'
+  const { isMemberOfLesson } = require('../../../contexts/classroom/lessons/runtime/isMemberOfLesson')
+  const { createDocGetter } = require('../../utils/document/createDocGetter')
   const getLessonDoc = createDocGetter({ name: Lesson.name, optional: false })
 
   return {

@@ -1,5 +1,4 @@
 import { getCollection } from '../../utils/getCollection'
-import { Admin } from '../../../contexts/system/accounts/admin/Admin'
 import { ensureServer } from '../../utils/archUtils'
 
 /**
@@ -12,6 +11,8 @@ import { ensureServer } from '../../utils/archUtils'
 export const userIsAdmin = async (userId) => {
   ensureServer()
   if (!userId) return false
+  // require cannot be on top level, because of circular dependencies
+  const { Admin } = require('../../../contexts/system/accounts/admin/Admin')
   const count = await getCollection(Admin.name).countDocuments({ userId })
   return count > 0
 }

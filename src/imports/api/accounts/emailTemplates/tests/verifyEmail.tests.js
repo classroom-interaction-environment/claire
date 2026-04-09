@@ -6,13 +6,13 @@ import { getVerifyEmailSubject, getVeryFyEmailText } from '../verifyEmail'
 import { stub, restoreAll } from '../../../../../tests/testutils/stub'
 import { i18n } from '../../../language/language'
 
-describe('verify email', function () {
-  afterEach(function () {
+describe('verify email', () => {
+  afterEach(() => {
     restoreAll()
   })
 
-  describe(getVerifyEmailSubject.name, function () {
-    it('returns the subject for a user\'s locale', function () {
+  describe(getVerifyEmailSubject.name, () => {
+    it('returns the subject for a user\'s locale', () => {
       const siteName = Random.id(6)
       const defaultLocale = Random.id(6)
       const user = { locale: Random.id(6) }
@@ -29,7 +29,7 @@ describe('verify email', function () {
       })
       expect(subject(user)).to.equal('accounts.verifyEmail.subject')
     })
-    it('returns the subject for a default locale as fallback', function () {
+    it('returns the subject for a default locale as fallback', () => {
       const siteName = Random.id(6)
       const defaultLocale = Random.id(6)
       const user = { locale: Random.id(6) }
@@ -51,8 +51,8 @@ describe('verify email', function () {
     })
   })
 
-  describe(getVeryFyEmailText.name, function () {
-    it('returns the text for the current user', function () {
+  describe(getVeryFyEmailText.name, () => {
+    it('returns the text for the current user', () => {
       const defaultLocale = Random.id()
       const user = {
         firstName: Random.id(6),

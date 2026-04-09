@@ -18,14 +18,8 @@ Meteor.startup(() => {
   })
 })
 
-Template.registerHelper('isMobile', function () {
-  return Device.isMobile.get()
-})
+Template.registerHelper('isMobile', () => Device.isMobile.get())
 
-Template.registerHelper('isDesktop', function () {
-  return Device.isDesktop.get()
-})
+Template.registerHelper('isDesktop', () => Device.isDesktop.get())
 
-Template.registerHelper('isBeamer', function () {
-  return Device.isBeamer.get()
-})
+Template.registerHelper('isBeamer', () => Device.isBeamer.get())

@@ -33,7 +33,7 @@ H5P.categories.set('notCategorized', {
 
 const contexts = new Map()
 
-H5P.register = function (h5pContentType) {
+H5P.register = (h5pContentType) => {
   debug('register', h5pContentType.machineName, h5pContentType)
 
   const context = {
@@ -71,16 +71,12 @@ H5P.options = () => Array.from(contexts.values()).map(el => option(el))
 
 H5P.renderer = {
   template: 'h5pPlayer',
-  load: async function () {
-    return import('../../../../ui/h5p/player/h5pPlayer')
-  }
+  load: async () => import('../../../../ui/h5p/player/h5pPlayer')
 }
 
 const initialized = new ReactiveVar(false)
 
-H5P.isInitialized = function () {
-  return initialized.get()
-}
+H5P.isInitialized = () => initialized.get()
 
 H5P.initialize = async () => {
   debug('initialize')

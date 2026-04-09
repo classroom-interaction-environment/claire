@@ -23,7 +23,7 @@ export const createGetMaster = ({ name }) => {
     role: Hierarchy.teacher,
     numRequests: 1,
     timeInterval: 300,
-    run: onServer(async function ({ ids = [], skip = [] }) {
+    run: onServer(async ({ ids = [], skip = [] }) => {
       const query = {}
       query._master = true
 

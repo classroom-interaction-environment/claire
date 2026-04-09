@@ -6,6 +6,6 @@ export const applyRoute = (key, ...args) => {
   if (!route) {
     return console.warn('cannot apply route', key, ', not found!')
   }
-  const targetRoute = route && route.path(...args)
+  const targetRoute = route?.path(...args)
   return Router.go(targetRoute)
 }

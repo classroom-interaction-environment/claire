@@ -12,16 +12,14 @@ defineElements('h5p-player')
 Template.h5pPlayer.setDependencies({})
 
 Template.h5pPlayer.onCreated(function () {
-  const instance = this
-  instance.xApiOutput = new ReactiveVar([])
+  this.xApiOutput = new ReactiveVar([])
 })
 
 Template.h5pPlayer.onRendered(function () {
-  const instance = this
-  const player = instance.$('.player')[0]
-  player.addEventListener('initialized', function () {
+  const player = this.$('.player')[0]
+  player.addEventListener('initialized', () => {
     const H5Pns = player.h5pObject
-    H5Pns.externalDispatcher.on('xAPI', function (event) {
+    H5Pns.externalDispatcher.on('xAPI', (event) => {
       const { statement } = event.data
       // actor is empty by default, so we enrich her with our
       // Meteor user credentials to create an opaque account
@@ -35,7 +33,7 @@ Template.h5pPlayer.onRendered(function () {
       statement.context.platform = 'h5p-Meteor'
       statement.context.language = i18n.currentLocale.get()
       statement.timestamp = new Date().toISOString()
-      const log = instance.xApiOutput.get()
+      const log = this.xApiOutput.get()
       log.push({
         name: statement.actor.name,
         objectType: statement.object.objectType,
@@ -45,7 +43,7 @@ Template.h5pPlayer.onRendered(function () {
         item: statement.object.definition.name['en-US'],
         result: statement.result && JSON.stringify(statement.result, null, 0)
       })
-      instance.xApiOutput.set(log)
+      this.xApiOutput.set(log)
     })
   })
   // We set the callback on the player webcomponent. When the contentId is set

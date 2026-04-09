@@ -20,12 +20,12 @@ const handlers = {} // TODO make a Map
 const unsaved = new Map()
 
 function hasUnsavedData (itemId, getReceiver) {
-  Tracker.autorun(function () {
+  Tracker.autorun(() => {
     unsaved.set(itemId, getReceiver())
   })
 }
 
-const allItemsSaved = () => Array.from(unsaved.entries()).every(([key, value]) => value !== true)
+const allItemsSaved = () => Array.from(unsaved.entries()).every(([_key, value]) => value !== true)
 
 function ensureAllSaved (continueCallback) {
   if (allItemsSaved()) {
@@ -47,11 +47,10 @@ const API = Template.taskRenderer.setDependencies({
 })
 
 Template.taskRenderer.onCreated(function () {
-  const instance = this
-  instance.state.set({ current: 0, previewType: 'desktop' })
+  this.state.set({ current: 0, previewType: 'desktop' })
   unsaved.clear()
 
-  const { readMode, preview, data = {} } = instance.data
+  const { readMode, preview, data = {} } = this.data
 
   const { onItemSubmit, onItemLoad, onTaskPageNext, onTaskPagePrev, onTaskFinished, onLinkPreview } = data
   const hasHandlers = onItemSubmit && onItemLoad
@@ -68,7 +67,7 @@ Template.taskRenderer.onCreated(function () {
   handlers.onTaskFinished = onTaskFinished || fallback
   handlers.onLinkPreview = onLinkPreview || fallback
 
-  instance.autorun(function () {
+  this.autorun(() => {
     const data = Template.currentData()
     API.log('autorun')
     const { data: task } = data
@@ -85,10 +84,10 @@ Template.taskRenderer.onCreated(function () {
     const taskId = task._id
 
     if (typeof data.page === 'number') {
-      instance.state.set('current', data.page)
+      this.state.set('current', data.page)
     }
 
-    instance.state.set({
+    this.state.set({
       taskComplete: !!isComplete,
       preview: typeof task.preview === 'boolean' ? task.preview : globalPreview,
       pages: task.pages,
@@ -110,17 +109,18 @@ Template.taskRenderer.onCreated(function () {
   // which in turn causes the elements to be removed from screen.
   // After a short delay we unset this flag to place the elements on the screen
   // with the new values.
-  instance.autorun(() => {
-    instance.state.get('current')
-    setTimeout(() => instance.state.set('pageChanged', false), 300)
+  this.autorun(() => {
+    this.state.get('current')
+    setTimeout(() => this.state.set('pageChanged', false), 300)
   })
 })
 
 Template.taskRenderer.onDestroyed(function () {
-  const instance = this
-  instance.state.destroy()
+  this.state.destroy()
   unsaved.clear()
-  Object.keys(handlers).forEach(key => delete handlers[key])
+  for (const key of Object.keys(handlers)) {
+    delete handlers[key]
+  }
 })
 
 Template.taskRenderer.helpers({
@@ -145,11 +145,11 @@ Template.taskRenderer.helpers({
   },
   static () {
     const header = Template.getState('static')
-    return header && header.content && header.content.length > 0 ? header : null
+    return header?.content && header.content.length > 0 ? header : null
   },
   footer () {
     const footer = Template.getState('footer')
-    return footer && footer.content && footer.content.length > 0 ? footer : null
+    return footer?.content && footer.content.length > 0 ? footer : null
   },
   currentPage () {
     return Template.getState('current') + 1
@@ -222,8 +222,8 @@ Template.taskRenderer.helpers({
 
 Template.taskRenderer.events({
 
-  'click #task-finish-button' (event, templateInstance) {
-    ensureAllSaved(function () {
+  'click #task-finish-button' (_event, templateInstance) {
+    ensureAllSaved(() => {
       const isEditable = templateInstance.state.get('isEditable')
       if (!isEditable) {
         return
@@ -235,7 +235,7 @@ Template.taskRenderer.events({
       const pageIndex = templateInstance.state.get('current')
       const eventObj = {
         page: pageIndex,
-        maxPages: pages && pages.length,
+        maxPages: pages?.length,
         complete: true,
         taskId
       }
@@ -249,8 +249,8 @@ Template.taskRenderer.events({
     })
   },
 
-  'click #task-next-button' (event, templateInstance) {
-    ensureAllSaved(function () {
+  'click #task-next-button' (_event, templateInstance) {
+    ensureAllSaved(() => {
       const currentPage = templateInstance.state.get('current')
       const newPage = currentPage + 1
       // update data
@@ -259,7 +259,7 @@ Template.taskRenderer.events({
       const pages = templateInstance.state.get('pages')
       const eventObj = {
         page: newPage,
-        maxPages: pages && pages.length,
+        maxPages: pages?.length,
         complete: true,
         taskId
       }
@@ -276,8 +276,8 @@ Template.taskRenderer.events({
     })
   },
 
-  'click #task-prev-button' (event, templateInstance) {
-    ensureAllSaved(function () {
+  'click #task-prev-button' (_event, templateInstance) {
+    ensureAllSaved(() => {
       const current = templateInstance.state.get('current')
       const newPage = current - 1
       const isEditable = templateInstance.state.get('isEditable')
@@ -287,7 +287,7 @@ Template.taskRenderer.events({
         const pages = templateInstance.state.get('pages')
         const eventObj = {
           page: newPage,
-          maxPages: pages && pages.length,
+          maxPages: pages?.length,
           complete: true,
           taskId,
           isEditable
@@ -317,7 +317,7 @@ Template.taskRenderer.events({
     if (isEditable) {
       handlers.onTaskPagePrev({
         page: current,
-        maxPages: pages && pages.length,
+        maxPages: pages?.length,
         complete: false,
         taskId
       })

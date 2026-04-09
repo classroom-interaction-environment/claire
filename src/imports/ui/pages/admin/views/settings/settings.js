@@ -1,4 +1,4 @@
-import { Meteor } from 'meteor/meteor'
+
 import { Template } from 'meteor/templating'
 import { Settings } from '../../../../../contexts/system/settings/Settings'
 import { Schema } from '../../../../../api/schema/Schema'
@@ -24,7 +24,7 @@ const logosSchema = Schema.create({
   'logos.$': Settings.schema['logos.$']
 })
 
-Object.values(Settings.legal).forEach(fieldName => {
+for (const fieldName of Object.values(Settings.legal)) {
   // get the schema for this field and remove optional
   const originalSchemaDef = Settings.schema[fieldName]
   originalSchemaDef.optional = false
@@ -44,7 +44,7 @@ Object.values(Settings.legal).forEach(fieldName => {
     schema: Schema.create(schemaDef),
     formName: `${fieldName}Form`
   }
-})
+}
 
 const legalFieldsList = Object.values(legalFields)
 
@@ -60,28 +60,27 @@ const API = Template.adminSettings.setDependencies({
 })
 
 Template.adminSettings.onCreated(async function () {
-  const instance = this
-  instance.state.set('updating', false)
-  instance.state.set('edit', false)
-  instance.autorun(() => {
+  this.state.set('updating', false)
+  this.state.set('edit', false)
+  this.autorun(() => {
     const settingsDoc = Settings.helpers.get()
 
     if (settingsDoc) {
-      instance.state.set('currentTheme', settingsDoc.ui.theme)
-      instance.state.set('customTheme', settingsDoc.ui.theme)
-      instance.state.set('settingsDoc', settingsDoc)
+      this.state.set('currentTheme', settingsDoc.ui.theme)
+      this.state.set('customTheme', settingsDoc.ui.theme)
+      this.state.set('settingsDoc', settingsDoc)
     }
-    instance.state.set('loadComplete', true)
+    this.state.set('loadComplete', true)
   })
 
-  instance.autorun(computation => {
+  this.autorun(computation => {
     if (!API.initComplete()) { return }
 
     loadIntoCollection({
       name: AppImages.methods.get,
       collection: getLocalCollection(AppImages.name),
       failure: API.notify,
-      success: () => instance.state.set('logoSubReady', true)
+      success: () => this.state.set('logoSubReady', true)
     })
 
     computation.stop()
@@ -89,7 +88,7 @@ Template.adminSettings.onCreated(async function () {
 
   const themeRequest = await fetch('/app-theme')
   const currentTheme = await themeRequest.text()
-  instance.state.set({ currentTheme })
+  this.state.set({ currentTheme })
 })
 
 Template.adminSettings.helpers({
@@ -115,18 +114,18 @@ Template.adminSettings.helpers({
   },
   value (fieldName) {
     const settingsDoc = Template.getState('settingsDoc')
-    return settingsDoc && settingsDoc[fieldName]
+    return settingsDoc?.[fieldName]
   },
   logos () {
     const settingsDoc = Template.getState('settingsDoc')
-    return settingsDoc && settingsDoc.logos
+    return settingsDoc?.logos
   },
   logosSchema () {
     return logosSchema
   },
   link (logoId) {
     const logoFile = getCollection(AppImages.name).findOne(logoId)
-    return logoFile && logoFile.link()
+    return logoFile?.link()
   }
 })
 

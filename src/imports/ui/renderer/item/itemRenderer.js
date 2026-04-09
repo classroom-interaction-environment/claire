@@ -39,13 +39,12 @@ const ItemRendererState = {
 const API = Template.itemRenderer.setDependencies({})
 
 Template.itemRenderer.onCreated(function () {
-  const instance = this
-  instance.instanceId = Random.id()
+  this.instanceId = Random.id()
 
-  const count = instances.get(instance.data.itemId) || 0
-  instances.set(instance.data.itemId, count + 1)
+  const count = instances.get(this.data.itemId) || 0
+  instances.set(this.data.itemId, count + 1)
 
-  instance.autorun(async function () {
+  this.autorun(async () => {
     const data = Template.currentData()
     const itemInit = Item.isInitialized()
     const noData = !data
@@ -58,7 +57,7 @@ Template.itemRenderer.onCreated(function () {
 
     const { onItemLoad, hasUnsavedData, itemId, page, preview } = data
     const ctx = Item.get(data.meta)
-    instance.state.set({ autoSave: ctx.save === 'auto' })
+    this.state.set({ autoSave: ctx.save === 'auto' })
 
     // Create build-schema:
     // each item has a specific schema and sometimes even uses
@@ -88,7 +87,7 @@ Template.itemRenderer.onCreated(function () {
     onItemLoad(itemId, (err, itemDoc) => {
       if (err) {
         states.set(itemId, ItemRendererState.loadFailed)
-        instance.state.set({ error: err })
+        this.state.set({ error: err })
       }
       else {
         if (itemDoc) {
@@ -106,7 +105,7 @@ Template.itemRenderer.onCreated(function () {
     // It is optional and needs therefore to be checked for being typeof function.
     if (typeof hasUnsavedData === 'function') {
       hasUnsavedData(itemId, () => {
-        return instance.state.get('unsaved')
+        return this.state.get('unsaved')
       })
     }
   })
@@ -115,13 +114,13 @@ Template.itemRenderer.onCreated(function () {
    * Saves the current scoped item unless validation fails.
    * @param itemId {string}
    */
-  instance.saveItem = ({ itemId }) => {
-    if (instance.data.preview) {
+  this.saveItem = ({ itemId }) => {
+    if (this.data.preview) {
       return // skip submission on preview
     }
 
     const formId = `itemForm_${itemId}`
-    instance.state.set('unsaved', false)
+    this.state.set('unsaved', false)
 
     const { insertDoc, updateDoc } = AutoForm.getFormValues(formId)
 
@@ -138,7 +137,7 @@ Template.itemRenderer.onCreated(function () {
     }
 
     // dispatch to the callbacks
-    const { onItemSubmit, groupMode } = instance.data
+    const { onItemSubmit, groupMode } = this.data
 
     if (onItemSubmit) {
       states.set(itemId, ItemRendererState.submit)
@@ -161,8 +160,7 @@ Template.itemRenderer.onCreated(function () {
 // would otherwise be emptied
 
 Template.itemRenderer.onDestroyed(function () {
-  const instance = this
-  const itemId = instance.data.itemId
+  const itemId = this.data.itemId
   const count = instances.get(this.data.itemId) || 0
 
   if (itemId) {
@@ -214,7 +212,7 @@ Template.itemRenderer.helpers({
   itemFormName (id) {
     return getFormId(id)
   },
-  itemHasValue (itemId) {
+  itemHasValue (_itemId) {
     return true
     /*
      const formId = getFormId(itemId)
@@ -235,7 +233,7 @@ Template.itemRenderer.helpers({
     return values.get(itemId)
   },
   toLocaleDate (date) {
-    return date && date.toLocaleString()
+    return date?.toLocaleString()
   },
   submitting (itemId) {
     return states.get(itemId) === ItemRendererState.submit

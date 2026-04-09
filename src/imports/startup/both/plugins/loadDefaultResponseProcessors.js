@@ -31,7 +31,7 @@ import { onClientExec, onServerExec } from '../../../api/utils/archUtils'
   DocumentList,
   Cluster,
   Network
-].forEach(function (context) {
+].forEach((context) => {
   try {
     ResponseProcessorRegistry.register(context)
   }
@@ -47,12 +47,12 @@ import { onClientExec, onServerExec } from '../../../api/utils/archUtils'
  * On the client this should be deferred to the point, where they are required to reduce TTS
  * and initial load volume.
  */
-ResponseProcessorRegistry.forEach(function (context) {
+ResponseProcessorRegistry.forEach((context) => {
   responseProcessorPipeline(context)
 
   // on the server we run the complete build pipeline
-  onServerExec(function () {
-    import { buildPipeline } from '../../../infrastructure/pipelines/server/buildPipeline'
+  onServerExec(() => {
+    const { buildPipeline } = require('../../../infrastructure/pipelines/server/buildPipeline')
     buildPipeline(context, {
       collection: true,
       filesCollection: true,
@@ -63,8 +63,8 @@ ResponseProcessorRegistry.forEach(function (context) {
   })
 
   // on the client we use the ContextBuilder to create the context pipeline
-  onClientExec(function () {
-    import { initContext } from '../../client/contexts/initContext'
+  onClientExec(() => {
+    const { initContext } = require('../../client/contexts/initContext')
     initContext(context)
   })
 })

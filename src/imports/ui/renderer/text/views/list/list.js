@@ -3,11 +3,10 @@ import './list.css'
 import './list.html'
 
 Template.textRendererlist.onCreated(function () {
-  const instance = this
-  instance.autorun(() => {
+  this.autorun(() => {
     Template.currentData()
-    instance.state.set('loadComplete', false)
-    setTimeout(() => instance.state.set('loadComplete', true), 300)
+    this.state.set('loadComplete', false)
+    setTimeout(() => this.state.set('loadComplete', true), 300)
   })
 })
 

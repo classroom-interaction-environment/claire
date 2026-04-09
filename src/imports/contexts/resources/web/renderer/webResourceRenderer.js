@@ -8,9 +8,8 @@ import './webResourceRenderer.html'
 const previewCache = new ReactiveDict()
 
 Template.webResourceRenderer.onCreated(function () {
-  const instance = this
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     const { meta } = data
     const ctx = ContextRegistry.get(meta)
@@ -20,8 +19,8 @@ Template.webResourceRenderer.onCreated(function () {
     const { template, load } = renderer
 
     load()
-      .catch(error => instance.state.set({ error }))
-      .then(() => instance.state.set({ [meta]: template }))
+      .catch(error => this.state.set({ error }))
+      .then(() => this.state.set({ [meta]: template }))
   })
 })
 

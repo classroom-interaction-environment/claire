@@ -55,15 +55,11 @@ LinkedResource.material = {
   renderer: {
     list: {
       template: 'linkedResourceListRenderer',
-      load: async function () {
-        return import('./renderer/list/linkedResourceListRenderer')
-      }
+      load: async () => import('./renderer/list/linkedResourceListRenderer')
     },
     main: {
       template: 'linkedResourceRenderer',
-      load: async function () {
-        return import('./renderer/main/linkedResourceRenderer')
-      },
+      load: async () => import('./renderer/main/linkedResourceRenderer'),
       /**
        * @deprecated
        */

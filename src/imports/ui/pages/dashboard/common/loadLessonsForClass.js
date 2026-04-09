@@ -24,11 +24,11 @@ export const loadLessonsForClass = async ({ classId, onError }) => {
   const lessonIds = []
 
   // skip all units that already have been loaded
-  lessonDocs.forEach(doc => {
+  for (const doc of lessonDocs) {
     if (UnitCollection.find({ _id: doc.unit }).count() === 0) {
       lessonIds.push(doc._id)
     }
-  })
+  }
 
   // only load units if we have none anymore
   let unitDocs

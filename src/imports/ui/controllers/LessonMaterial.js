@@ -46,7 +46,7 @@ function subscribe (unitDoc, callback) {
   }
 
   const check = (handle, context) => {
-    if (handle && handle.ready()) {
+    if (handle?.ready()) {
       _loaded[context.name] = true
     }
   }
@@ -61,15 +61,16 @@ function subscribe (unitDoc, callback) {
 
     const context = Material.get(contextName)
     if (!context) {
-      return callback(new Error(`Expected Material-context by name [${contextName}] for field [${fieldName}]`))
+      callback(new Error(`Expected Material-context by name [${contextName}] for field [${fieldName}]`))
+    } else {
+
+      allSubs.push({
+        handle: queue(materialIds, context),
+        context: context
+      })
+
+      debug('queue', contextName)
     }
-
-    allSubs.push({
-      handle: queue(materialIds, context),
-      context: context
-    })
-
-    debug('queue', contextName)
   })
 
   if (allSubs.length === 0) {
@@ -77,7 +78,9 @@ function subscribe (unitDoc, callback) {
   }
 
   Tracker.autorun((computation) => {
-    allSubs.forEach(({ handle, context }) => check(handle, context))
+    allSubs.forEach(({ handle, context }) => {
+      check(handle, context)
+    })
 
     if (allLoaded()) {
       computation.stop()
@@ -137,7 +140,7 @@ LessonMaterial.load = async (unitDoc) => {
 //
 //= =============================================================================
 
-LessonMaterial.getPreviewRenderer = function (materialDoc) {
+LessonMaterial.getPreviewRenderer = (materialDoc) => {
   const { name } = materialDoc
   const ctx = getContext(name) || {}
   return isMaterial(ctx)
@@ -145,7 +148,7 @@ LessonMaterial.getPreviewRenderer = function (materialDoc) {
     : ctx.renderer
 }
 
-LessonMaterial.loadPreviewTemplate = async function (materialDoc) {
+LessonMaterial.loadPreviewTemplate = async (materialDoc) => {
   const { name } = materialDoc
   const renderer = LessonMaterial.getPreviewRenderer(materialDoc)
 
@@ -193,7 +196,7 @@ LessonMaterial.getPreviewData = function getPreviewData ({ materialDoc, template
  * @param materialDoc {Object}
  * @return {String|undefined}
  */
-LessonMaterial.getPreviewTemplate = function (materialDoc) {
+LessonMaterial.getPreviewTemplate = (materialDoc) => {
   const renderer = LessonMaterial.getPreviewRenderer(materialDoc)
   const template = renderer?.template
 

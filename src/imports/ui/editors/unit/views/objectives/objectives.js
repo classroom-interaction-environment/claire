@@ -19,21 +19,22 @@ const API = Template.ueobjectives.setDependencies({
 })
 
 Template.ueobjectives.onCreated(function () {
-  const instance = this
 
   callMethod({
     name: Objective.methods.all.name,
     args: { ids: null },
     failure: error => API.fatal(error),
     success: objectives => {
-      objectives.forEach(objectiveDoc => ObjectiveLocalCollection.add(objectiveDoc))
-      instance.state.set('loadComplete', true)
+      objectives.forEach(objectiveDoc => {
+        ObjectiveLocalCollection.add(objectiveDoc)
+      })
+      this.state.set('loadComplete', true)
     }
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const { unitDoc } = Template.currentData()
-    instance.state.set({ unitDoc })
+    this.state.set({ unitDoc })
   })
 })
 
@@ -129,7 +130,7 @@ Template.ueobjectives.events({
     event.preventDefault()
     templateInstance.$('#uniteditor-objective-create-modal').modal('show')
   },
-  'input .objectives-filter': debounce(function (event, templateInstance) {
+  'input .objectives-filter': debounce((event, templateInstance) => {
     const val = templateInstance.$(event.currentTarget).val()
     if (val.length < 2) {
       templateInstance.state.set('postFilter', null)

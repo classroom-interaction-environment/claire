@@ -20,7 +20,7 @@ import { Literature } from '../../../resources/web/literature/Literature'
 
 const byName = (a, b) => a.label.localeCompare(b.label)
 
-const short = url => url.length < 100 ? url : (url.substring(0, 97) + '...')
+const short = url => url.length < 100 ? url : (`${url.substring(0, 97)}...`)
 
 export const Unit = {
   name: 'unit',
@@ -37,12 +37,10 @@ export const Unit = {
       autoform: {
         firstOption: firstOption,
         options () {
-          return getCollection(Pocket.name).find().map(function (element) {
-            return {
+          return getCollection(Pocket.name).find().map((element) => ({
               value: element._id,
               label: element.title
-            }
-          })
+            }))
         }
       }
     },
@@ -86,7 +84,7 @@ export const Unit = {
           options: FormFactory.getSelectOptions(Objective.name, {}, {
             value: '_id',
             label: 'title'
-          }, 'pocket', function (value) {
+          }, 'pocket', (value) => {
             if (typeof value === 'object') { return i18n.reactive('common.notAssociated') }
             const pocketCollection = getCollection(Pocket.name)
             const pocketDoc = pocketCollection.findOne(value)
@@ -250,7 +248,7 @@ export const Unit = {
         options: FormFactory.getSelectOptions(Task.name, {}, {
           value: '_id',
           label: 'title'
-        }, 'task', function (value) {
+        }, 'task', (value) => {
           if (typeof value === 'object') {
             return i18n.reactive('common.notAssociated')
           }
@@ -383,8 +381,8 @@ Unit.methods.byTaskId = {
     taskId: String
   },
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { getUnitsByTaskId } from './methods/getUnitsByTaskId'
+  run: onServerExec(() => {
+    const { getUnitsByTaskId } = require('./methods/getUnitsByTaskId')
 
     return async function ({ taskId }) {
       const { userId } = this
@@ -398,7 +396,7 @@ Unit.methods.unlinkTask = {
   schema: { taskId: String },
   role: Hierarchy.teacher,
   run: onServerExec(() => {
-    import { unlinkUnitTask } from './methods/unlinkUnitTask'
+    const { unlinkUnitTask } = require('./methods/unlinkUnitTask')
     return async function ({ taskId }) {
       const { userId } = this
       return unlinkUnitTask({ userId, taskId })
@@ -414,9 +412,7 @@ Unit.methods.getEditorDocs = {
   name: 'unit.methods.getEditorDocs',
   schema: { unitId: String },
   role: Hierarchy.teacher,
-  run: onServerExecLazy(function () {
-    return require( './methods/getEditorDocs').getEditorDocs
-  })
+  run: onServerExecLazy(() => require( './methods/getEditorDocs').getEditorDocs)
 }
 
 Unit.methods.remove = {
@@ -424,7 +420,7 @@ Unit.methods.remove = {
   schema: { _id: String },
   role: Hierarchy.curriculum,
   run: onServerExec(() => {
-    import { deleteUnit } from './methods/deleteUnit'
+    const { deleteUnit } = require('./methods/deleteUnit')
 
     return async function ({ _id }) {
       const { userId } = this
@@ -437,8 +433,8 @@ Unit.methods.loadMaterial = {
   name: 'unit.methods.loadMaterial',
   schema: { _id: String },
   role: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { loadMaterial } from './methods/loadMaterial'
+  run: onServerExec(() => {
+    const { loadMaterial } = require('./methods/loadMaterial')
 
     return async function ({ _id }) {
       const { userId } = this
@@ -455,7 +451,5 @@ Unit.publications.editor = {
     unitId: String
   },
   role: Hierarchy.teacher,
-  run: onServer(function ({ unitId }) {
-    return getCollection(Unit.name).find({ _id: unitId })
-  })
+  run: onServer(({ unitId }) => getCollection(Unit.name).find({ _id: unitId }))
 }

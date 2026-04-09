@@ -10,7 +10,7 @@ import { Phase } from '../../../../../contexts/curriculum/curriculum/phase/Phase
  * @param PhaseCollection {Mongo.Collection}
  * @return {Function}
  */
-export const createRemoveReferences = PhaseCollection => ({ phases, field, targetId }, callback) => {
+export const createRemoveReferences = PhaseCollection => ({ phases, targetId }, callback) => {
   phases.forEach(phaseId => {
     const phaseDoc = PhaseCollection.findOne(phaseId)
 

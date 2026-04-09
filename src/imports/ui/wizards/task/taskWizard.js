@@ -33,23 +33,22 @@ const createTaskSchema = Schema.create(taskSchemaDefinitions)
 const createTaskDoc = Task.helpers.createData()
 
 Template.taskWizard.onCreated(function () {
-  const instance = this
 
   loadIntoCollection({
     name: Task.methods.my,
     collection: TaskCollection,
     failure: API.fatal,
-    success: () => instance.state.set('tasksReady', true)
+    success: () => this.state.set('tasksReady', true)
   })
 
   loadIntoCollection({
     name: Unit.methods.my,
     collection: UnitCollection,
     failure: API.fatal,
-    success: () => instance.state.set('unitsReady', true)
+    success: () => this.state.set('unitsReady', true)
   })
 
-  instance.onCreated = taskId => {
+  this.onCreated = taskId => {
     loadIntoCollection({
       name: Task.methods.get,
       args: { _id: taskId },
@@ -148,7 +147,7 @@ Template.twRenderer.events({
         text = 'wizard.task.confirmDeleteLinked'
         textOptions = {
           title: title,
-          units: '\n\n' + units.map(doc => `\u00B7 ${doc.title}`).sort().join('\n\n')
+          units: `\n\n${units.map(doc => `\u00B7 ${doc.title}`).sort().join('\n\n')}`
         }
       }
 

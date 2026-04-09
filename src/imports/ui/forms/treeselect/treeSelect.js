@@ -16,22 +16,22 @@ AutoForm.addInputType('treeSelect', {
 })
 
 Template.afTreeSelect.onCreated(function () {
-  const instance = this
-  const { documents = [], renderer, ...inputAtts } = instance.data.atts
-  const initialValue = Array.isArray(instance.data.value)
-    ? instance.data.value
+  const { documents = [], renderer, ...inputAtts } = this.data.atts
+  const initialValue = Array.isArray(this.data.value)
+    ? this.data.value
     : []
-  instance.ids = new ReactiveSet()
-  initialValue.forEach(v => instance.ids.add(v))
-  instance.state.set({ documents, renderer, inputAtts })
+  this.ids = new ReactiveSet()
+  initialValue.forEach(v => {
+    this.ids.add(v)
+  })
+  this.state.set({ documents, renderer, inputAtts })
 })
 
 Template.afTreeSelect.onRendered(function () {
-  const instance = this
-  const dataSchemaKey = instance.data.atts['data-schema-key']
-  instance.autorun(() => {
-    const ids = instance.ids.all()
-    instance.$(`input[data-schema-key="${dataSchemaKey}"]`).val(ids.join(','))
+  const dataSchemaKey = this.data.atts['data-schema-key']
+  this.autorun(() => {
+    const ids = this.ids.all()
+    this.$(`input[data-schema-key="${dataSchemaKey}"]`).val(ids.join(','))
   })
 })
 

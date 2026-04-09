@@ -26,7 +26,7 @@ export const createUpdate = ({ name, schema, roles, isOwner, isCurriculum }) => 
     roles: roles,
     timeInterval: 1000,
     numRequests: 10,
-    validate: onServer(function (updateDoc) {
+    validate: onServer((updateDoc) => {
       const { _id, doc } = updateDoc
       idSchema.validate({ _id })
       updateSchema.validate(doc)

@@ -12,13 +12,12 @@ const API = Template.teunits.setDependencies({
 })
 
 Template.teunits.onCreated(function () {
-  const instance = this
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     const { taskDoc } = data
-    instance.state.set('taskId', taskDoc._id)
-    instance.state.set('task', taskDoc)
+    this.state.set('taskId', taskDoc._id)
+    this.state.set('task', taskDoc)
 
     callMethod({
       name: Unit.methods.byTaskId.name,
@@ -29,19 +28,19 @@ Template.teunits.onCreated(function () {
       success: ({ linkedUnits, unlinkedUnits }) => {
         API.log('loaded', { linkedUnits, unlinkedUnits })
 
-        instance.state.set({
+        this.state.set({
           linkedUnits, unlinkedUnits, unitsLoaded: true
         })
       }
     })
   })
 
-  instance.autorun(() => {
-    const linkedUnits = instance.state.get('linkedUnits')
-    const unlinkedUnits = instance.state.get('unlinkedUnits')
+  this.autorun(() => {
+    const linkedUnits = this.state.get('linkedUnits')
+    const unlinkedUnits = this.state.get('unlinkedUnits')
 
     if (!linkedUnits?.length && !unlinkedUnits?.length) {
-      instance.state.set('pocketsLoaded', true)
+      this.state.set('pocketsLoaded', true)
       return // skip if we have totally no units available
     }
 
@@ -55,7 +54,7 @@ Template.teunits.onCreated(function () {
       args: { ids: [...pocketIds.values()] },
       failure: API.notify,
       success: pocketDocs => {
-        instance.state.set({
+        this.state.set({
           pocketDocs,
           pocketsLoaded: true
         })
@@ -73,7 +72,7 @@ Template.teunits.helpers({
   },
   linkedPocket (pocketId) {
     const pocketDocs = Template.getState('pocketDocs')
-    return pocketDocs && pocketDocs.find(p => p._id === pocketId)
+    return pocketDocs?.find(p => p._id === pocketId)
   },
   unlinkedUnits () {
     return Template.getState('unlinkedUnits')

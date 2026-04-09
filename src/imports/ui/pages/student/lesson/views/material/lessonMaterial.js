@@ -22,10 +22,9 @@ Template.lessonMaterial.setDependencies({
 })
 
 Template.lessonMaterial.onCreated(function () {
-  const instance = this
-  instance.allContexts = new ReactiveVar()
+  this.allContexts = new ReactiveVar()
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     const { visible, scope, lessonId, groupId } = data
     const categories = new Set()
@@ -53,7 +52,7 @@ Template.lessonMaterial.onCreated(function () {
         return { name, route, label, icon, documents }
       })
 
-    instance.allContexts.set(allContexts)
+    this.allContexts.set(allContexts)
   })
 })
 

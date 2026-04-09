@@ -2,7 +2,7 @@
 import interact from 'interactjs'
 
 export const Interact = {
-  dragStartListener (event) {
+  dragStartListener (_event) {
 
   },
   dragMoveListener (event) {
@@ -51,8 +51,8 @@ export const Interact = {
       x = this.checkBounds(offsetLeft, x, $(selector).width())
       y = this.checkBounds(offsetTop, y, $(selector).height())
 
-      target.style.width = x + 'px'
-      target.style.height = y + 'px'
+      target.style.width = `${x}px`
+      target.style.height = `${y}px`
     }
   },
   checkBounds (offset, dimension, limit) {
@@ -88,7 +88,7 @@ export const Interact = {
       dx = newx - oldx
       dy = newy - oldy
 
-      $(selector).each((index, target) => {
+      $(selector).each((_index, target) => {
         tx = parseFloat(target.getAttribute('data-x')) || 0
         ty = parseFloat(target.getAttribute('data-y')) || 0
         nx = Interact.getOffset(tx, dx, oldx)
@@ -120,7 +120,7 @@ export const Interact = {
       },
       autoScroll: false, // disable autoScroll
 
-      cursorChecker (action, interactable, element, interacting) {
+      cursorChecker (_action, _interactable, _element, interacting) {
         return interacting ? 'grabbing' : 'grab'
       },
 

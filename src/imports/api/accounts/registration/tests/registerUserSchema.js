@@ -57,9 +57,10 @@ describe('registerUserSchema', () => {
       email.validate({ value: `${Random.id()}@${Random.id()}.tld` })
     })
     it('throws on non-email input', () => {
-      ['', 'john@doe', '@doe.com', '.@doe.com', Random.id()].forEach(value => {
+      const fails = ['', 'john@doe', '@doe.com', '.@doe.com', Random.id()]
+      for (const value of fails) {
         expect(() => email.validate({ value })).to.throw('form.validation.EmailWithTLD', value)
-      })
+      }
     })
   })
   describe(codeSchema.name, () => {
@@ -74,7 +75,7 @@ describe('registerUserSchema', () => {
       agree.validate({ termsOfService: true, privacyPolicy: true })
     })
     it('throws on input that fails minimal requirements', () => {
-      [{
+      const values = [{
         termsOfService: false,
         privacyPolicy: false
       }, {
@@ -83,7 +84,10 @@ describe('registerUserSchema', () => {
       }, {
         termsOfService: true,
         privacyPolicy: false
-      }].forEach(value => expect(() => agree.validate(agree.validate(value))).to.throw(/.*/, value, value))
+      }]
+      for (const value of values) {
+        expect(() => agree.validate(agree.validate(value))).to.throw(/.*/, value, value)
+      }
     })
   })
   describe(passwordSchemaClassic.name, () => {
@@ -112,11 +116,11 @@ describe('registerUserSchema', () => {
 
     it('accepts a password, that matches the given rules', () => {
       for (let i = 0; i < 100; i++) {
-        const value = Random.secret() + '3' // guarantee a number
+        const value = `${Random.secret()}3` // guarantee a number
         try {
           password.validate({ value })
         }
-        catch (e) {
+        catch (_e) {
           expect.fail(`${value} did not pass validation`)
         }
       }
@@ -141,7 +145,7 @@ describe('registerUserSchema', () => {
     })
     it('throws if input does not match password', () => {
       const password = Random.id()
-      ;[password.toUpperCase(), password.toLowerCase(), '', password + ' ', Random.id()].forEach(value => {
+      ;[password.toUpperCase(), password.toLowerCase(), '', `${password} `, Random.id()].forEach(value => {
         expect(() => confirm.validate({ password, confirm: value })).to.throw(/.*/, value, value)
       })
     })

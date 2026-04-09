@@ -15,14 +15,13 @@ const ErrorsCollection = getCollection(Errors.name)
 const filterLogsSchema = Schema.create(Errors.filter.schema, { tracker: Tracker })
 
 Template.adminLogs.onCreated(function onLogCreated () {
-  const instance = this
-  instance.state.set('showDocs', {})
-  instance.autorun(() => {
+  this.state.set('showDocs', {})
+  this.autorun(() => {
     const logSub = SubsManager.subscribe(Errors.publications.byDate.name, { limit: 100 })
     if (logSub.ready()) {
       const cursor = ErrorsCollection.find()
-      instance.state.set('logCount', cursor && cursor.count())
-      instance.state.set('loadComplete', true)
+      this.state.set('logCount', cursor?.count())
+      this.state.set('loadComplete', true)
     }
   })
 })
@@ -42,7 +41,7 @@ Template.adminLogs.helpers({
   },
   show (docId) {
     const showDocs = Template.getState('showDocs')
-    return showDocs && showDocs[docId]
+    return showDocs?.[docId]
   }
 })
 

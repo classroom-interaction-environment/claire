@@ -55,12 +55,12 @@ Template.confirm.events({
     event.preventDefault()
     completeDialog(false, templateInstance)
   },
-  'hidden.bs.modal' (event, templateInstance) {
+  'hidden.bs.modal' (_event, templateInstance) {
     // empty the input if present on hidden
     // because in case of reopening the modal
     // we want the code input to be empty
     const $input = templateInstance.$('.confirm-input')
-    if ($input && $input.get(0)) {
+    if ($input?.get(0)) {
       $input.val(null)
     }
     viewState.set('hidden')
@@ -80,8 +80,7 @@ Template.confirm.events({
 })
 
 Template.confirm.onRendered(function () {
-  const instance = this
-  instance.autorun(() => {
+  this.autorun(() => {
     // skip autorun unless we invoked the confirmDialog
     // which itself sets the viewState to 'open'
     if (viewState.get() !== 'open') return
@@ -92,7 +91,7 @@ Template.confirm.onRendered(function () {
       return console.warn('[confirm]: has no target')
     }
 
-    const modal = instance.$(target) || window.$(target)
+    const modal = this.$(target) || window.$(target)
     if (!modal || !modal.get(0)) {
       return errorState.set(new Error(`Expected target by selector "${target}" on modal show`))
     }
@@ -101,7 +100,7 @@ Template.confirm.onRendered(function () {
     viewState.set('visible')
 
     if (state.get('codeRequired')) {
-      setTimeout(() => instance.$('.confirm-input').focus(), 500)
+      setTimeout(() => this.$('.confirm-input').focus(), 500)
     }
   })
 })
@@ -120,7 +119,7 @@ function codeIsValid () {
   return result.get() === state.get('code')
 }
 
-export const confirmDialog = function confirmDialog ({ target = '#confirm-modal', title = 'actions.confirm', timeout = 25, type = 'secondary', text, textOptions, codeRequired = false, codeSize = 4 }) {
+export const confirmDialog = function confirmDialog ({ target = '#confirm-modal', title = 'actions.confirm', type = 'secondary', text, textOptions, codeRequired = false, codeSize = 4 }) {
   const options = { target, title, text, textOptions, type, codeRequired, codeSize }
 
   if (codeRequired) {

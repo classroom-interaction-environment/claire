@@ -4,10 +4,9 @@ import { toolTipEvents } from '../utils/tooltipUtils'
 import './link.html'
 
 Template.link.onCreated(function () {
-  const instance = this
-  instance.state = new ReactiveDict()
+  this.state = new ReactiveDict()
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     const href = data.href || ''
     const title = data.title
@@ -56,7 +55,7 @@ Template.link.onCreated(function () {
       }
     })
 
-    instance.state.set('attributes', attributes)
+    this.state.set('attributes', attributes)
   })
 })
 

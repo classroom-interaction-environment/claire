@@ -53,23 +53,22 @@ const Times = {
 }
 
 Template.inviteStudents.onCreated(function () {
-  const instance = this
-  instance.state.set('countDown', Times.toString())
+  this.state.set('countDown', Times.toString())
 
-  instance.endCountdown = () => {
-    if (instance.countDown) {
-      clearInterval(instance.countDown)
-      instance.countDown = undefined
+  this.endCountdown = () => {
+    if (this.countDown) {
+      clearInterval(this.countDown)
+      this.countDown = undefined
     }
   }
 
-  instance.startCountdown = ({ createdAt, expires }) => {
-    instance.endCountdown()
-    instance.countDown = setInterval(() => {
+  this.startCountdown = ({ createdAt, expires }) => {
+    this.endCountdown()
+    this.countDown = setInterval(() => {
       const timeLeft = invitationTimeLeft(createdAt, expires)
       if (timeLeft <= 0) {
-        instance.endCountdown()
-        instance.state.set('countDown', i18n.get('codeInvitation.expired'))
+        this.endCountdown()
+        this.state.set('countDown', i18n.get('codeInvitation.expired'))
         return
       }
 
@@ -77,20 +76,20 @@ Template.inviteStudents.onCreated(function () {
       const h = Times.h(timeLeft)
       const m = Times.m(timeLeft)
       const s = Times.s(timeLeft)
-      instance.state.set('countDown', Times.toString(d, h, m, s))
+      this.state.set('countDown', Times.toString(d, h, m, s))
     }, 1000)
   }
 
-  instance.getLink = (invitationDoc) => {
+  this.getLink = (invitationDoc) => {
     const queryParams = createInvitationURLQuery(invitationDoc)
     const invitationRoute = Routes.codeRegister.path(queryParams)
     const url = Meteor.absoluteUrl()
     return url.substring(0, url.length - 1) + invitationRoute
   }
 
-  instance.getEncodedEmail = (invitationDoc, link) => {
+  this.getEncodedEmail = (invitationDoc, link) => {
     const user = Meteor.user()
-    const to = (invitationDoc && invitationDoc.firstName && invitationDoc.lastName)
+    const to = (invitationDoc?.firstName && invitationDoc.lastName)
       ? ` ${invitationDoc.firstName} ${invitationDoc.lastName}` // first char needs to be a space! See translation file
       : ''
     const from = `${user.firstName} ${user.lastName}`
@@ -100,23 +99,23 @@ Template.inviteStudents.onCreated(function () {
   }
 
   // set students and class
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
-    const classId = data && data.classId
+    const classId = data?.classId
     if (!classId) {
-      instance.state.set('usersLoaded', false)
-      instance.state.set('loadComplete', false)
+      this.state.set('usersLoaded', false)
+      this.state.set('loadComplete', false)
       return
     }
 
     MyStudents.setClass(classId, () => {
-      instance.state.set('usersLoaded', true)
+      this.state.set('usersLoaded', true)
     })
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
-    const classId = data && data.classId
+    const classId = data?.classId
     if (!classId) return
 
     API.subscribe({
@@ -132,9 +131,9 @@ Template.inviteStudents.onCreated(function () {
 
           // fail silent and lets generate a new one if none exist
           if (!codeDoc) {
-            instance.state.set('registeredUsers', [])
-            instance.state.set('codeDoc', null)
-            instance.state.set('loadComplete', true)
+            this.state.set('registeredUsers', [])
+            this.state.set('codeDoc', null)
+            this.state.set('loadComplete', true)
             return
           }
 
@@ -149,10 +148,10 @@ Template.inviteStudents.onCreated(function () {
             }
           })
 
-          const link = !invitationExpiredOrComplete && instance.getLink(codeDoc)
-          const encodedEmail = link && instance.getEncodedEmail(codeDoc, link)
+          const link = !invitationExpiredOrComplete && this.getLink(codeDoc)
+          const encodedEmail = link && this.getEncodedEmail(codeDoc, link)
 
-          instance.state.set({
+          this.state.set({
             codeDoc,
             invitationExpiredOrComplete,
             registeredUsers,
@@ -165,21 +164,20 @@ Template.inviteStudents.onCreated(function () {
     })
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
-    const codeDoc = instance.state.get('codeDoc')
+    const codeDoc = this.state.get('codeDoc')
     if (data.countDownActive && codeDoc) {
-      instance.startCountdown(codeDoc)
+      this.startCountdown(codeDoc)
     }
     else {
-      instance.endCountdown()
+      this.endCountdown()
     }
   })
 })
 
 Template.inviteStudents.onDestroyed(function () {
-  const instance = this
-  instance.endCountdown()
+  this.endCountdown()
   API.dispose('inviteStudents')
 })
 
@@ -196,7 +194,7 @@ Template.inviteStudents.helpers({
   expiredOrComplete () {
     return Template.getState('invitationExpiredOrComplete')
   },
-  getLink (docId) {
+  getLink (_docId) {
     return Template.getState('link')
   },
   getLinkOption (link) {
@@ -204,7 +202,7 @@ Template.inviteStudents.helpers({
     const from = `${user.firstName} ${user.lastName}`
     return { link, from }
   },
-  encodeMail (link) {
+  encodeMail (_link) {
     return Template.getState('encodedEmail')
   },
   inviteSchema () {
@@ -301,7 +299,7 @@ Template.inviteStudents.events({
       templateInstance.state.set('showForm', true)
     }))
   },
-  'click .code-to-beamer-button': async function (event, templateInstance) {
+  'click .code-to-beamer-button': async (event, templateInstance) => {
     event.preventDefault()
     templateInstance.state.set('updateBeamer', true)
     const code = dataTarget(event, templateInstance, 'code')

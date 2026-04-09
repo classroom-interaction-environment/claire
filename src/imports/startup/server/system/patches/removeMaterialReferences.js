@@ -1,16 +1,15 @@
 import { Meteor } from 'meteor/meteor'
 import { createLog } from '../../../../api/log/createLog'
-import { getCollection } from '../../../../api/utils/getCollection'
 
 /* Removes all references in units / tasks that have no corresponding file. */
 
 if (Meteor.settings.patch?.removeDeadReferences) {
   Meteor.startup(async () => {
-    import { Unit } from '../../../../contexts/curriculum/curriculum/unit/Unit'
-    import { Pocket } from '../../../../contexts/curriculum/curriculum/pocket/Pocket'
-    import { getCollection } from '../../../../api/utils/getCollection'
-    import { unitMaterialIds } from '../../../../contexts/curriculum/curriculum/unit/unitMaterialIds'
-    import { Material } from '../../../../contexts/material/Material'
+    const { Unit } = require('../../../../contexts/curriculum/curriculum/unit/Unit')
+    const { Pocket } = require('../../../../contexts/curriculum/curriculum/pocket/Pocket')
+    const { getCollection } = require('../../../../api/utils/getCollection')
+    const { unitMaterialIds } = require('../../../../contexts/curriculum/curriculum/unit/unitMaterialIds')
+    const { Material } = require('../../../../contexts/material/Material')
 
     const log = createLog({ name: 'patch/removeDeadReferences' })
     log('run')

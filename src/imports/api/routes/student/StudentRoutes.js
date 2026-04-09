@@ -38,7 +38,7 @@ StudentRoutes.profile = {
   template: 'userProfile',
   roles: null,
   data: null,
-  onAction (params, queryParams) {
+  onAction (_params, _queryParams) {
     console.debug('routes.profile on action', StudentRoutes.profile)
     BackRoute.flush()
     const path = StudentRoutes.root.path()
@@ -67,7 +67,7 @@ if (Features.get('groups')) {
     template: 'studentGroup',
     roles: null,
     data: null,
-    onAction (params, queryParams) {
+    onAction (_params, _queryParams) {
       const current = Router.current()
       const path = StudentRoutes.lesson.path(current.params.lessonId)
       const title = StudentRoutes.lesson.label
@@ -157,7 +157,7 @@ StudentRoutes.task = {
   label: 'task.title',
   roles: null,
   data: null,
-  onAction (params, queryParams) {
+  onAction (_params, _queryParams) {
     const current = Router.current()
     BackRoute.set(getMaterialBackgroute(current))
     BackRoute.cache({ path: current.path, title: StudentRoutes.task.label })

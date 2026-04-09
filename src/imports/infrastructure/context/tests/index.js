@@ -1,4 +1,4 @@
 /* eslint-env mocha */
-describe('context', function () {
-  import './ContextRegistry.tests'
+describe('context', () => {
+  require('./ContextRegistry.tests')
 })

@@ -73,7 +73,7 @@ describe(UserFactory.name, () => {
       try {
         await UserFactory.create({})
       }
-      catch (validationError) {
+      catch (_validationError) {
         await expectThrow({
           fn: () => UserFactory.create({}),
           details: [{
@@ -118,7 +118,7 @@ describe(UserFactory.name, () => {
     })
     it('throws on an incorrect firstName', async () => {
       await loop(25, async () => {
-        const firstName = Random.id(49) + '1'
+        const firstName = `${Random.id(49)}1`
         await expectThrow({
           fn: () => UserFactory.create(userDoc({ firstName })),
           message: 'form.validation.regEx'
@@ -127,7 +127,7 @@ describe(UserFactory.name, () => {
     })
     it('throws on an incorrect lastName', async () => {
       await loop(25, async () => {
-        const lastName = Random.id(49) + '1'
+        const lastName = `${Random.id(49)}1`
         await expectThrow({
           fn: () => UserFactory.create(userDoc({ lastName })),
           message: 'form.validation.regEx'
@@ -201,7 +201,7 @@ describe(UserFactory.name, () => {
       const withoutPasswordUser = await UsersCollection.findOneAsync(withoutPasswordUserId)
       expect(withoutPasswordUser.services.password).to.equal(undefined)
 
-      const withPasswordUserId = await UserFactory.create(userDoc({ password: Random.id() + '1' }))
+      const withPasswordUserId = await UserFactory.create(userDoc({ password: `${Random.id()}1` }))
       const withPasswordUser = await UsersCollection.findOneAsync(withPasswordUserId)
       expect(withPasswordUser.services.password).to.be.an('object')
     })

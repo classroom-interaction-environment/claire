@@ -5,7 +5,6 @@ import {
   fromResponse,
   toResponse
 } from '../../../../../contexts/tasks/results/TaskResultUtils'
-import { delayedCallback } from '../../../../utils/delayedCallback'
 import { callMethod } from '../../../../controllers/document/callMethod'
 
 /**
@@ -87,7 +86,7 @@ ItemHandlers.onItemSubmit = ({ instance, onError }) =>
     const lessonDoc = instance.state.get('lessonDoc')
     const groupDoc = instance.state.get('groupDoc')
     const lessonId = lessonDoc._id
-    const groupId = groupDoc && groupDoc._id
+    const groupId = groupDoc?._id
     let value = insertDoc[itemId]
 
     // if users "delete" their input, for example by
@@ -156,7 +155,7 @@ ItemHandlers.onTaskPageNext = ({ instance, onError }) => function onTaskPageNext
   })
 }
 
-ItemHandlers.onTaskFinished = ({ instance, onError }) => function onTaskFinished ({ page, maxPages, taskId }) {
+ItemHandlers.onTaskFinished = ({ instance, onError }) => function onTaskFinished ({ page, taskId }) {
   window.scrollTo(0, 0)
   saveTask({
     lessonDoc: instance.state.get('lessonDoc'),

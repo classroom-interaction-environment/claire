@@ -12,7 +12,6 @@ const mp4Extension = 'mp4'
  * @return {Promise<file>}
  */
 export const videoConvert = async function convertVideo (uploadedFile) {
-  const filesCollection = this
   log('run on', uploadedFile.name, uploadedFile._id)
   const { _id, size, path, /* extension, */ name, _storagePath } = uploadedFile
   const modifier = { $set: {} }
@@ -78,7 +77,7 @@ export const videoConvert = async function convertVideo (uploadedFile) {
 
   modifier.$set['versions.original'] = uploadedFile.versions.original
   log('update collection')
-  await filesCollection.collection.updateAsync(uploadedFile._id, modifier)
+  await this.collection.updateAsync(uploadedFile._id, modifier)
   try {
     await fs.rm(path)
   } catch (e) {
@@ -87,7 +86,7 @@ export const videoConvert = async function convertVideo (uploadedFile) {
   }
 
   // we need to return the updated file
-  const updatedFile = await filesCollection.collection.findOneAsync(uploadedFile._id)
+  const updatedFile = await this.collection.findOneAsync(uploadedFile._id)
   log('done', updatedFile)
   return updatedFile
 }

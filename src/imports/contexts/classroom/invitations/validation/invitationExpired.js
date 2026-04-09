@@ -20,7 +20,7 @@ export const invitationExpired = codeDoc => {
     return true
   }
 
-  const now = new Date().getTime()
+  const now = Date.now()
   const expirationDate = getInvitationOffset(new Date(createdAt), expires)
   return (now - expirationDate) >= 0
 }

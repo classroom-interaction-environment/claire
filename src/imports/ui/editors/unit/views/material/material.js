@@ -28,12 +28,11 @@ const API = Template.uematerial.setDependencies({
 })
 
 Template.uematerial.onCreated(function onUeMaterialCreated () {
-  const instance = this
-  instance.subViews = new Map()
+  this.subViews = new Map()
 
-  instance.state.set('view', MaterialSubviews.defaultViewName())
+  this.state.set('view', MaterialSubviews.defaultViewName())
 
-  instance.autorun(c => {
+  this.autorun(c => {
     if (!API.initComplete()) {
       return
     }
@@ -42,20 +41,20 @@ Template.uematerial.onCreated(function onUeMaterialCreated () {
       const transB = API.translate(b.label)
       return transA.localeCompare(transB)
     })
-    instance.state.set({ subViewNames })
+    this.state.set({ subViewNames })
     c.stop()
   })
 
-  instance.getViewState = () => {
-    const viewName = instance.state.get('view')
-    return instance.subViews.get(viewName)
+  this.getViewState = () => {
+    const viewName = this.state.get('view')
+    return this.subViews.get(viewName)
   }
 
-  instance.edit = createMaterialEdit({
+  this.edit = createMaterialEdit({
     API,
-    templateInstance: instance,
+    templateInstance: this,
     onComplete: ({ insertDoc }) => {
-      instance.state.set({
+      this.state.set({
         edit: true,
         editMaterialDoc: insertDoc
       })
@@ -69,14 +68,14 @@ Template.uematerial.onCreated(function onUeMaterialCreated () {
 
   // if the unit doc changes we need to subscribe to the phases, because
   // we need on every material the option to add / remove it to/from phases
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     const { unitDoc, originalUnitDoc } = data
     const phaseQuery = { _id: $in(unitDoc.phases || []) }
     const cb = {
       onReady: () => {
         const phases = (unitDoc.phases || []).map(phaseId => getCollection(Phase.name).findOne(phaseId))
-        instance.state.set({
+        this.state.set({
           phases: phases,
           phaseSubComplete: true
         })
@@ -93,19 +92,19 @@ Template.uematerial.onCreated(function onUeMaterialCreated () {
 
     // note, that data.originalUnitDoc may not be present
     // when editing unit master docs (curriculum docs)
-    instance.state.set({ unitDoc, originalUnitDoc })
+    this.state.set({ unitDoc, originalUnitDoc })
   })
 
   // ===========================================================================
   // 3. determine subview by query
   // ===========================================================================
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const queryParam = getQueryParam('sub')
-    const currentQueryParam = instance.state.get('view')
+    const currentQueryParam = this.state.get('view')
 
     if (!queryParam) {
-      instance.state.set('view', MaterialSubviews.defaultViewName())
+      this.state.set('view', MaterialSubviews.defaultViewName())
     }
 
     else if (!MaterialSubviews.exists(queryParam)) {
@@ -113,7 +112,7 @@ Template.uematerial.onCreated(function onUeMaterialCreated () {
     }
 
     else if (queryParam !== currentQueryParam) {
-      instance.state.set('view', queryParam)
+      this.state.set('view', queryParam)
     }
   })
 
@@ -124,30 +123,30 @@ Template.uematerial.onCreated(function onUeMaterialCreated () {
   // Reactively retrieve the current view state and load the respective
   // templates, as well as subscribe to the data / documents (if necessary)
   // This function gets triggered when the previous autorun updates the parameter
-  instance.autorun(() => {
-    const currentView = instance.state.get('view')
+  this.autorun(() => {
+    const currentView = this.state.get('view')
 
-    if (!instance.subViews.has(currentView)) {
+    if (!this.subViews.has(currentView)) {
       const subView = MaterialSubviews.create({ name: currentView })
-      instance.subViews.set(currentView, subView)
+      this.subViews.set(currentView, subView)
     }
 
-    const subView = instance.subViews.get(currentView)
+    const subView = this.subViews.get(currentView)
     const { load, loaded } = subView
 
     if (!loaded) {
-      instance.state.set('loadComplete', false)
+      this.state.set('loadComplete', false)
       load()
         .catch(e => API.fatal(e))
         .then(() => {
           subView.loaded = true
-          instance.subViews.set(currentView, subView)
-          instance.state.set('loadComplete', true)
+          this.subViews.set(currentView, subView)
+          this.state.set('loadComplete', true)
         })
     }
 
     else {
-      instance.state.set('loadComplete', true)
+      this.state.set('loadComplete', true)
     }
   })
 
@@ -160,8 +159,8 @@ Template.uematerial.onCreated(function onUeMaterialCreated () {
    * @param ids
    * @param onComplete
    */
-  instance.loadMaterial = ({ ids, onComplete }) => {
-    const currentView = instance.state.get('view')
+  this.loadMaterial = ({ ids, onComplete }) => {
+    const currentView = this.state.get('view')
     const ctx = MaterialSubviews.getContext(currentView)
     API.log('load into collection', ctx.name)
 
@@ -179,9 +178,9 @@ Template.uematerial.onCreated(function onUeMaterialCreated () {
   // the lesson material is separately loaded, once the material has all been
   // initialized and is ready
 
-  instance.autorun(() => {
-    const unitDoc = instance.state.get('unitDoc')
-    const currentView = instance.state.get('view')
+  this.autorun(() => {
+    const unitDoc = this.state.get('unitDoc')
+    const currentView = this.state.get('view')
     const { originalUnitDoc } = Template.currentData()
     const originalRequired = !!(unitDoc?._original)
     const originalProvided = originalRequired ? !!originalUnitDoc : true
@@ -193,26 +192,25 @@ Template.uematerial.onCreated(function onUeMaterialCreated () {
     const ctx = MaterialSubviews.getContext(currentView)
     const { fieldName } = ctx
     const materialIds = unitDoc[fieldName] || []
-    const originalIds = (originalUnitDoc || {})[fieldName] || []
+    const originalIds = originalUnitDoc?.[fieldName] || []
     const allIds = new Set([...materialIds, ...originalIds])
 
     if (allIds.size === 0) {
-      return instance.state.set('dataComplete', true)
+      return this.state.set('dataComplete', true)
     }
 
-    instance.loadMaterial({
+    this.loadMaterial({
       ids: [...allIds.values()],
-      onComplete: () => instance.state.set('dataComplete', true)
+      onComplete: () => this.state.set('dataComplete', true)
     })
   })
 })
 
 Template.uematerial.onDestroyed(function () {
-  const instance = this
   // MAYBE we could read the user profile for an entry "save positions" or
   // MAYBE similar, which indicates that the user wants to preserve the tab
   setQueryParams({ sub: null })
-  instance.subViews.clear()
+  this.subViews.clear()
 })
 
 Template.uematerial.helpers({
@@ -239,7 +237,7 @@ Template.uematerial.events({
     const targetView = dataTarget(event, templateInstance)
     setQueryParams({ sub: targetView })
   },
-  'hidden.bs.modal #uematerial-edit-modal' (event, templateInstance) {
+  'hidden.bs.modal #uematerial-edit-modal' (_event, templateInstance) {
     templateInstance.state.set('editMaterialDoc', null)
     templateInstance.state.set('edit', false)
   },

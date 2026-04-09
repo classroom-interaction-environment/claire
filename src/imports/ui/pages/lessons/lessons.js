@@ -23,17 +23,13 @@ const Views = {
     name: 'ongoing',
     label: 'lessons.ongoing',
     template: 'ongoingLessons',
-    load: async function () {
-      return import('./views/ongoing/ongoing')
-    }
+    load: async () => import('./views/ongoing/ongoing')
   },
   completed: {
     name: 'completed',
     label: 'lessons.completed',
     template: 'completeLessons',
-    load: async function () {
-      return import('./views/complete/complete')
-    }
+    load: async () => import('./views/complete/complete')
   }
 }
 
@@ -44,7 +40,6 @@ const PocketCollection = getLocalCollection(Unit.name)
 const LessonCollection = getLocalCollection(Lesson.name)
 
 Template.lessons.onCreated(async function () {
-  const instance = this
   const skipLessons = LessonCollection.find().map(doc => doc._id)
 
   await loadIntoCollection({
@@ -52,26 +47,29 @@ Template.lessons.onCreated(async function () {
     args: { skip: skipLessons },
     failure: API.fatal,
     collection: LessonCollection,
-    success: () => instance.state.set('lessonSubComplete', true)
+    success: () => this.state.set('lessonSubComplete', true)
   })
 
   const classIds = new Set()
-  LessonCollection.find().forEach(lessonDoc => classIds.add(lessonDoc.classId))
+  const lessonDocs = LessonCollection.find().fetch()
+  for (const lessonDoc of lessonDocs) {
+    classIds.add(lessonDoc.classId)
+  }
 
   await loadIntoCollection({
     name: SchoolClass.methods.my,
     args: { ids: [...classIds.values()] },
     failure: API.fatal,
     collection: SchoolClassCollection,
-    success: () => instance.state.set('schoolClassSubComplete', true)
+    success: () => this.state.set('schoolClassSubComplete', true)
   })
 
-  instance.autorun(computation => {
-    if (!instance.state.get('lessonSubComplete')) return
+  this.autorun(computation => {
+    if (!this.state.get('lessonSubComplete')) return
 
     const unitIds = getLocalCollection(Lesson.name).find().map(lessonDoc => lessonDoc.unit)
     if (!unitIds || unitIds.length === 0) {
-      instance.state.set('unitsLoaded', true)
+      this.state.set('unitsLoaded', true)
       return
     }
 
@@ -80,29 +78,30 @@ Template.lessons.onCreated(async function () {
       args: { ids: unitIds },
       collection: UnitCollection,
       failure: API.fatal,
-      success: unitDocs => {
+      success: _unitDocs => {
         computation.stop()
-        instance.state.set('unitsLoaded', true)
+        this.state.set('unitsLoaded', true)
       }
     })
   })
 
-  instance.autorun(computation => {
-    if (!instance.state.get('unitsLoaded')) return
+  this.autorun(computation => {
+    if (!this.state.get('unitsLoaded')) return
 
     const pocketIds = new Set()
-    UnitCollection.find().forEach(unitDoc => {
+      const allUnits = UnitCollection.find().fetch()
+    for (const unitDoc of allUnits) {
       if (unitDoc.pocket !== '__custom__') {
         pocketIds.add(unitDoc.pocket)
       }
-    })
+    }
 
     loadIntoCollection({
       name: Pocket.methods.all,
       args: { ids: [...pocketIds.values()] },
       collection: PocketCollection,
       failure: API.fatal,
-      success: () => instance.state.set('pocketSubComplete', true)
+      success: () => this.state.set('pocketSubComplete', true)
     })
 
     computation.stop()
@@ -124,7 +123,7 @@ Template.lessons.helpers({
       nav: {
         justified: true
       },
-      onViewSelected: function (currentViewName) {
+      onViewSelected: (currentViewName) => {
         instance.state.set({ currentViewName })
       }
     }

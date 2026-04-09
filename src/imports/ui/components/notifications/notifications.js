@@ -17,18 +17,17 @@ Template.notifications.helpers({
 })
 
 Template.notifications.onRendered(function () {
-  const instance = this
 
   // parent node for dynamic rendering
   let parent
 
-  instance.autorun(() => {
+  this.autorun(() => {
     if (!API.initComplete() || Notify.isEmpty()) {
       return
     }
 
     if (!parent) {
-      parent = instance.$('#notification-target').get(0)
+      parent = this.$('#notification-target').get(0)
     }
 
     const data = Notify.get()
@@ -47,8 +46,7 @@ Template.notification.helpers({
 })
 
 Template.notification.onRendered(function () {
-  const instance = this
-  instance.$('.toast').toast('show')
+  this.$('.toast').toast('show')
 })
 
 Template.notification.events({

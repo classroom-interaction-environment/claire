@@ -18,9 +18,8 @@ const API = Template.itemResultGroupText.setDependencies({
 })
 
 Template.itemResultGroupText.onCreated(function () {
-  const instance = this
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
 
     const groups = {}
@@ -40,7 +39,7 @@ Template.itemResultGroupText.onCreated(function () {
       .entries(groups)
       .map(([groupId, docs]) => ({ groupId, docs }))
 
-    instance.state.set({
+    this.state.set({
       groupResults,
       hasGroups,
       loadComplete: true

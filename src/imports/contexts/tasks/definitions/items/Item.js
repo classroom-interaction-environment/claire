@@ -29,9 +29,7 @@ Item.categories.set('notCategorized', {
 
 Item.renderer = {
   template: 'itemRenderer',
-  load: async function () {
-    return import('../../../../ui/renderer/item/itemRenderer')
-  }
+  load: async () => import('../../../../ui/renderer/item/itemRenderer')
 }
 
 const debug = createLog({ name: Item.name, type: 'debug' })
@@ -48,16 +46,14 @@ const initialized = new ReactiveVar(false)
  * Allows to determine, whether this module has been initialized.
  * @return {boolean}
  */
-Item.isInitialized = function () {
-  return initialized.get()
-}
+Item.isInitialized = () => initialized.get()
 
 /**
  * Loads all default items into itself. Not suitable for registering external items
  * @return {Promise<void>}
  */
 
-Item.initialize = async function () {
+Item.initialize = async () => {
   if (initialized.get()) {
     return true
   }
@@ -81,7 +77,9 @@ Item.initialize = async function () {
 
   // load and register plugins
   const plugins = await ItemPlugins.load()
-  plugins.forEach(({ name, plugin }) => processPlugin(name, plugin))
+  for (const { name, plugin } of plugins) {
+    processPlugin(name, plugin)
+  }
 
   // setup reactive language updates
   Tracker.autorun(() => {
@@ -89,13 +87,13 @@ Item.initialize = async function () {
     ItemPlugins.onLanguageChange(currentLocale)
       .catch(e => console.error(e))
       .then(languageUpdates => {
-        languageUpdates.forEach(dict => {
+        for (const dict of languageUpdates) {
           if (dict) {
             i18n.addl10n({
               [currentLocale]: dict
             })
           }
-        })
+        }
       })
   })
 
@@ -183,7 +181,9 @@ Item.register = function (context, schemaDefinitions) {
   })
 
   const publicFields = {}
-  Object.keys(schemaDefinitions.schema).forEach(key => (publicFields[key] = 1))
+  for (const key of Object.keys(schemaDefinitions.schema)) {
+    publicFields[key] = 1
+  }
 
   // item add to the internal contexts map
   const name = context.name
@@ -221,15 +221,15 @@ ITaskDefinition(Item, contextMap)
 //
 /// /////////////////////////////////////////////////////////////////////////////////////////////
 
-Item.getDataTypeBy = function (name) {
+Item.getDataTypeBy = (name) => {
   if (!Item.isInitialized()) {
     console.warn('Item is not initialized')
   }
   const ctx = contextMap.get(name)
-  return ctx && ctx.dataType
+  return ctx?.dataType
 }
 
-Item.extract = function (itemId, document) {
+Item.extract = (itemId, document) => {
   if (!itemId || !document) return
 
   let item

@@ -15,9 +15,7 @@ export const ProfileImages = {
   // this is not material so renderer is on top level
   renderer: onClient({
     template: 'imageFileRenderer',
-    load: async function () {
-      return import('./renderer/main/imageFileRenderer')
-    }
+    load: async () => import('./renderer/main/imageFileRenderer')
   }),
 
   files: {
@@ -26,9 +24,7 @@ export const ProfileImages = {
     accept: FileTypes.image.accept,
     maxSize: 1024 * 1000 * 6,
     usePartialResponse: false,
-    converter: onServerExec(function () {
-      return require('./converter/imageConvert').imageConvert
-    })
+    converter: onServerExec(() => require('./converter/imageConvert').imageConvert)
   }
 }
 
@@ -44,9 +40,7 @@ ProfileImages.methods.byClass = {
     },
     'skip.$': String
   },
-  run: onServerExecLazy(function () {
-    return require('./profileImagesByClass').profileImagesByClass
-  })
+  run: onServerExecLazy(() => require('./profileImagesByClass').profileImagesByClass)
 }
 
 ProfileImages.publications = {}
@@ -54,9 +48,9 @@ ProfileImages.publications = {}
 ProfileImages.publications.fileList = {
   name: 'profileImages.publications.fileList',
   schema: {},
-  run: onServerExec(function () {
-    import { getCollection } from '../../../api/utils/getCollection'
-    import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
+  run: onServerExec(() => {
+    const { getCollection } = require('../../../api/utils/getCollection')
+    const { userIsAdmin } = require('../../../api/accounts/admin/userIsAdmin')
 
     return async function () {
       const { userId } = this

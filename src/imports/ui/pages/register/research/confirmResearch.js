@@ -6,9 +6,8 @@ import '../../../generic/fail/fail'
 import './confirmResearch.html'
 
 Template.confirmResearch.onCreated(function () {
-  const instance = this
   try {
-    const confirmDataBase64 = instance.data.params.data
+    const confirmDataBase64 = this.data.params.data
     const decodedConformData = atob(confirmDataBase64)
     const decodedURIParams = decodeURIComponent(decodedConformData)
     const params = new URLSearchParams(decodedURIParams)
@@ -16,13 +15,13 @@ Template.confirmResearch.onCreated(function () {
     callMethod({
       name: Users.methods.confirmResearch,
       args: { email, token },
-      receive: () => instance.state.set('loadComplete', true),
-      failure: error => instance.state.set({ error }),
-      success: () => instance.state.set('successful', true)
+      receive: () => this.state.set('loadComplete', true),
+      failure: error => this.state.set({ error }),
+      success: () => this.state.set('successful', true)
     })
   }
   catch (e) {
-    return instance.state.set({
+    return this.state.set({
       error: e,
       loadComplete: true
     })

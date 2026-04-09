@@ -24,12 +24,11 @@ const API = Template.afUnitSelect.setDependencies({
 })
 
 Template.afUnitSelect.onCreated(function () {
-  const instance = this
-  instance.state.set({ disabledDimensions: {} })
+  this.state.set({ disabledDimensions: {} })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const { classId } = Template.currentData().atts
-    const disabledDimensions = instance.state.get('disabledDimensions')
+    const disabledDimensions = this.state.get('disabledDimensions')
     const hideWithLessons = disabledDimensions.withLessons
     const disabledDimensionsList = Object
       .entries(disabledDimensions)
@@ -41,9 +40,10 @@ Template.afUnitSelect.onCreated(function () {
     API.debug(getLocalCollection(Pocket.name).find().fetch())
     API.debug(getLocalCollection(Unit.name).find().fetch())
 
-    getLocalCollection(Pocket.name)
+    const pocketDocs = getLocalCollection(Pocket.name)
       .find({ _master: true, _custom: null }, { sort: { title: 1 } })
-      .forEach(pocketDoc => {
+
+    for (const pocketDoc of pocketDocs) {
         const selector = {
           _master: true,
           pocket: pocketDoc._id,
@@ -84,9 +84,9 @@ Template.afUnitSelect.onCreated(function () {
             count
           })
         }
-      })
+      }
 
-    instance.state.set({ availablePockets })
+    this.state.set({ availablePockets })
   })
 })
 
@@ -101,7 +101,7 @@ Template.afUnitSelect.helpers({
     return unitId && Template.getState('selectedUnit') === unitId
   },
   inputAtts () {
-    const { units, ...atts } = Template.currentData().atts
+    const { units: _, ...atts } = Template.currentData().atts
     return atts
   },
   dimensions (ids) {

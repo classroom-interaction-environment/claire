@@ -9,9 +9,8 @@ const API = Template.videoFileRenderer.setDependencies({
 })
 
 Template.videoFileRenderer.onCreated(function () {
-  const instance = this
-  instance.state.setDefault('version', 'original')
-  instance.deleteFile = createDeleteFile({
+  this.state.setDefault('version', 'original')
+  this.deleteFile = createDeleteFile({
     context: VideoFiles,
     onSuccess: () => API.notify(true),
     onError: API.notify

@@ -18,28 +18,27 @@ Template.taskPages.setDependencies({
 
 
 Template.taskPages.onCreated(function () {
-  const instance = this
-  instance.state.set('currentIndex', 0)
+  this.state.set('currentIndex', 0)
 
   // bind fct
-  Shared.updatePage = function (index, page) {
-    instance.state.set('currentIndex', index)
-    instance.state.set('currentPage', page)
+  Shared.updatePage = (index, page) => {
+    this.state.set('currentIndex', index)
+    this.state.set('currentPage', page)
   }
 
-  instance.autorun(function () {
+  this.autorun(() => {
     const data = Template.currentData()
     const { taskDoc } = data
 
-    if (!instance.state.get('currentPage')) {
-      instance.state.set('currentPage', (taskDoc.pages && taskDoc.pages[0]) || {
+    if (!this.state.get('currentPage')) {
+      this.state.set('currentPage', (taskDoc.pages?.[0]) || {
         title: '',
         content: []
       })
     }
 
-    instance.state.set('taskDoc', taskDoc)
-    instance.state.set('pages', taskDoc.pages)
+    this.state.set('taskDoc', taskDoc)
+    this.state.set('pages', taskDoc.pages)
   })
 })
 

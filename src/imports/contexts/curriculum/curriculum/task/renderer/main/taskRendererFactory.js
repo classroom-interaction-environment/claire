@@ -15,9 +15,8 @@ const init = TaskDefinitions.initialize()
 const loadedRenderer = new Set()
 
 Template.TaskRendererFactory.onCreated(function () {
-  const instance = this
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     const { type, meta } = data
     const target = getTarget(type, meta)
@@ -30,9 +29,9 @@ Template.TaskRendererFactory.onCreated(function () {
     if (!loadedRenderer.has(template)) {
       API.log('load renderer', template, data)
       load()
-        .catch(error => instance.state.set({ error }))
+        .catch(error => this.state.set({ error }))
         .then(() => {
-          instance.state.set(target, { template })
+          this.state.set(target, { template })
           loadedRenderer.add(template)
         })
     }
@@ -41,9 +40,9 @@ Template.TaskRendererFactory.onCreated(function () {
     // it's currently not defined in this instance' state
     // we add it to the state
     else {
-      const hasTarget = Tracker.nonreactive(() => instance.state.get(target))
+      const hasTarget = Tracker.nonreactive(() => this.state.get(target))
       if (!hasTarget) {
-        instance.state.set(target, { template })
+        this.state.set(target, { template })
       }
     }
   })

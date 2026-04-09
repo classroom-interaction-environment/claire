@@ -109,7 +109,7 @@ Users.helpers = {}
  * TODO refactor tests, too
  */
 
-Users.helpers.verify = onServer(function (user) {
+Users.helpers.verify = onServer((user) => {
   if (!user) throw new Meteor.Error('errors.userNotFound')
 
   const { emails } = user
@@ -138,8 +138,8 @@ Users.methods.resendVerificationMail = {
   isPublic: true,
   numRequests: 1,
   timeInterval: 1000 * 30,
-  run: onServerExec(function () {
-    import { resendVerificationEmail } from './methods/resendVerificationEmail'
+  run: onServerExec(() => {
+    const { resendVerificationEmail } = require('./methods/resendVerificationEmail')
 
     return function ({ userId }) {
       return resendVerificationEmail({ userId: userId || this.userId })
@@ -156,8 +156,8 @@ Users.methods.setResearch = {
   schema: {
     participate: Boolean
   },
-  run: onServerExec(function () {
-    import { setResearch } from './methods/setResearch'
+  run: onServerExec(() => {
+    const { setResearch } = require('./methods/setResearch')
 
     return function ({ participate }) {
       const { userId } = this
@@ -175,12 +175,10 @@ Users.methods.confirmResearch = {
     email: String,
     token: String
   },
-  run: onServerExec(function () {
-    import { confirmResearch } from './methods/confirmResearch'
+  run: onServerExec(() => {
+    const { confirmResearch } = require('./methods/confirmResearch')
 
-    return function ({ email, token }) {
-      return confirmResearch({ email, token })
-    }
+    return ({ email, token }) => confirmResearch({ email, token })
   })
 }
 
@@ -197,12 +195,10 @@ Users.methods.sendResetPasswordEmail = {
   isPublic: true,
   numRequests: 1,
   timeInterval: 1000 * 60,
-  run: onServerExec(function () {
-    import { sendResetPasswordEmail } from './methods/sendResetPasswordEmail'
+  run: onServerExec(() => {
+    const { sendResetPasswordEmail } = require('./methods/sendResetPasswordEmail')
 
-    return function ({ email }) {
-      return sendResetPasswordEmail({ email })
-    }
+    return ({ email }) => sendResetPasswordEmail({ email })
   })
 }
 
@@ -227,7 +223,7 @@ Users.methods.checkResetpasswordToken = {
   numRequests: 1,
   timeInterval: 30000,
   run: onServerExec(() => {
-    import { verifyToken } from './methods/verifyToken'
+    const { verifyToken } = require('./methods/verifyToken')
     return verifyToken
   })
 }
@@ -250,8 +246,8 @@ Users.methods.updateProfile = {
   },
   timeInterval: 1000,
   numRequests: 5,
-  run: onServerExec(function () {
-    import { updateProfile } from './methods/updateProfile'
+  run: onServerExec(() => {
+    const { updateProfile } = require('./methods/updateProfile')
 
     return function ({ firstName, lastName, profileImage, locale }) {
       const { userId } = this
@@ -278,8 +274,8 @@ Users.methods.updateUI = {
   },
   timeInterval: 1000,
   numRequests: 10,
-  run: onServerExec(function () {
-    import { updateUI } from './methods/updateUI'
+  run: onServerExec(() => {
+    const { updateUI } = require('./methods/updateUI')
 
     return function ({ fluid, classId }) {
       const { userId } = this
@@ -304,8 +300,8 @@ Users.methods.guideViewed = {
   },
   timeInterval: 1000,
   numRequests: 10,
-  run: onServerExec(function () {
-    import { updateUI } from './methods/updateUI'
+  run: onServerExec(() => {
+    const { updateUI } = require('./methods/updateUI')
     return function ({ guides }) {
       const { userId } = this
       return updateUI({ userId, guides })
@@ -322,8 +318,8 @@ Users.methods.getUser = {
   schema: {
     _id: String
   },
-  run: onServerExec(function () {
-    import { getUser } from './methods/getUser'
+  run: onServerExec(() => {
+    const { getUser } = require('./methods/getUser')
 
     return function ({ _id }) {
       const { userId } = this
@@ -344,18 +340,16 @@ Users.methods.userIsAvailable = {
   timeInterval: 1000,
   numRequests: 1,
   isPublic: true,
-  run: onServerExec(function () {
-    import { userExists } from '../../../../api/accounts/user/userExists'
+  run: onServerExec(() => {
+    const { userExists } = require('../../../../api/accounts/user/userExists')
 
-    return async function ({ email }) {
-      return !(await userExists({ email }))
-    }
+    return async ({ email }) => !(await userExists({ email }))
   })
 }
 
 Users.methods.registerWithCode = {
   name: 'users.methods.registerWidthCode',
-  schema: auto(function () {
+  schema: auto(() => {
     const { PasswordConfig } = require('../../../../api/accounts/registration/PasswordConfig')
     const passwordConfig = PasswordConfig.from(Meteor.settings.public.password)
     const passwordSchemaDef = {
@@ -376,8 +370,8 @@ Users.methods.registerWithCode = {
     }
   }),
   isPublic: true,
-  run: onServerExec(function () {
-    import { registerWithCode } from './methods/registerWithCode'
+  run: onServerExec(() => {
+    const { registerWithCode } = require('./methods/registerWithCode')
 
     return function run (params) {
       return registerWithCode(params)
@@ -396,7 +390,7 @@ Users.methods.byClass = {
     },
     'skip.$': String
   },
-  run: onServerExec(function () {
+  run: onServerExec(() => {
     const { usersByClass } = require('./publications/usersByClass')
 
     return async function ({ classId, skip }) {
@@ -422,7 +416,7 @@ Users.publications.present = {
     'userIds.$': String
   },
   roles: [UserUtils.roles.teacher],
-  run: onServer(function ({ userIds }) {
+  run: onServer(({ userIds }) => {
     const query = { _id: { $in: userIds } }
     const projection = {
       fields: {
@@ -440,7 +434,7 @@ Users.publications.byClass = {
   schema: {
     classId: String
   },
-  run: onServerExec(function () {
+  run: onServerExec(() => {
     const { usersByClass } = require('./publications/usersByClass')
     return async function ({ classId }) {
       const { userId } = this
@@ -455,8 +449,8 @@ Users.publications.byGroup = {
   schema: {
     groupId: String
   },
-  run: onServerExec(function () {
-    import { usersByGroup } from './publications/usersByGroup'
+  run: onServerExec(() => {
+    const { usersByGroup } = require('./publications/usersByGroup')
 
     return async function ({ groupId } = {}) {
       const { userId } = this

@@ -10,15 +10,14 @@ export const debounce = (func, wait, immediate = false) => {
   let timeout;
   // keep fn bindable
   return function (...args) {
-    let context = this
     clearTimeout(timeout);
     if (immediate && !timeout) {
-      func.apply(context, args);
+      func.apply(this, args);
     }
-    timeout = setTimeout(function () {
+    timeout = setTimeout(() => {
       timeout = null;
       if (!immediate) {
-        func.apply(context, args);
+        func.apply(this, args);
       }
     }, wait);
   };

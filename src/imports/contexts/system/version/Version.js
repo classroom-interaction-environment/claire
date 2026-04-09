@@ -19,10 +19,8 @@ export const Version = {
 
 if (Meteor.isServer) {
   const { VersionStore } = require('./server/store')
-  Version.methods.get.run = function () {
-    return VersionStore
-  }
-  Version.methods.get.validate = function (...args) {
+  Version.methods.get.run = () => VersionStore
+  Version.methods.get.validate = (...args) => {
     if (args.filter(val => !!val).length > 0) {
       throw new Error()
     }

@@ -23,19 +23,18 @@ const API = Template.navSide.setDependencies({
 })
 
 Template.navSide.onCreated(function () {
-  const instance = this
   callMethod({
     name: Settings.methods.logo.name,
     success: link => {
       if (link) {
-        instance.state.set('mainLogo', link)
+        this.state.set('mainLogo', link)
       }
     }
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const lessonId = getParam('lessonId')
-    instance.state.set({ lessonId })
+    this.state.set({ lessonId })
   })
 })
 
@@ -73,7 +72,7 @@ Template.navSide.events({
     const activeCategory = dataTarget(event, templateInstance, 'link')
     templateInstance.state.set('active', activeCategory)
   },
-  'click .nav-logout-button' (event, templateInstance) {
+  'click .nav-logout-button' (event, _templateInstance) {
     event.preventDefault()
     SubsManager.dispose()
     setTimeout(() => Meteor.logout(), 500)

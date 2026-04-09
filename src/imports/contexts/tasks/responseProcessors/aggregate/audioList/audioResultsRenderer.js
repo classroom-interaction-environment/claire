@@ -13,12 +13,11 @@ const API = Template.audioResultsRenderer.setDependencies({
 const AudioCollection = getFilesCollection(AudioFiles.name)
 
 Template.audioResultsRenderer.onCreated(function () {
-  const instance = this
-  const { lessonId } = instance.data
-  const { taskId } = instance.data
-  const { itemId } = instance.data
+  const { lessonId } = this.data
+  const { taskId } = this.data
+  const { itemId } = this.data
 
-  instance.autorun(c => {
+  this.autorun(c => {
     if (API.initComplete()) {
       API.subscribe({
         name: AudioFiles.publications.byItem,
@@ -27,7 +26,7 @@ Template.audioResultsRenderer.onCreated(function () {
         callbacks: {
           onError: error => {
             API.notify(error)
-            instance.state.set('loadComplete', true)
+            this.state.set('loadComplete', true)
           },
           onReady: () => {
             API.debug('sub complete')
@@ -38,7 +37,7 @@ Template.audioResultsRenderer.onCreated(function () {
     }
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const audioFiles = getResponseFiles({
       filesCollection: AudioCollection,
       versions: ['compressed', 'original'],
@@ -47,12 +46,12 @@ Template.audioResultsRenderer.onCreated(function () {
       itemId
     })
 
-    instance.state.set('loadComplete', true)
-    instance.state.set('audioFiles', audioFiles)
+    this.state.set('loadComplete', true)
+    this.state.set('audioFiles', audioFiles)
   })
 })
 
-Template.audioResultsRenderer.onDestroyed(function () {
+Template.audioResultsRenderer.onDestroyed(() => {
   API.dispose('audioResultsKey')
 })
 

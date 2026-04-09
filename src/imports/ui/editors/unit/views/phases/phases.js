@@ -100,7 +100,7 @@ Template.uephases.onCreated(function onPhasesCreated () {
     instance.state.set('unitDoc', unitDoc)
   })
 
-  instance.autorun(computation => {
+  instance.autorun(_computation => {
     const unitDoc = instance.state.get('unitDoc')
     const { originalUnitDoc } = Template.currentData()
     const originalRequired = !!(unitDoc?._original)
@@ -151,7 +151,7 @@ Template.uephases.onRendered(function onTemplateRendered () {
         ghostClass: 'bg-primary',
         animation: 150,
         swapThreshold: 1,
-        onEnd: function (event) {
+        onEnd: (event) => {
           const currentTarget = instance.$(event.item).data('target')
           const indices = []
           instance.$('.uephase-table-row').each(function (/* index, element */) {
@@ -246,7 +246,7 @@ Template.uephases.helpers({
   hasUnit (unitId) {
     return !!unitId
   },
-  editGlobal (phaseId) {
+  editGlobal (_phaseId) {
     return Template.getState('editGlobal')
   },
   dragUpdate (id) {
@@ -297,7 +297,7 @@ Template.uephases.events({
     templateInstance.state.set('editPhase', { phaseId, fieldName })
     templateInstance.$('#uniteditor-phases-edit-modal').modal('show')
   },
-  'click .uephases-remove-phase-button': async function (event, templateInstance) {
+  'click .uephases-remove-phase-button': async (event, templateInstance) => {
     event.preventDefault()
     const $target = templateInstance.$(event.currentTarget)
     const index = parseInt($target.data('index'), 10)
@@ -363,7 +363,7 @@ Template.uephases.events({
     event.preventDefault()
     templateInstance.state.set('editGlobal', true)
   },
-  'hidden.bs.modal #uniteditor-phases-edit-modal' (event, templateInstance) {
+  'hidden.bs.modal #uniteditor-phases-edit-modal' (_event, templateInstance) {
     templateInstance.state.set('selectedPhase', null)
     templateInstance.state.set('editPhase', null)
     templateInstance.state.set('editGlobal', false)
@@ -395,7 +395,7 @@ Template.uephases.events({
       }
     })
   },
-  'submit #uecreatePhaseForm': async function (event, templateInstance) {
+  'submit #uecreatePhaseForm': async (event, templateInstance) => {
     event.preventDefault()
 
     const insertDoc = formIsValid(createPhaseSchema, 'uecreatePhaseForm')

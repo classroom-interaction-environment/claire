@@ -74,7 +74,7 @@ function getResponseProcessor ({ responseProcessor, meta, dataType, fileType }) 
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-ResponseProcessorLoader.initialize = function ({ onError = console.error, onComplete = () => {} } = {}) {
+ResponseProcessorLoader.initialize = ({ onError = console.error, onComplete = () => {} } = {}) => {
   if (!init.get()) {
     initialize()
       .then(res => {
@@ -123,7 +123,7 @@ ResponseProcessorLoader.get = function get ({ dataType, responseProcessor, meta,
  * @param itemId
  * @return {Promise<{template: String, data: *}>}
  */
-ResponseProcessorLoader.loadAll = async function ({ item, lessonId, taskId, itemId }) {
+ResponseProcessorLoader.loadAll = async ({ item, lessonId, taskId, itemId }) => {
   const responseProcessor = getResponseProcessor(item)
 
   // At first we load the template to make sure it's in the registry.

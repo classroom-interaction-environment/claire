@@ -17,23 +17,22 @@ const API = Template.admin.setDependencies({
 })
 
 Template.admin.onCreated(function () {
-  const instance = this
 
-  instance.autorun(computation => {
+  this.autorun(computation => {
     const userId = Meteor.userId()
     if (!userId) {
       return
     }
-    instance.viewStates = Object.values(AdminViewStates).filter(view => UserUtils.hasAtLeastRole(userId, view.role))
-    instance.state.set('viewStatesReady', true)
+    this.viewStates = Object.values(AdminViewStates).filter(view => UserUtils.hasAtLeastRole(userId, view.role))
+    this.state.set('viewStatesReady', true)
     computation.stop()
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const view = getQueryParam('view')
     const currentView = AdminViewStates[view] || AdminViewStates.users
 
-    instance.state.set('currentView', currentView.name)
+    this.state.set('currentView', currentView.name)
   })
 })
 

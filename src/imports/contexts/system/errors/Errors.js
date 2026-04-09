@@ -36,7 +36,7 @@ export const Errors = {
       },
       resolve (value) {
         const user = Meteor.users.findOne(value)
-        return (user && user.username) || value
+        return (user?.username) || value
       }
     },
     'history.$.createdAt': {
@@ -100,7 +100,7 @@ Errors.publications = {
         max: 250
       }
     },
-    run: onServer(function ({ limit }) {
+    run: onServer(({ limit }) => {
       let projectionLimit
       if (limit && limit <= 100) {
         projectionLimit = limit
@@ -128,7 +128,7 @@ Errors.methods = {
   logClient: {
     name: 'error.methods.logClient',
     schema: Errors.schema,
-    run: onServer(async function (errDoc) {
+    run: onServer(async (errDoc) => {
       const ErrorsCollection = getCollection(Errors.name)
       errDoc.isClient = true
       errDoc.isServer = false

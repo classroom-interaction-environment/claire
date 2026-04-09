@@ -40,9 +40,9 @@ export const initLanguage = async (locale, defaultOptions = {}) => {
   const { load } = availableLanguages[finalLocale]
   const allSettings = {}
 
-  Object.entries(availableLanguages).forEach(([locale, { settings }]) => {
+  for (const [locale, { settings }] of Object.entries(availableLanguages)) {
     allSettings[locale] = settings
-  })
+  }
 
   const localeData = await load()
   const config = {

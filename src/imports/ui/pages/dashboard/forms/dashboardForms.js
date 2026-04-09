@@ -251,11 +251,9 @@ export const createDashboardFormActions = ({ onError, translate }) => {
       type: 'primary',
       label: 'actions.editInUnitEditor',
       onSubmit: async (onSubmitDoc) => {
-        const { templateInstance } = onSubmitDoc
-        const result = await createUnit(onSubmitDoc)
-        return result
+        return createUnit(onSubmitDoc)
       },
-      onClosed: ({ successful, result, templateInstance }) => {
+      onClosed: ({ result, templateInstance }) => {
         const { unitId } = result
         templateInstance.data.unitEditor({ unitId })
       }

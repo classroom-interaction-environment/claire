@@ -60,15 +60,11 @@ EmbeddedResource.material = {
   renderer: {
     list: {
       template: 'embeddedResourceListRenderer',
-      load: async function () {
-        return import('./renderer/list/embeddedResourceListRenderer')
-      }
+      load: async () => import('./renderer/list/embeddedResourceListRenderer')
     },
     main: {
       template: 'embeddedResourceRenderer',
-      load: async function () {
-        return import('./renderer/main/embeddedResourceRenderer')
-      },
+      load: async () => import('./renderer/main/embeddedResourceRenderer'),
       data: ({ materialDoc, document, options = {} }) => {
         const { print = false, preview = true, student = false /*, editable = true */ } = options
         const { name } = materialDoc

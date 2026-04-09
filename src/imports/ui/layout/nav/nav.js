@@ -26,7 +26,7 @@ Template.nav.helpers({
     return params.some(name => Router.isActive(name))
   },
   userEmail (currentUser) {
-    return currentUser && currentUser.emails && currentUser.emails[0] && currentUser.emails[0].address
+    return currentUser?.emails?.[0]?.address
   },
   unitContext () {
     return Unit
@@ -50,7 +50,7 @@ Template.nav.events({
     const activeCategory = dataTarget(event, templateInstance, 'link')
     templateInstance.state.set('active', activeCategory)
   },
-  'click .nav-logout-button' (event, templateInstance) {
+  'click .nav-logout-button' (event, _templateInstance) {
     event.preventDefault()
     SubsManager.dispose()
     setTimeout(() => Meteor.logout(), 500)

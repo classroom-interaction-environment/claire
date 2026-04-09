@@ -32,7 +32,7 @@ function createHandle (publicationName, opts, { onError, onReady }) {
       if (e) {
         console.error(`[SubsManager]: error on subscription ${publicationName}`)
         console.error(e)
-        onError && onError(e)
+        onError?.(e)
       }
     },
     onReady: onReady

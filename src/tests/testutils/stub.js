@@ -23,10 +23,10 @@ export const restore = (target, name) => {
 }
 
 export const restoreAll = () => {
-  _stubs.forEach((name, target) => {
+  for (const [target] of _stubs) {
     target.restore()
     _stubs.delete(target)
-  })
+  }
 }
 
 export const isStubbed = (target, name) => {

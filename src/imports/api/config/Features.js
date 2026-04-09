@@ -10,7 +10,7 @@ Object.assign(features, Meteor.settings.public.features)
 export const Features = {}
 
 Features.get = (name) => {
-  if (!name || !Object.hasOwnProperty.call(features, name)) {
+  if (!name || !Object.hasOwn(features, name)) {
     throw new Error(`Features have no feature by name "${name}"`)
   }
   return features[name]

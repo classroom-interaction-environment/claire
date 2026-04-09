@@ -13,7 +13,7 @@ export const loadTemplate = ({ template, load }) => {
   importedTemplates.set(template, loaded)
 
   load()
-    .then(delayedCallback(300, function () {
+    .then(delayedCallback(300, () => {
       loaded.set(true)
     }))
     .catch(e => {

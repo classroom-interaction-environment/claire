@@ -49,7 +49,7 @@ const checkResponseProcessorContext = ({ name, label, icon, isResponseProcessor,
  * @param context
  * @return {any}
  */
-ResponseProcessorRegistry.register = function (context) {
+ResponseProcessorRegistry.register = (context) => {
   const { name, type, dataTypes, fileType /*, csp, renderer  */ } = context
   debugLog('register', { context })
 
@@ -120,9 +120,7 @@ ResponseProcessorRegistry.fallback = () => RawResponse
  * @param name {String} the name of the registered context
  * @return {Object|undefined} the registered context
  */
-ResponseProcessorRegistry.get = function (name) {
-  return contextsMap.get(name)
-}
+ResponseProcessorRegistry.get = (name) => contextsMap.get(name)
 
 ResponseProcessorRegistry.forEach = fct => contextsMap.forEach(fct)
 

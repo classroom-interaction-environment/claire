@@ -10,10 +10,10 @@ import { isomporph } from '../../utils/archUtils'
  */
 export const isCurriculum = isomporph({
   client: () => {
-    import { getUsersCollection } from '../../utils/getUsersCollection'
-    import { Hierarchy } from './Hierarchy'
-    import { hasRole } from './hasRole'
-    import { isAdmin } from './isAdmin'
+    const { getUsersCollection } = require('../../utils/getUsersCollection')
+    const { Hierarchy } = require('./Hierarchy')
+    const { hasRole } = require('./hasRole')
+    const { isAdmin } = require('./isAdmin')
 
     return (userId = Meteor.userId(), scope) => {
       let finalScope
@@ -36,7 +36,7 @@ export const isCurriculum = isomporph({
     }
   },
   server: () => {
-    import { userIsCurriculum } from '../userIsCurriculum'
+    const { userIsCurriculum } = require('../userIsCurriculum')
 
     return (userId, scope) => {
       if (!userId) return false

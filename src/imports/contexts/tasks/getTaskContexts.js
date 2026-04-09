@@ -1,18 +1,18 @@
 
 export const getTaskContexts = () => {
-  import { Task } from '../curriculum/curriculum/task/Task'
+  const { Task } = require('../curriculum/curriculum/task/Task')
 
   // WEB
-  import { WebResources } from '../resources/web/WebResources'
-  import { LinkedResource } from '../resources/web/linked/LinkedResource'
-  import { EmbeddedResource } from '../resources/web/embedded/EmbeddedResource'
-  import { Literature } from '../resources/web/literature/Literature'
+  const { WebResources } = require('../resources/web/WebResources')
+  const { LinkedResource } = require('../resources/web/linked/LinkedResource')
+  const { EmbeddedResource } = require('../resources/web/embedded/EmbeddedResource')
+  const { Literature } = require('../resources/web/literature/Literature')
 
   // FILES
-  import { ImageFiles } from '../files/image/ImageFiles'
-  import { AudioFiles } from '../files/audio/AudioFiles'
-  import { VideoFiles } from '../files/video/VideoFiles'
-  import { DocumentFiles } from '../files/document/DocumentFiles'
+  const { ImageFiles } = require('../files/image/ImageFiles')
+  const { AudioFiles } = require('../files/audio/AudioFiles')
+  const { VideoFiles } = require('../files/video/VideoFiles')
+  const { DocumentFiles } = require('../files/document/DocumentFiles')
 
   return [
     Task,

@@ -117,11 +117,11 @@ describe(SchoolClass.name, () => {
 
   onServerExec(() => {
     describe('methods', () => {
-      const getClass = SchoolClass.methods.get.run
-      const myClasses = SchoolClass.methods.my.run
+      const _getClass = SchoolClass.methods.get.run
+      const _myClasses = SchoolClass.methods.my.run
       const createClass = SchoolClass.methods.create.run
       const removeClass = SchoolClass.methods.remove.run
-      const updateClass = SchoolClass.methods.update.run
+      const _updateClass = SchoolClass.methods.update.run
       const addStudent = SchoolClass.methods.addStudent.run
       const removeStudent = SchoolClass.methods.removeStudent.run
 

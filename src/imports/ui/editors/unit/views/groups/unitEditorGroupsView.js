@@ -35,14 +35,13 @@ const API = Template.unitEditorGroupsView.setDependencies({
 })
 
 Template.unitEditorGroupsView.onCreated(function () {
-  const instance = this
 
-  instance.autorun(() => {
+  this.autorun(() => {
     if (!API.initComplete()) {
       return
     }
 
-    instance.state.set('loadComplete', false)
+    this.state.set('loadComplete', false)
     const data = Template.currentData()
     const { unitDoc, classDoc } = data
     if (!unitDoc) {
@@ -57,7 +56,7 @@ Template.unitEditorGroupsView.onCreated(function () {
       collection: getLocalCollection(Phase.name),
       success: () => {
         const phases = getLocalCollection(Phase.name).find({ _id: $in(phasesList) }).fetch()
-        instance.state.set({ phases })
+        this.state.set({ phases })
       },
       failure: API.notify
     })
@@ -69,7 +68,7 @@ Template.unitEditorGroupsView.onCreated(function () {
       .then((material) => {
         API.debug('material loaded', material)
         const unassociatedMaterial = findUnassociatedMaterial(unitDoc)
-        instance.state.set({
+        this.state.set({
           materialLoaded: true,
           unassociatedMaterial
         })
@@ -89,7 +88,7 @@ Template.unitEditorGroupsView.onCreated(function () {
       args: { unitId: unitDoc._id },
       callbacks: {
         onError: API.fatal,
-        onReady: () => instance.state.set({ groupSubscriptionComplete: true })
+        onReady: () => this.state.set({ groupSubscriptionComplete: true })
       }
     })
 
@@ -101,7 +100,7 @@ Template.unitEditorGroupsView.onCreated(function () {
         args: { classId: classDoc._id },
         collection: getLocalCollection(ProfileImages.name),
         failure: API.notify,
-        success: () => instance.state.set('profileImagesReady', true)
+        success: () => this.state.set('profileImagesReady', true)
       })
 
       loadIntoCollection({
@@ -109,7 +108,7 @@ Template.unitEditorGroupsView.onCreated(function () {
         args: { classId: classDoc._id },
         collection: getLocalCollection(Users.name),
         failure: API.notify,
-        success: () => instance.state.set('usersReady', true)
+        success: () => this.state.set('usersReady', true)
       })
     }
   })

@@ -10,11 +10,10 @@ import { Material } from './Material'
  * @param dependencies
  */
 export const loadMaterial = async ({ source = {}, destination = {}, dependencies = {} }) => {
-  for (let contextName of Object.keys(source)) {
-    // fixme remove the next line's hotfix and get this running correctly
-    if (contextName === 'imagefiles') {
-      contextName = 'imageFiles'
-    }
+  for (const ctxName of Object.keys(source)) {
+    const contextName = ctxName === 'imagefiles'
+      ? 'imageFiles'
+      : ctxName
 
     const materialDocIds = source[contextName]
 
@@ -34,14 +33,14 @@ export const loadMaterial = async ({ source = {}, destination = {}, dependencies
 
     if (documents.length !== materialDocIds.length) {
       destination.notFound = destination.notFound || []
-      materialDocIds.forEach(materialId => {
+      for (const materialId of materialDocIds) {
         if (!documents.find(doc => doc._id === materialId)) {
           destination.notFound.push({
             context: contextName,
             _id: materialId
           })
         }
-      })
+      }
     }
 
     // a context may have dependencies and implement an own function to resolve
@@ -49,7 +48,9 @@ export const loadMaterial = async ({ source = {}, destination = {}, dependencies
     const materialContext = Material.get(contextName)
 
     if (materialContext?.material?.resolveDependencies) {
-      documents.forEach(doc => materialContext.material.resolveDependencies(doc, dependencies))
+      for (const doc of documents) {
+        materialContext.material.resolveDependencies(doc, dependencies)
+      }
     }
 
     if (!destination[contextName]) {

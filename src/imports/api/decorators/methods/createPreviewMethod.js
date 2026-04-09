@@ -7,10 +7,10 @@ export const createPreviewMethod = (context) => {
       _id: String,
       token: String
     },
-    run: onServerExec(function () {
-      import { getCollection } from '../../utils/getCollection'
+    run: onServerExec(() => {
+      const { getCollection } = require('../../utils/getCollection')
 
-      return async function ({ _id, token }) {
+      return async ({ _id, token }) => {
         const collection = getCollection(context.name)
         // TODO validate token
         return collection.findOneAsync({ _id })

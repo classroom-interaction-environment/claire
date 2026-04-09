@@ -52,7 +52,7 @@ const log = createLog({ name: TaskDefinitions.name, type: 'debug' })
 const init = new ReactiveVar()
 let initializing = false
 
-TaskDefinitions.initialize = function () {
+TaskDefinitions.initialize = () => {
   if (!initializing && !init.get()) {
     initializing = true
     initialize()
@@ -77,7 +77,9 @@ async function initialize () {
   TaskElementPlugins.categories(() => Object.fromEntries(typeMap.entries()))
 
   const plugins = await TaskElementPlugins.load()
-  plugins.forEach(({ name, plugin }) => processPlugin(name, plugin))
+  for (const { name, plugin } of plugins) {
+    processPlugin(name, plugin)
+  }
 
   // TODO merge localeTrackers into one Tracker in plugin registry
   Tracker.autorun(() => {
@@ -85,11 +87,11 @@ async function initialize () {
     TaskElementPlugins.onLanguageChange(currentLocale)
       .catch(e => console.error(e))
       .then(languageUpdates => {
-        languageUpdates.forEach(dict => {
+        for (const dict of languageUpdates) {
           i18n.addl10n({
             [currentLocale]: dict
           })
-        })
+        }
       })
   })
 
@@ -184,9 +186,9 @@ TaskDefinitions.helpers = {
     if (!materialContexts) return
 
     const categories = new Set()
-    Object.values(materialContexts).forEach(ctx => {
+    for (const ctx of Object.values(materialContexts)) {
       if (ctx.category) categories.add(ctx.category)
-    })
+    }
 
     return Array.from(categories)
   },
@@ -215,5 +217,5 @@ TaskDefinitions.helpers.schema = (categoryName, subType, options) => {
 
   // @deprecated
   console.warn('[TaskDefinitions] using deprecated contexts object')
-  return category.contexts[subType] && category.contexts[subType].schema
+  return category.contexts[subType]?.schema
 }

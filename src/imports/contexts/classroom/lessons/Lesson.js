@@ -2,7 +2,6 @@ import { Hierarchy } from '../../../api/accounts/roles/Hierarchy'
 import { i18n } from '../../../api/language/language'
 import { onServer, onServerExec } from '../../../api/utils/archUtils'
 import { getCollection } from '../../../api/utils/getCollection'
-import { loadLessonMaterial } from './methods/loadMaterial'
 
 /**
  * The Lesson is a fundamental part of this application.
@@ -207,8 +206,7 @@ Lesson.publications.myRunning = {
   name: 'lesson.publication.myRunning',
   schema: {},
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    return function () {
+  run: onServerExec(() => function () {
       const { userId } = this
       const query = {
         createdBy: userId,
@@ -216,8 +214,7 @@ Lesson.publications.myRunning = {
         completedAt: { $exists: false }
       }
       return getCollection(Lesson.name).find(query)
-    }
-  })
+    })
 }
 
 /**
@@ -250,8 +247,8 @@ Lesson.publications.single = {
   schema: {
     _id: String
   },
-  run: onServerExec(function () {
-    import { singleLesson } from './publications/singleLesson'
+  run: onServerExec(() => {
+    const { singleLesson } = require('./publications/singleLesson')
 
     return async function ({ _id }) {
       const { userId } = this
@@ -275,8 +272,8 @@ Lesson.publications.byClass = {
   schema: {
     classId: String
   },
-  run: onServerExec(function () {
-    import { lessonsByClassTeacher } from './publications/lessonsByClass'
+  run: onServerExec(() => {
+    const { lessonsByClassTeacher } = require('./publications/lessonsByClass')
     return async function ({ classId }) {
       const { userId } = this
       return lessonsByClassTeacher({ userId, classId })
@@ -296,8 +293,8 @@ Lesson.publications.byClassStudent = {
   schema: {
     classId: String
   },
-  run: onServerExec(function () {
-    import { lessonsByClassStudent } from './publications/lessonsByClass'
+  run: onServerExec(() => {
+    const { lessonsByClassStudent } = require('./publications/lessonsByClass')
 
     return function ({ classId }) {
       const { userId } = this
@@ -384,7 +381,7 @@ Lesson.methods.counts = {
   },
   roles: Hierarchy.teacher,
   run: onServerExec(() => {
-    import { countLessons } from './methods/countLessons'
+    const { countLessons } = require('./methods/countLessons')
     return async function ({ classIds }) {
       const { userId } = this
       return countLessons({ classIds, userId })
@@ -399,8 +396,8 @@ Lesson.methods.create = {
     unitId: String
   },
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { createLesson } from './methods/createLesson'
+  run: onServerExec(() => {
+    const { createLesson } = require('./methods/createLesson')
 
     return async function ({ classId, unitId }) {
       const { userId } = this
@@ -415,8 +412,8 @@ Lesson.methods.remove = {
     _id: String
   },
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { removeLesson } from './methods/removeLesson'
+  run: onServerExec(() => {
+    const { removeLesson } = require('./methods/removeLesson')
 
     return function ({ _id }) {
       const { userId } = this
@@ -432,7 +429,7 @@ Lesson.methods.start = {
   },
   role: Hierarchy.teacher,
   run: onServerExec(() => {
-    import { startLesson } from './methods/lessonActions'
+    const { startLesson } = require('./methods/lessonActions')
     return async function ({ _id }) {
       const { userId } = this
       return startLesson({ userId, lessonId: _id })
@@ -446,8 +443,8 @@ Lesson.methods.complete = {
     _id: String
   },
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { completeLesson } from './methods/lessonActions'
+  run: onServerExec(() => {
+    const { completeLesson } = require('./methods/lessonActions')
     return async function ({ _id }) {
       const { userId } = this
       return completeLesson({ userId, lessonId: _id })
@@ -461,8 +458,8 @@ Lesson.methods.stop = {
     _id: String
   },
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { stopLesson } from './methods/lessonActions'
+  run: onServerExec(() => {
+    const { stopLesson } = require('./methods/lessonActions')
     return async function ({ _id }) {
       const { userId } = this
       return stopLesson({ userId, lessonId: _id })
@@ -476,8 +473,8 @@ Lesson.methods.resume = {
     _id: String
   },
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { resumeLesson } from './methods/lessonActions'
+  run: onServerExec(() => {
+    const { resumeLesson } = require('./methods/lessonActions')
     return async function ({ _id }) {
       const { userId } = this
       return resumeLesson({ userId, lessonId: _id })
@@ -491,8 +488,8 @@ Lesson.methods.restart = {
     _id: String
   },
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { restartLesson } from './methods/restartLesson'
+  run: onServerExec(() => {
+    const { restartLesson } = require('./methods/restartLesson')
     return async function ({ _id }) {
       const { userId } = this
       return restartLesson({ userId, lessonId: _id })
@@ -508,8 +505,8 @@ Lesson.methods.toggle = {
     context: String
   },
   roles: Hierarchy.teacher,
-  run: onServerExec(function () {
-    import { toggleLessonMaterial } from './methods/toggleLessonMaterial'
+  run: onServerExec(() => {
+    const { toggleLessonMaterial } = require('./methods/toggleLessonMaterial')
     return async function ({ _id, referenceId, context }) {
       const { userId } = this
       return toggleLessonMaterial({ lessonId: _id, userId, referenceId, context })
@@ -528,8 +525,8 @@ Lesson.methods.units = {
     lessonIds: Array,
     'lessonIds.$': String
   },
-  run: onServerExec(function () {
-    import { unitsByLesson } from './methods/unitsByLesson'
+  run: onServerExec(() => {
+    const { unitsByLesson } = require('./methods/unitsByLesson')
 
     return function ({ lessonIds }) {
       const { userId } = this
@@ -557,8 +554,8 @@ Lesson.methods.material = {
     },
     'skip.$': String
   },
-  run: onServerExec(function () {
-    import { loadLessonMaterial } from './methods/loadMaterial'
+  run: onServerExec(() => {
+    const { loadLessonMaterial } = require('./methods/loadMaterial')
     return async function ({ _id, groupId, skip = [] }) {
       const { userId } = this
       return loadLessonMaterial({ lessonId: _id, groupId, userId, skip })

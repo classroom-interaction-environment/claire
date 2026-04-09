@@ -10,8 +10,7 @@ const API = Template.audioFileRenderer.setDependencies({
 })
 
 Template.audioFileRenderer.onCreated(function () {
-  const instance = this
-  instance.deleteFile = createDeleteFile({
+  this.deleteFile = createDeleteFile({
     context: AudioFiles,
     onSuccess: () => API.notify(true),
     onError: API.notify

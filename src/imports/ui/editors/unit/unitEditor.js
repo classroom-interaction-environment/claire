@@ -7,7 +7,6 @@ import { unitEditorSubscriptionKey } from './unitEditorSubscriptionKey'
 import { CurriculumSession } from '../../curriculum/CurriculumSession'
 import { LessonStates } from '../../../contexts/classroom/lessons/LessonStates'
 import { Guide } from '../../tools/guide/Guide'
-import { isCurriculum } from '../../../api/accounts/roles/isCurriculum'
 import { callMethod } from '../../controllers/document/callMethod'
 import { getQueryParam } from '../../../api/routes/params/getQueryParam'
 import { setQueryParams } from '../../../api/routes/params/setQueryParams'
@@ -59,7 +58,7 @@ Template.unitEditor.onCreated(function onUnitEditorCreated () {
         }
       }
       if (nextView) {
-        step.popover.onNextClick = (element, step, options) => {
+        step.popover.onNextClick = (_element, _step, options) => {
           const nextBtn = document.querySelector('.driver-popover-next-btn')
           nextBtn.disabled = true;
           setQueryParams({ tab: nextView })
@@ -269,7 +268,7 @@ Template.unitEditor.helpers({
       queryParam: 'tab',
       getQueryParam: getQueryParam,
       updateQueryParam: setQueryParams,
-      onViewSelected: function (currentViewName) {
+      onViewSelected: (currentViewName) => {
         instance.state.set({ currentViewName })
       }
     }
@@ -307,7 +306,7 @@ Template.unitEditor.helpers({
 })
 
 Template.unitEditor.events({
-  'click .help-btn': function (event, templateInstance) {
+  'click .help-btn': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.guide.start()
   }

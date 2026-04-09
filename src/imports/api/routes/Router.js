@@ -17,7 +17,7 @@ export const Router = {}
 
 Router.src = FlowRouter
 
-Router.go = function (value, ...optionalArgs) {
+Router.go = (value, ...optionalArgs) => {
   const type = typeof value
   if (type === 'object' && value !== null) {
     const path = value.path(...optionalArgs)
@@ -33,25 +33,23 @@ Router.go = function (value, ...optionalArgs) {
   }
 }
 
-Router.has = function (path) {
-  return paths[path]
-}
+Router.has = (path) => paths[path]
 
-Router.location = function ({ pathName } = {}) {
+Router.location = ({ pathName } = {}) => {
   if (pathName) {
     return FlowRouter.current().route.name
   }
   return FlowRouter.current().path
 }
 
-Router.current = function (options = {}) {
+Router.current = (options = {}) => {
   if (options.reactive) {
     FlowRouter.watchPathChange()
   }
   return FlowRouter.current()
 }
 
-Router.param = function (value) {
+Router.param = (value) => {
   if (typeof value === 'object') {
     return FlowRouter.setParams(value)
   }
@@ -61,7 +59,7 @@ Router.param = function (value) {
   throw new Error(`Unexpected format: [${typeof value}], expected string or object`)
 }
 
-Router.queryParam = function (value) {
+Router.queryParam = (value) => {
   if (typeof value === 'object') {
     return FlowRouter.setQueryParams(value)
   }
@@ -73,7 +71,7 @@ Router.queryParam = function (value) {
 
 let _defaultTarget = 'body'
 
-Router.setDefaultTarget = function (value) {
+Router.setDefaultTarget = (value) => {
   _defaultTarget = value
 }
 
@@ -131,7 +129,7 @@ function createRoute (routeDef, onError) {
         Router.go('/')
       }
     },
-    triggersEnter: routeDef.triggersEnter && routeDef.triggersEnter(),
+    triggersEnter: routeDef.triggersEnter?.(),
     action (params, queryParams) {
       debug('action', routeDef.key, params, queryParams)
       // if we have loaded the template but it is not available
@@ -198,7 +196,7 @@ Router.label = function label (value) {
   return _currentLabel.get()
 }
 
-Router.register = function (routeDefinition) {
+Router.register = (routeDefinition) => {
   debug('register', routeDefinition.path())
   const path = routeDefinition.path()
   paths[path] = routeDefinition
@@ -206,14 +204,8 @@ Router.register = function (routeDefinition) {
   return FlowRouter.route(path, routeInstance)
 }
 
-Router.reload = function () {
-  return FlowRouter.reload()
-}
+Router.reload = () => FlowRouter.reload()
 
-Router.refresh = function (target, template) {
-  return FlowRouter.refresh(target, template)
-}
+Router.refresh = (target, template) => FlowRouter.refresh(target, template)
 
-Router.isActive = function (name) {
-  return RouterHelpers.name(name)
-}
+Router.isActive = (name) => RouterHelpers.name(name)

@@ -4,7 +4,7 @@ import { deprecate } from '../../infrastructure/functions/deprecate'
 
 const createMethodId = () => Random.id(6)
 
-export const logRuntimeEndpoints = function (options) {
+export const logRuntimeEndpoints = (options) => {
   const { name } = options
   const isMethod = name.includes('.methods.')
   const isPublication = name.includes('.publications.')
@@ -17,7 +17,6 @@ export const logRuntimeEndpoints = function (options) {
   }
 
   const wrap = (originalFct, type) => async function (...args) {
-    const environment = this
     const methodId = createMethodId()
     const logName = `${endpointType}:${name} (${methodId})`
     const log = createLog({ name: logName })
@@ -25,13 +24,13 @@ export const logRuntimeEndpoints = function (options) {
 
     // if we allow method to use these logs we can better
     // associate them by the given method id
-    environment.log = deprecate(log)
-    environment.error = deprecate(error)
+    this.log = deprecate(log)
+    this.error = deprecate(error)
 
-    log(type, 'invoked by', environment.userId)
+    log(type, 'invoked by', this.userId)
 
     try {
-      return originalFct.apply(environment, args)
+      return originalFct.apply(this, args)
     }
     catch (runtimeError) {
       // logError({

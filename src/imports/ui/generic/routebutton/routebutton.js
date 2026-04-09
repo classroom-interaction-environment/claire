@@ -3,7 +3,7 @@ import { toolTipEvents } from '../utils/tooltipUtils'
 import '../icon/icon'
 import './routebutton.html'
 
-Template.routeButton.onCreated(function () {})
+Template.routeButton.onCreated(() => {})
 
 Template.routeButton.helpers({
   dataAtts () {

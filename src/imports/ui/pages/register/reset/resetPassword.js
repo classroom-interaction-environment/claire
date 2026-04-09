@@ -20,14 +20,13 @@ const API = Template.resetPassword.setDependencies({
 })
 
 Template.resetPassword.onCreated(function () {
-  const instance = this
-  const { data } = instance
+  const { data } = this
   const token = data.params.token
   const queryDataBase64 = decodeURIComponent(data.queryParams.d)
   const queryDataDecoded = window.atob(queryDataBase64)
   const queryDataJson = JSON.parse(queryDataDecoded)
 
-  const email = queryDataJson && queryDataJson[0]
+  const email = queryDataJson?.[0]
   if (!email) return API.notify('login.resetPassword.emailExpected')
 
   const setupForm = () => {
@@ -77,13 +76,13 @@ Template.resetPassword.onCreated(function () {
       if (err.reason === 'Token expired') {
         err.reason = i18n.get('login.resetPassword.expired')
       }
-      instance.state.set('error', err)
+      this.state.set('error', err)
     }
     else {
       setupForm()
     }
     // always
-    instance.state.set({
+    this.state.set({
       loadComplete: true,
       doc: { email }
     })
@@ -140,7 +139,7 @@ Template.resetPassword.events({
   'click .resend-button' (event, templateInstance) {
     event.preventDefault()
     const doc = templateInstance.state.get('doc')
-    const email = doc && doc.email
+    const email = doc?.email
     if (!email) return API.notify('login.resetPassword.emailExpected')
 
     templateInstance.state.set('resend', true)

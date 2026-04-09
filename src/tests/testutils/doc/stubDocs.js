@@ -1,13 +1,11 @@
 /* global it */
 import { Random } from 'meteor/random'
-import { UserUtils } from '../../../imports/contexts/system/accounts/users/UserUtils'
 import { SchoolClass } from '../../../imports/contexts/classroom/schoolclass/SchoolClass'
 import { Lesson } from '../../../imports/contexts/classroom/lessons/Lesson'
 import { LessonStates } from '../../../imports/contexts/classroom/lessons/LessonStates'
 import { Unit } from '../../../imports/contexts/curriculum/curriculum/unit/Unit'
 import { Task } from '../../../imports/contexts/curriculum/curriculum/task/Task'
 import { stub } from '../stub'
-import { expect } from 'chai'
 import { getCollection } from '../../../imports/api/utils/getCollection'
 import { Users } from '../../../imports/contexts/system/accounts/users/User'
 import { DocNotFoundError } from '../../../imports/api/errors/types/DocNotFoundError'

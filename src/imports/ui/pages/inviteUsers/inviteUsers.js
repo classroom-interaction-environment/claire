@@ -13,7 +13,6 @@ import { dataTarget } from '../../utils/dataTarget'
 import { cursor } from '../../../api/utils/cursor'
 import { emailLink } from '../../../api/utils/email/emailLink'
 import { confirmDialog } from '../../components/confirm/confirm'
-import { delayedCallback } from '../../utils/delayedCallback'
 import { callMethod } from '../../controllers/document/callMethod'
 import { getCollection } from '../../../api/utils/getCollection'
 import { loadIntoCollection } from '../../../infrastructure/loading/loadIntoCollection'
@@ -70,7 +69,7 @@ Template.inviteUsers.onCreated(function () {
   })
 })
 
-Template.inviteUsers.onDestroyed(function () {
+Template.inviteUsers.onDestroyed(() => {
   API.dispose('inviteUsers')
 })
 
@@ -111,7 +110,7 @@ Template.inviteUsers.helpers({
     const id = Template.getState('currentDoc')
     const invitationDoc = getCollection(CodeInvitation.name).findOne(id)
     const user = Meteor.user()
-    const to = (invitationDoc && invitationDoc.firstName && invitationDoc.lastName)
+    const to = (invitationDoc?.firstName && invitationDoc.lastName)
       ? ` ${invitationDoc.firstName} ${invitationDoc.lastName}` // first char needs to be a space! See translation file
       : ''
     const from = `${user.firstName} ${user.lastName}`
@@ -130,10 +129,10 @@ Template.inviteUsers.helpers({
     return Template.getState('refreshDoc')
   },
   activeCodes (codes) {
-    return codes && codes.fetch().filter(doc => invitationPending(doc))
+    return codes?.fetch().filter(doc => invitationPending(doc))
   },
   expiredCodes (codes) {
-    return codes && codes.fetch().filter(doc => !invitationPending(doc)).sort((a, b) => {
+    return codes?.fetch().filter(doc => !invitationPending(doc)).sort((a, b) => {
       const val1 = invitationComplete(a) ? 1 : 0
       const val2 = invitationComplete(b) ? 1 : 0
       return val2 - val1
@@ -155,7 +154,7 @@ Template.inviteUsers.events({
         if (!result) return
         const target = dataTarget(event, templateInstance)
         templateInstance.state.set('deleting', target)
-        Meteor.call(CodeInvitation.methods.forceExpire.name, { _id: target }, (err, res) => {
+        Meteor.call(CodeInvitation.methods.forceExpire.name, { _id: target }, (err, _res) => {
           templateInstance.state.set('deleting', null)
           if (err) {
             API.notify(err)
@@ -172,7 +171,7 @@ Template.inviteUsers.events({
         if (!result) return
         const target = dataTarget(event, templateInstance)
         templateInstance.state.set('deleting', target)
-        Meteor.call(CodeInvitation.methods.remove.name, { _id: target }, (err, res) => {
+        Meteor.call(CodeInvitation.methods.remove.name, { _id: target }, (err, _res) => {
           templateInstance.state.set('deleting', null)
           if (err) {
             API.notify(err)
@@ -190,7 +189,7 @@ Template.inviteUsers.events({
     templateInstance.state.set('currentDoc', target)
     templateInstance.$('#createLinkModal').modal('show')
   },
-  'submit #createInvitationForm': async function (event, templateInstance) {
+  'submit #createInvitationForm': async (event, templateInstance) => {
     event.preventDefault()
 
     const insertDoc = formIsValid(createInvitationSchema, 'createInvitationForm')
@@ -232,7 +231,7 @@ Template.inviteUsers.events({
     event.preventDefault()
     templateInstance.$('#createInvitationModal').modal('show')
   },
-  'click .copy-to-clipboard-button' (event, templateInstance) {
+  'click .copy-to-clipboard-button' (_event, templateInstance) {
     templateInstance.$('#createLinkModal').modal('hide')
     setTimeout(() => API.notify('actions.copied'), 200)
   },
@@ -246,7 +245,7 @@ Template.inviteUsers.events({
       templateInstance.$('#createInvitationModal').modal('show')
     }, 300)
   },
-  'click .create-qr-button': async function (event, templateInstance) {
+  'click .create-qr-button': async (event, templateInstance) => {
     event.preventDefault()
     const code = dataTarget(event, templateInstance)
     templateInstance.state.set('codeToBeamer', code)

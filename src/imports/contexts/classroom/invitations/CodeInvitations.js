@@ -23,7 +23,7 @@ const optionalUserType = () => {
     : 'hidden'
 }
 
-const getSchoolClass = (function () {
+const getSchoolClass = (() => {
   if (Meteor.isServer) {
     return () => getCollection(SchoolClass.name)
   }
@@ -138,7 +138,7 @@ CodeInvitation.schema = {
       firstOption: () => i18n.reactive('form.selectOne'),
 
       // users will only be able to invite users with a role below their own
-      options: function () {
+      options: () => {
         const userId = Meteor.userId()
         const highest = getHighestRole(userId)
 
@@ -271,8 +271,8 @@ CodeInvitation.publications = {}
 CodeInvitation.publications.myCodes = {
   name: 'codeInvitations.publications.myCodes',
   schema: {},
-  run: onServerExec(function () {
-    import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
+  run: onServerExec(() => {
+    const { userIsAdmin } = require('../../../api/accounts/admin/userIsAdmin')
 
     return async function () {
       const { userId } = this
@@ -296,8 +296,8 @@ CodeInvitation.publications.getInvitationForClass = {
   name: 'codeInvitations.publications.getInvitationForClass',
   schema: { classId: String },
   roles: [Hierarchy.admin, Hierarchy.schoolAdmin, Hierarchy.teacher],
-  run: onServerExec(function () {
-    import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
+  run: onServerExec(() => {
+    const { userIsAdmin } = require('../../../api/accounts/admin/userIsAdmin')
 
     return async function ({ classId }) {
       const { userId } = this
@@ -319,8 +319,8 @@ CodeInvitation.publications.class = {
   schema: {
     classId: String
   },
-  run: onServerExec(function () {
-    import { userIsAdmin } from '../../../api/accounts/admin/userIsAdmin'
+  run: onServerExec(() => {
+    const { userIsAdmin } = require('../../../api/accounts/admin/userIsAdmin')
 
     return async function ({ classId }) {
       const { userId } = this
@@ -353,8 +353,8 @@ CodeInvitation.methods.create = {
   name: 'codeInvitations.methods.create',
   schema: CodeInvitation.createCodeSchema,
   roles: [Hierarchy.admin, Hierarchy.schoolAdmin, Hierarchy.curriculum, Hierarchy.teacher],
-  run: onServerExec(function () {
-    import { createInvitation } from './methods/createInvitation'
+  run: onServerExec(() => {
+    const { createInvitation } = require('./methods/createInvitation')
     return function (createDoc) {
       const { userId } = this
       return createInvitation({ userId, createDoc })
@@ -373,11 +373,9 @@ CodeInvitation.methods.verify = {
     code: String
   },
   isPublic: true,
-  run: onServerExec(function () {
-    import { verifyInvitation } from './methods/verifyInvitation'
-    return function ({ code }) {
-      return verifyInvitation({ code })
-    }
+  run: onServerExec(() => {
+    const { verifyInvitation } = require('./methods/verifyInvitation')
+    return ({ code }) => verifyInvitation({ code })
   })
 }
 
@@ -389,8 +387,8 @@ CodeInvitation.methods.forceExpire = {
   name: 'codeInvitations.methods.forceExpire',
   roles: [Hierarchy.admin, Hierarchy.schoolAdmin, Hierarchy.teacher],
   schema: { _id: String },
-  run: onServerExec(function () {
-    import { forceExpire } from './methods/forceExpire'
+  run: onServerExec(() => {
+    const { forceExpire } = require('./methods/forceExpire')
 
     return function ({ _id }) {
       const { userId } = this
@@ -407,9 +405,7 @@ CodeInvitation.methods.remove = {
   name: 'codeInvitations.methods.remove',
   roles: [Hierarchy.admin, Hierarchy.schoolAdmin],
   schema: { _id: String },
-  run: onServer(function ({ _id }) {
-    return getCollection(CodeInvitation.name).removeAsync(_id)
-  })
+  run: onServer(({ _id }) => getCollection(CodeInvitation.name).removeAsync(_id))
 }
 
 /**
@@ -420,8 +416,8 @@ CodeInvitation.methods.addToClass = {
   name: 'codeInvitations.methods.addToClass',
   roles: [Hierarchy.admin, Hierarchy.schoolAdmin, Hierarchy.teacher, Hierarchy.student],
   schema: { code: String },
-  run: onServerExec(function () {
-    import { addUserToClassByCode } from './methods/addUserToClassByCode'
+  run: onServerExec(() => {
+    const { addUserToClassByCode } = require('./methods/addUserToClassByCode')
 
     return async function ({ code }) {
       const { userId } = this

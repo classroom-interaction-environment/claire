@@ -1,4 +1,4 @@
-import crypto from 'crypto'
+import crypto from 'node:crypto'
 import { createLog } from '../log/createLog'
 
 const debugLog = createLog({ name: 'insertUpdate', type: 'debug' })
@@ -7,7 +7,7 @@ const sortedProps = (doc) => {
   let obj = ''
   Object.keys(doc).sort().forEach(key => {
     const value = doc[key]
-    const strValue = value && value.toString()
+    const strValue = value?.toString()
     obj += `"${key}":"${strValue}",`
   })
   return `{${obj}}`

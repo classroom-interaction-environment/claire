@@ -13,7 +13,7 @@ const informPasswordReset = ({ allowed, type, methodName }) =>
   type === 'password' &&
   methodName === 'resetPassword'
 
-Accounts.onLogin(async function ({ type, allowed, methodName, user }) {
+Accounts.onLogin(async ({ type, allowed, methodName, user }) => {
   if (informPasswordReset({ type, allowed, methodName })) {
     const to = passwordReset
     const subject = createInfomailSubject({ type: 'passwordReset' })

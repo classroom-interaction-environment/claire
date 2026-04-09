@@ -1,21 +1,21 @@
 /* global DDP */
 const exists = (value) => value !== null && typeof value !== 'undefined'
 
-const getUserId = function () {
+const getUserId = () => {
   const currentInvocation = DDP._CurrentMethodInvocation.get() || DDP._CurrentPublicationInvocation.get()
   return currentInvocation
     ? currentInvocation.userId
     : 'system'
 }
 
-export const getUpdateStamps = function () {
+export const getUpdateStamps = () => {
   const tmpMod = {}
   tmpMod.updatedBy = getUserId()
   tmpMod.updatedAt = new Date()
   return tmpMod
 }
 
-export const insertHook = function (doc, callback, cb, isFilesCollection) {
+export const insertHook = (doc, _callback, _cb, isFilesCollection) => {
   doc.createdBy = isFilesCollection
     ? doc.userId || getUserId()
     : getUserId()
@@ -24,7 +24,7 @@ export const insertHook = function (doc, callback, cb, isFilesCollection) {
   doc.updatedBy = doc.createdBy
 }
 
-export const updateHook = function (query, modifier, options, callback) {
+export const updateHook = (_query, modifier, _options, _callback) => {
   const tmpMod = getUpdateStamps()
 
   if (exists(modifier.$set)) {

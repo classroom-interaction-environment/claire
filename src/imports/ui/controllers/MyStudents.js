@@ -13,28 +13,22 @@ let _handle
 
 export const MyStudents = {}
 
-MyStudents.currentClass = function () {
-  return _currentClass.get()
-}
+MyStudents.currentClass = () => _currentClass.get()
 
-MyStudents.currentUsers = function () {
-  return _currentUsers.get()
-}
+MyStudents.currentUsers = () => _currentUsers.get()
 
-MyStudents.setClass = function (classId, cb) {
+MyStudents.setClass = (classId, cb) => {
   check(classId, String)
   if (_currentClass.get() !== classId) {
     _currentClass.set(classId)
     _callbacks[classId] = cb
   }
   else {
-    return cb && cb()
+    return cb?.()
   }
 }
 
-MyStudents.ready = function () {
-  return _handle && _handle.ready()
-}
+MyStudents.ready = () => _handle?.ready()
 
 Meteor.startup(() => {
   Tracker.autorun(() => {

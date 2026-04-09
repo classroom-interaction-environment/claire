@@ -4,8 +4,8 @@ import { Random } from 'meteor/random'
 import { expect } from 'chai'
 import { getLocalCollection } from '../getLocalCollection'
 
-describe(getLocalCollection.name, function () {
-  it('creates a local collection if not defined', function () {
+describe(getLocalCollection.name, () => {
+  it('creates a local collection if not defined', () => {
     const name = Random.id()
     const local = getLocalCollection(name)
     expect(local instanceof Mongo.Collection).to.equal(true)
@@ -15,7 +15,7 @@ describe(getLocalCollection.name, function () {
     const local2 = getLocalCollection(name)
     expect(local2).to.equal(local)
   })
-  it('returns a collection with add function', function () {
+  it('returns a collection with add function', () => {
     const name = Random.id()
     const local = getLocalCollection(name)
 

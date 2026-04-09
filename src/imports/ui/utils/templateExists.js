@@ -1,7 +1,7 @@
 import { Template } from 'meteor/templating'
 
 export const templateExists = name => {
-  if (!Object.prototype.hasOwnProperty.call(Template, name)) {
+  if (!Object.hasOwn(Template, name)) {
     return false
   }
 

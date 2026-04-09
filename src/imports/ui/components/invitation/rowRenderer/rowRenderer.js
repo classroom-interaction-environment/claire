@@ -22,7 +22,7 @@ Template.invitationRowRenderer.helpers({
   },
   schoolClass (classId) {
     const classDoc = SchoolClassCollection.findOne(classId)
-    return classDoc && classDoc.title
+    return classDoc?.title
   },
   isExpired (invitationDoc) {
     return invitationExpired(invitationDoc)

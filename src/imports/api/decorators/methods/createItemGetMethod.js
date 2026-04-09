@@ -4,8 +4,8 @@ import { getCollection } from '../../utils/getCollection'
 import { Lesson } from '../../../contexts/classroom/lessons/Lesson'
 
 export const createItemGetMethod = ({ name }) => {
-  import { isMemberOfLesson } from '../../../contexts/classroom/lessons/runtime/isMemberOfLesson'
-  import { createDocGetter } from '../../utils/document/createDocGetter'
+  const { isMemberOfLesson } = require('../../../contexts/classroom/lessons/runtime/isMemberOfLesson')
+  const { createDocGetter } = require('../../utils/document/createDocGetter')
   const getLessonDoc = createDocGetter({ name: Lesson.name })
   return {
     name: `${name}.methods.get`,

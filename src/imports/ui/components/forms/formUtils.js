@@ -19,7 +19,9 @@ export const formIsValid = function formIsValid (schema, formId, isUpdate, debug
   if (errors && errors.length > 0) {
     if (debug) debug('form validation errors', errors)
 
-    errors.forEach(err => AutoForm.addStickyValidationError(formId, err.key, err.type, err.value))
+    errors.forEach(err => {
+      AutoForm.addStickyValidationError(formId, err.key, err.type, err.value)
+    })
     return null
   }
   else {

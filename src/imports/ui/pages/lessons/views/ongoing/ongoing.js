@@ -19,13 +19,12 @@ const getUpcomingLessons = ({ sort, limit }) => getLocalCollection(Lesson.name).
 }, { sort, limit })
 
 Template.ongoingLessons.onCreated(function () {
-  const instance = this
   const runningSort = { startedAt: -1 }
   const upcomingSort = { updatedAt: -1 }
 
   const maxRunning = getRunningLessons({}).count()
   const maxUpcoming = getUpcomingLessons({}).count()
-  instance.state.set({
+  this.state.set({
     initComplete: true,
     runningSort,
     upcomingSort,

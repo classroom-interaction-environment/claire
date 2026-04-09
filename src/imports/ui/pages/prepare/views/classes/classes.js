@@ -30,15 +30,14 @@ const LessonCollection = getLocalCollection(Lesson.name)
 const UnitCollection = getLocalCollection(Unit.name)
 
 Template.myClasses.onCreated(function () {
-  const instance = this
-  instance.state.set('selectedClasses', {})
-  instance.state.set('showStudents', null)
-  instance.state.set('deleting', null)
+  this.state.set('selectedClasses', {})
+  this.state.set('showStudents', null)
+  this.state.set('deleting', null)
 
-  instance.autorun(() => {
-    const showStudentsClassId = instance.state.get('showStudentsClassId')
+  this.autorun(() => {
+    const showStudentsClassId = this.state.get('showStudentsClassId')
     if (!showStudentsClassId) {
-      instance.state.set('usersReady', true)
+      this.state.set('usersReady', true)
       return
     }
 
@@ -47,14 +46,14 @@ Template.myClasses.onCreated(function () {
       args: { classId: showStudentsClassId },
       collection: getLocalCollection(Users.name),
       failure: API.notify,
-      success: () => instance.state.set('usersReady', true)
+      success: () => this.state.set('usersReady', true)
     })
   })
 
-  instance.autorun(() => {
-    const showStudentsClassId = instance.state.get('showStudentsClassId')
+  this.autorun(() => {
+    const showStudentsClassId = this.state.get('showStudentsClassId')
     if (!showStudentsClassId) {
-      instance.state.set('profileImagesReady', true)
+      this.state.set('profileImagesReady', true)
       return
     }
 
@@ -66,7 +65,7 @@ Template.myClasses.onCreated(function () {
       success: () => {
         const classDoc = SchoolClassCollection.findOne(showStudentsClassId)
         if (!classDoc) {
-          instance.state.set('profileImagesReady', true)
+          this.state.set('profileImagesReady', true)
         }
 
         // we create a light version of the class doc to pass
@@ -81,8 +80,8 @@ Template.myClasses.onCreated(function () {
         showStudents.students = students && UsersCollection.find({ _id: { $in: students } }, { sort }).fetch()
         showStudents.teachers = teachers && UsersCollection.find({ _id: { $in: teachers } }, { sort }).fetch()
 
-        instance.state.set({ showStudents })
-        instance.state.set('profileImagesReady', true)
+        this.state.set({ showStudents })
+        this.state.set('profileImagesReady', true)
       }
     })
   })
@@ -122,8 +121,8 @@ Template.myClasses.helpers({
   classUsers (classDoc) {
     if (!classDoc) return 0
 
-    const students = (classDoc.students && classDoc.students.length) || 0
-    const teachers = (classDoc.teachers && classDoc.teachers.length) || 0
+    const students = (classDoc.students?.length) || 0
+    const teachers = (classDoc.teachers?.length) || 0
     return students + teachers
   },
   lessonsForClass (classId) {
@@ -149,7 +148,7 @@ Template.myClasses.helpers({
     return Template.getState('deleting') === lessonId
   },
   getUsers (usersList) {
-    return usersList && usersList.map(userId => UnitCollection.findOne(userId))
+    return usersList?.map(userId => UnitCollection.findOne(userId))
   }
 })
 

@@ -3,9 +3,9 @@ import { Random } from 'meteor/random'
 import { expect } from 'chai'
 import { PasswordConfig } from '../PasswordConfig'
 
-describe('PasswordConfig', function () {
-  describe('constructor', function () {
-    it('can be created without options, using defaults', function () {
+describe('PasswordConfig', () => {
+  describe('constructor', () => {
+    it('can be created without options, using defaults', () => {
       const config = PasswordConfig.from()
       expect(config.id).to.be.a('string')
       const defaults = PasswordConfig.defaults()
@@ -14,7 +14,7 @@ describe('PasswordConfig', function () {
       expect(all).to.deep.equal(defaults)
     })
 
-    it('can be created with options', function () {
+    it('can be created with options', () => {
       const settings = {
         min: {
           value: 111,
@@ -42,23 +42,23 @@ describe('PasswordConfig', function () {
     })
   })
 
-  describe('values', function () {
-    it('icon', function () {
+  describe('values', () => {
+    it('icon', () => {
       const config = PasswordConfig.from({ icon: 'lock' })
       expect(config.icon()).to.equal('lock')
       expect(config.icon()).to.not.equal(PasswordConfig.defaults().icon)
     })
-    it('min', function () {
+    it('min', () => {
       const config = PasswordConfig.from({ min: 16 })
       expect(config.min()).to.equal(16)
       expect(config.min()).to.not.equal(PasswordConfig.defaults().min.value)
     })
-    it('max', function () {
+    it('max', () => {
       const config = PasswordConfig.from({ max: 161 })
       expect(config.max()).to.equal(161)
       expect(config.max()).to.not.equal(PasswordConfig.defaults().max.value)
     })
-    it('allowedChars', function () {
+    it('allowedChars', () => {
       const config = PasswordConfig.from({ allowedChars: '[a-z]' })
       const allowedChars = new RegExp(config.allowedChars(), 'gi')
       expect(allowedChars.test('abcdefghijklmnopqrstuvwxyz')).to.equal(true)
@@ -66,12 +66,12 @@ describe('PasswordConfig', function () {
       expect(allowedChars.test('9')).to.equal(false)
       expect(allowedChars.test('@')).to.equal(false)
     })
-    it('confirm', function () {
+    it('confirm', () => {
       const config = PasswordConfig.from({ confirm: false })
       expect(config.confirm()).to.equal(false)
       expect(config.confirm()).to.not.equal(PasswordConfig.defaults().confirm)
     })
-    it('blacklist', function () {
+    it('blacklist', () => {
       const config = PasswordConfig.from()
       const list = [
         'passwOrd',
@@ -84,8 +84,8 @@ describe('PasswordConfig', function () {
     })
   })
 
-  describe('rules', function () {
-    it('comes with a rules checker', function () {
+  describe('rules', () => {
+    it('comes with a rules checker', () => {
       const config = PasswordConfig.from()
       expect(config.rules()).to.have.lengthOf(3)
       expect(config.check(Random.id())).to.equal(undefined)

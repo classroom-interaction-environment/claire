@@ -2,9 +2,9 @@
 import { expect } from 'chai'
 import { GroupBuilder } from '../GroupBuilder'
 
-describe('GroupBuilder', function () {
-  describe('constructor', function () {
-    it('can be instatiated with optional defaults', function () {
+describe('GroupBuilder', () => {
+  describe('constructor', () => {
+    it('can be instatiated with optional defaults', () => {
       expect(new GroupBuilder().groupTitleDefault).to.equal('group.defaultTitle')
       expect(new GroupBuilder({ groupTitleDefault: 'foo' }).groupTitleDefault).to.equal('foo')
       GroupBuilder.defaultGroupTitle('bar')
@@ -12,14 +12,14 @@ describe('GroupBuilder', function () {
       GroupBuilder.defaultGroupTitle('group.defaultTitle')
     })
   })
-  describe(GroupBuilder.prototype.setOptions.name, function () {
-    it('accepts all optional parameters', function () {
+  describe(GroupBuilder.prototype.setOptions.name, () => {
+    it('accepts all optional parameters', () => {
       const builder = new GroupBuilder()
       const initial = { ...builder }
       builder.setOptions({})
       expect(builder).to.deep.equal(initial)
     })
-    it('throws if users size is greater than maxSize', function () {
+    it('throws if users size is greater than maxSize', () => {
       const builder = new GroupBuilder()
       const options = {
         users: ['foo', 'bar'],
@@ -30,7 +30,7 @@ describe('GroupBuilder', function () {
         .to.throw('groupBuilder.error')
         .with.property('reason', 'groupBuilder.maxUsersExceeded')
     })
-    it('sets all options for groups, material and phases', function () {
+    it('sets all options for groups, material and phases', () => {
       const builder = new GroupBuilder()
       const options = {
         users: ['foo', 'bar'],
@@ -62,8 +62,8 @@ describe('GroupBuilder', function () {
       expect(groups.get()).to.deep.equal([])
     })
   })
-  describe(GroupBuilder.prototype.createGroups.name, function () {
-    it('creates unshuffled groups', function () {
+  describe(GroupBuilder.prototype.createGroups.name, () => {
+    it('creates unshuffled groups', () => {
       const builder = new GroupBuilder()
       const options = {
         users: ['foo', 'bar'],
@@ -87,7 +87,7 @@ describe('GroupBuilder', function () {
         }
       ])
     })
-    it('creates groups with material auto shuffle and equal material as group size', function () {
+    it('creates groups with material auto shuffle and equal material as group size', () => {
       const builder = new GroupBuilder()
       const options = {
         users: ['foo', 'bar', 'baz', 'moo'],
@@ -117,7 +117,7 @@ describe('GroupBuilder', function () {
         }
       ])
     })
-    it('creates groups with material auto shuffle and MORE material as group size', function () {
+    it('creates groups with material auto shuffle and MORE material as group size', () => {
       const builder = new GroupBuilder()
       const options = {
         users: ['foo', 'bar', 'baz', 'moo'],
@@ -147,7 +147,7 @@ describe('GroupBuilder', function () {
         }
       ])
     })
-    it('creates shuffled groups', function () {
+    it('creates shuffled groups', () => {
       const builder = new GroupBuilder()
       const options = {
         users: ['foo', 'bar', 'baz', 'moo'],
@@ -180,7 +180,7 @@ describe('GroupBuilder', function () {
         })
       })
     })
-    it('throws if users length is zero and at least one user is required', function () {
+    it('throws if users length is zero and at least one user is required', () => {
       const builder = new GroupBuilder()
       builder.setOptions({ atLeastOneUserRequired: true })
       expect(() => builder.createGroups({ shuffle: false }))
@@ -188,8 +188,8 @@ describe('GroupBuilder', function () {
         .with.property('reason', 'groupBuilder.atLeastOneUserRequired')
     })
   })
-  describe(GroupBuilder.prototype.addGroup.name, function () {
-    it('adds a new group to the groups list', function () {
+  describe(GroupBuilder.prototype.addGroup.name, () => {
+    it('adds a new group to the groups list', () => {
       const builder = new GroupBuilder()
       const options = {
         users: ['foo', 'bar', 'baz', 'moo'],
@@ -218,8 +218,8 @@ describe('GroupBuilder', function () {
       ])
     })
   })
-  describe(GroupBuilder.prototype.removeGroup.name, function () {
-    it('throws if there is no group by given index', function () {
+  describe(GroupBuilder.prototype.removeGroup.name, () => {
+    it('throws if there is no group by given index', () => {
       const builder = new GroupBuilder()
       const options = {
         users: ['foo', 'bar', 'baz', 'moo'],
@@ -240,7 +240,7 @@ describe('GroupBuilder', function () {
           .with.property('reason', 'groupBuilder.invalidIndex')
       })
     })
-    it('removes a group from the list at a given index', function () {
+    it('removes a group from the list at a given index', () => {
       const builder = new GroupBuilder()
       const options = {
         users: ['foo', 'bar', 'baz', 'moo'],
@@ -268,8 +268,8 @@ describe('GroupBuilder', function () {
       ])
     })
   })
-  describe(GroupBuilder.prototype.updateGroup.name, function () {
-    it('throws if there is no group by given index', function () {
+  describe(GroupBuilder.prototype.updateGroup.name, () => {
+    it('throws if there is no group by given index', () => {
       const builder = new GroupBuilder()
       const options = {
         users: ['foo', 'bar', 'baz', 'moo'],
@@ -290,7 +290,7 @@ describe('GroupBuilder', function () {
           .with.property('reason', 'groupBuilder.invalidIndex')
       })
     })
-    it('updates a group title', function () {
+    it('updates a group title', () => {
       const builder = new GroupBuilder()
       const options = {
         users: ['foo', 'bar', 'baz', 'moo'],
@@ -309,8 +309,8 @@ describe('GroupBuilder', function () {
       expect(builder.getGroup(1).title).to.equal('group.defaultTitle 2')
     })
   })
-  describe(GroupBuilder.prototype.resetGroups.name, function () {
-    it('resets all groups to an empty array', function () {
+  describe(GroupBuilder.prototype.resetGroups.name, () => {
+    it('resets all groups to an empty array', () => {
       const builder = new GroupBuilder()
       const options = {
         users: ['foo', 'bar', 'baz', 'moo'],
@@ -328,8 +328,8 @@ describe('GroupBuilder', function () {
       expect(builder.getAllGroups()).to.deep.equal([])
     })
   })
-  describe(GroupBuilder.prototype.hasMaxGroups.name, function () {
-    it('returns false if max group is not reached or exceeded', function () {
+  describe(GroupBuilder.prototype.hasMaxGroups.name, () => {
+    it('returns false if max group is not reached or exceeded', () => {
       const builder = new GroupBuilder()
       const options = {
         users: ['foo', 'bar', 'baz', 'moo'],
@@ -348,7 +348,7 @@ describe('GroupBuilder', function () {
   })
 
   const onInvalidGroupIndex = (fn) => {
-    it('throws on invalid group index', function () {
+    it('throws on invalid group index', () => {
       const builder = new GroupBuilder()
       builder.setOptions({
         users: ['foo', 'bar'],
@@ -362,9 +362,9 @@ describe('GroupBuilder', function () {
     })
   }
 
-  describe(GroupBuilder.prototype.addMaterial.name, function () {
+  describe(GroupBuilder.prototype.addMaterial.name, () => {
     onInvalidGroupIndex((builder) => builder.addMaterial({ index: 5 }))
-    it('throws if material already exists', function () {
+    it('throws if material already exists', () => {
       const builder = new GroupBuilder()
       const options = {
         users: ['foo', 'bar', 'baz', 'moo'],
@@ -384,7 +384,7 @@ describe('GroupBuilder', function () {
         .with.property('reason', 'groupBuilder.expectedNoMaterial')
     })
   })
-  describe(GroupBuilder.prototype.removeMaterial.name, function () {
+  describe(GroupBuilder.prototype.removeMaterial.name, () => {
     onInvalidGroupIndex((builder) => builder.removeMaterial({ index: 5 }))
     const builder = new GroupBuilder()
     const options = {
@@ -407,7 +407,7 @@ describe('GroupBuilder', function () {
   })
 
   const onInvalidUserId = (fn) => {
-    it('throws on invalid userId', function () {
+    it('throws on invalid userId', () => {
       const builder = new GroupBuilder()
       builder.setOptions({
         users: ['foo', 'bar'],
@@ -434,17 +434,17 @@ describe('GroupBuilder', function () {
       .with.property('reason', reason)
   }
 
-  describe(GroupBuilder.prototype.addUser.name, function () {
+  describe(GroupBuilder.prototype.addUser.name, () => {
     onInvalidUserId((builder) => builder.addUser({ index: 2, userId: 'moo' }))
     onInvalidGroupIndex((builder) => builder.addUser({ index: 2, userId: 'foo' }))
-    it('throws if the user is already within that group', function () {
+    it('throws if the user is already within that group', () => {
       onInvalidUser({
         fn: (builder) => builder.addUser({ index: 0, userId: 'foo' }),
         reason: 'groupBuilder.expectedNoUser',
         shuffle: true
       })
     })
-    it('adds a user to given group', function () {
+    it('adds a user to given group', () => {
       const builder = new GroupBuilder()
       builder.setOptions({
         users: ['foo', 'bar'],
@@ -458,10 +458,10 @@ describe('GroupBuilder', function () {
       expect(builder.getGroup(0).users).to.deep.equal([{ userId, role }])
     })
   })
-  describe(GroupBuilder.prototype.updateUser.name, function () {
+  describe(GroupBuilder.prototype.updateUser.name, () => {
     onInvalidUserId((builder) => builder.addUser({ index: 2, userId: 'moo' }))
     onInvalidGroupIndex((builder) => builder.updateUser({ index: 2, userId: 'foo' }))
-    it('throws if the user is NOT within that group', function () {
+    it('throws if the user is NOT within that group', () => {
       onInvalidUser({
         fn: (builder) => {
           builder.addUser({ index: 0, userId: 'bar' })
@@ -471,7 +471,7 @@ describe('GroupBuilder', function () {
         reason: 'groupBuilder.expectedUser'
       })
     })
-    it('updates the given user', function () {
+    it('updates the given user', () => {
       const builder = new GroupBuilder()
       builder.setOptions({
         users: ['foo', 'bar'],
@@ -486,10 +486,10 @@ describe('GroupBuilder', function () {
       expect(builder.getGroup(0).users).to.deep.equal([{ userId, role: 'oink' }])
     })
   })
-  describe(GroupBuilder.prototype.removeUser.name, function () {
+  describe(GroupBuilder.prototype.removeUser.name, () => {
     onInvalidUserId((builder) => builder.addUser({ index: 2, userId: 'moo' }))
     onInvalidGroupIndex((builder) => builder.removeUser({ index: 2, userId: 'foo' }))
-    it('throws if the user is NOT within that group', function () {
+    it('throws if the user is NOT within that group', () => {
       onInvalidUser({
         fn: (builder) => {
           builder.addUser({ index: 0, userId: 'bar' })
@@ -500,14 +500,14 @@ describe('GroupBuilder', function () {
       })
     })
   })
-  describe(GroupBuilder.prototype.userHasBeenAssigned.name, function () {
-    it('throws if user is not defined in the users list', function () {
+  describe(GroupBuilder.prototype.userHasBeenAssigned.name, () => {
+    it('throws if user is not defined in the users list', () => {
       const builder = new GroupBuilder()
       expect(() => builder.userHasBeenAssigned('foo'))
         .to.throw('groupBuilder.error')
         .with.property('reason', 'groupBuilder.invalidUserId')
     })
-    it('returns whether a user has been assigned to one of the groups', function () {
+    it('returns whether a user has been assigned to one of the groups', () => {
       const builder = new GroupBuilder()
       const users = ['foo', 'bar']
       builder.setOptions({ users, maxUsers: 2, maxGroups: 2 })

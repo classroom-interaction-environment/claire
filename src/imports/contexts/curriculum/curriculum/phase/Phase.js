@@ -37,7 +37,7 @@ export const Phase = {
       autoform: {
         firstOption: firstOption,
         options () {
-          import { Unit } from '../unit/Unit'
+          const { Unit } = require('../unit/Unit')
           const UnitCollection = getCollection(Unit.name)
           return UnitCollection.find().map(doc => ({
             value: doc._id,
@@ -127,11 +127,9 @@ export const Phase = {
 Phase.methods.byUnitId = {
   name: 'phase.methods.byUnitId',
   schema: { unitId: String },
-  run: onServerExec(function () {
-    import { phasesByUnitId } from './phasesByUnitId'
+  run: onServerExec(() => {
+    const { phasesByUnitId } = require('./phasesByUnitId')
 
-    return function ({ unitId }) {
-      return phasesByUnitId(unitId)
-    }
+    return ({ unitId }) => phasesByUnitId(unitId)
   })
 }

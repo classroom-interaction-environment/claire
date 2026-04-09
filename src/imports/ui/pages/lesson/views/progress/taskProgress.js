@@ -58,11 +58,11 @@ const getProgress = ({ stateDoc, items, taskId, createdBy }) => {
   const max = items.length
   let current = 0
 
-  items.forEach(({ itemId }) => {
+  for (const { itemId } of items) {
     const result = TaskResultsCollection.findOne({ taskId, itemId, createdBy })
     const hasResponse = result?.response?.length > 0
     current += hasResponse ? 1 : 0
-  })
+  }
 
   // finally merge items progress and
   // the task working state progress

@@ -18,14 +18,13 @@ let editSchema
 const API = Template.uephaseRenderer.setDependencies()
 
 Template.uephaseRenderer.onCreated(function onuePhaseRendererCreated () {
-  const instance = this
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     const { phaseDoc } = data
-    instance.state.set('unitDoc', data.unitDoc)
-    instance.state.set('phaseDoc', phaseDoc)
+    this.state.set('unitDoc', data.unitDoc)
+    this.state.set('phaseDoc', phaseDoc)
 
-    if (phaseDoc && phaseDoc.references) {
+    if (phaseDoc?.references) {
       const references = phaseDoc.references
         .sort((a, b) => a.collection.localeCompare(b.collection))
         .map(refObj => {
@@ -42,10 +41,10 @@ Template.uephaseRenderer.onCreated(function onuePhaseRendererCreated () {
             doc: getCollection(collection).findOne(document)
           }
         })
-      instance.state.set('references', references)
+      this.state.set('references', references)
     }
     else {
-      instance.state.set('references', null)
+      this.state.set('references', null)
     }
   })
 })
@@ -75,7 +74,7 @@ Template.uephaseRenderer.helpers({
   socialState (value) {
     return SocialStateType.entry(value)
   },
-  references (refObj) {
+  references (_refObj) {
     return Template.getState('references')
   }
 })
@@ -87,7 +86,7 @@ Template.ueprField.helpers({
 })
 
 Template.uephaseRenderer.events({
-  'click .uephase-renderer-cancel-button' (event, templateInstance) {
+  'click .uephase-renderer-cancel-button' (_event, templateInstance) {
     templateInstance.state.set('edit', null)
   },
   'click .uephase-renderer-edit-button' (event, templateInstance) {

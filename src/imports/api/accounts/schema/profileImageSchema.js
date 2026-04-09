@@ -2,9 +2,9 @@ import { onClientExec, onServerExec } from '../../utils/archUtils'
 
 let profileImageSchema
 
-onClientExec(function () {
-  import { Files } from '../../../contexts/files/Files'
-  import { ProfileImages } from '../../../contexts/files/image/ProfileImages'
+onClientExec(() => {
+  const { Files } = require('../../../contexts/files/Files')
+  const { ProfileImages } = require('../../../contexts/files/image/ProfileImages')
 
   profileImageSchema = ({ optional = false } = {}) => ({
     type: String,
@@ -20,7 +20,7 @@ onClientExec(function () {
   })
 })
 
-onServerExec(function () {
+onServerExec(() => {
   profileImageSchema = ({ optional = false } = {}) => ({
     type: String,
     optional: optional

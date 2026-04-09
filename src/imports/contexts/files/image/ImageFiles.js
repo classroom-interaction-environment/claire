@@ -26,9 +26,7 @@ export const ImageFiles = {
     accept: FileTypes.image.accept,
     maxSize: 1024 * 1000 * 6,
     usePartialResponse: false,
-    converter: onServerExec(function () {
-      return require('./converter/imageConvert').imageConvert
-    }),
+    converter: onServerExec(() => require('./converter/imageConvert').imageConvert),
     previewVersion: 'thumbnail'
   }
 }
@@ -60,18 +58,14 @@ ImageFiles.material = {
   renderer: {
     list: {
       template: 'imageFileListRenderer',
-      load: async function () {
-        return import('./renderer/list/imageFileListRenderer')
-      },
+      load: async () => import('./renderer/list/imageFileListRenderer'),
       data: targetId => {
         return targetId && getLocalCollection(ImageFiles.name).findOne(targetId)
       }
     },
     main: {
       template: 'imageFileRenderer',
-      load: async function () {
-        return import('./renderer/main/imageFileRenderer')
-      },
+      load: async () => import('./renderer/main/imageFileRenderer'),
       /**
        * Composes the data for the renderer
        * @param materialDoc

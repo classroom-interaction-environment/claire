@@ -1,7 +1,7 @@
 import { Template } from 'meteor/templating'
 import './forbidden.html'
 
-Template.forbidden.onCreated(function () {})
+Template.forbidden.onCreated(() => {})
 
 Template.forbidden.helpers({})
 

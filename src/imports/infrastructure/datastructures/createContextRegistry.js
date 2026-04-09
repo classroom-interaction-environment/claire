@@ -65,9 +65,7 @@ export const createContextRegistry = (options) => {
     forEach (fn) {
       map.forEach(fn)
     },
-    all: function () {
-      return Array.from(map.values())
-    },
+    all: () => Array.from(map.values()),
     size () {
       return map.size
     },

@@ -10,16 +10,15 @@ import './autoform'
 Template.afIconSelect.setDependencies({})
 
 Template.afIconSelect.onCreated(function () {
-  const instance = this
   const allIcons = getAllFontAwesomeIcons()
   const allKeys = Object.keys(allIcons)
 
-  instance.setDefault = () => {
-    instance.state.set({ searchAvailable: false })
-    setTimeout(() => instance.state.set({ icons: allKeys, searchAvailable: true }), 300)
+  this.setDefault = () => {
+    this.state.set({ searchAvailable: false })
+    setTimeout(() => this.state.set({ icons: allKeys, searchAvailable: true }), 300)
   }
 
-  instance.search = name => {
+  this.search = name => {
     const out = []
     const lowercaseName = name.toLowerCase()
     for (const key in allIcons) {
@@ -30,23 +29,22 @@ Template.afIconSelect.onCreated(function () {
     return out
   }
 
-  instance.setDefault()
+  this.setDefault()
 })
 
 Template.afIconSelect.onRendered(function () {
-  const instance = this
 
   // at first we set the existing value,
   // for example in case this is an update form
-  if (instance.data.value) {
-    instance.state.set({ selectedIcon: instance.data.value })
-    updateHiddenField(instance.data.value, instance)
+  if (this.data.value) {
+    this.state.set({ selectedIcon: this.data.value })
+    updateHiddenField(this.data.value, this)
   }
 
   // then we setup our intersection observer to prevent
   // blocking the main thread with rendering 1000+ icons...
   const options = {
-    root: instance.lookup('.icon-select-container').get(0),
+    root: this.lookup('.icon-select-container').get(0),
     rootMargin: '0px',
     threshold: 0.0
   }
@@ -55,7 +53,7 @@ Template.afIconSelect.onRendered(function () {
   const classNames = 'btn btn-sm btn-outline-secondary border-0 select-icon-btn'.split(byWhiteSpace)
   const iconClassNames = 'fa fas fa-fw'.split(byWhiteSpace)
   const callback = (entries, observer) => {
-    entries.forEach((entry) => {
+    for (const entry of entries) {
       if (!entry.isIntersecting) {
         return
       }
@@ -78,22 +76,22 @@ Template.afIconSelect.onRendered(function () {
       entry.target.removeChild(first)
 
       observer.unobserve(entry.target)
-    })
+    }
   }
 
-  instance.observer = new window.IntersectionObserver(callback, options)
+  this.observer = new window.IntersectionObserver(callback, options)
 
-  instance.autorun(() => {
-    const icons = instance.state.get('icons')
+  this.autorun(() => {
+    const icons = this.state.get('icons')
     if (icons?.length > 0) {
       setTimeout(() => {
-        const $nodes = instance.$('.icon-container')
-        Object.values($nodes).forEach(node => {
+        const $nodes = this.$('.icon-container')
+        for (const node of Object.values($nodes)) {
           if (!(node instanceof window.Element)) {
             return
           }
-          instance.observer.observe(node)
-        })
+          this.observer.observe(node)
+        }
       }, 500)
     }
   })
@@ -131,7 +129,7 @@ Template.afIconSelect.events({
     templateInstance.state.set({ selectedIcon })
     templateInstance.state.set('setIcon', false)
   },
-  'input .search-icon-input': debounce(function (event, templateInstance) {
+  'input .search-icon-input': debounce((_event, templateInstance) => {
     const $search = templateInstance.lookup('.search-icon-input')
     const name = $search.val()
     if (!name?.length) {

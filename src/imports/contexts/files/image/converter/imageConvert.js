@@ -8,7 +8,6 @@ let gm
 
 export const imageConvert = async function (fileRef) {
   info('convert thumbnail')
-  const collection = this
   const exists = await fileExists(fileRef.path)
   if (!exists) {
     throw Meteor.Error('upload.convertError')
@@ -38,7 +37,7 @@ export const imageConvert = async function (fileRef) {
   //   }
   // })
 
-  const storagePath = await collection.storagePath(fileRef)
+  const storagePath = await this.storagePath(fileRef)
   const thumbnailPath = `${storagePath}/thumbnail-${fileRef._id}.${fileRef.extension}`
   const img = gm(fileRef.path)
     .quality(70)
@@ -77,6 +76,6 @@ export const imageConvert = async function (fileRef) {
   const upd = { $set: {} }
   upd.$set['versions.thumbnail'] = fileRef.versions.thumbnail
 
-  await collection.collection.updateAsync(fileRef._id, upd)
+  await this.collection.updateAsync(fileRef._id, upd)
   return fileRef
 }

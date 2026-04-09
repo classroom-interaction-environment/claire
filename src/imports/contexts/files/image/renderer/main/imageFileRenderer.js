@@ -10,22 +10,21 @@ const API = Template.imageFileRenderer.setDependencies({
 })
 
 Template.imageFileRenderer.onCreated(function () {
-  const instance = this
   API.log('on created')
-  instance.state.setDefault('version', 'original')
-  instance.deleteFile = createDeleteFile({
+  this.state.setDefault('version', 'original')
+  this.deleteFile = createDeleteFile({
     context: ImageFiles,
     onSuccess: () => API.notify(true),
     onError: API.notify
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const data = Template.currentData()
     if (!data) return API.log('no data!')
     API.log('on data', data)
     const { imageType, version } = data
     if (imageType || version) {
-      instance.state.set({ version: (imageType || version) })
+      this.state.set({ version: (imageType || version) })
     }
   })
 })

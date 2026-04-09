@@ -5,10 +5,10 @@ import { onClientExec, onServerExec } from '../../api/utils/archUtils'
 
 let createFilesCollection
 
-onServerExec(function () {
-  import { createBucket } from '../../api/files/createBucket'
-  import { createObjectId } from '../../api/files/createObjectId'
-  import fs from 'fs'
+onServerExec(() => {
+  const { createBucket } = require('../../api/files/createBucket')
+  const { createObjectId } = require('../../api/files/createObjectId')
+  const fs = require('node:fs')
 
   createFilesCollection = createGridFilesFactory({
     i18nFactory: x => x,
@@ -19,7 +19,7 @@ onServerExec(function () {
   })
 })
 
-onClientExec(function () {
+onClientExec(() => {
   createFilesCollection = createGridFilesFactory({
     i18nFactory: (...args) => i18n.get(...args),
   })

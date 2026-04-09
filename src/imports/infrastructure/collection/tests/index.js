@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-describe('collection', function () {
-  import './collectionHooks.tests'
-  import './getLocalCollection.tests'
+describe('collection', () => {
+  require('./collectionHooks.tests')
+  require('./getLocalCollection.tests')
 })

@@ -25,8 +25,7 @@ Template.image.helpers({
 })
 
 Template.image.onRendered(function () {
-  const instance = this
-  const $image = instance.$(`.${imageClass}`)
+  const $image = this.$(`.${imageClass}`)
   const image = $image.get(0)
 
   if (!image) {

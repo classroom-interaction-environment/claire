@@ -7,14 +7,14 @@ const byCollection = (a, b) => a.collection.localeCompare(b.collection)
 
 Template.phasesCompact.helpers({
   references (refList = []) {
-    return refList && refList
-      .sort(byCollection)
+    return refList
+      ?.sort(byCollection)
       .map(refObj => resolveMaterialReference(refObj))
   }
 })
 
 Template.phasesCompact.events({
-  'click .pc-toggle-btn' (event, templateInstance) {
+  'click .pc-toggle-btn' (event, _templateInstance) {
     event.preventDefault()
 
     // TODO implement internal toggle functionality

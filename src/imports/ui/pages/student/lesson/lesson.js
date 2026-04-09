@@ -109,7 +109,7 @@ Template.lesson.onCreated(function () {
       prepare: () => instance.state.set('loadingMaterials', true),
       receive: () => instance.state.set('loadingMaterials', false),
       failure: instance.displayError,
-      success: (material, hash) => {
+      success: (_material, hash) => {
         instance.state.set('materialUpdated', hash)
       }
     })
@@ -135,7 +135,9 @@ Template.lesson.onCreated(function () {
       args: { lessonIds: [lessonDoc._id] },
       failure: instance.displayError,
       success: unitDocs => {
-        unitDocs.forEach(doc => insertUpdate(UnitCollection, doc))
+        for (const doc of unitDocs) {
+          insertUpdate(UnitCollection, doc)
+        }
         const unitDoc = UnitCollection.findOne(lessonDoc.unit)
         instance.state.set('unitDoc', unitDoc)
       }
@@ -143,7 +145,7 @@ Template.lesson.onCreated(function () {
   })
 })
 
-Template.lesson.onDestroyed(function () {
+Template.lesson.onDestroyed(() => {
   API.dispose(lessonSubKeyStudent)
 })
 

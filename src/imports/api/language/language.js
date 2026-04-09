@@ -56,7 +56,9 @@ i18n.setLocale = locale => {
 
   _provider.setLocale(locale)
   setTimeout(() => {
-    _listeners.forEach(fn => fn(locale))
+    _listeners.forEach(fn => {
+      fn(locale)
+    })
   }, 0)
 }
 

@@ -1,10 +1,10 @@
 import { getCollection } from '../../../../../api/utils/getCollection'
 
-export const getEditorDocs = function () {
-  import { Pocket } from '../../pocket/Pocket'
-  import { Lesson } from '../../../../classroom/lessons/Lesson'
-  import { SchoolClass } from '../../../../classroom/schoolclass/SchoolClass'
-  import { Unit } from '../Unit'
+export const getEditorDocs = () => {
+  const { Pocket } = require('../../pocket/Pocket')
+  const { Lesson } = require('../../../../classroom/lessons/Lesson')
+  const { SchoolClass } = require('../../../../classroom/schoolclass/SchoolClass')
+  const { Unit } = require('../Unit')
 
   const UnitCollection = getCollection(Unit.name)
   const PocketCollection = getCollection(Pocket.name)

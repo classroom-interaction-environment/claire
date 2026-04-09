@@ -157,7 +157,7 @@ Template.groupsEditor.helpers({
 })
 
 Template.groupsEditor.events({
-  'hidden.bs.modal #manageGroupModal' (event, templateInstance) {
+  'hidden.bs.modal #manageGroupModal' (_event, templateInstance) {
     templateInstance.state.set({
       groupBuilderActive: false,
       groupEditMode: null

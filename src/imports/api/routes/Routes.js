@@ -22,8 +22,8 @@ const baseUrl = Meteor.absoluteUrl().slice(0, -1)
 Routes.fallback = {
   path: () => '*',
   label: 'routes.notFound',
-  triggersEnter: () => [function (context) {
-    if (context.params && context.params[0] && context.params[0].length === 5) {
+  triggersEnter: () => [(context) => {
+    if (context.params?.[0] && context.params[0].length === 5) {
       const code = context.params[0].substr(1, context.params[0].length)
       // todo extract CodeInvitation and load dynamically when required
       const queryParams = createInvitationURLQuery({ code })
@@ -140,7 +140,7 @@ Routes.codeRegister = {
   },
   data: {
     onSuccess ({ username, password }) {
-      Meteor.loginWithPassword(username, password, function (err) {
+      Meteor.loginWithPassword(username, password, (err) => {
         if (err) {
           Router.go(Routes.login)
         }
@@ -248,7 +248,7 @@ Object.keys(Routes).forEach(routeKey => {
 })
 
 // create default goto actions
-const loginTrigger = function () {
+const loginTrigger = () => {
   if (!Meteor.userId()) {
     // set redirect URL and go to login
     return toLoginRoute()

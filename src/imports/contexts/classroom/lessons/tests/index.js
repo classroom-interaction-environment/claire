@@ -1,7 +1,7 @@
 /* eslint-env mocha */
-describe('Lesson', function () {
-  import './LessonHelpers.tests'
-  import './LessonStates.tests'
-  import './LessonRuntime.tests'
-  import './Lesson.tests'
+describe('Lesson', () => {
+  require('./LessonHelpers.tests')
+  require('./LessonStates.tests')
+  require('./LessonRuntime.tests')
+  require('./Lesson.tests')
 })

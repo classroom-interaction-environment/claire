@@ -65,7 +65,7 @@ TaskResults.methods.saveTask = {
     'response.$': TaskResults.schema['response.$']
   },
   run: onServerExec(() => {
-    import { saveTaskResult } from './methods/saveTaskResult'
+    const { saveTaskResult } = require('./methods/saveTaskResult')
 
     return function (saveDoc) {
       const { userId } = this
@@ -89,8 +89,8 @@ TaskResults.publications.allByItem = {
     'references.$.itemId': String
   },
   roles: UserUtils.roles.teacher,
-  run: onServerExec(function () {
-    import { getAllTasksByItem } from './methods/getAllTasksByItem'
+  run: onServerExec(() => {
+    const { getAllTasksByItem } = require('./methods/getAllTasksByItem')
     return async function ({ references }) {
       const { userId } = this
       return getAllTasksByItem({ userId, references })
@@ -108,8 +108,8 @@ TaskResults.publications.byGroup = {
     groupId: String,
     itemId: String
   },
-  run: onServerExec(function () {
-    import { getAllTasksByGroupAndItem } from './methods/getAllTaskByGroup'
+  run: onServerExec(() => {
+    const { getAllTasksByGroupAndItem } = require('./methods/getAllTaskByGroup')
     return function ({ groupId, itemId }) {
       const { userId } = this
       return getAllTasksByGroupAndItem({ userId, groupId, itemId })
@@ -130,8 +130,8 @@ TaskResults.publications.byTask = {
       optional: true
     }
   },
-  run: onServerExec(function () {
-    import { getAllTaskResultsByTask } from './methods/getAllTaskResultsByTask'
+  run: onServerExec(() => {
+    const { getAllTaskResultsByTask } = require('./methods/getAllTaskResultsByTask')
     return function ({ lessonId, taskId, groupId }) {
       const { userId } = this
       return getAllTaskResultsByTask({ userId, lessonId, taskId, groupId })

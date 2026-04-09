@@ -28,15 +28,14 @@ const API = Template.navBeamer.setDependencies({
 })
 
 Template.navBeamer.onCreated(function onCreated () {
-  const instance = this
-  instance.state.set('availableLessons', [])
+  this.state.set('availableLessons', [])
 
-  instance.autorun(() => {
+  this.autorun(() => {
     if (!Meteor.userId()) return
     const beamerSub = SubsManager.subscribe(Beamer.publications.my.name)
     if (beamerSub.ready()) {
       const beamerDoc = Beamer.doc.get()
-      instance.state.set('beamerDoc', beamerDoc)
+      this.state.set('beamerDoc', beamerDoc)
     }
   })
 
@@ -44,7 +43,7 @@ Template.navBeamer.onCreated(function onCreated () {
     name: Settings.methods.logo.name,
     success: link => {
       if (link) {
-        instance.state.set('mainLogo', link)
+        this.state.set('mainLogo', link)
       }
     }
   })
@@ -55,29 +54,29 @@ Template.navBeamer.onCreated(function onCreated () {
     callbacks: {
       onError: API.notify,
       onReady: () => {
-        instance.state.set('lessonsSubComplete', true)
+        this.state.set('lessonsSubComplete', true)
       }
     }
   })
 
-  instance.autorun(() => {
-    if (!instance.state.get('lessonsSubComplete')) {
+  this.autorun(() => {
+    if (!this.state.get('lessonsSubComplete')) {
       return
     }
 
     const lessonId = getQueryParam('lessonId')
-    const availableLessons = instance.state.get('availableLessons')
+    const availableLessons = this.state.get('availableLessons')
 
     if (availableLessons.length > 0) {
       const currentLesson = availableLessons.find(entry => entry.lessonDoc._id === lessonId)
-      instance.state.set({ currentLesson })
+      this.state.set({ currentLesson })
     }
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const beamerDoc = Beamer.doc.get()
-    if (!beamerDoc || !instance.state.get('lessonsSubComplete')) {
-      return instance.state.set({
+    if (!beamerDoc || !this.state.get('lessonsSubComplete')) {
+      return this.state.set({
         availableLessons: []
       })
     }
@@ -90,7 +89,7 @@ Template.navBeamer.onCreated(function onCreated () {
     const runningLessons = getCollection(Lesson.name).find(query)
 
     if (runningLessons.count() === 0) {
-      return instance.state.set({
+      return this.state.set({
         availableLessons: []
       })
     }
@@ -121,7 +120,7 @@ Template.navBeamer.onCreated(function onCreated () {
             refsCount
           }
         })
-        instance.state.set({ availableLessons })
+        this.state.set({ availableLessons })
       }
     })
   })
@@ -150,7 +149,7 @@ Template.navBeamer.helpers({
   isCurrentLayout (value) {
     const instance = Template.instance()
     const beamerDoc = instance.state.get('beamerDoc')
-    return beamerDoc && beamerDoc.ui && beamerDoc.ui.grid === value
+    return beamerDoc?.ui && beamerDoc.ui.grid === value
   },
   mainLogo () {
    return Template.getState('mainLogo')
@@ -170,7 +169,7 @@ Template.navBeamer.events({
     templateInstance.state.set('onModal', type)
     templateInstance.$('#beamer-select-modal').modal('show')
   },
-  'click .color-selector-target': async function (event, templateInstance) {
+  'click .color-selector-target': async (event, templateInstance) => {
     event.preventDefault()
     const background = dataTarget(event, templateInstance)
     try {
@@ -179,7 +178,7 @@ Template.navBeamer.events({
       API.notify(err)
     }
   },
-  'click .grid-selector-target': async function (event, templateInstance) {
+  'click .grid-selector-target': async (event, templateInstance) => {
     event.preventDefault()
     const value = dataTarget(event, templateInstance, 'value')
     try {

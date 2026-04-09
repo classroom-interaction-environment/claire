@@ -6,13 +6,13 @@ import { getResetPasswordSubject, getResetPasswordText } from '../resetPassword'
 import { stub, restoreAll } from '../../../../../tests/testutils/stub'
 import { i18n } from '../../../language/language'
 
-describe('reset password', function () {
-  afterEach(function () {
+describe('reset password', () => {
+  afterEach(() => {
     restoreAll()
   })
 
-  describe(getResetPasswordSubject.name, function () {
-    it('returns the subject for a user\'s locale', function () {
+  describe(getResetPasswordSubject.name, () => {
+    it('returns the subject for a user\'s locale', () => {
       const siteName = Random.id(6)
       const defaultLocale = Random.id(6)
       const user = { locale: Random.id(6) }
@@ -29,7 +29,7 @@ describe('reset password', function () {
       })
       expect(subject(user)).to.equal('accounts.resetPassword.subject')
     })
-    it('returns the subject for a default locale as fallback', function () {
+    it('returns the subject for a default locale as fallback', () => {
       const siteName = Random.id(6)
       const defaultLocale = Random.id(6)
       const user = { locale: Random.id(6) }
@@ -51,8 +51,8 @@ describe('reset password', function () {
     })
   })
 
-  describe(getResetPasswordText.name, function () {
-    it('returns the text for the current user', function () {
+  describe(getResetPasswordText.name, () => {
+    it('returns the text for the current user', () => {
       const expiration = Random.id()
       const defaultLocale = Random.id()
       const user = {

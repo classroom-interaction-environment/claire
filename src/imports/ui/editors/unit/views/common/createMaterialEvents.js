@@ -20,10 +20,10 @@ export const createMaterialEvents = ({ API, onMaterialCreated = noop }) => {
 
   return {
     // MODALS
-    'hidden.bs.modal #uematerial-create-modal' (event, templateInstance) {
+    'hidden.bs.modal #uematerial-create-modal' (_event, templateInstance) {
       templateInstance.state.set('create', false)
     },
-    'hidden.bs.modal #uematerial-preview-modal' (event, templateInstance) {
+    'hidden.bs.modal #uematerial-preview-modal' (_event, templateInstance) {
       templateInstance.state.set('previewTarget', null)
     },
 
@@ -35,7 +35,7 @@ export const createMaterialEvents = ({ API, onMaterialCreated = noop }) => {
       subView.hooks.formOpen('create')
       setTimeout(() => API.showModal('uematerial-create-modal'), 50)
     },
-    'click .uematerial-select-button' (event, templateInstance) {
+    'click .uematerial-select-button' (event, _templateInstance) {
       event.preventDefault()
       API.showModal('uematerial-select-modal')
     },
@@ -79,7 +79,7 @@ export const createMaterialEvents = ({ API, onMaterialCreated = noop }) => {
         failure: er => API.notify(er)
       }).catch(e => API.notify(e))
     },
-    'click .uematerial-edit-button': async function (event, templateInstance) {
+    'click .uematerial-edit-button': async (event, templateInstance) => {
       event.preventDefault()
       const isMasterMaterial = dataTarget(event, templateInstance, 'master')
       const redirect = dataTarget(event, templateInstance, 'redirect')
@@ -163,7 +163,7 @@ export const createMaterialEvents = ({ API, onMaterialCreated = noop }) => {
                   phases: unitDoc.phases,
                   field: field,
                   targetId: targetId
-                }, (err, phaseDoc) => {
+                }, (err, _phaseDoc) => {
                   if (err) {
                     return API.notify(err)
                   }

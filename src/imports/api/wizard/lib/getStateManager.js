@@ -33,7 +33,7 @@ export const getStateManager = (defaultState, onNext, onBack) => {
       setTimeout(() => {
         const targetName = `.${nextStateName}-scrollanchor`
         const $target = $(targetName)
-        if ($target && $target.get(0)) {
+        if ($target?.get(0)) {
           $target.get(0).scrollIntoView({ behavior: 'smooth' })
         }
       }, 50)
@@ -55,7 +55,7 @@ export const getStateManager = (defaultState, onNext, onBack) => {
         setTimeout(() => {
           const targetName = `.${prevName}-scrollanchor`
           const $target = $(targetName)
-          if ($target && $target.get(0)) {
+          if ($target?.get(0)) {
             $target.get(0).scrollIntoView({ behavior: 'smooth' })
           }
         }, 50)

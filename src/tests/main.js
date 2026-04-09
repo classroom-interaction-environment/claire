@@ -2,14 +2,14 @@ import 'meteor/aldeed:collection2/static';
 import { onClientExec, onServerExec } from '../imports/api/utils/archUtils'
 import { initLanguage } from '../imports/api/language/initLanguage'
 
-before(async function () {
+before(async () => {
   await initLanguage('en')
 })
 
-onClientExec(function () {
-  import './client/main'
+onClientExec(() => {
+  require('./client/main')
 })
 
-onServerExec(function () {
-  import './server'
+onServerExec(() => {
+  require('./server')
 })

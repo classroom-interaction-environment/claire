@@ -9,10 +9,10 @@ import { $in } from '../../../api/utils/query/inSelector'
  * users of a given class.
  * @return {function({classId?: *}): *}
  */
-export const profileImagesByClass = function () {
+export const profileImagesByClass = () => {
   // initialization phase
-  import { SchoolClass } from '../../classroom/schoolclass/SchoolClass'
-  import { ProfileImages } from './ProfileImages'
+  const { SchoolClass } = require('../../classroom/schoolclass/SchoolClass')
+  const { ProfileImages } = require('./ProfileImages')
 
   // run phase
   return async function ({ classId, skip }) {
@@ -30,7 +30,7 @@ export const profileImagesByClass = function () {
       .find({ _id: $in(students.concat(teachers)) }, { fields: { profileImage: 1 }})
       .fetchAsync()
     const allUsersImages = allUsers
-      .map(user => (user || {}).profileImage)
+      .map(user => user?.profileImage)
       .filter(Boolean)
 
     const query = { _id: { $in: allUsersImages } }

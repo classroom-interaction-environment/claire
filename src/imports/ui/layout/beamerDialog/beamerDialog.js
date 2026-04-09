@@ -7,8 +7,7 @@ import './beamerDialog.html'
 const API = Template.beamerDialog.setDependencies()
 
 Template.beamerDialog.onCreated(function () {
-  const instance = this
-  instance.state.set('presentLoaded', false)
+  this.state.set('presentLoaded', false)
 })
 
 Template.beamerDialog.helpers({
@@ -31,13 +30,13 @@ Template.beamerDialog.helpers({
 })
 
 Template.beamerDialog.events({
-  'show.bs.modal #beamerInitDialog' (event, templateInstance) {
+  'show.bs.modal #beamerInitDialog' (_event, templateInstance) {
     templateInstance.state.set('initVisible', true)
   },
-  'hidden.bs.modal #beamerInitDialog' (event, templateInstance) {
+  'hidden.bs.modal #beamerInitDialog' (_event, templateInstance) {
     templateInstance.state.set('initVisible', false)
   },
-  'show.bs.modal #beamerControlDialog' (event, templateInstance) {
+  'show.bs.modal #beamerControlDialog' (_event, templateInstance) {
     if (!templateInstance.state.get('presentLoaded')) {
       import('../../pages/present/present')
         .catch(API.notify)
@@ -45,7 +44,7 @@ Template.beamerDialog.events({
     }
     templateInstance.state.set('controlVisible', true)
   },
-  'hidden.bs.modal #beamerControlDialog' (event, templateInstance) {
+  'hidden.bs.modal #beamerControlDialog' (_event, templateInstance) {
     templateInstance.state.set('controlVisible', false)
   },
   'click .open-beamer-local-button' (event, templateInstance) {
@@ -62,7 +61,7 @@ Template.beamerDialog.events({
     const location = Routes.present.path()
     setTimeout(() => Beamer.actions.init(location), 500)
   },
-  'click .end-beamer-button': async function (event, templateInstance) {
+  'click .end-beamer-button': async (event, templateInstance) => {
     event.preventDefault()
     try {
       await Beamer.actions.unload()

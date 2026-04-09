@@ -24,14 +24,13 @@ const API = Template.groupBuilder.setDependencies({
 })
 
 Template.groupBuilder.onCreated(function () {
-  const instance = this
-  const { classDoc, phases, material } = instance.data
+  const { classDoc, phases, material } = this.data
   const translate = API.translate
   const groupTitleDefault = translate('groupBuilder.defaultTitle')
 
-  instance.builder = new GroupBuilder({ groupTitleDefault })
-  instance.builder.setOptions({ users: classDoc?.students ?? [] })
-  instance.state.set('view', views.defineSettings)
+  this.builder = new GroupBuilder({ groupTitleDefault })
+  this.builder.setOptions({ users: classDoc?.students ?? [] })
+  this.state.set('view', views.defineSettings)
 
   const schemaOptions = { phases, material, translate }
   settingsSchema = Schema.create(createGroupsSchema(schemaOptions))
@@ -76,7 +75,7 @@ Template.groupBuilder.helpers({
     const users = classDoc?.students ?? []
     return getUsersCollection().find({ _id: { $in: users } }, { sort: { username: 1 } })
   },
-  suggestions (users) {
+  suggestions (_users) {
     return [
       { users: 2, groups: 1 }
     ]
@@ -87,7 +86,7 @@ Template.groupBuilder.helpers({
 })
 
 Template.groupBuilder.events({
-  'submit #createGroupsForm' (event, templateInstance) {
+  'submit #createGroupsForm' (event, _templateInstance) {
     event.preventDefault()
   },
   'click .grp-init-btn' (event, templateInstance) {

@@ -6,12 +6,11 @@ import { getLocalCollection } from '../../../infrastructure/collection/getLocalC
  * @param context
  * @param _id
  * @param timeout
- * @param prepare
  * @param receive
  * @param success
  * @param failure
  */
-export const removeContextDoc = ({ context, _id, timeout, prepare, receive, success, failure }) => {
+export const removeContextDoc = ({ context, _id, timeout, receive, success, failure }) => {
   if (context.isFilesCollection) {
     return callMethod({
       name: context.methods.delete.name,

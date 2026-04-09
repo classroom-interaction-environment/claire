@@ -104,10 +104,9 @@ Template.lessons.onCreated(function () {
 })
 
 Template.lessons.onDestroyed(function onLessonsDestroyed () {
-  const instance = this
-  instance.state.set('schoolClassesReady', false)
-  instance.state.set('lessonReady', false)
-  instance.state.set('unitsReady', false)
+  this.state.set('schoolClassesReady', false)
+  this.state.set('lessonReady', false)
+  this.state.set('unitsReady', false)
   API.dispose('lessons')
 })
 
@@ -234,7 +233,9 @@ function loadUnits (lessonIds, templateInstance, errors = []) {
 
       templateInstance.state.set('loadErrors', errors)
       templateInstance.state.set('unitsReady', true)
-      unitDocs.forEach(doc => insertUpdate(UnitLocalCollection, doc))
+      unitDocs.forEach(doc => {
+        insertUpdate(UnitLocalCollection, doc)
+      })
     })
   }
   else if (templateInstance.state.get('lessonReady')) {

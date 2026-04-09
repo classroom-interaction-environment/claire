@@ -1,4 +1,4 @@
-import { Meteor } from 'meteor/meteor'
+
 
 import { getCollection } from '../../api/utils/getCollection'
 import { onServer } from '../../api/utils/archUtils'
@@ -137,7 +137,7 @@ Beamer.methods.insert = {
 
 Beamer.methods.update = {
   name: 'beamer.methods.update',
-  schema: (function () {
+  schema: (() => {
     const updateSchema = Object.assign({}, { _id: String }, Beamer.schema)
     delete updateSchema.createdBy
     return updateSchema

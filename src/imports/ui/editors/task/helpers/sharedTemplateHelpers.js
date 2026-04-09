@@ -6,46 +6,38 @@ import { translate } from '../../../../api/language/translate'
 
 // TODO check if these are still relevant to be shared
 
-Template.registerHelper('taskPageContentType', function () {
-  return TaskDefinitions.helpers.contentTypes()
-})
+Template.registerHelper('taskPageContentType', () => TaskDefinitions.helpers.contentTypes())
 
-Template.registerHelper('taskPageMetaType', function (contentType, subcategoryFilter) {
+Template.registerHelper('taskPageMetaType', (contentType, subcategoryFilter) => {
   check(contentType, String)
   return TaskDefinitions.helpers.getSubtypes(contentType, subcategoryFilter)
 })
 
-Template.registerHelper('taskPageSubcategories', function (contentType) {
+Template.registerHelper('taskPageSubcategories', (contentType) => {
   check(contentType, String)
   const subCategories = TaskDefinitions.helpers.getSubtypeCategories(contentType)
   if (!subCategories || !subCategories.length) return
   return subCategories
 })
 
-Template.registerHelper('taskPageContentIcon', function (key) {
-  return TaskDefinitions.helpers.contentIcon(key)
-})
+Template.registerHelper('taskPageContentIcon', (key) => TaskDefinitions.helpers.contentIcon(key))
 
-Template.registerHelper('taskPageMetaIcon', function (type, context) {
+Template.registerHelper('taskPageMetaIcon', (type, context) => {
   const iTaskDef = TaskDefinitions.helpers.getMeta(type)
   const element = iTaskDef.get(context)
   return element?.icon
 })
 
-Template.registerHelper('taskPageContentLabel', function (key) {
-  return TaskDefinitions.helpers.contentLabel(key)
-})
+Template.registerHelper('taskPageContentLabel', (key) => TaskDefinitions.helpers.contentLabel(key))
 
-Template.registerHelper('taskPageMetaLabel', function (contentKey, metaKey) {
-  return TaskDefinitions.helpers.metaLabel(contentKey, metaKey)
-})
+Template.registerHelper('taskPageMetaLabel', (contentKey, metaKey) => TaskDefinitions.helpers.metaLabel(contentKey, metaKey))
 
 Template.registerHelper('toTitle', function toTitle (str) {
   return str || translate('common.untitled')
 })
 
 function strReduce (args = ['']) {
-  return '' + args.reduce((a, b) => String(a) + String(b))
+  return `${args.reduce((a, b) => String(a) + String(b))}`
 }
 
 Template.registerHelper('str', function str (...args) {

@@ -12,7 +12,7 @@ const debug = createLog({ name: formName, type: 'debug', devOnly: true })
 export const Form = {}
 Form.name = formName
 
-Form.initialized = function () {
+Form.initialized = () => {
   if (!initialized.get()) {
     initForms()
       .then(() => initialized.set(true))
@@ -23,9 +23,7 @@ Form.initialized = function () {
 
 Form.renderer = {
   template: 'caroForm',
-  load: async function () {
-    return import('./caroform/caroform')
-  }
+  load: async () => import('./caroform/caroform')
 }
 
 export const initForms = async function initForms () {

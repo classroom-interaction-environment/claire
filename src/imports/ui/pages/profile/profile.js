@@ -82,8 +82,7 @@ function decorateUserDoc (userDoc) {
 }
 
 Template.userProfile.onCreated(function () {
-  const instance = this
-  instance.guide = Guide.tour({
+  this.guide = Guide.tour({
     key: 'profile',
     allowClose: true,
     showProgress: true,
@@ -118,7 +117,7 @@ Template.userProfile.onCreated(function () {
     name: Settings.methods.get,
     args: {},
     failure: err => API.fatal(err),
-    success: doc => instance.state.set('settingsDoc', doc)
+    success: doc => this.state.set('settingsDoc', doc)
   })
 
   /**
@@ -132,8 +131,8 @@ Template.userProfile.onCreated(function () {
    */
   const ensureProfileImage = user => {
     if (user.profileImage && !hasProfileImageLoaded(user.profileImage)) {
-      instance.state.set('loadingProfileImage', true)
-      const onComplete = () => setTimeout(() => instance.state.set('loadingProfileImage', false), 300)
+      this.state.set('loadingProfileImage', true)
+      const onComplete = () => setTimeout(() => this.state.set('loadingProfileImage', false), 300)
       loadProfileImage({
         user,
         onError: err => {
@@ -145,16 +144,16 @@ Template.userProfile.onCreated(function () {
     }
   }
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const userId = Router.param('userId')
-    instance.state.set('userId', userId)
+    this.state.set('userId', userId)
 
     // if this is our user, we load their profile with
     // Meteor's current user helpers
     if (userId === Meteor.userId()) {
       const user = Meteor.user()
-      instance.state.set('user', user)
-      instance.state.set('loadComplete', true)
+      this.state.set('user', user)
+      this.state.set('loadComplete', true)
       ensureProfileImage(user)
     }
 
@@ -166,25 +165,23 @@ Template.userProfile.onCreated(function () {
         }
         else {
           const user = decorateUserDoc(userDoc)
-          instance.state.set('user', user)
+          this.state.set('user', user)
           ensureProfileImage(user)
         }
-        instance.state.set('loadComplete', true)
+        this.state.set('loadComplete', true)
       })
     }
   })
 })
 
 Template.userProfile.onDestroyed(function () {
-  const instance = this
-  instance.guide.dispose()
+  this.guide.dispose()
 })
 
 Template.userProfile.onRendered(function () {
-  const instance = this
-  instance.guide.autostart(({ hasViewed, start, stop }) => {
-    const user = instance.state.get('user')
-    const loadComplete = instance.state.get('loadComplete')
+  this.guide.autostart(({ hasViewed /*, start, stop */ }) => {
+    const user = this.state.get('user')
+    const loadComplete = this.state.get('loadComplete')
     if (loadComplete && user) {
       return hasViewed(user)
     }
@@ -211,7 +208,7 @@ Template.userProfile.helpers({
     return roles && Object.keys(roles)
   },
   getUserRoles (roles, group) {
-    return roles && roles[group]
+    return roles?.[group]
   },
   loadingProfileImage () {
     return Template.getState('loadingProfileImage')
@@ -231,7 +228,7 @@ Template.userProfile.helpers({
   },
   profileImageDoc () {
     const user = Meteor.user()
-    return { fileId: user && user.profileImage }
+    return { fileId: user?.profileImage }
   },
   profileSchema (fieldName) {
     if (!profileSchemas[fieldName]) {
@@ -265,7 +262,7 @@ Template.userProfile.events({
     formReset('editProfileForm')
     templateInstance.state.set('edit', false)
   },
-  'click .delete-profile-image': async function (event, templateInstance) {
+  'click .delete-profile-image': async (_event, templateInstance) => {
     const { profileImage } = Meteor.user()
 
     await callMethod({
@@ -287,18 +284,18 @@ Template.userProfile.events({
       }
     })
   },
-  'change .research-option-select' (event, templateInstance) {
+  'change .research-option-select' (_event, templateInstance) {
     const form = templateInstance.$('#researchOptionsForm').get(0)
     const formData = new window.FormData(form)
     const participateVisible = Array.from(formData.values()).every(val => !!val)
     templateInstance.state.set({ participateVisible })
   },
-  'hidden.bs.modal #resarch-optin-modal' (event, templateInstance) {
+  'hidden.bs.modal #resarch-optin-modal' (_event, templateInstance) {
     const form = templateInstance.$('#researchOptionsForm').get(0)
     form.reset()
     templateInstance.state.set({ participateVisible: false })
   },
-  'click .research-optin-button' (event, templateInstance) {
+  'click .research-optin-button' (event, _templateInstance) {
     event.preventDefault()
     API.showModal('resarch-optin-modal')
   },
@@ -316,7 +313,7 @@ Template.userProfile.events({
       success: () => API.notify()
     })
   },
-  'click .research-resend-button' (event, templateInstance) {
+  'click .research-resend-button' (_event, templateInstance) {
     callMethod({
       name: Users.methods.setResearch,
       args: { participate: true },
@@ -332,7 +329,7 @@ Template.userProfile.events({
     const insertDoc = formIsValid(profileSchemas[fieldName], 'editProfileForm')
     if (!insertDoc) return
 
-    Meteor.call(Users.methods.updateProfile.name, insertDoc, (err, res) => {
+    Meteor.call(Users.methods.updateProfile.name, insertDoc, (err, _res) => {
       if (err) {
         API.notify(err)
       }
@@ -358,7 +355,7 @@ Template.userProfile.events({
       }
     })
   },
-  'click .help-btn': function (event, templateInstance) {
+  'click .help-btn': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.guide.start()
   }

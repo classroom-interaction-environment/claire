@@ -48,7 +48,7 @@ TaskWorkingState.methods.saveState = {
   name: 'taskWorkingState.methods.saveState',
   schema: TaskWorkingState.schema,
   run: onServerExec(() => {
-    import { saveTaskWorkingState } from './methods/saveTaskWorkingState'
+    const { saveTaskWorkingState } = require('./methods/saveTaskWorkingState')
 
     return async function ({ lessonId, taskId, groupId, complete, page, progress }) {
       const { userId } = this
@@ -68,7 +68,7 @@ TaskWorkingState.publications.byLesson = {
     lessonId: String
   },
   run: onServerExec(() => {
-    import { taskWorkingStateByLesson } from './methods/byLesson'
+    const { taskWorkingStateByLesson } = require('./methods/byLesson')
     return async function ({ lessonId }) {
       const { userId } = this
       return taskWorkingStateByLesson({ lessonId, userId })
@@ -91,7 +91,7 @@ TaskWorkingState.publications.myTask = {
     }
   },
   run: onServerExec(() => {
-    import { getMyTaskWorkingState } from './methods/getMyTaskWorkingState'
+    const { getMyTaskWorkingState } = require('./methods/getMyTaskWorkingState')
     return async function ({ lessonId, taskId, groupId }) {
       const { userId } = this
       return getMyTaskWorkingState({ lessonId, taskId, groupId, userId })

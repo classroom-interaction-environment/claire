@@ -10,7 +10,7 @@ import { Hierarchy } from '../../accounts/roles/Hierarchy'
 
 export const createEditorPublication = function createEditorPublication (context) {
   const { name, publicFields, schema } = context
-  const debug = createLog({ name, type: 'debug' })
+  const _debug = createLog({ name, type: 'debug' })
   const fields = Object.assign(Fields.getDefault(), Curriculum.getDefaultPublicFields(), publicFields)
   const isFilesCollection = isFilesContext(context)
   return {

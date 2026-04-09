@@ -7,7 +7,7 @@ Template.textRendererrt.helpers({
     const $rt = $(rt)
     const { print } = Template.instance().data
     if (!print) {
-      $rt.find('img').each(function (index, img) {
+      $rt.find('img').each((_index, img) => {
         const image = $(img)
         const src = image.attr('src')
         image

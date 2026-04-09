@@ -22,5 +22,7 @@ function rateLimitBuiltins () {
   [
     'meteor_facts',
     'users'
-  ].forEach(name => rateLimitPublication({ name }))
+  ].forEach(name => {
+    rateLimitPublication({ name })
+  })
 }

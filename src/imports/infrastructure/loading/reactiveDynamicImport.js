@@ -1,6 +1,6 @@
 import { ReactiveVar } from 'meteor/reactive-var'
 
-export const reactiveDynamicImport = function ({ load, delay = 0 }) {
+export const reactiveDynamicImport = ({ load, delay = 0 }) => {
   const loaded = new ReactiveVar()
 
   setTimeout(() => {

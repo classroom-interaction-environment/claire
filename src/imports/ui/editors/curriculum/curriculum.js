@@ -15,9 +15,8 @@ const API = Template.curriculum.setDependencies({
 })
 
 Template.curriculum.onCreated(function () {
-  const instance = this
 
-  instance.templateData = Object.assign({}, instance.data, {
+  this.templateData = Object.assign({}, this.data, {
     insertDoc () {
 
     },
@@ -29,15 +28,15 @@ Template.curriculum.onCreated(function () {
     }
   })
 
-  instance.autorun(() => {
+  this.autorun(() => {
     const view = getQueryParam('view')
     const currentView = curriculumViewStates[view] || curriculumViewStates.heuristics
 
-    instance.state.set('currentView', currentView.name)
+    this.state.set('currentView', currentView.name)
   })
 })
 
-Template.curriculum.onDestroyed(function () {
+Template.curriculum.onDestroyed(() => {
   API.dispose(curriculumEditorSubKey)
 })
 

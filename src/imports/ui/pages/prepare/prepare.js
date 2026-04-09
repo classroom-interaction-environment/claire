@@ -29,8 +29,7 @@ const lessonComplete = createCompleteKey(Lesson)
 const schoolClassComplete = createCompleteKey(SchoolClass)
 
 Template.prepare.onCreated(async function () {
-  const instance = this
-  instance.state.set('currentViewName', PrepareViewStates.create.name)
+  this.state.set('currentViewName', PrepareViewStates.create.name)
 
   // we only need to load a subset of available units/pockets/dimensions
   // which has already been implemented in the method below:
@@ -43,7 +42,7 @@ Template.prepare.onCreated(async function () {
     name: SchoolClass.methods.my,
     failure: API.notify,
     collection: getLocalCollection(SchoolClass.name),
-    success: () => instance.state.set(createCompleteKey(SchoolClass), true)
+    success: () => this.state.set(createCompleteKey(SchoolClass), true)
   })
 
   // TODO load after class has been selected to narrow down loading to a few docs
@@ -67,7 +66,7 @@ Template.prepare.onCreated(async function () {
     args: args,
     collection: LessonCollection,
     failure: API.notify,
-    success: () => instance.state.set(createCompleteKey(Lesson), true)
+    success: () => this.state.set(createCompleteKey(Lesson), true)
   })
 })
 
@@ -88,7 +87,7 @@ Template.prepare.helpers({
       nav: {
         justified: true
       },
-      onViewSelected: function (currentViewName) {
+      onViewSelected: (currentViewName) => {
         instance.state.set({ currentViewName })
       }
     }

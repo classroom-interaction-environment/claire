@@ -29,8 +29,8 @@ export const Files = createContextRegistry({
 
 Files.helpers = {}
 
-Files.getMaterialContexts = auto(function () {
-  import { isMaterial } from '../material/isMaterial'
+Files.getMaterialContexts = auto(() => {
+  const { isMaterial } = require('../material/isMaterial')
 
   return function getMaterialContexts () {
     const contexts = []
@@ -43,9 +43,9 @@ Files.getMaterialContexts = auto(function () {
   }
 })
 
-onClientExec(function () {
-  import { ITaskDefinition } from '../tasks/definitions/ITaskDefinition'
-  import { FilesTemplates } from './FilesTemplates'
+onClientExec(() => {
+  const { ITaskDefinition } = require('../tasks/definitions/ITaskDefinition')
+  const { FilesTemplates } = require('./FilesTemplates')
 
   /** @deprecated move into own module FilesTemplates **/
   Files.templates = FilesTemplates
@@ -57,9 +57,7 @@ onClientExec(function () {
    */
   Files.renderer = {
     template: 'fileRenderer',
-    load: function () {
-      return import('../../ui/renderer/files/fileRenderer')
-    }
+    load: () => import('../../ui/renderer/files/fileRenderer')
   }
 
   /**
@@ -104,9 +102,9 @@ onClientExec(function () {
     }
   }
 
-  Files.helpers.getRenderer = function (name) {
+  Files.helpers.getRenderer = (name) => {
     const context = filesMap.get(name)
-    return (context && context.material.renderer)
+    return (context?.material.renderer)
       ? context.material.renderer.main
       : Files.templates.renderer
   }
@@ -140,7 +138,7 @@ onClientExec(function () {
    * @deprecated extract into external method
    * @param initContexts
    */
-  Files.initialize = function (initContexts) {
+  Files.initialize = (initContexts) => {
     if (initialized.get()) {
       return initialized
     }
@@ -162,12 +160,12 @@ onClientExec(function () {
   ITaskDefinition(Files, filesMap)
 })
 
-onServerExec(function () {
-  import { nullConverter } from './shared/converters/nullConverter'
+onServerExec(() => {
+  const { nullConverter } = require('./shared/converters/nullConverter')
 
-  Files.helpers.getConverter = function (name) {
+  Files.helpers.getConverter = (name) => {
     const context = filesMap.get(name)
-    return (context && context.converter)
+    return (context?.converter)
       ? context.converter
       : nullConverter
   }
