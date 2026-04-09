@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor'
-import { auto, onClient, onServer, onServerExec } from '../../../../api/utils/archUtils'
+import { onClient, onServer, onServerExec } from '../../../../api/utils/archUtils'
 import { AdminErrors } from './AdminErrors'
 import { Hierarchy } from '../../../../api/accounts/roles/Hierarchy'
 

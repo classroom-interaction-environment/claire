@@ -4,7 +4,6 @@ import { Admin } from '../Admin'
 import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
 import { Accounts } from 'meteor/accounts-base'
-import { UserUtils } from '../../users/UserUtils'
 import { UserFactory } from '../../../../../api/accounts/registration/UserFactory'
 import { Users } from '../../users/User'
 import { onServerExec } from '../../../../../api/utils/archUtils'
@@ -19,6 +18,7 @@ import { count } from '../../../../../utils/count'
 import { expectThrow } from '../../../../../../tests/testutils/expectThrow'
 import { PermissionDeniedError } from '../../../../../api/errors/types/PermissionDeniedError'
 import { DocNotFoundError } from '../../../../../api/errors/types/DocNotFoundError'
+import { Hierarchy } from '../../../../../api/accounts/roles/Hierarchy'
 
 describe(Admin.name, () => {
   let AdminCollection
@@ -59,7 +59,7 @@ describe(Admin.name, () => {
             lastName: Random.id(),
             email: Random.id(),
             institution: Random.id(),
-            role: UserUtils.roles.admin
+            role: Hierarchy.admin
           }
           await expectThrow({
             fn: () => createUser.call(env, args),
@@ -78,7 +78,7 @@ describe(Admin.name, () => {
           expect(await count(AdminCollection, { userId })).to.equal(1)
 
           const env = { userId }
-          const created = await createUser.call(env, { role: UserUtils.roles.admin })
+          const created = await createUser.call(env, { role: Hierarchy.admin })
           expect(created).to.equal(newUserId)
           expect(await count(AdminCollection, { userId })).to.equal(1)
           expect(await count(AdminCollection, { userId: newUserId })).to.equal(1)
@@ -228,13 +228,12 @@ describe(Admin.name, () => {
         })
         it('updates the user\'s role', async () => {
           const userId = await UsersCollection.insertAsync({ username: Random.id() })
-          const role = Random.id()
+          const role = Hierarchy.teacher
           const group = Random.id()
 
           stub(Roles, 'setUserRolesAsync', async () => true)
           stub(Roles, 'userIsInRoleAsync', async () => userId)
-          stub(UserUtils, 'roleExists', () => true)
-
+          
           expect(await updateRole.call({}, { userId, role, group })).to.equal(1)
         })
         it('makes admin if not already admin and will be admin',async () => {
@@ -243,11 +242,10 @@ describe(Admin.name, () => {
           await AdminCollection.insertAsync({ userId: execUserId })
 
           const newAdminUserId = await UsersCollection.insertAsync({ username: Random.id() })
-          const role = UserUtils.roles.admin
+          const role = Hierarchy.admin
 
           stub(Roles, 'setUserRolesAsync', async () => true)
           stub(Roles, 'userIsInRoleAsync', async () => newAdminUserId)
-          stub(UserUtils, 'roleExists', () => true)
 
           expect(await count(AdminCollection, { userId: newAdminUserId })).to.equal(0)
           expect(await updateRole.call(env, { userId: newAdminUserId, role })).to.equal(1)
@@ -260,11 +258,10 @@ describe(Admin.name, () => {
           await AdminCollection.insertAsync({ userId: execUserId })
           await AdminCollection.insertAsync({ userId: oldAdminUserId })
 
-          const role = UserUtils.roles.teacher
+          const role = Hierarchy.teacher
 
           stub(Roles, 'setUserRolesAsync', async () => true)
           stub(Roles, 'userIsInRoleAsync', async () => oldAdminUserId)
-          stub(UserUtils, 'roleExists', () => true)
 
           expect(await count(AdminCollection, { userId: oldAdminUserId })).to.equal(1)
           expect(await updateRole.call(env, { userId: oldAdminUserId, role })).to.equal(1)
