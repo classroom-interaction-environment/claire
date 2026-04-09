@@ -12,8 +12,6 @@
     "format:code-fix": "npx @biomejs/biome format --write",
     "lint:style": "stylelint \"**/*.scss\"",
     "lint:style-fix": "stylelint --fix \"**/*.scss\"",
-    "lint:markdown": "markdownlint \"**/*.md\" --config ./.markdownlint.json",
-    "lint:markdown-fix": "markdownlint --fix \"**/*.md\" --config ./.markdownlint.json",
     "build:docs": "jsdoc ./ -c ./jsdoc.json -r -d ../docs/api --readme ../README.md",
     "pretest-watch": "echo *****prestest*****",
     "visualize": "meteor --production --extra-packages bundle-visualizer,dynamic-import,zodern:profile-require --settings=settings.json",
