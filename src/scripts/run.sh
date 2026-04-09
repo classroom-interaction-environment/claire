@@ -5,7 +5,7 @@ CLAIRE_PATH=$(pwd)
 cd ${CLAIRE_PATH}/src
 
 PORT=3030
-PACKAGE_DIRS="${CLAIRE_PATH}/lib/:${CLAIRE_PATH}/blaze/packages"
+PACKAGE_DIRS="${CLAIRE_PATH}/lib/:${CLAIRE_PATH}/blaze/packages:${CLAIRE_PATH}/plugins/"
 
 set -e
 

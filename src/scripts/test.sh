@@ -90,10 +90,11 @@ done
 
 cd ..
 LIB_PATH=$(pwd)/lib
+PLUGIN_PATH=$(pwd)/plugins
 CARO_PATH=$(pwd)
 cd ${CARO_PATH}/src
 
-T_PACKAGE_DIRS="${LIB_PATH}:${CARO_PATH}/lib/api:${CARO_PATH}/lib/ui:${CARO_PATH}/lib/contexts:${CARO_PATH}/lib/dev/:${CARO_PATH}/meteor-mocha/"
+T_PACKAGE_DIRS="${LIB_PATH}:${PLUGIN_PATH}"
 
 PORT=3099
 
