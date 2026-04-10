@@ -12,14 +12,14 @@ Package.describe({
 })
 
 Npm.depends({
-  nouislider: '14.6.3'
+  // nouislider: '14.6.3'
 })
 
 Package.onUse(function (api) {
   // api.versionsFrom('1.6')
   api.use('ecmascript')
   api.use('claire:plugin-registry')
-  api.use('muqube:autoform-nouislider')
+  api.use('jkuester:autoform-nouislider')
   api.addFiles('item-range.js')
 })
 

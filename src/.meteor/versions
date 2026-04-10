@@ -55,8 +55,9 @@ http@1.4.4
 id-map@1.2.0
 inter-process-messaging@0.1.2
 jkuester:autoform-hint@1.0.0
+jkuester:autoform-nouislider@0.7.0
 jkuester:autoform-password2@3.0.0
-jkuester:autoform-tags@2.1.1
+jkuester:autoform-tags@3.0.0
 jkuester:autoform-trix@3.0.0
 jkuester:reactive-queue@1.0.0
 jkuester:template-loader@2.0.0
@@ -87,7 +88,6 @@ mongo@2.2.0
 mongo-decimal@0.2.0
 mongo-dev-server@1.1.1
 mongo-id@1.0.9
-muqube:autoform-nouislider@0.7.0
 npm-mongo@6.16.1
 observe-sequence@2.0.0
 ordered-dict@1.2.0

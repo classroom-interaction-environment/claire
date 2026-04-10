@@ -112,5 +112,5 @@ dist
 .DS_Store
 
 # external packages lib, blaze etc.
-lib/
+lib*/
 ./blaze/
