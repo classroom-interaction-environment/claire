@@ -1,0 +1,52 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: CCLAIRE - The Classroom Interaction Realtime Environment
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Jan
+    family-names: Küster
+    email: jkuester@uni-bremen.de
+    affiliation: University of Bremen
+    orcid: 'https://orcid.org/0009-0008-8088-9837'
+  - given-names: Imke A.M.
+    family-names: Meyer
+    email: imeyer@uni-bremen.de
+    affiliation: University of Bremen
+    orcid: 'https://orcid.org/0000-0001-8261-365X'
+  - given-names: Wolf
+    family-names: Karsten D.
+    email: wolf@uni-bremen.de
+    affiliation: University of Bremen
+    orcid: 'https://orcid.org/0000-0002-4151-840X'
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.19495085
+    description: 'Zenodo base DOI, linking to latest releases'
+repository-code: >-
+  https://github.com/classroom-interaction-environment/claire
+abstract: >-
+  CLAIRE is a classroom management, enriched with reflexive processes.
+  It is designed to emphasize on methods and interactions with a high reflexive outcome in students and teachers.
+  It encourages non-behavioristic teaching by being as non-opinionated as possible when it comes to the interactions within the classroom.
+
+  → teachers can design a fully detailed list of phases for a lesson but there is no determinism forcing them to execute their lesson in this sequence
+
+  → teachers can freely activate / deactivate learning material for students and the projector at any moment of an active lesson
+
+  → students are free to skip any interaction
+
+  → teachers and students can create artifacts together, based on student's replies and reflexive discourse
+
+  → the system does not enforce to reveal the identity an answer's respondent to the rest of the class
+keywords:
+  - classroom
+  - elarning
+  - webapp
+  - education
+  - learning
+license: AGPL-3.0

@@ -1,10 +1,13 @@
-# CLAIRE - The Classroom Interaction Runtime Environment
+# CLAIRE - The Classroom Interaction Realtime Environment
+
+![CLAIRE Logo](./resources/logo/claire-logo.png)
 
 [![built with Meteor](https://img.shields.io/badge/Meteor-2.7.3-green?logo=meteor&logoColor=white)](https://meteor.com)
 [![Test suite](https://github.com/classroom-interaction-environment/claire/actions/workflows/tests.yml/badge.svg)](https://github.com/classroom-interaction-environment/claire/actions/workflows/tests.yml)
 [![CodeQL](https://github.com/classroom-interaction-environment/claire/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/classroom-interaction-environment/claire/actions/workflows/codeql-analysis.yml)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19495085.svg)](https://doi.org/10.5281/zenodo.19495085)
 ![GitHub](https://img.shields.io/github/license/classroom-interaction-environment/claire)
 
 CLAIRE is a classroom management, enriched with reflexive processes.
@@ -19,6 +22,41 @@ no determinism forcing them to execute their lesson in this sequence
 * students are free to skip any interaction
 * teachers and students can create artifacts together, based on student's replies and reflexive discourse
 * the system does not enforce to reveal the identity an answer's respondent to the rest of the class
+
+## Citing CLAIRE
+
+If you want to cite CLAIRE in your work, please use the following options:
+
+DOI: https://doi.org/10.5281/zenodo.19495085
+
+APA: 
+```
+Küster, J., Meyer, I., & Wolf, K. D. (2026). CLAIRE - The Classroom Interaction Realtime Environment (1.0.0). 
+Zenodo. https://doi.org/10.5281/zenodo.19495085
+```
+
+BibTex:
+```bibtex
+@software{kuster_2026_19495085,
+  author       = {Küster, Jan and Meyer, Imke and Wolf, Karsten D.}, 
+  title        = {CLAIRE - The Classroom Interaction Realtime Environment},
+  month        = apr,
+  year         = 2026,
+  publisher    = {Zenodo},
+  version      = {1.0.0},
+  doi          = {10.5281/zenodo.19495085},
+  url          = {https://doi.org/10.5281/zenodo.19495085},
+  swhid        = {swh:1:dir:14092dc5933d2d798767327bc287a786e60e34d6
+                   ;origin=https://doi.org/10.5281/zenodo.19495084;vi
+                   sit=swh:1:snp:4995a2818a504a479a411b30d4107b61cecc
+                   d745;anchor=swh:1:rel:1a0d4d308feb3966c5f599c3cd48
+                   6396eeb4adf1;path=classroom-interaction-
+                   environment-claire-3c0dc16
+                  },
+}
+```
+
+## Videos and Presentations
 
 Watch the technical overview video from Meteor Impact 2021:
 
