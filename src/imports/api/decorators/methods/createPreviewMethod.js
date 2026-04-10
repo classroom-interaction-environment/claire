@@ -1,20 +1,20 @@
-import { onServerExec } from '../../utils/archUtils'
+import { onServerExec } from "../../utils/archUtils";
 
 export const createPreviewMethod = (context) => {
-  return {
-    name: `${context.name}.methods.preview`,
-    schema: {
-      _id: String,
-      token: String
-    },
-    run: onServerExec(function () {
-      import { getCollection } from '../../utils/getCollection'
+	return {
+		name: `${context.name}.methods.preview`,
+		schema: {
+			_id: String,
+			token: String,
+		},
+		run: onServerExec(() => {
+			const { getCollection } = require("../../utils/getCollection");
 
-      return function ({ _id, token }) {
-        const collection = getCollection(context.name)
-        // TODO validate token
-        return collection.findOne({ _id })
-      }
-    })
-  }
-}
+			return async ({ _id, token }) => {
+				const collection = getCollection(context.name);
+				// TODO validate token
+				return collection.findOneAsync({ _id });
+			};
+		}),
+	};
+};

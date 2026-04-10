@@ -1,1 +1,1 @@
-export const unitEditorIsMasterMode = unitDoc => !!(unitDoc?._master)
+export const unitEditorIsMasterMode = (unitDoc) => !!unitDoc?._master;

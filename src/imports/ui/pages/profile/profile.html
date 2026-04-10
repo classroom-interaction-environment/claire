@@ -1,4 +1,10 @@
 <template name="userProfile">
+    {{#routeInfo}}
+        {{> actionButton icon="circle-question"
+                type="outline-secondary"
+                class="mb-3 float-end help-btn"
+                title=(i18n "common.help")}}
+    {{/routeInfo}}
     {{#unless loadComplete}}
         {{> loading}}
     {{else}}
@@ -238,13 +244,13 @@
             {{> mheader title=(i18n "user.research.participate") class="bg-success text-light"}}
             {{#mbody}}
                 {{#with settingsDoc}}
-                    <div class="card-body font-weight-normal">
+                    <div class="card-body fw-normal">
                         {{{this.research}}}
                         <hr>
                     </div>
                     <form id="researchOptionsForm">
                         {{#each this.researchOptions}}
-                            <div class="card-body font-weight-normal">
+                            <div class="card-body fw-normal">
                                 {{this}}
                                 <select name="{{@index}}"
                                         class="form-control research-option-select">
@@ -274,7 +280,7 @@
                 {{> actionButton type="light"
                         form="researchOptionsForm"
                         class="deny-research-button"
-                        data-dismiss="modal"
+                        data-bs-dismiss="modal"
                         blocked=sendParticipation
                         label=(i18n "actions.deny")}}
             {{/mfooter}}

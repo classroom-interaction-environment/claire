@@ -1,0 +1,44 @@
+<template name="afTreeSelect">
+  <ul class="list-group">
+      {{#each doc in documents}}
+          {{> afTreeSelectNode renderer=renderer doc=doc ids=ids}}
+      {{/each}}
+  </ul>
+
+    {{!-- the actual input --}}
+  <input {{inputAtts}}>
+</template>
+
+<template name="afTreeSelectNode">
+  <li class="list-group-item">
+      {{!-- display content --}}
+    <div class="d-flex align-items-center">
+      <div class="flex-grow-1">
+          {{> Template.dynamic template=renderer data=doc}}
+      </div>
+            {{#if isAdded doc._id}}
+                {{> actionButton
+                        type="primary"
+                        class="af-treeselect-button"
+                        icon="minus"
+                        data-action="remove"
+                        data-id=doc._id}}
+            {{else}}
+                {{> actionButton
+                        type="outline-primary"
+                        class="af-treeselect-button"
+                        icon="plus"
+                        data-action="add"
+                        data-id=doc._id}}
+            {{/if}}
+    </div>
+      {{!-- render childre --}}
+      {{#if doc.children.length}}
+        <ul class="list-group">
+            {{#each child in doc.children}}
+                {{> afTreeSelectNode renderer=renderer doc=child ids=ids}}
+            {{/each}}
+        </ul>
+      {{/if}}
+  </li>
+</template>

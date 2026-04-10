@@ -1,22 +1,25 @@
-import { Accounts } from 'meteor/accounts-base'
-import { Users } from '../User'
-import { getUsersCollection } from '../../../../../api/utils/getUsersCollection'
+import { Accounts } from "meteor/accounts-base";
+import { getUsersCollection } from "../../../../../api/utils/getUsersCollection";
+import { userIsVerified } from "../../../../../api/accounts/user/userIsVerified";
 
-export const resendVerificationEmail = function resendVerificationEmail ({ userId }) {
-  const user = getUsersCollection().findOne(userId)
+/**
+ * Resend verification email to user if not verified yet
+ * @param userId
+ * @return {Promise<void>}
+ */
+export const resendVerificationEmail = async ({ userId }) => {
+	const user = await getUsersCollection().findOneAsync(userId);
 
-  if (!user) {
-    // logError()
-    // fails silently to prevent sniffing email addresses
-    return
-  }
+	if (!user) {
+		// fails silently to prevent sniffing email addresses
+		return;
+	}
 
-  if (Users.helpers.verify(user)) {
-    // logError(new Meteor.Error('user.verifyEmail.alreadyVerified', userId))
-    // fails silently to prevent sniffing email addresses
-    return
-  }
+	if (userIsVerified(user)) {
+		// fails silently to prevent sniffing email addresses
+		return;
+	}
 
-  // send mail
-  return Accounts.sendVerificationEmail(userId)
-}
+	// send mail
+	Accounts.sendVerificationEmail(userId);
+};

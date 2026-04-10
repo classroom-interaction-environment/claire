@@ -2,6 +2,7 @@
   "Match failed": "Server Fehler. Fehlerhafte Anfrage.",
   "errors": {
     "Error": "Fehler!",
+    "occurred": "Es ist ein Fehler aufgetreten",
     "errorId": "Fehlercode",
     "source": "Fehlerquelle",
     "message": "Fehlernachricht",
@@ -57,10 +58,12 @@
     "title": "Mit Code registrieren"
   },
   "common": {
+    "help": "Hilfe",
     "deprecated": "Veraltet / nicht mehr verwendet",
     "startedAt": "Gestartet am",
     "completedAt": "Abgeschlossen am",
     "lastUpdated": "Zuletzt aktualisiert am",
+    "failed": "Aktion fehlgeschlagen",
     "ok": "Verstanden",
     "from": "Von",
     "to": "Bis",
@@ -195,6 +198,15 @@
     "email": "Via Email teilen",
     "link": "Via Link teilen"
   },
+  "members": {
+    "title": "Projektmitglieder"
+  },
+  "dashboard": {
+    "title": "Übersicht",
+    "newsfeed": "Neuigkeiten / Ereignisse",
+    "myClasses": "Meine Kurse",
+    "createClass": "Kurs anlegen"
+  },
   "codeInvitation": {
     "title": "Registrierung (mit Code)",
     "code": "Code",
@@ -228,7 +240,8 @@
     "insufficientRoles": "Es können nur Einladungen für Benutzer mit niedrigeren Rollen erstellt werden",
     "errors": {
       "invalidCode": "Code ist ungültig oder abgelaufen"
-    }
+    },
+    "alreadyClassMember": "Du bist bereits Mitglied dieses Kurses"
   },
   "safeConfirm": {
     "code": "Bitte bestätigen Sie den Vorgang durch Eingabe des folgenden Codes",
@@ -236,6 +249,8 @@
   },
   "beamer": {
     "title": "Beamer",
+    "selectLesson": "Unterricht wählen",
+    "noLessons": "Kein Unterricht läuft aktuell",
     "controlBeamer": {
       "title": "Beamer kontrollieren",
       "end": "Beamer beenden"
@@ -461,7 +476,7 @@
       "contentEntry": "Inhalt"
     },
     "pages": {
-      "title": "Seiten",
+      "title": "Seiteninhalte",
       "page": "Seite",
       "pageTitle": "Seitentitel",
       "content": "Seiteninhalt"
@@ -528,6 +543,7 @@
     "histogram": "Histogramm"
   },
   "unit": {
+    "custom": "Eigene Sequenz",
     "material": "Externe Ressourcen und Links",
     "taskUnwantedComplete": "Hier klicken, wenn die Aufgabe unbeabsichtigt beendet wurde",
     "furtherReadings": "Weiterführende Literatur",
@@ -672,6 +688,7 @@
     "fullName": "Name",
     "password": "Passwort",
     "changePassword": "Passwort ändern",
+    "backToHome": "zur Übersicht",
     "role": "Rolle",
     "roles": "Rollen",
     "group": "Gruppe",

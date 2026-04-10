@@ -4,12 +4,12 @@
             {{> icon name="book" fw=true}}
             {{title}}
         </p>
-        <p class="font-weight-normal">
+        <p class="fw-normal">
             {{authors}} ({{year}}). {{publisher}}{{#if city}}: {{city}}.{{/if}} {{issue}} {{#if volume}}
             ({{volume}}).{{/if}}
         </p>
         {{#if url}}
-            <p class="font-weight-normal">
+            <p class="fw-normal">
                 [<a href="{{url}}" target="_blank" rel="noreferrer noopener">
                     {{> icon name="external-link-alt"}}
                     {{i18n "webResources.link"}}

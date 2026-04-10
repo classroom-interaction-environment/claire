@@ -1,10 +1,10 @@
-import { Template } from 'meteor/templating'
-import './share.html'
+import { Template } from "meteor/templating";
+import "./share.html";
 
-Template.share.onCreated(function () {})
+Template.share.onCreated(() => {});
 
 Template.share.helpers({
-  getLink () {
-    return window.location
-  }
-})
+	getLink() {
+		return window.location;
+	},
+});

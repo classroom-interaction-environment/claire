@@ -40,7 +40,7 @@
                                             class="form-inline bg-transparent"
                                             buttonContent=(i18n "actions.update")}}
                                 {{else}}
-                                    <span class="font-weight-bold">
+                                    <span class="fw-bold">
                                         <span class="edit-title-btn" data-target="{{groupIndex}}">
                                             {{group.title}}
                                         </span>
@@ -86,7 +86,7 @@
                                     <div class="mt-3 p-3 user-dropzone border bg-light rounded border-{{#if isOver groupIndex role}}primary{{else}}light{{/if}}"
                                          data-index="{{groupIndex}}"
                                          data-role="{{role}}">
-                                        <span class="font-weight-bold">{{role}}</span>
+                                        <span class="fw-bold">{{role}}</span>
                                         {{#each entry in (roleUsers group.users role)}}
                                             {{#let user=(toUser entry.userId)}}
                                                 <span class="btn btn-outline-{{#if isOnline
@@ -142,7 +142,7 @@
                                                         data-action="remove"
                                                         title=(i18n "actions.remove")
                                                         sm=true}}
-                                                <span class="font-weight-bold flex-fill">
+                                                <span class="fw-bold flex-fill">
                                                     {{material.label}}
                                                 </span>
                                             </li>
@@ -185,7 +185,7 @@
                 <span class="d-block text-center">
                     <i class="fa fa-fw fa-user"></i>
                 </span>
-                <small class="d-block text-center font-weight-light">
+                <small class="d-block text-center fw-light">
                     {{user.lastName}}, {{user.firstName}}
                 </small>
                 {{#if user.isSelected}}
@@ -208,7 +208,7 @@
     {{#if canAddGroups}}
         <div class="controls my-3 d-flex justify-content-between add-group-btn">
             {{> actionButton type="outline-secondary"
-                    class="btn-block"
+                    class="w-100"
                     label=(i18n "groupBuilder.addGroup")
                     disabled=addGroupsDisabled
                     icon="plus"}}

@@ -20,19 +20,23 @@
  * @constructor
  */
 export const ITaskDefinition = (context, map) => {
-  context.isTaskDefinition = true
-  context.get = context.get || (name => map.get(name))
-  context.has = context.has || (name => map.has(name))
-  context.schema = context.schema || ((name, injectables) => {
-    const entry = map.get(name)
-    const schema = entry?.schema
+	context.isTaskDefinition = true;
+	context.get = context.get || ((name) => map.get(name));
+	context.has = context.has || ((name) => map.has(name));
+	context.schema =
+		context.schema ||
+		((name, injectables) => {
+			const entry = map.get(name);
+			const schema = entry?.schema;
 
-    if (typeof schema === 'function') {
-      return schema(injectables)
-    }
+			if (typeof schema === "function") {
+				return schema(injectables);
+			}
 
-    return schema
-  })
+			return schema;
+		});
 
-  context.getMaterialContexts = context.getMaterialContexts || (({ filter = () => true } = {}) => Array.from(map.values()).filter(filter))
-}
+	context.getMaterialContexts =
+		context.getMaterialContexts ||
+		(({ filter = () => true } = {}) => Array.from(map.values()).filter(filter));
+};

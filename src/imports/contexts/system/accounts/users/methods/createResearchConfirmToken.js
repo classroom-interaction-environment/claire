@@ -1,8 +1,8 @@
-import { Meteor } from 'meteor/meteor'
-import { Random } from 'meteor/random'
+import { Meteor } from "meteor/meteor";
+import { Random } from "meteor/random";
 
-export const createResearchConfirmToken = ({ userId }) => {
-  const token = Random.secret()
-  Meteor.users.update(userId, { $set: { 'research.token': token } })
-  return token
-}
+export const createResearchConfirmToken = async ({ userId }) => {
+	const token = Random.secret();
+	await Meteor.users.updateAsync(userId, { $set: { "research.token": token } });
+	return token;
+};

@@ -1,12 +1,7 @@
-import { SchoolClass } from '../../../classroom/schoolclass/SchoolClass'
-import { Lesson } from '../../../classroom/lessons/Lesson'
-import { PermissionDeniedError } from '../../../../api/errors/types/PermissionDeniedError'
-import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
-import { getCollection } from '../../../../api/utils/getCollection'
-import { TaskResults } from '../TaskResults'
-import { LessonHelpers } from '../../../classroom/lessons/LessonHelpers'
-
-const getLessonDoc = createDocGetter(Lesson)
+import { TaskResults } from "../TaskResults";
+import { getCollection } from "../../../../api/utils/getCollection";
+import { getDocsForMember } from "../../../classroom/lessons/helpers/getDocsForMember";
+import { isTeacher } from "../../../classroom/schoolclass/helpers/isTeacher";
 
 /**
  * Returns all task results for a given task (presumed, that the user is teacher/member of the lesson).
@@ -15,29 +10,31 @@ const getLessonDoc = createDocGetter(Lesson)
  * @param groupId {string=}
  * @returns {*}
  */
-export const getAllTaskResultsByTask = function ({ lessonId, taskId, groupId }) {
-  const { userId } = this
-  const lessonDoc = getLessonDoc({ _id: lessonId })
-  const isTeacher = lessonDoc.createdBy === userId
+export const getAllTaskResultsByTask = async ({
+	userId,
+	lessonId,
+	taskId,
+	groupId,
+}) => {
+	const { classDoc } = await getDocsForMember({
+		userId,
+		lessonId,
+		isStudent: true,
+	});
+	const isTeacherOfLesson = isTeacher(lessonId, classDoc);
+	const query = { lessonId };
 
-  if (!isTeacher && !LessonHelpers.isMemberOfLesson({ userId, lessonId })) {
-    throw new PermissionDeniedError(SchoolClass.errors.notMember)
-  }
+	if (!isTeacherOfLesson) {
+		if (groupId) {
+			query.groupId = groupId;
+		} else {
+			query.createdBy = userId;
+		}
+	}
 
-  const query = { lessonId }
+	if (taskId) {
+		query.taskId = taskId;
+	}
 
-  if (!isTeacher) {
-    if (groupId) {
-      query.groupId = groupId
-    }
-    else {
-      query.createdBy = userId
-    }
-  }
-
-  if (taskId) {
-    query.taskId = taskId
-  }
-
-  return getCollection(TaskResults.name).find(query)
-}
+	return getCollection(TaskResults.name).find(query);
+};

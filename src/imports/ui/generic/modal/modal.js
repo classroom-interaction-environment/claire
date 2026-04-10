@@ -1,2 +1,2 @@
-import './modal.scss'
-import './modal.html'
+import "./modal.scss";
+import "./modal.html";

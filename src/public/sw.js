@@ -31,6 +31,7 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith(
     caches.match(event.request.clone()).then((cached) => {
+      console.debug(cached && cached.headers.get('content-type'))
       // We don't return cached HTML (except if fetch failed)
       if (cached) {
         const resourceType = cached.headers.get('content-type')

@@ -5,7 +5,7 @@
     {{else}}
         {{#with getLink this}}
             <div class="w-100">
-                <video controls class="w-100" preload="none" poster="{{getPoster ..}}">
+                <video controls class="w-100" preload="metadata" poster="{{getPoster ..}}">
                     <source src="{{this}}" type="{{../type}}">
                     <p>{{i18n "files.videoNotSupported"}}</p>
                     <a href="{{this}}" target="_blank" rel="noreferrer noopener">
@@ -18,7 +18,7 @@
             <span>{{../name}}</span>
             <a href="{{this}}?download=true" download="{{../name}}" target="_top"
                class="btn btn-outline-secondary btn-sm border-0 file-image-download-button no-wrap">
-                <small class="font-weight-normal py-2">
+                <small class="fw-normal py-2">
                     <i class="fa fa-download"></i>
                     <span>{{../name}}</span>
                     <span>({{b2mb ../size}} {{i18n 'fileSize.mb'}})</span>

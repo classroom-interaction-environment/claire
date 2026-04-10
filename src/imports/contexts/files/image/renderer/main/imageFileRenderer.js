@@ -1,45 +1,47 @@
-import { Template } from 'meteor/templating'
-import { ImageFiles } from '../../ImageFiles'
-import { createDeleteFile } from '../../../shared/createDeleteFile'
-import { getFilesLink } from '../../../getFilesLink'
-import '../../../shared/templates/helpers'
-import './imageFileRenderer.html'
+import { Template } from "meteor/templating";
+import { ImageFiles } from "../../ImageFiles";
+import { createDeleteFile } from "../../../shared/createDeleteFile";
+import { getFilesLink } from "../../../getFilesLink";
+import "../../../shared/templates/helpers";
+import "./imageFileRenderer.html";
 
 const API = Template.imageFileRenderer.setDependencies({
-  contexts: [ImageFiles]
-})
+	contexts: [ImageFiles],
+});
 
 Template.imageFileRenderer.onCreated(function () {
-  const instance = this
-  API.log('on created')
-  instance.state.setDefault('version', 'original')
-  instance.deleteFile = createDeleteFile({
-    context: ImageFiles,
-    onSuccess: () => API.notify(true),
-    onError: API.notify
-  })
+	API.log("on created");
+	this.state.setDefault("version", "original");
+	this.deleteFile = createDeleteFile({
+		context: ImageFiles,
+		onSuccess: () => API.notify(true),
+		onError: API.notify,
+	});
 
-  instance.autorun(() => {
-    const data = Template.currentData()
-    if (!data) return API.log('no data!')
-    API.log('on data', data)
-    const { imageType, version } = data
-    if (imageType || version) {
-      instance.state.set({ version: (imageType || version) })
-    }
-  })
-})
+	this.autorun(() => {
+		const data = Template.currentData();
+		if (!data) return API.log("no data!");
+		API.log("on data", data);
+		const { imageType, version } = data;
+		if (imageType || version) {
+			this.state.set({ version: imageType || version });
+		}
+	});
+});
 
 Template.imageFileRenderer.helpers({
-  loadComplete () {
-    return API.initComplete()
-  },
-  getLink (image) {
-    const version = Template.getState('version')
-    return image && getFilesLink({
-      file: image,
-      name: ImageFiles.name,
-      version
-    })
-  }
-})
+	loadComplete() {
+		return API.initComplete();
+	},
+	getLink(image) {
+		const version = Template.getState("version");
+		return (
+			image &&
+			getFilesLink({
+				file: image,
+				name: ImageFiles.name,
+				version,
+			})
+		);
+	},
+});

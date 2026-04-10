@@ -82,3 +82,5 @@ typings/
 .next
 
 /dist
+/public
+/private

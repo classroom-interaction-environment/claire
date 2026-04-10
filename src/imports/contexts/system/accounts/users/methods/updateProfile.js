@@ -1,6 +1,6 @@
-import { Meteor } from 'meteor/meteor'
-import { userExists } from '../../../../../api/accounts/user/userExists'
-import { getUsersCollection } from '../../../../../api/utils/getUsersCollection'
+import { Meteor } from "meteor/meteor";
+import { userExists } from "../../../../../api/accounts/user/userExists";
+import { getUsersCollection } from "../../../../../api/utils/getUsersCollection";
 
 /**
  * Updates the user's profile. Picks only the defined arguments for the update call.
@@ -11,27 +11,37 @@ import { getUsersCollection } from '../../../../../api/utils/getUsersCollection'
  * @param locale {string=} optional, new locale iso code
  * @return {number} 1 if updated, 0 of not
  */
-export const updateProfile = function updateProfile ({ userId, profileImage, firstName, lastName, locale }) {
-  if (!userExists({ userId })) {
-    throw new Meteor.Error('errors.403', 'user.updateProfile', 'user.userNotFound')
-  }
+export const updateProfile = async ({
+	userId,
+	profileImage,
+	firstName,
+	lastName,
+	locale,
+}) => {
+	if (!(await userExists({ userId }))) {
+		throw new Meteor.Error(
+			"errors.403",
+			"user.updateProfile",
+			"user.userNotFound",
+		);
+	}
 
-  const updateDoc = {}
+	const updateDoc = {};
 
-  // we could unset profile image using a 'null' value, which is why we
-  // can't use a simple truthy check here
-  if (typeof profileImage !== 'undefined') {
-    updateDoc.profileImage = profileImage
-  }
-  if (firstName) {
-    updateDoc.firstName = firstName
-  }
-  if (lastName) {
-    updateDoc.lastName = lastName
-  }
-  if (locale) {
-    updateDoc.locale = locale
-  }
+	// we could unset profile image using a 'null' value, which is why we
+	// can't use a simple truthy check here
+	if (typeof profileImage !== "undefined") {
+		updateDoc.profileImage = profileImage;
+	}
+	if (firstName) {
+		updateDoc.firstName = firstName;
+	}
+	if (lastName) {
+		updateDoc.lastName = lastName;
+	}
+	if (locale) {
+		updateDoc.locale = locale;
+	}
 
-  return getUsersCollection().update(userId, { $set: updateDoc })
-}
+	return getUsersCollection().updateAsync(userId, { $set: updateDoc });
+};

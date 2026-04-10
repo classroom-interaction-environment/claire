@@ -3,13 +3,13 @@
        title="{{this.title}}"
        class="d-block card-body border border-light rounded d-md-flex d-block text-center">
 
-        <span class="mr-auto">
+        <span class="me-auto">
         <i class="fa fa-fw fa-{{#unless download}}external-link-alt{{else}}download{{/unless}}"></i>
         {{#if this.title}}{{this.title}}{{else}}{{this.url}}{{/if}}
         </span>
 
         {{#unless this.preventNote}}
-            <div class="text-warning my-0 py-0 font-weight-light ml-auto">
+            <div class="text-warning my-0 py-0 fw-light ms-auto">
                 <small>
                     <i class="fa fa-fw fa-exclamation"></i>
                     {{i18n "webResources.carefulNote"}}
@@ -19,6 +19,6 @@
     </a>
 
     {{#if this.description}}
-        <div class="card-body font-weight-normal text-center">{{this.description}}</div>
+        <div class="card-body fw-normal text-center">{{this.description}}</div>
     {{/if}}
 </template>

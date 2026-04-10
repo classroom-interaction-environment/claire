@@ -1,3 +1,3 @@
-import { ResponseProcessorTypes } from './ResposeProcessorTypes'
+import { ResponseProcessorTypes } from "./ResposeProcessorTypes";
 
-export const isResponseProcessorType = t => !!ResponseProcessorTypes[t]
+export const isResponseProcessorType = (t) => !!ResponseProcessorTypes[t];

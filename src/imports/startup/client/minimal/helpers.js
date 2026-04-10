@@ -1,6 +1,7 @@
-import { Template } from 'meteor/templating'
-import * as helpers from '../../../ui/blaze/helpers'
+import { Template } from "meteor/templating";
+import * as helpers from "../../../ui/blaze/helpers";
 
-Object.getOwnPropertyNames(helpers).forEach(name => {
-  Template.registerHelper(name, helpers[name])
-})
+// biome-disable  lint/performance/noDynamicNamespaceImportAccess: because we want to register all helpers in the imported file
+Object.getOwnPropertyNames(helpers).forEach((name) => {
+	Template.registerHelper(name, helpers[name]);
+});

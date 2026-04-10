@@ -1,0 +1,16 @@
+<template name="members">
+    {{> routeInfo}}
+    <ul class="list-group">
+        {{#each member in members}}
+        <li class="list-group-item d-flex">
+            <div>
+                {{> icon name="user"}}
+            </div>
+            <div class="flex-fill ms-3">
+                <strong>{{member.by}}</strong>
+                <p><code class="text-dark">{{member.email}}</code></p>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+</template>

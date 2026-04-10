@@ -89,10 +89,12 @@ done
 # build paths:
 
 cd ..
+LIB_PATH=$(pwd)/lib
+PLUGIN_PATH=$(pwd)/plugins
 CARO_PATH=$(pwd)
 cd ${CARO_PATH}/src
 
-T_PACKAGE_DIRS="${CARO_PATH}/lib/api:${CARO_PATH}/lib/ui:${CARO_PATH}/lib/contexts:${CARO_PATH}/lib/dev/:${CARO_PATH}/meteor-mocha/"
+T_PACKAGE_DIRS="${LIB_PATH}:${PLUGIN_PATH}"
 
 PORT=3099
 
@@ -118,8 +120,6 @@ METEOR_PACKAGE_DIRS=${T_PACKAGE_DIRS}  \
     TEST_CLIENT=${T_CLIENT} \
     MOCHA_GREP=${T_FILTER} \
     TEST_PARALLEL=${T_PARALLEL} \
-    SERVER_TEST_REPORTER="spec" \
-    CLIENT_TEST_REPORTER="spec" \
     BABEL_ENV=COVERAGE \
     COVERAGE=${T_COVERAGE} \
     COVERAGE_OUT_HTML=1 \

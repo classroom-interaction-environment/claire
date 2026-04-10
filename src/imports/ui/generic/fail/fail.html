@@ -4,7 +4,7 @@
             <div class="card-body">
                 <h5 class="card-title d-flex align-items-center">
                     {{> icon name="exclamation-circle" fw=true class="text-danger"}}
-                    <span class="ml-2">{{i18n (title this)}}</span>
+                    <span class="ms-2">{{i18n (title this)}}</span>
                 </h5>
                 {{#if this.reason}}
                     <h5>{{i18n 'errors.reason'}}</h5>
@@ -13,8 +13,8 @@
                 {{#if this.details}}
                     <button class="btn btn-outline-secondary"
                             type="button"
-                            data-toggle="collapse"
-                            data-target="#error-details-collapse"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#error-details-collapse"
                             aria-expanded="false"
                             aria-controls="error-details-collapse">
                         {{i18n 'errors.details'}}

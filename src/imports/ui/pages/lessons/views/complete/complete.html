@@ -4,7 +4,7 @@
                 {{#lessonListRenderer lesson=lesson showTime=true}}
                     {{#routeButton
                             class="no-wrap"
-                            href=(route "lesson" this.lesson._id)
+                            href=(route "lesson" lesson._id)
                             title=(i18n "lessons.toLesson") type="primary"}}
                         <i class="fa fa-users"></i>
                         <i class="fa fa-caret-right"></i>

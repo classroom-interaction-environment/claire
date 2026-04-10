@@ -1,10 +1,9 @@
 /* global $ */
-import { Template } from 'meteor/templating'
-import './head.html'
+import { Template } from "meteor/templating";
+import "./head.html";
 
 Template.textRendererh.onRendered(function () {
-  const instance = this
-  const data = instance.data
-  const headDefinition = `<h${data.size}>${data.static}</h${data.size}>`
-  instance.$('.textRendererh-root').append($(headDefinition))
-})
+	const data = this.data;
+	const headDefinition = `<h${data.size}>${data.static}</h${data.size}>`;
+	this.$(".textRendererh-root").append($(headDefinition));
+});

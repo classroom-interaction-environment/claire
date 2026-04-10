@@ -1,1 +1,1 @@
-export const isCurriculumDoc = doc => '_master' in doc
+export const isCurriculumDoc = (doc) => "_master" in doc;

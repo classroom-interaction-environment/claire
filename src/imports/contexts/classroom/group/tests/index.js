@@ -1,2 +1,2 @@
-import './Group.tests'
-import './GroupBuilder.tests'
+import "./Group.tests";
+import "./GroupBuilder.tests";

@@ -7,20 +7,14 @@
  */
 
 export const getMaterialContexts = () => {
-  import { Dimension } from '../curriculum/curriculum/dimension/Dimension'
-  import { Objective } from '../curriculum/curriculum/objective/Objective'
-  import { Pocket } from '../curriculum/curriculum/pocket/Pocket'
+	const { Dimension } = require("../curriculum/curriculum/dimension/Dimension");
+	const { Objective } = require("../curriculum/curriculum/objective/Objective");
+	const { Pocket } = require("../curriculum/curriculum/pocket/Pocket");
 
-  import { Unit } from '../curriculum/curriculum/unit/Unit'
-  import { Phase } from '../curriculum/curriculum/phase/Phase'
+	const { Unit } = require("../curriculum/curriculum/unit/Unit");
+	const { Phase } = require("../curriculum/curriculum/phase/Phase");
 
-  import { getTaskContexts } from '../tasks/getTaskContexts'
+	const { getTaskContexts } = require("../tasks/getTaskContexts");
 
-  return [
-    Dimension,
-    Objective,
-    Unit,
-    Pocket,
-    Phase
-  ].concat(getTaskContexts())
-}
+	return [Dimension, Objective, Unit, Pocket, Phase].concat(getTaskContexts());
+};

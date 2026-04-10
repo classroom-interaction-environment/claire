@@ -1,10 +1,11 @@
-import { getCollection } from '../../../../api/utils/getCollection'
-import { Phase } from './Phase'
+import { getCollection } from "../../../../api/utils/getCollection";
+import { Phase } from "./Phase";
 
-let collection
-
-export const phasesByUnitId = unitId => {
-  if (!collection) collection = getCollection(Phase.name)
-
-  return collection.find({ unit: unitId }).fetch()
-}
+/**
+ * Get all phases by unit ID.
+ * @param unitId
+ * @return {Promise<Phase[]>}
+ */
+export const phasesByUnitId = (unitId) => {
+	return getCollection(Phase.name).find({ unit: unitId }).fetchAsync();
+};

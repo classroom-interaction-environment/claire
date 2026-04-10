@@ -1,22 +1,24 @@
 <template name="itemRenderer">
     {{#onLoaded complete=loadComplete}}
-        {{#with item this.itemId}}
-            <div class="item-form-container {{#if isFocus this.itemId}}shadow-sm{{/if}}">
-                {{#autoForm  id=(itemFormName this.itemId)
+        {{#if (getItem itemId)}}
+        {{#let item=(getItem itemId)}}
+            <div class="item-form-container {{#if isFocus item.itemId}}shadow-sm{{/if}} py-4">
+                {{#autoForm  id=(itemFormName item.itemId)
                              validation="blur"
                              type="normal"
-                             schema=(itemSchema this.itemId)
-                             doc=(value this.itemId)}}
+                             schema=(itemSchema item.itemId)
+                             doc=(value item.itemId)}}
                     <div>
                         <fieldset disabled="{{#if itemDisabled ../isEditable ../itemId ../groupMode}}disabled{{/if}}">
                             {{#each afFieldNames}}
                                 <div class="field-wrapper">
-                                    <label class="font-weight-bold text-center text-md-left w-100 p-2">
+                                    <label class="fw-bold text-center text-md-start w-100 p-2">
                                         {{../label}}
                                     </label>
 
                                     {{> afQuickField
                                             name=this.name
+                                            class="item-input-field"
                                             options=afOptionsFromSchema
                                             data-item=../itemId
                                             data-group=../groupId
@@ -32,59 +34,62 @@
                             {{/if}}
                         </fieldset>
                     </div>
-                    {{#if showSaveButton this}}
+                    {{!-- #if showSaveButton item}}
                         <div class="d-block d-print-none">
-                            {{#unless submitting this.itemId}}
+                            {{#unless submitting item.itemId}}
                                 {{#if eq ../groupMode "merge"}}
                                     <button type="button"
-                                            class="btn btn-sm btn-block btn-outline-secondary"
-                                            data-target="{{this.itemId}}" disabled>
+                                            class="btn btn-sm w-100 btn-outline-secondary"
+                                            data-target="{{item.itemId}}" disabled>
                                         <i class="fa fa-users"></i> {{i18n "group.editing"}}
                                     </button>
-                                {{else if saved this.itemId}}
+                                {{else if saved item.itemId}}
                                     <button type="button"
-                                            class="btn btn-sm btn-block btn-outline-primary itemrenderer-edit-button"
-                                            data-target="{{this.itemId}}">
+                                            class="btn btn-sm w-100 btn-outline-primary itemrenderer-edit-button"
+                                            data-target="{{item.itemId}}">
                                         <i class="fa fa-edit"></i> {{i18n "actions.edit"}}
                                     </button>
-                                {{else if (itemHasValue this.itemId)}}
+                                {{else if (itemHasValue item.itemId)}}
                                     <button type="submit"
-                                            class="btn btn-sm btn-block btn-primary itemrenderer-submit-button">
+                                            class="btn btn-sm w-100 btn-primary itemrenderer-submit-button">
                                         <i class="fa fa-save"></i> {{i18n
                                             "actions.save"}}
                                     </button>
                                 {{/if}}
-                            {{else if (itemHasValue this.itemId)}}
+                            {{else if (itemHasValue item.itemId)}}
                                 <button type="submit"
-                                        class="btn btn-primary btn-block itemrenderer-submit-button btn-sm"
+                                        class="btn btn-primary w-100 itemrenderer-submit-button btn-sm"
                                         disabled>
                                     <i class="fa fa-sync fa-spin"></i> {{i18n
                                         "actions.saving"}}
                                 </button>
                             {{/unless}}
                         </div>
-                    {{/if}}
+                    {{/if --}}
                     {{!--
                     {{#if isEditable}}
 
                     {{/if}}
                     --}}
                 {{/autoForm}}
-                {{#if submitting this.itemId}}
+                <div class="d-flex justify-content-center align-items-center">
+                {{#if submitting item.itemId}}
                     <div class="text-muted text-center">
                         {{> icon name="cog" pulse=true}}
                         {{i18n "actions.saving"}}
                     </div>
-                {{else}}
-                    {{#with value this.itemId}}
+                {{/if}}
+                    {{#if value this.itemId}}
+                      {{#let updatedValue=(value this.itemId)}}
                         <div class="text-muted text-center">
-                            <small>{{i18n 'item.savedAt'}} {{toLocaleDate this.updatedAt}}</small>
+                            <small>{{i18n 'item.savedAt'}} {{toLocaleDate updatedValue.updatedAt}}</small>
                             {{#if hasGroupMode ../groupMode}}
-                                <small>, {{i18n 'common.updatedBy'}} {{savedBy this.updatedBy}}</small>
+                                <small>, {{i18n 'common.updatedBy'}} {{savedBy updatedValue.updatedBy}}</small>
                             {{/if}}
                         </div>
-                    {{/with}}
-                {{/if}}
+                      {{/let}}
+                    {{/if}}
+                </div>
             </div>
         {{else}}
         {{!--
@@ -108,6 +113,7 @@
                     {{i18n "common.loading" }} - {{i18n "item.title"}}
                 </div>
             {{/with}}
-        {{/with}}
+        {{/let}}
+        {{/if}}
     {{/onLoaded}}
 </template>

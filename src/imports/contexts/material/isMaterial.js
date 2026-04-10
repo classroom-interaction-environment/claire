@@ -1,4 +1,4 @@
-import { Material } from './Material'
+import { Material } from "./Material";
 
 /**
  * Determines, whether a context is material
@@ -6,4 +6,4 @@ import { Material } from './Material'
  * @return {*}
  */
 
-export const isMaterial = context => Material.hasIdentity(context)
+export const isMaterial = (context) => Material.hasIdentity(context);

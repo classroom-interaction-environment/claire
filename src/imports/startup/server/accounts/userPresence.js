@@ -1,16 +1,24 @@
-import { Meteor } from 'meteor/meteor'
-import UserPresence from 'meteor/danimal:userpresence'
-import { createLog } from '../../../api/log/createLog'
+import { Meteor } from "meteor/meteor";
+import {
+	UserPresenceSessions,
+	initUserPresence,
+} from "meteor/jkuester:userpresence";
+import { createLog } from "../../../api/log/createLog";
 
-Meteor.startup(() => {
-  const log = createLog({ name: 'UserPresence' })
-  const sessionReset = UserPresence.UserPresenceSessions.remove({})
-  const usersReset = Meteor.users.update({
-    presence: { $exists: true }
-  }, {
-    $set: { 'presence.status': 'offline' }
-  }, { multi: true })
+Meteor.startup(async () => {
+	await initUserPresence();
+	const log = createLog({ name: "UserPresence" });
+	const sessionReset = await UserPresenceSessions.removeAsync({});
+	const usersReset = await Meteor.users.updateAsync(
+		{
+			presence: { $exists: true },
+		},
+		{
+			$set: { "presence.status": "offline" },
+		},
+		{ multi: true },
+	);
 
-  log(`sessions reset = [${sessionReset}]`)
-  log(`users reset = [${usersReset}]`)
-})
+	log(`sessions reset = [${sessionReset}]`);
+	log(`users reset = [${usersReset}]`);
+});

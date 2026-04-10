@@ -1,61 +1,73 @@
-import { Meteor } from 'meteor/meteor'
+import { Meteor } from "meteor/meteor";
+import { noop } from "../../utils/noop";
 
-const time = () => new Date().toISOString()
-const noOp = () => {}
-const LOG_LEVEL = Meteor.settings.public.logLevel || 0
-const isDevelopment = Meteor.isDevelopment
+const time = () => new Date().toISOString();
+const LOG_LEVEL = Meteor.settings.public.logLevel || 0;
+const isDevelopment = Meteor.isDevelopment;
 
 const internal = {
-  debug: {
-    level: 0,
-    run: (...args) => console.debug(...args) // eslint-disable-line no-console
-  },
-  info: {
-    level: 1,
-    run: (...args) => console.info(...args) // eslint-disable-line no-console
-  },
-  log: {
-    level: 2,
-    run: (...args) => console.log(...args) // eslint-disable-line no-console
-  },
-  warn: {
-    level: 3,
-    run: (...args) => console.warn(...args) // eslint-disable-line no-console
-  },
-  error: {
-    level: 4,
-    run: (...args) => console.error(...args) // eslint-disable-line no-console
-  }
-}
+	debug: {
+		level: 0,
+		run: (...args) => console.debug(...args), // eslint-disable-line no-console
+	},
+	info: {
+		level: 1,
+		run: (...args) => console.info(...args), // eslint-disable-line no-console
+	},
+	log: {
+		level: 2,
+		run: (...args) => console.log(...args), // eslint-disable-line no-console
+	},
+	warn: {
+		level: 3,
+		run: (...args) => console.warn(...args), // eslint-disable-line no-console
+	},
+	error: {
+		level: 4,
+		run: (...args) => console.error(...args), // eslint-disable-line no-console
+	},
+};
 
 /**
  * Creates a log for a given name and type.
  * Returns a no-op function if devOnly is true but app is in prod mode
  * @param name {string}
  * @param type {'log'|'info'|'debug'|'warn'|'error'}
- * @param devOnly {boolean=false}
+ * @param devOnly {boolean=false} only prints in development mode
+ * @param inTests {boolean=false} if true, forces log creation even in test mode
  * @return {function}
  */
-export const createLog = ({ name, type = 'log', devOnly = false }) => {
-  if (!Object.prototype.hasOwnProperty.call(internal, type)) {
-    throw new TypeError(`Unsupported log type ${type}.`)
-  }
+export const createLog = ({
+	name,
+	type = "log",
+	devOnly = false,
+	inTests = false,
+}) => {
+	if (!Object.hasOwn(internal, type)) {
+		throw new TypeError(`Unsupported log type ${type}.`);
+	}
 
-  if (devOnly && !isDevelopment) { return noOp }
+	const excludeFromTest = !inTests && Meteor.isTest;
+	const excludeFromProd = devOnly && !isDevelopment;
+	if (excludeFromTest || excludeFromProd) {
+		return noop;
+	}
 
-  const logProp = internal[type]
+	const logProp = internal[type];
 
-  if (LOG_LEVEL > logProp.level) { return noOp }
+	if (LOG_LEVEL > logProp.level) {
+		return noop;
+	}
 
-  const logName = `${type} [${name}]:`
-  const logFn = logProp.run
+	const logName = `${type} [${name}]:`;
+	const logFn = logProp.run;
 
-  // on the server we need to add a timestamp in production mode
-  // since they are not there by default
-  if (Meteor.isProduction && Meteor.isServer) {
-    return (...args) => logFn(time(), logName, ...args)
-  }
+	// on the server we need to add a timestamp in production mode
+	// since they are not there by default
+	if (Meteor.isProduction && Meteor.isServer) {
+		return (...args) => logFn(time(), logName, ...args);
+	}
 
-  // by default node and browsers add timestamp on their own
-  return (...args) => logFn(logName, ...args)
-}
+	// by default node and browsers add timestamp on their own
+	return (...args) => logFn(logName, ...args);
+};

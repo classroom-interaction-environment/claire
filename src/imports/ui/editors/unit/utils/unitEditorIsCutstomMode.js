@@ -1,1 +1,1 @@
-export const unitEditorIsCutstomMode = unitDoc => !!unitDoc?._custom
+export const unitEditorIsCutstomMode = (unitDoc) => !!unitDoc?._custom;

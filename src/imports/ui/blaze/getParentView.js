@@ -5,16 +5,20 @@
  * @return {Blaze.View|undefined}
  */
 export const getParentView = ({ view, skipSame = false }) => {
-  let currentView = view.parentView
+	let currentView = view.parentView;
 
-  while (currentView && !currentView.name.includes('Template.')) {
-    currentView = currentView.parentView
-  }
+	while (currentView && !currentView.name.includes("Template.")) {
+		currentView = currentView.parentView;
+	}
 
-  if (!currentView || !skipSame || currentView.name !== `Template.${view.name}`) {
-    return currentView
-  }
+	if (
+		!currentView ||
+		!skipSame ||
+		currentView.name !== `Template.${view.name}`
+	) {
+		return currentView;
+	}
 
-  // continue search view same view
-  return getParentView({ view: currentView, skipSame })
-}
+	// continue search view same view
+	return getParentView({ view: currentView, skipSame });
+};

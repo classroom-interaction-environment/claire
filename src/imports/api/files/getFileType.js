@@ -1,4 +1,4 @@
-import { ContextRegistry } from '../../infrastructure/context/ContextRegistry'
+import { ContextRegistry } from "../../infrastructure/context/ContextRegistry";
 
 /**
  * @deprecated fix fileType and fileCtx
@@ -11,9 +11,9 @@ import { ContextRegistry } from '../../infrastructure/context/ContextRegistry'
  * TODO this would also support multiple contexts for images
  * TODO and a proper association with GridFS buckets
  */
-export const getFileType = fileTypeCtxName => {
-  const ctx = ContextRegistry.get(fileTypeCtxName)
-  if (ctx) return ctx.files.type
+export const getFileType = (fileTypeCtxName) => {
+	const ctx = ContextRegistry.get(fileTypeCtxName);
+	if (ctx) return ctx.files.type;
 
-  return fileTypeCtxName
-}
+	return fileTypeCtxName;
+};

@@ -1,10 +1,12 @@
 <template name="inviteUsers">
+    {{> routeInfo}}
+
     {{#unless loadComplete}}
         {{> loading title="codeInvitation.title"}}
     {{else}}
         <div class="d-flex mb-3 justify-content-between align-items-baseline">
             <h4>{{i18n "codeInvitation.activeCodes"}}</h4>
-            <button class="ml-auto btn btn-success create-invitation-button">
+            <button class="ms-auto btn btn-success create-invitation-button">
                 <i class="fa fa-fw fa-plus"></i> {{i18n "actions.create"}}
             </button>
         </div>
@@ -22,7 +24,7 @@
                             <th>{{i18n "codeInvitation.expiresAt"}}</th>
                             <th>{{i18n "common.role"}}</th>
                             <!--<th>{{i18n "common.details"}}</th>-->
-                            <th class="text-right">{{i18n
+                            <th class="text-end">{{i18n
                                     "common.actions"}}</th>
                         </tr>
                         </thead>
@@ -33,7 +35,7 @@
                                         class="text-muted">{{this.code}}</code>
                                 </td>
                                 {{>invitationRowRenderer invitation=this status=true users=true expiration=true role=true  deleting=(deleting deleting this._id)}}
-                                <td class="no-wrap text-right">
+                                <td class="no-wrap text-end">
                                     {{#if codeOnBeamer this.code}}
                                         {{> actionButton
                                                 data-target=this.code
@@ -83,6 +85,9 @@
                         </tbody>
                     </table>
                 </div>
+
+            {{else}}
+                {{> nodocs}}
             {{/with}}
 
 
@@ -105,7 +110,7 @@
                             <th>{{i18n "codeInvitation.expiresAt"}}</th>
                             <th>{{i18n "common.role"}}</th>
                             <!--<th>{{i18n "common.details"}}</th>-->
-                            <th class="text-right">{{i18n
+                            <th class="text-end">{{i18n
                                     "common.actions"}}</th>
                         </tr>
                         </thead>
@@ -116,7 +121,7 @@
                                         class="text-muted">{{this.code}}</code>
                                 </td>
                                 {{>invitationRowRenderer invitation=this status=true users=true expiration=true role=true deleting=(deleting deleting this._id)}}
-                                <td class="no-wrap text-right">
+                                <td class="no-wrap text-end">
                                     {{#if codeOnBeamer this.code}}
                                         {{> actionButton
                                                 data-target=this.code
@@ -184,7 +189,7 @@
                     validation="submit"}}
             {{#mfooter class="d-flex"}}
                 {{> actionButton type="success"
-                        class="mr-auto"
+                        class="me-auto"
                         submit=true
                         form="createInvitationForm"
                         label=(i18n "actions.create")
@@ -230,7 +235,7 @@
                                         {{/if}}
 									</span>
                                     <button class="btn btn-outline-secondary"
-                                            type="button" data-dismiss="modal">
+                                            type="button" data-bs-dismiss="modal">
                                         {{i18n "actions.close"}}
                                     </button>
                                 </div>

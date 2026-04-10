@@ -1,7 +1,3 @@
 <template name="taskEditorSummary">
-    <div class="card">
-        <div class="card-body">
-            {{> taskRenderer data=taskDoc preview=true}}
-        </div>
-    </div>
+    {{> taskRenderer data=taskDoc preview=true useCard=true}}
 </template>

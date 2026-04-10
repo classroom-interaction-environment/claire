@@ -1,3 +1,3 @@
-import { loggedIn } from './loggedIn'
+import { loggedIn } from "./loggedIn";
 
-export const loggedOut = () => !loggedIn()
+export const loggedOut = () => !loggedIn();

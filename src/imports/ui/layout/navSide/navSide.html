@@ -1,16 +1,20 @@
 <template name="navSide">
     {{! TODO - side nav: https://getbootstrap.com/docs/5.1/examples/sidebars/# }}
 
-    <nav class="d-flex flex-column flex-shrink-0 p-3 text-white bg-light nav-side border border-grey border-left-0 border-top-0 border-bottom-0 border-right">
+    <nav class="d-flex flex-column flex-shrink-0 p-3 text-white bg-light nav-side border border-grey border-start-0 border-top-0 border-bottom-0 border-end">
     <div class="nav-side-container">
         <a class="d-flex align-items-center mb-3 mb-md-0 text-white text-decoration-none" href="/">
             {{! TODO load logo from db, defined by admin }}
-            {{> image src="/main-logo.png" height="100"}}
+            {{#if mainLogo}}
+                <img src="{{mainLogo}}" height="100" />
+            {{else}}
+                <img src="/main-logo.png" height="100" />
+            {{/if}}
         </a>
 
         {{!-- Toggler/collapsibe Button --}}
         {{!--
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
         --}}
@@ -21,7 +25,7 @@
                         {{> link href="/"
                                 label=(i18n "routes.dashboard")
                                 active=(active 'dashboard')
-                                icon="users"
+                                icon="dashboard"
                                 class="nav-link"}}
                     </li>
                     <li class="nav-item">
@@ -50,6 +54,13 @@
                                 label=(i18n "dashboard.lesson")
                                 active=(active 'lessons' 'lesson')
                                 icon="chalkboard-user"
+                                class="nav-link"}}
+                    </li>
+                    <li class="nav-item">
+                        {{>link href=(route "members")
+                                label=(i18n "dashboard.members")
+                                active=(active 'members')
+                                icon="users"
                                 class="nav-link"}}
                     </li>
                 </ul>
@@ -85,7 +96,7 @@
                         {{#link id="navUserMenuDropdown" href="#"
                                 class="nav-link dropdown-toggle"
                                 active=(active 'admin' 'profile' 'inviteUser')
-                                data-toggle="dropdown"
+                                data-bs-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false"}}
                             {{> profileImage user=currentUser flex=false height=20 width=20 round=true}}
                             {{i18n "nav.profile"}}

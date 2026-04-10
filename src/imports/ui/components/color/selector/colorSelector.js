@@ -1,9 +1,9 @@
-import { Template } from 'meteor/templating'
-import './colorSelector.html'
+import { Template } from "meteor/templating";
+import "./colorSelector.html";
 
 Template.colorSelector.helpers({
-  content () {
-    const { data } = Template.instance()
-    return data && data.colors
-  }
-})
+	content() {
+		const { data } = Template.instance();
+		return data?.colors;
+	},
+});

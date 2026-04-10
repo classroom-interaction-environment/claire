@@ -7,26 +7,25 @@
  * @throws {Error} if target is not an object
  */
 export const withProperty = (target, name, factory) => {
-  const type = typeof target
-  if (type !== 'object') {
-    throw new Error(`Expected object, get ${type}`)
-  }
+	const type = typeof target;
+	if (type !== "object") {
+		throw new Error(`Expected object, get ${type}`);
+	}
 
-  if (name in target) {
-    return target
-  }
+	if (name in target) {
+		return target;
+	}
 
-  if (typeof factory === 'function') {
-    return factory(target, name)
-  }
-  else {
-    const descriptor = Object.create(null)
-    descriptor.value = factory
-    descriptor.enumerable = true
-    descriptor.writable = true
-    descriptor.configurable = true
-    Object.defineProperty(target, name, descriptor)
-  }
+	if (typeof factory === "function") {
+		return factory(target, name);
+	} else {
+		const descriptor = Object.create(null);
+		descriptor.value = factory;
+		descriptor.enumerable = true;
+		descriptor.writable = true;
+		descriptor.configurable = true;
+		Object.defineProperty(target, name, descriptor);
+	}
 
-  return target
-}
+	return target;
+};

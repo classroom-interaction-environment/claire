@@ -1,4 +1,4 @@
-import { Random } from 'meteor/random'
+import { Random } from "meteor/random";
 
 /**
  *
@@ -26,36 +26,36 @@ import { Random } from 'meteor/random'
  * @param collection {Mongo.Collection=}
  * @returns {object}
  */
-export const mockUnitDoc = (options = {}, collection) => {
-  const unitDoc = {
-    _id: options._id ?? Random.id(),
-    title: options.title ?? Random.id(6),
-    createdBy: options.createdBy,
-    description: options.description,
-    pocket: options.pocket ?? Random.id(),
-    index: options.index ?? 0,
-    dimensions: options.dimensions,
-    period: options.period ?? 5,
-    objectives: options.objectives,
-    requirements: options.requirements,
-    links: options.links,
-    embeds: options.embeds,
-    images: options.images,
-    audio: options.audio,
-    documents: options.documents,
-    videos: options.videos,
-    tasks: options.tasks,
-    literature: options.literature,
-    phases: options.phases
-  }
+export const mockUnitDoc = async (options = {}, collection) => {
+	const unitDoc = {
+		_id: options._id ?? Random.id(),
+		title: options.title ?? Random.id(6),
+		createdBy: options.createdBy,
+		description: options.description,
+		pocket: options.pocket ?? Random.id(),
+		index: options.index ?? 0,
+		dimensions: options.dimensions,
+		period: options.period ?? 5,
+		objectives: options.objectives,
+		requirements: options.requirements,
+		links: options.links,
+		embeds: options.embeds,
+		images: options.images,
+		audio: options.audio,
+		documents: options.documents,
+		videos: options.videos,
+		tasks: options.tasks,
+		literature: options.literature,
+		phases: options.phases,
+	};
 
-  if (options._master) {
-    unitDoc._master = options._master
-  }
+	if (options._master) {
+		unitDoc._master = options._master;
+	}
 
-  if (collection) {
-    collection.insert(unitDoc)
-  }
+	if (collection) {
+		await collection.insertAsync(unitDoc);
+	}
 
-  return unitDoc
-}
+	return unitDoc;
+};

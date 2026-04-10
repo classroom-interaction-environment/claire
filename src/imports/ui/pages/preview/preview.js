@@ -1,1 +1,1 @@
-import './preview.html'
+import "./preview.html";

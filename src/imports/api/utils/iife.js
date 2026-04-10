@@ -1,1 +1,1 @@
-export const iife = fct => fct()
+export const iife = (fct) => fct();

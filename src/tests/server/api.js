@@ -1,2 +1,2 @@
-import '../../imports/api/schema/tests'
-import '../../imports/api/accounts/tests'
+import "../../imports/api/schema/tests";
+import "../../imports/api/accounts/tests";

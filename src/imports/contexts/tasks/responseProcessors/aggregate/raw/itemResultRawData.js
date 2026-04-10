@@ -1,2 +1,2 @@
-import '../../../../../ui/generic/nodocs/nodocs'
-import './itemResultRawData.html'
+import "../../../../../ui/generic/nodocs/nodocs";
+import "./itemResultRawData.html";

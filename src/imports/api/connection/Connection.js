@@ -1,5 +1,5 @@
 export const Connection = {
-  options () {
-    return {}
-  }
-}
+	options() {
+		return {};
+	},
+};

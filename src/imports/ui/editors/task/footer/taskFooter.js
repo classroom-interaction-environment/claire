@@ -1,2 +1,2 @@
-import '../pagecontent/pageContent'
-import './taskFooter.html'
+import "../pagecontent/pageContent";
+import "./taskFooter.html";

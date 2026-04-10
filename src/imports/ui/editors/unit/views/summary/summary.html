@@ -1,125 +1,98 @@
 <template name="uesummary">
-    <div class="my-4">
-        {{!-- basic info --}}
-        {{#uesummarySection
-                target="basicInfo"
-                preview=isPreview
-                title=(i18n "editor.unit.basicInfo")
-                loadComplete=loadComplete
-                data=true}}
-            <ul class="list-group bg-white text-dark">
-                {{#each entry in baseData}}
-                    <li class="list-group-item d-flex">
-                        {{> tooltip icon=entry.icon title=(i18n entry.label)}}
-                        <span class="w-100 ml-3">
-                            {{entry.value}}
-                        </span>
-                    </li>
-                {{/each}}
-            </ul>
-        {{/uesummarySection}}
+  <div class="my-2 ue-summary">
+      {{!-- basic info --}}
+      {{#ueSection title=(i18n "editor.unit.basicInfo") }}
+          {{#unless isPreview}}
+            <button class="btn btn-outline-primary ms-auto uesummary-edit-button"
+                    data-target="basicInfo"
+                    title="{{i18n 'actions.edit'}}">
+              <i class="fa fa-fw fa-edit"></i>
+            </button>
+          {{/unless}}
+      {{/ueSection}}
+    <ul class="list-group mb-4">
+        {{#each entry in baseData}}
+          <li class="list-group-item d-flex">
+              {{> tooltip icon=entry.icon title=(i18n entry.label)}}
+            <span class="w-100 ms-3">
+                {{entry.value}}
+            </span>
+          </li>
+        {{else}}
+          <li class="list-group-item bg-warning d-flex">
+            <span>{{i18n 'editor.unit.incomplete' name=(i18n "editor.unit.basicInfo")}}</span>
+          </li>
+        {{/each}}
+    </ul>
 
 
-        {{!-- dimensions --}}
-        {{#uesummarySection
-                target="basicInfo"
-                preview=isPreview
-                title=(i18n "curriculum.dimensions")
-                loadComplete=loadComplete
-                data=dimensions}}
-            <div class="card">
-                <div class="card-body">
-                    {{#each dimension in this}}
-                        <span class="badge p-3 mr-2 mb-2 font-weight-light"
-                              style="background-color: {{dimension.color}};color: {{contrastColor
-                                      dimension.color}};">
-                            {{dimension.title}}
-                        </span>
-                    {{/each}}
-                </div>
+      {{!-- dimensions --}}
+      {{#ueSection title=(i18n "curriculum.dimensions") }}
+          {{#unless isPreview}}
+            <button class="btn btn-outline-primary ms-auto uesummary-edit-button"
+                    data-target="dimensions"
+                    title="{{i18n 'actions.edit'}}">
+              <i class="fa fa-fw fa-edit"></i>
+            </button>
+          {{/unless}}
+      {{/ueSection}}
+
+      {{#onLoaded complete=dimensionsComplete type="data"}}
+          {{#unless dimensions.length}}
+            <div class="alert bg-warning">
+              <span class="alert-heading">{{i18n 'editor.unit.incomplete' name=(i18n "curriculum.dimensions")}}</span>
             </div>
-        {{/uesummarySection}}
+          {{else}}
+            <ul class="list-group mb-4">
+              <li class="list-group-item d-flex gap-2">
+                  {{#each dimension in dimensions}}
+                    <span class="badge p-3 fw-light"
+                          style="background-color: {{dimension.color}};color: {{contrastColor dimension.color}};">
+                        {{dimension.title}}
+                    </span>
+                  {{/each}}
+              </li>
+            </ul>
+          {{/unless}}
+      {{/onLoaded}}
 
-
-        {{!-- objectives --}}
-        {{#uesummarySection
-                target="objectives"
-                preview=isPreview
-                title=(i18n "curriculum.objectives")
-                loadComplete=loadComplete
-                data=objectives}}
+      {{!-- objectives --}}
+      {{#ueSection title=(i18n "curriculum.objectives") }}
+          {{#unless isPreview}}
+            <button class="btn btn-outline-primary ms-auto uesummary-edit-button"
+                    data-target="objectives"
+                    title="{{i18n 'actions.edit'}}">
+              <i class="fa fa-fw fa-edit"></i>
+            </button>
+          {{/unless}}
+      {{/ueSection}}
+      {{#onLoaded complete=objectivesComplete type="data"}}
+          {{#unless objectives.length}}
+            <div class="alert bg-warning">
+              <span class="alert-heading">{{i18n 'editor.unit.incomplete' name=(i18n "curriculum.objectives")}}</span>
+            </div>
+          {{else}}
             <ul class="list-group">
-                {{#each objectiveDoc in this}}
-                    <li class="list-group-item">
-                        {{> objective objectiveDoc}}
-                    </li>
+                {{#each objectiveDoc in objectives}}
+                  <li class="list-group-item">
+                      {{> objective objectiveDoc}}
+                  </li>
                 {{/each}}
             </ul>
-        {{/uesummarySection}}
+          {{/unless}}
+      {{/onLoaded}}
 
-        {{!-- phases --}}
-        {{#uesummarySection
-                target="phases"
-                preview=isPreview
-                title=(i18n "curriculum.phases")
-                loadComplete=loadComplete
-                data=phases}}
-            {{#with unassociatedMaterial}}
-                {{> nonPhaseMaterial material=this inline=true inlineToggle=true flush=true}}
-            {{/with}}
-            {{> phasesCompact phases=this globalMaterial=globalMaterial inline=true flush=true}}
-        {{/uesummarySection}}
-    </div>
+      {{> formModal}}
+  </div>
 </template>
 
-<template name="uesummarySection">
-    {{#with data}}
-        <div class="card border-0 bg-transparent mt-3 mb-1">
-            <div class="card-body d-flex justify-content-between">
-                <h5>{{../title}}</h5>
-                <span class="text-right d-print-none">
-                    {{#unless ../preview}}
-                        <button class="btn btn-outline-primary ml-auto uesummary-edit-button"
-                                data-target="{{../target}}"
-                                title="{{i18n 'actions.edit'}}">
-                            <i class="fa fa-fw fa-edit"></i>
-                        </button>
-                    {{/unless}}
-                </span>
-            </div>
-        </div>
-        {{#if ../loadComplete}}
-            {{> Template.contentBlock this}}
-            {{else}}
-            {{> loading title=../title}}
-        {{/if}}
-    {{else}}
-        {{#if loadComplete}}
-            {{#unless preview}}
-                <div class="card border-0 bg-transparent mt-5 mb-1">
-                    <div class="card-body d-flex justify-content-between">
-                        <h5>{{title}}</h5>
-                        <span class="text-right d-print-none">
-                            {{#unless preview}}
-                                <button href
-                                        class="btn btn-warning ml-auto uesummary-fix-button"
-                                        data-target="{{target}}"
-                                        title="{{i18n 'actions.fixNow'}}">
-                                    <i class="fa fa-fw fa-wrench"></i>
-                                </button>
-                            {{/unless}}
-                        </span>
-                    </div>
-                </div>
-                <div class="alert alert-warning d-flex">
-                    <span>
-                        <strong>"{{title}}"</strong>
-                        <span>{{i18n 'editor.unit.incomplete'}}</span>
-                    </span>
-                </div>
-            {{/unless}}
-        {{else}}
-            {{> loading type="data" title=title class="mt-4"}}
-        {{/if}}
-    {{/with}}
+<template name="ueSection">
+  <div class="card border-0 bg-transparent">
+    <div class="card-body d-flex justify-content-between align-items-center">
+      <h5>{{title}}</h5>
+      <span class="text-end d-print-none">
+          {{>Template.contentBlock }}
+      </span>
+    </div>
+  </div>
 </template>

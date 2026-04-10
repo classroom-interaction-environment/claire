@@ -1,43 +1,42 @@
-import { Meteor } from 'meteor/meteor'
-import { createLog } from '../log/createLog'
-import { userIsCurriculum } from '../accounts/userIsCurriculum'
+import { createLog } from "../log/createLog";
+import { userIsCurriculum } from "../accounts/userIsCurriculum";
+import { userExists } from "../accounts/user/userExists";
 
-const userExists = (userId) => !!(userId && Meteor.users.find({ _id: userId }).count() > 0)
-const debug = createLog({ name: 'validateUser', type: 'debug' })
+const debug = createLog({ name: "validateUser", type: "debug" });
 
-export const getUserCheck = function () {
-  return function validateUser (user, file, type) {
-    debug('for', file.name, type, user?.emails)
-    const userId = user?._id
+export const getUserCheck = () => {
+	return async (user, file, type) => {
+		const userId = user?._id;
+		debug("for", file.name, type, user?.emails, userId);
 
-    if (!userExists(userId)) {
-      debug('user does not exist, deny', type, file.name)
-      return false
-    }
+		if (!(await userExists({ userId }))) {
+			debug(`user ${userId} does not exist, deny`, type, file.name);
+			return false;
+		}
 
-    const userIsOwner = user._id === file.userId
-    const fileIsCurriculum = file._master === true
+		const userIsOwner = user._id === file.userId;
+		const fileIsCurriculum = file._master === true;
 
-    if (type === 'upload') {
-      if (fileIsCurriculum && !userIsCurriculum(userId)) {
-        debug('upload to curriculum as as non-curriculum user denied')
-        return false
-      }
+		if (type === "upload") {
+			if (fileIsCurriculum && !(await userIsCurriculum(userId))) {
+				debug("upload to curriculum as as non-curriculum user denied");
+				return false;
+			}
 
-      // TODO validate content in meta {}
-      debug('permitted upload')
-      return true
-    }
+			// TODO validate content in meta {}
+			debug("permitted upload");
+			return true;
+		}
 
-    if (type === 'remove') {
-      return userIsOwner
-    }
+		if (type === "remove") {
+			return userIsOwner;
+		}
 
-    if (type === 'download') {
-      debug('download permitted')
-      return true // TODO determine read access by lesson and class membership
-    }
+		if (type === "download") {
+			debug("download permitted");
+			return true; // TODO determine read access by lesson and class membership
+		}
 
-    throw new Error('unexpected code reach')
-  }
-}
+		throw new Error("unexpected code reach");
+	};
+};

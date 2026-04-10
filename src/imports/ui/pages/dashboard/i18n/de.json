@@ -9,6 +9,8 @@
     "saveOnly": "Nur speichern"
   },
   "dashboard": {
+    "myClasses": "Meine Kurse",
+    "newsfeed": "Neuigkeiten / Ereignisse",
     "prepare": "Mustervorlagen",
     "lesson": "Unterricht durchführen",
     "myLastDocuments": "Meine letzten Bearbeitungen",

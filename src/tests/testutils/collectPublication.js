@@ -1,8 +1,8 @@
-import { assert } from 'chai'
+import { assert } from "chai";
 
-export const collectPublication = cursor => {
-  if (!cursor?.fetch) {
-    assert.fail('expected cursor')
-  }
-  return cursor.fetch()
-}
+export const collectPublication = async (cursor) => {
+	if (!cursor?.fetch && !cursor.fetchAsync) {
+		assert.fail("expected cursor");
+	}
+	return cursor.fetchAsync();
+};

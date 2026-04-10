@@ -1,2 +1,2 @@
-import './imagePlaceholder.scss'
-import './imagePlaceholder.html'
+import "./imagePlaceholder.scss";
+import "./imagePlaceholder.html";

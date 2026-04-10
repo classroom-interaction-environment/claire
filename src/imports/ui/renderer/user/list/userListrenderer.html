@@ -4,7 +4,7 @@
             <li class="list-group-item d-flex align-items-center {{liClass}}">
                 {{> profileImage user=user height=48 width=48 round=true border=3}}
 
-                <span class="mx-1 ml-4">
+                <span class="mx-1 ms-4">
                     {{#if user.lastName}}
                         {{user.lastName}}
                     {{else}}
@@ -22,7 +22,7 @@
                     {{> actionButton icon="times" type="outline-danger"
                             data-target=user._id
                             blocked=(removing user._id)
-                            class="ml-auto remove-student-button"
+                            class="ms-auto remove-student-button"
                             title=(i18n "actions.remove")}}
                 {{/unless}}
             </li>

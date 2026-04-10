@@ -16,7 +16,8 @@
   },
   "dashboard": {
     "prepare": "Mustervorlagen",
-    "lesson": "Unterricht durchführen"
+    "lesson": "Unterricht durchführen",
+    "members": "Projektmitglieder"
   },
   "editor": {
     "task":{

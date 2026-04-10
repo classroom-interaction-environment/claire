@@ -1,7 +1,7 @@
-import { ReactiveVar } from 'meteor/reactive-var'
+import { ReactiveVar } from "meteor/reactive-var";
 
-export const Device = {}
+export const Device = {};
 
-Device.isMobile = new ReactiveVar()
-Device.isDesktop = new ReactiveVar()
-Device.isBeamer = new ReactiveVar()
+Device.isMobile = new ReactiveVar();
+Device.isDesktop = new ReactiveVar();
+Device.isBeamer = new ReactiveVar();

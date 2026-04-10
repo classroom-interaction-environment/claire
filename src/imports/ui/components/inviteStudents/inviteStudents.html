@@ -17,7 +17,7 @@
                         </th>
                     {{/if}}
 					{{!--<th>{{i18n "common.details"}}</th>--}}
-					<th class="text-right"><span class="d-none d-md-block">{{i18n "common.actions"}}</span></th>
+					<th class="text-end"><span class="d-none d-md-block">{{i18n "common.actions"}}</span></th>
 				</tr>
 				</thead>
 				<tbody>
@@ -30,7 +30,7 @@
                             expiration=false
                             countDownActive=../countDownActive
                             countdown=countDown}}
-					<td class="text-right no-wrap">
+					<td class="text-end no-wrap">
 						<button class="btn btn-sm btn-{{#unless
 								showList}}outline-{{/unless}}secondary show-invitationlist-button">
 							{{#if showList}}
@@ -48,7 +48,7 @@
 				</tbody>
 
 				{{#if showList}}
-					<thead class="border border-top-1 border-left-0 border-right-0 border-bottom-0">
+					<thead class="border border-top-1 border-start-0 border-end-0 border-bottom-0">
 					<tr>
 						<th class="text-center">{{i18n "common.status"}}</th>
 						<th class="text-center">
@@ -145,7 +145,7 @@
 							</span>
 
                     {{!-- CLOSE BUTTON RIGHT ALIGNED --}}
-                    <button class="btn btn-outline-secondary" type="button" data-dismiss="modal">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">
                         {{i18n "actions.close"}}
                     </button>
                 </div>

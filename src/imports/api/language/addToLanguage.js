@@ -1,7 +1,7 @@
-import { i18n } from './language'
-import { createLog } from '../log/createLog'
+import { i18n } from "./language";
+import { createLog } from "../log/createLog";
 
-const debug = createLog({ name: 'addToLanguage', type: 'debug' })
+const debug = createLog({ name: "addToLanguage", type: "debug" });
 
 /**
  * Receives an object with locale-implementations and tries to fetch a
@@ -24,23 +24,25 @@ const debug = createLog({ name: 'addToLanguage', type: 'debug' })
  * @return {Promise<Boolean>}
  */
 
-export const addToLanguage = async languages => {
-  const locale = i18n.getLocale()
-  const importFn = languages[locale]
-  debug(locale, 'is supported:', !!importFn)
+export const addToLanguage = async (languages) => {
+	const locale = i18n.getLocale();
+	const importFn = languages[locale];
+	debug(locale, "is supported:", !!importFn);
 
-  if (!importFn) { return false }
+	if (!importFn) {
+		return false;
+	}
 
-  const definitions = await importFn()
+	const definitions = await importFn();
 
-  if (typeof definitions !== 'object' || definitions === null) {
-    debug('no definitions after loaded fn for locale', locale)
-    return false
-  }
+	if (typeof definitions !== "object" || definitions === null) {
+		debug("no definitions after loaded fn for locale", locale);
+		return false;
+	}
 
-  const l10n = { [locale]: definitions.default || definitions }
-  debug('add new definitions', l10n)
-  i18n.addl10n(l10n)
-  i18n.setLocale(locale)
-  return true
-}
+	const l10n = { [locale]: definitions.default || definitions };
+	debug("add new definitions", l10n);
+	i18n.addl10n(l10n);
+	i18n.setLocale(locale);
+	return true;
+};

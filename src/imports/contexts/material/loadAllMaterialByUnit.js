@@ -1,6 +1,6 @@
-import { onServer } from '../../api/utils/archUtils'
-import { loadMaterial } from './loadMaterial'
-import { unitMaterialIds } from '../curriculum/curriculum/unit/unitMaterialIds'
+import { onServer } from "../../api/utils/archUtils";
+import { loadMaterial } from "./loadMaterial";
+import { unitMaterialIds } from "../curriculum/curriculum/unit/unitMaterialIds";
 
 /**
  * Server-side method to load all materials for a given unit.
@@ -10,19 +10,20 @@ import { unitMaterialIds } from '../curriculum/curriculum/unit/unitMaterialIds'
  * @param userId
  * @return {*|{}}
  */
-export const loadAllMaterialByUnit = onServer((unitDoc) => {
-  const unitMaterial = unitMaterialIds(unitDoc)
-  const dependencies = {}
-  const material = {}
-  loadMaterial({
-    source: unitMaterial,
-    destination: material,
-    dependencies: dependencies
-  })
-  loadMaterial({
-    source: dependencies,
-    destination: material
-  })
+export const loadAllMaterialByUnit = onServer(async (unitDoc) => {
+	const unitMaterial = unitMaterialIds(unitDoc);
+	const dependencies = {};
+	const material = {};
 
-  return material
-})
+	await loadMaterial({
+		source: unitMaterial,
+		destination: material,
+		dependencies: dependencies,
+	});
+	await loadMaterial({
+		source: dependencies,
+		destination: material,
+	});
+
+	return material;
+});

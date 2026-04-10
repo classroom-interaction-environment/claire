@@ -1,1 +1,1 @@
-import '../../../api/routes/curriculum/CurriculumRoutes'
+import "../../../api/routes/curriculum/CurriculumRoutes";

@@ -1,5 +1,6 @@
-import { ResponseDataTypes } from '../../plugins/ResponseDataTypes'
+import { ResponseDataTypes } from "../../plugins/ResponseDataTypes";
 
-export const isResponseDataType = t => typeof t === 'string'
-  ? Boolean(ResponseDataTypes[t])
-  : t.name && Boolean(ResponseDataTypes[t.name])
+export const isResponseDataType = (t) =>
+	typeof t === "string"
+		? Boolean(ResponseDataTypes[t])
+		: t.name && Boolean(ResponseDataTypes[t.name]);

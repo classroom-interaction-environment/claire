@@ -1,7 +1,7 @@
 <template name="adminUsers">
     <div class="card my-4">
         <div class="card-body">
-            <button class="btn btn-success float-right create-user-button">{{i18n
+            <button class="btn btn-success float-end create-user-button">{{i18n
                     "admin.create.user"}}</button>
             <h4><i class="fa fa-users"></i> {{i18n "common.users"}}</h4>
         </div>
@@ -38,7 +38,7 @@
                         <th>{{i18n "userProfile.firstName"}}</th>
                         <th>{{i18n "common.email"}}</th>
                         <th>{{i18n "common.roles"}}</th>
-                        <th class="text-right">{{i18n
+                        <th class="text-end">{{i18n
                                 "common.actions"}}</th>
                     </tr>
                     </thead>
@@ -61,7 +61,7 @@
                                         {{> icon fw=true class="text-light" type="far" title=(i18n "user.offline") name="circle"}}
                                     {{/if}}
                                 </td>
-                                <td class="text-left">
+                                <td class="text-start">
                                     {{#if user.presence}}
                                     {{#if isVerified user}}
                                         {{> icon name="user-check" fw=true title=(i18n "user.verified") class="text-success"}}
@@ -80,7 +80,7 @@
                                         {{i18n (concat "roles." user)}}
                                     {{/with}}
                                 </td>
-                                <td class="text-right">
+                                <td class="text-end">
                                     {{> actionButton type="outline-secondary"
                                             title=(i18n "admin.users.view")
                                             blocked=(submitting user._id)
@@ -143,7 +143,7 @@
         {{/mbody}}
         {{#mfooter class="d-flex justify-content-between"}}
             {{>actionButton submit=true form="updateUserForm" type="primary" label=(i18n "actions.update") blocked=(submitting "updateUserForm")}}
-            {{>actionButton type="outline-secondary" label=(i18n "actions.cancel") data-dismiss="modal"}}
+            {{>actionButton type="outline-secondary" label=(i18n "actions.cancel") data-bs-dismiss="modal"}}
         {{/mfooter}}
     {{/modal}}
 

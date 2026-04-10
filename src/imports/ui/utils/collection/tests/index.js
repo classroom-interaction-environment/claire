@@ -1,1 +1,1 @@
-import './createCollectionName.tests'
+import "./createCollectionName.tests";

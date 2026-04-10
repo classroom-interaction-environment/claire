@@ -1,8 +1,8 @@
 <template name="info">
     <button type="button" class="btn {{#if sm}}btn-sm{{/if}} btn-{{#if outline}}outline-{{/if}}{{#if type}}{{type}}{{else}}secondary{{/if}}"
-            data-toggle="modal"
+            data-bs-toggle="modal"
             title="{{title}}"
-            data-target="#{{id}}"
+            data-bs-target="#{{id}}"
             data-placement="top" data-content="{{content}}">
         <i class="fa fa-fw fa-info-circle"></i>
     </button>
@@ -12,8 +12,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="{{id}}Label">{{#if title}}{{title}}{{else}}{{i18n "common.info"}}{{/if}}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
                 {{#if label}}

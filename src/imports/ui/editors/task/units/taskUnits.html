@@ -1,7 +1,7 @@
 <template name="teunits">
 	<div class="my-4">
 		<div class="mb-4 clearfix">
-            <span class="float-right">
+            <span class="float-end">
                 <button class="btn btn-secondary select-unit-button">
                     <i class="fa fa-fw fa-list"></i> {{i18n 'actions.add'}}
                 </button>
@@ -36,7 +36,7 @@
 				{{#each this}}
 					<li class="list-group-item">
 						{{#teunitentry unit=this pocket=(linkedPocket this.pocket)}}
-                            {{> actionButton type="outline-secondary" class="btn-sm teunits-add-unit-button float-right"
+                            {{> actionButton type="outline-secondary" class="btn-sm teunits-add-unit-button float-end"
                                     data-target=this._id icon="plus" blocked=(updating this._id)}}
 						{{/teunitentry}}
 					</li>
@@ -57,7 +57,7 @@
                 {{#if pocket}}<p><small>{{pocket.title}}</small></p>{{/if}}
 				<p class="text-muted">{{shorten 200 unit.description}}</p>
 			</td>
-			<td class="text-right no-wrap">
+			<td class="text-end no-wrap">
 				{{> Template.contentBlock ..}}
 			</td>
 		</tr>

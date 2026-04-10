@@ -1,6 +1,6 @@
-import { Meteor } from 'meteor/meteor'
-import { Tracker } from 'meteor/tracker'
-import { CurrentClass } from '../../../ui/controllers/student/CurrentClass'
+import { Meteor } from "meteor/meteor";
+import { Tracker } from "meteor/tracker";
+import { CurrentClass } from "../../../ui/controllers/student/CurrentClass";
 
 /**
  * In this startup method we check, if the current user
@@ -10,13 +10,13 @@ import { CurrentClass } from '../../../ui/controllers/student/CurrentClass'
  */
 
 Meteor.startup(() => {
-  Tracker.autorun(computation => {
-    const user = Meteor.user()
-    if (!user) return
+	Tracker.autorun((computation) => {
+		const user = Meteor.user();
+		if (!user) return;
 
-    const classId = user.ui && user.ui.classId
-    if (classId) CurrentClass.set(classId)
+		const classId = user.ui?.classId;
+		if (classId) CurrentClass.set(classId);
 
-    computation.stop()
-  })
-})
+		computation.stop();
+	});
+});

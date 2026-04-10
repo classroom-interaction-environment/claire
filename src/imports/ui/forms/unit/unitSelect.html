@@ -1,9 +1,9 @@
 <template name="afUnitSelect">
     <div class="d-block text-center p-2">
-        <btn class="btn btn-sm btn-outline-secondary btn-block border-0"
+        <btn class="btn btn-sm btn-outline-secondary w-100 border-0"
              type="button"
-             data-toggle="collapse"
-             data-target="#unit-select-filter-collapse"
+             data-bs-toggle="collapse"
+             data-bs-target="#unit-select-filter-collapse"
              aria-expanded="false"
              aria-controls="unit-select-filter-collapse">
             {{> icon name="filter"}}
@@ -57,11 +57,11 @@
                 <div class="card">
                     <div class="card-header clickable d-flex justify-content-between"
                          type="button"
-                         data-toggle="collapse"
-                         data-target="#unit-collapse-{{@index}}"
+                         data-bs-toggle="collapse"
+                         data-bs-target="#unit-collapse-{{@index}}"
                          aria-expanded="false"
                          aria-controls="unit-collapse-{{@index}}">
-                        <span class="font-weight-bold">
+                        <span class="fw-bold">
                             <span class="px-2">{{> icon name=pocketCtx.icon}}</span>
                             {{entry.pocket.title}}
                         </span>

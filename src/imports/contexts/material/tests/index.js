@@ -1,3 +1,3 @@
-describe('Material', function () {
-  import './createMaterialQuery.tests'
-})
+describe("Material", () => {
+	require("./createMaterialQuery.tests");
+});

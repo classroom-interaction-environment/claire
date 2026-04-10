@@ -1,3 +1,7 @@
+import { isStudent } from "./isStudent";
+import { isTeacher } from "./isTeacher";
+import { isOwner } from "./isOwner";
+
 /**
  * Returns true if the given userId is either creator, in teachers or on
  * students located. Otherwise returns false.
@@ -7,17 +11,17 @@
  * @return {boolean}
  */
 export const isMemberOfClass = ({ classDoc, userId }) => {
-  if (typeof classDoc !== 'object' || typeof userId !== 'string') {
-    return false
-  }
+	if (typeof classDoc !== "object" || typeof userId !== "string") {
+		return false;
+	}
 
-  if (classDoc.createdBy === userId) {
-    return true
-  }
+	if (isOwner(userId, classDoc)) {
+		return true;
+	}
 
-  if (classDoc.teachers && classDoc.teachers.includes(userId)) {
-    return true
-  }
+	if (isTeacher(userId, classDoc)) {
+		return true;
+	}
 
-  return classDoc.students && classDoc.students.includes(userId)
-}
+	return isStudent(userId, classDoc);
+};

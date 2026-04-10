@@ -1,23 +1,33 @@
-import { Meteor } from 'meteor/meteor'
-import { check } from 'meteor/check'
-import { getCollection } from '../../utils/getCollection'
-import { matchNonEmptyString } from '../../utils/check/matchNonEmptyString'
-import { Admin } from '../../../contexts/system/accounts/admin/Admin'
+import { Meteor } from "meteor/meteor";
+import { check } from "meteor/check";
+import { getCollection } from "../../utils/getCollection";
+import { matchNonEmptyString } from "../../utils/check/matchNonEmptyString";
+import { Admin } from "../../../contexts/system/accounts/admin/Admin";
+import { userExists } from "../user/userExists";
 
 /**
  * Adds a user by user id to the Admins collection.
+ * @async
  * @param newAdminId {string} the user _id of the user who will be new admin
- * @return {String} the doc id of the the user's entry in the admin collection
+ * @return {Promise<string>} the doc id of the the user's entry in the admin collection
  */
 
-export const createAdmin = function (newAdminId) {
-  check(newAdminId, matchNonEmptyString)
+export const createAdmin = async (newAdminId) => {
+	check(newAdminId, matchNonEmptyString);
 
-  const AdminCollection = getCollection(Admin.name)
+	if (!(await userExists({ userId: newAdminId }))) {
+		throw new Meteor.Error("createAdmin.failed", "createAdmin.userNotFound", {
+			adminId: newAdminId,
+		});
+	}
 
-  if (AdminCollection.find({ userId: newAdminId }).count() > 0) {
-    throw new Meteor.Error('createAdmin.failed', 'createAdmin.alreadyAdmin', { adminId: newAdminId })
-  }
+	const AdminCollection = getCollection(Admin.name);
 
-  return AdminCollection.insert({ userId: newAdminId })
-}
+	if (await AdminCollection.findOneAsync({ userId: newAdminId })) {
+		throw new Meteor.Error("createAdmin.failed", "createAdmin.alreadyAdmin", {
+			adminId: newAdminId,
+		});
+	}
+
+	return AdminCollection.insertAsync({ userId: newAdminId });
+};

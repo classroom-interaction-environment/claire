@@ -16,9 +16,9 @@
 		{{#mfooter class="d-flex justify-content-between"}}
 			{{#unless successful}}
 				{{> actionButton type="primary" icon="lock" submit=true form="joinClassForm" label=(i18n "actions.join") blocked=submitting}}
-				{{> actionButton type="secondary" label=(i18n "actions.cancel") data-dismiss="modal"}}
+				{{> actionButton type="secondary" label=(i18n "actions.cancel") data-bs-dismiss="modal"}}
             {{else}}
-				{{> actionButton type="secondary" class="btn-block" label=(i18n "actions.close") data-dismiss="modal"}}
+				{{> actionButton type="secondary" class="w-100" label=(i18n "actions.close") data-bs-dismiss="modal"}}
 			{{/unless}}
 		{{/mfooter}}
         {{/if}}

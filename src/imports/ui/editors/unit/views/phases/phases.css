@@ -23,3 +23,11 @@
 .td-notes {
   min-width: 22.5%;
 }
+
+.phase-edit-link {
+  text-decoration: none;
+}
+
+.phase-edit-link:hover {
+  text-decoration: underline;
+}

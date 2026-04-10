@@ -1,3 +1,3 @@
-import { Files } from './Files'
+import { Files } from "./Files";
 
-export const isFilesContext = context => Files.hasIdentity(context)
+export const isFilesContext = (context) => Files.hasIdentity(context);

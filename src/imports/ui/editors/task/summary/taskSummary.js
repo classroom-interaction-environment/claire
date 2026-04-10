@@ -1,1 +1,1 @@
-import './taskSummary.html'
+import "./taskSummary.html";

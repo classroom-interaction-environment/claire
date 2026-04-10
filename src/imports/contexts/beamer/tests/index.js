@@ -1,4 +1,4 @@
 /* eslint-env mocha */
-describe('Beamer', function () {
-  import './Beamer.tests'
-})
+describe("Beamer", () => {
+	require("./Beamer.tests");
+});

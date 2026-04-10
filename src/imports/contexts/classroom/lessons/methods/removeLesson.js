@@ -1,99 +1,107 @@
-import { Lesson } from '../Lesson'
-import { LessonRuntime } from '../runtime/LessonRuntime'
-import { Unit } from '../../../curriculum/curriculum/unit/Unit'
-import { Phase } from '../../../curriculum/curriculum/phase/Phase'
-import { getCollection } from '../../../../api/utils/getCollection'
-import { LessonHelpers } from '../LessonHelpers'
-import { DocNotFoundError } from '../../../../api/errors/types/DocNotFoundError'
+import { Lesson } from "../Lesson";
+import { Unit } from "../../../curriculum/curriculum/unit/Unit";
+import { Phase } from "../../../curriculum/curriculum/phase/Phase";
+import { getCollection } from "../../../../api/utils/getCollection";
+import { getDocsForMember } from "../helpers/getDocsForMember";
+import { removeDocuments } from "../runtime/removeDocuments";
+import { resetBeamer } from "../runtime/resetBeamer";
+import { removeGroups } from "../runtime/resetGroups";
+import { createRemoveAllMaterial } from "../../../material/createRemoveAllMaterial";
+import { noop } from "bootstrap/js/src/util";
+
+const removeAllMaterial = createRemoveAllMaterial({ isCurriculum: false });
 
 /**
  * Removes / deletes a lesson by a given _id. Removes all related documents, too.
  *
- * @param options {object}
- * @param options.lessonId {string} the _id of the lesson to be deleted
- * @param options.lessonDoc {object} the lesson doc of the lesson to be deleted
- * @param options.userId {string} the user of which in behalf to call
- * @param options.log {function=} optional log to be passed
- * @return {{
+ * @param lessonId {string} the _id of the lesson to be deleted
+ * @param lessonDoc {object} the _id of the lesson to be deleted
+ * @param userId {string} the user of which in behalf to call
+ * @param log {function=} optional log to be passed
+ * @return {Promise<{
  *     lessonRemoved: number,
  *     unitRemoved: number,
  *     phasesRemoved: number,
  *     materialRemoved: number,
  *     runtimeDocsRemoved: number,
  *     beamerRemoved: number
- * }}
+ * }>}
  */
+export const removeLesson = async ({
+	userId,
+	lessonId,
+	lessonDoc,
+	log = noop,
+}) => {
+	log("get lesson doc");
+	const doc = lessonDoc
+		? lessonDoc
+		: (await getDocsForMember({ lessonId, userId })).lessonDoc;
+	const result = {
+		lessonRemoved: 0,
+		unitRemoved: 0,
+		phasesRemoved: 0,
+		materialRemoved: 0,
+		runtimeDocsRemoved: 0,
+		beamerRemoved: 0,
+		groupsRemoved: 0,
+	};
 
-export const removeLesson = (options) => {
-  const { userId, log } = options
-  let lessonId = options.lessonId
-  let lessonDoc = options.lessonDoc
+	lessonId = doc._id;
 
-  if (!lessonDoc) {
-    const docsForTeacher = LessonHelpers.docsForTeacher({ userId, lessonId })
-    lessonDoc = docsForTeacher.lessonDoc
-  }
+	log("remove runtime docs", { lessonId, userId });
+	result.runtimeDocsRemoved = await removeDocuments({ lessonId, userId });
+	result.beamerRemoved = await resetBeamer({ lessonId, userId });
 
-  // if still not existent....
-  if (!lessonDoc) {
-    throw new DocNotFoundError('removeLesson.noLessonById', { lessonId, userId })
-  }
+	// XXX: there are cases where the unit doc is
+	// removed and we need to remove the lesson but omit the unit doc
+	// which is why it's optional
+	const unitDoc = await getCollection(Unit.name).findOneAsync({
+		_id: doc.unit,
+	});
+	log("has unitDoc?", unitDoc ? unitDoc._id : false);
 
-  if (!lessonId && lessonDoc) {
-    lessonId = lessonDoc._id
-  }
+	if (unitDoc) {
+		// removes all linked phases but not global phases
+		const phaseQuery = createPhaseQuery({ userId, unitId: unitDoc._id });
 
-  const result = {
-    lessonRemoved: 0,
-    unitRemoved: 0,
-    phasesRemoved: 0,
-    materialRemoved: 0,
-    runtimeDocsRemoved: 0,
-    beamerRemoved: 0,
-    groupsRemoved: 0
-  }
+		if (unitDoc.phases?.length) {
+			phaseQuery._id = { $in: unitDoc.phases };
+		}
 
-  log('remove runtime docs')
-  const removeRuntimeArgs = { lessonId, userId }
-  result.runtimeDocsRemoved = LessonRuntime.removeDocuments(removeRuntimeArgs)
-  result.beamerRemoved = LessonRuntime.resetBeamer(removeRuntimeArgs)
+		log("remove phase query", phaseQuery);
+		result.phasesRemoved = await getCollection(Phase.name).removeAsync(
+			phaseQuery,
+		);
 
-  // XXX: there are cases where the unit doc is
-  // removed and we need to remove the lesson but omit the unit doc
-  // which is why it's optional
-  const unitDoc = getCollection(Unit.name).findOne({ _id: lessonDoc.unit })
-  log('has unitDoc?', unitDoc ? unitDoc._id : false)
+		const unitQuery = { _id: unitDoc._id, _master: { $exists: false } };
+		log("remove unit", unitQuery);
+		result.unitRemoved = await getCollection(Unit.name).removeAsync(unitQuery);
+		log("remove material");
+		result.materialRemoved = await removeAllMaterial({ unitDoc, userId });
+		log("runtime docs");
 
-  if (unitDoc) {
-    // removes all linked phases but not global phases
-    const phaseQuery = createPhaseQuery({ userId, unitId: unitDoc._id })
+		const unitId = unitDoc._id;
+		result.groupsRemoved = await removeGroups({ unitId });
+	}
 
-    if (unitDoc.phases?.length) {
-      phaseQuery._id = { $in: unitDoc.phases }
-    }
+	// If the unit doc is not found we still try to remove phases and material.
+	// Removes all linked phases but not global phases.
+	else {
+		const phaseQuery = createPhaseQuery({ userId, unitId: lessonDoc.unit });
+		log("remove phase query", phaseQuery);
+		result.phasesRemoved = await getCollection(Phase.name).removeAsync(
+			phaseQuery,
+		);
+	}
 
-    log('remove phase query', phaseQuery)
-    result.phasesRemoved = getCollection(Phase.name).remove(phaseQuery)
-    result.unitRemoved = getCollection(Unit.name).remove({ _id: unitDoc._id, _master: { $exists: false } })
-    result.materialRemoved = LessonRuntime.removeAllMaterial({ unitDoc, userId })
+	result.lessonRemoved = await getCollection(Lesson.name).removeAsync({
+		_id: lessonId,
+	});
+	log(result);
 
-    const unitId = unitDoc._id
-    result.groupsRemoved = LessonRuntime.removeGroups({ unitId })
-  }
-
-  // If the unit doc is not found we still try to remove phases and material.
-  // Removes all linked phases but not global phases.
-  else {
-    const phaseQuery = createPhaseQuery({ userId, unitId: lessonDoc.unit })
-    log('remove phase query', phaseQuery)
-    result.phasesRemoved = getCollection(Phase.name).remove(phaseQuery)
-  }
-
-  result.lessonRemoved = getCollection(Lesson.name).remove({ _id: lessonId })
-  log(result)
-
-  return result
-}
+	return result;
+};
 
 /**
  * @private
@@ -102,7 +110,7 @@ export const removeLesson = (options) => {
  * @return {{unit, createdBy, _master: {$exists: boolean}}}
  */
 const createPhaseQuery = ({ userId, unitId }) => ({
-  _master: { $exists: false },
-  unit: unitId,
-  createdBy: userId
-})
+	_master: { $exists: false },
+	unit: unitId,
+	createdBy: userId,
+});

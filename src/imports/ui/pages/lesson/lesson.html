@@ -1,19 +1,17 @@
 <template name="lesson">
-
-    {{#Teleport destination="#route-subtitle-destination"}}
-        <div class="text-center text-md-left">
+    {{#routeInfo}}
+        <div class="d-flex justify-content-between w-100">
+        <div class="text-center text-md-start">
             <span>{{classDoc.title}}</span>
         </div>
-    {{/Teleport}}
-
-    {{#Teleport destination="#route-info-destination"}}
-        <div class="text-center text-md-right">
+        <div class="text-center text-md-end">
             {{#with lessonDoc}}
                 <h4>{{unit.title}}</h4>
                 {{> lessonStatus lessonDoc=this unitDoc=unit showLabel=true}}
             {{/with}}
         </div>
-    {{/Teleport}}
+        </div>
+    {{/routeInfo}}
 
     {{#unless loadComplete}}
         {{>loading title=(i18n "lesson.title") type="data"}}

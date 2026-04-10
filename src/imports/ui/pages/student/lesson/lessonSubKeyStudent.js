@@ -1,1 +1,1 @@
-export const lessonSubKeyStudent = 'lessonSubStudent'
+export const lessonSubKeyStudent = "lessonSubStudent";

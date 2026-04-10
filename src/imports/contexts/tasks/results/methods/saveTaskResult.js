@@ -1,19 +1,21 @@
-import { Meteor } from 'meteor/meteor'
-import { LessonErrors } from '../../../classroom/lessons/LessonErrors'
-import { SchoolClass } from '../../../classroom/schoolclass/SchoolClass'
-import { LessonStates } from '../../../classroom/lessons/LessonStates'
-import { Lesson } from '../../../classroom/lessons/Lesson'
-import { Task } from '../../../curriculum/curriculum/task/Task'
-import { Group } from '../../../classroom/group/Group'
-import { TaskResults } from '../TaskResults'
-import { LessonHelpers } from '../../../classroom/lessons/LessonHelpers'
-import { createDocGetter } from '../../../../api/utils/document/createDocGetter'
-import { getCollection } from '../../../../api/utils/getCollection'
-import { GroupMode } from '../../../classroom/group/GroupMode'
+import { LessonErrors } from "../../../classroom/lessons/LessonErrors";
+import { LessonStates } from "../../../classroom/lessons/LessonStates";
+import { Task } from "../../../curriculum/curriculum/task/Task";
+import { Group } from "../../../classroom/group/Group";
+import { TaskResults } from "../TaskResults";
+import { createDocGetter } from "../../../../api/utils/document/createDocGetter";
+import { getCollection } from "../../../../api/utils/getCollection";
+import { GroupMode } from "../../../classroom/group/GroupMode";
+import { getDocsForMember } from "../../../classroom/lessons/helpers/getDocsForMember";
+import { taskIsEditable } from "../../../classroom/lessons/helpers/taskIsEditable";
+import { PermissionDeniedError } from "../../../../api/errors/types/PermissionDeniedError";
 
-const getLessonDoc = createDocGetter(Lesson)
-const checkTask = createDocGetter(Task)
-const getGroupDoc = createDocGetter(Group)
+const checkTask = createDocGetter({ name: Task.name });
+const getGroupDoc = createDocGetter({ name: Group.name });
+const getTaskResultDoc = createDocGetter({
+	name: TaskResults.name,
+	optional: true,
+});
 
 /**
  * Saves a response to an item of a given task
@@ -26,65 +28,102 @@ const getGroupDoc = createDocGetter(Group)
  *   updated (0 if failed)
  */
 
-export const saveTaskResult = ({ userId, lessonId, taskId, itemId, groupId, groupMode, response }) => {
-  if (!LessonHelpers.isMemberOfLesson({ userId, lessonId })) {
-    throw new Meteor.Error('errors.permissionDenied', SchoolClass.errors.notMember)
-  }
+export const saveTaskResult = async ({
+	userId,
+	lessonId,
+	taskId,
+	itemId,
+	groupId,
+	groupMode,
+	response,
+}) => {
+	const { lessonDoc } = await getDocsForMember({
+		userId,
+		lessonId,
+		isStudent: true,
+	});
+	if (!LessonStates.isRunning(lessonDoc)) {
+		throw new PermissionDeniedError(LessonErrors.unexpectedState, { lessonId });
+	}
 
-  checkTask(taskId)
-  const lessonDoc = getLessonDoc(lessonId)
-  if (!LessonStates.isRunning(lessonDoc)) {
-    throw new Meteor.Error('errors.permissionDenied', LessonErrors.unexpectedState)
-  }
+	await checkTask(taskId);
 
-  // if groupId check group membership
-  let groupDoc
+	// if groupId check group membership
+	let groupDoc;
 
-  if (groupId) {
-    groupDoc = getGroupDoc(groupId)
+	if (groupId) {
+		groupDoc = await getGroupDoc(groupId);
 
-    if (!groupDoc.users.some(entry => entry.userId === userId)) {
-      throw new Meteor.Error('errors.permissionDenied', 'group.notAMember', { groupId, userId })
-    }
-  }
+		if (!groupDoc.users.some((entry) => entry.userId === userId)) {
+			throw new PermissionDeniedError("group.notAMember", {
+				lessonId,
+				taskId,
+				groupId,
+				userId,
+			});
+		}
+	}
 
-  // check if we can even edit the task
-  if (!LessonHelpers.taskIsEditable({ lessonDoc, taskId, groupDoc })) {
-    throw new Meteor.Error('errors.permissionDenied', TaskResults.errors.notEditable)
-  }
+	// check if we can even edit the task
+	if (!taskIsEditable({ lessonDoc, taskId, groupDoc })) {
+		throw new PermissionDeniedError(TaskResults.errors.notEditable, {
+			lessonId,
+			taskId,
+			userId,
+		});
+	}
 
-  const createdBy = userId
-  const TaskResultCollection = getCollection(TaskResults.name)
-  const query = { lessonId, taskId, itemId, createdBy }
-  const isOverride = groupMode === GroupMode.override.value
+	const createdBy = userId;
+	const TaskResultCollection = getCollection(TaskResults.name);
+	const isOverride = groupMode === GroupMode.override.value;
+	const query = createQuery({
+		lessonId,
+		taskId,
+		itemId,
+		createdBy,
+		groupId,
+		isOverride,
+	});
+	const taskResultDoc = await getTaskResultDoc(query);
 
-  if (groupId) {
-    query.groupId = groupId
+	if (taskResultDoc) {
+		const updateDoc = { response };
 
-    // in override mode any member can submit
-    // a response for the group, overriding the previous one
-    if (isOverride) {
-      delete query.createdBy
-    }
-  }
+		if (isOverride) {
+			updateDoc.createdBy = createdBy;
+		}
 
-  const taskResultDoc = TaskResultCollection.findOne(query)
+		return TaskResultCollection.updateAsync(taskResultDoc._id, {
+			$set: updateDoc,
+		});
+	}
 
-  if (taskResultDoc) {
-    const updateDoc = { response }
+	const insertDoc = { lessonId, taskId, itemId, response };
 
-    if (isOverride) {
-      updateDoc.createdBy = createdBy
-    }
+	if (groupId) {
+		insertDoc.groupId = groupId;
+	}
 
-    return TaskResultCollection.update(taskResultDoc._id, { $set: updateDoc })
-  }
+	return TaskResultCollection.insertAsync(insertDoc);
+};
 
-  const insertDoc = { lessonId, taskId, itemId, response }
+const createQuery = ({
+	lessonId,
+	taskId,
+	itemId,
+	createdBy,
+	groupId,
+	isOverride,
+}) => {
+	const query = { lessonId, taskId, itemId, createdBy };
+	if (groupId) {
+		query.groupId = groupId;
 
-  if (groupId) {
-    insertDoc.groupId = groupId
-  }
-
-  return TaskResultCollection.insert(insertDoc)
-}
+		// in override mode any member can submit
+		// a response for the group, overriding the previous one
+		if (isOverride) {
+			delete query.createdBy;
+		}
+	}
+	return query;
+};

@@ -1,4 +1,5 @@
 <template name="lesson">
+    {{> routeInfo}}
     {{#onLoaded complete=loadComplete}}
         {{#with error}}
             {{> fail error=this}}
@@ -19,7 +20,7 @@
                                 {{#each group in this}}
                                     {{> routeButton type="secondary"
                                             label=group.title href=(route "group" ../_id group._id)
-                                            class="btn-block mt-2"}}
+                                            class="w-100 mt-2"}}
                                 {{/each}}
                             </div>
                         </div>
@@ -39,7 +40,7 @@
                 {{#if notMaterialActive}}
                     <div class="jumbotron jumbotron-fluid mt-5">
                         <div class="card-body">
-                            <p class="text-left text-md-center font-weight-normal">{{i18n
+                            <p class="text-start text-md-center fw-normal">{{i18n
                                     "schoolClass.waitForTeacher"}}</p>
                         </div>
                     </div>

@@ -1,4 +1,5 @@
 <template name="unitWizard">
+    {{> routeInfo}}
     {{#unless loadComplete}}
         {{> loading type="data"}}
     {{else}}
@@ -38,7 +39,7 @@
                     <span class="flex-fill mx-2">
                             <span>{{unit.title}}</span>
                         </span>
-                    <span class="font-weight-normal text-muted mx-2">
+                    <span class="fw-normal text-muted mx-2">
                         {{toDate unit.updatedAt}}
                     </span>
                     <span>

@@ -1,14 +1,15 @@
-import { Notify } from '../components/notifications/Notify'
+import { Notify } from "../components/notifications/Notify";
 
-const nothing = undefined
+const nothing = undefined;
 
 export const defaultCallback = (cb) => {
-  return (err, res) => {
-    if (err) {
-      return cb ? cb(err, nothing) : Notify.add({ type: 'error', message: err.reason || err.message })
-    }
-    else {
-      return cb ? cb(nothing, res) : Notify.add({ type: 'error' })
-    }
-  }
-}
+	return (err, res) => {
+		if (err) {
+			return cb
+				? cb(err, nothing)
+				: Notify.add({ type: "error", message: err.reason || err.message });
+		} else {
+			return cb ? cb(nothing, res) : Notify.add({ type: "error" });
+		}
+	};
+};

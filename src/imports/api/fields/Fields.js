@@ -1,21 +1,21 @@
-export const Fields = {}
+export const Fields = {};
 
-let _default = { _id: 1 }
+let _default = { _id: 1 };
 
-function setDefault (obj) {
-  _default = obj
+function setDefault(obj) {
+	_default = obj;
 }
 
-Fields.setDefault = setDefault
+Fields.setDefault = setDefault;
 
-function getDefault () {
-  return Object.assign({}, _default)
+function getDefault() {
+	return Object.assign({}, _default);
 }
 
-Fields.getDefault = getDefault
+Fields.getDefault = getDefault;
 
-function withDefault (obj) {
-  return Object.assign({}, _default, obj)
+function withDefault(obj) {
+	return Object.assign({}, _default, obj);
 }
 
-Fields.withDefault = withDefault
+Fields.withDefault = withDefault;

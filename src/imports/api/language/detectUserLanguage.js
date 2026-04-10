@@ -1,5 +1,5 @@
-import { Meteor } from 'meteor/meteor'
-import { isDefinedString } from '../utils/check/isDefinedString'
+import { Meteor } from "meteor/meteor";
+import { isDefinedString } from "../utils/check/isDefinedString";
 
 /**
  * Detects a user's language using various checks. Supports server and client.
@@ -7,20 +7,21 @@ import { isDefinedString } from '../utils/check/isDefinedString'
  * @return {string|undefined}
  */
 export const detectUserLanguage = (user) => {
-  const locale = user && user.locale
+	const locale = user?.locale;
 
-  if (isDefinedString(locale)) {
-    return locale
-  }
+	if (isDefinedString(locale)) {
+		return locale;
+	}
 
-  if (!Meteor.isClient) {
-    return undefined
-  }
+	if (!Meteor.isClient) {
+		return undefined;
+	}
 
-  const clientLanguage = (window.navigator.language ?? window.navigator.userLanguage ?? '')
-  const clientLocale = clientLanguage.split('-')[0]
+	const clientLanguage =
+		window.navigator.language ?? window.navigator.userLanguage ?? "";
+	const clientLocale = clientLanguage.split("-")[0];
 
-  if (isDefinedString(clientLocale)) {
-    return clientLocale
-  }
-}
+	if (isDefinedString(clientLocale)) {
+		return clientLocale;
+	}
+};

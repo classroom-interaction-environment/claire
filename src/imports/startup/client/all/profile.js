@@ -1,31 +1,35 @@
-import { Meteor } from 'meteor/meteor'
-import { Tracker } from 'meteor/tracker'
-import { ProfileImages } from '../../../contexts/files/image/ProfileImages'
-import { i18n } from '../../../api/language/language'
-import { initContext } from '../contexts/initContext'
-import { loadProfileImage } from '../../../api/accounts/user/client/loadProfileImage'
+import { Meteor } from "meteor/meteor";
+import { Tracker } from "meteor/tracker";
+import { ProfileImages } from "../../../contexts/files/image/ProfileImages";
+import { i18n } from "../../../api/language/language";
+import { initContext } from "../contexts/initContext";
+import { loadProfileImage } from "../../../api/accounts/user/client/loadProfileImage";
 
-initContext(ProfileImages)
+initContext(ProfileImages);
 
-Tracker.autorun(computation => {
-  const user = Meteor.user()
-  if (!user) { return }
+Tracker.autorun((computation) => {
+	const user = Meteor.user();
+	if (!user) {
+		return;
+	}
 
-  if (user.profileImage) {
-    loadProfileImage({ user })
-  }
+	if (user.profileImage) {
+		loadProfileImage({ user });
+	}
 
-  computation.stop()
-})
+	computation.stop();
+});
 
-Tracker.autorun(computation => {
-  const user = Meteor.user()
-  const langInit = i18n.initialized()
-  if (!user || !langInit) { return }
+Tracker.autorun((computation) => {
+	const user = Meteor.user();
+	const langInit = i18n.initialized();
+	if (!user || !langInit) {
+		return;
+	}
 
-  if (user.locale && user.locale.lang) {
-    i18n.setLocale(user.locale.lang)
-  }
+	if (user.locale?.lang) {
+		i18n.setLocale(user.locale.lang);
+	}
 
-  computation.stop()
-})
+	computation.stop();
+});

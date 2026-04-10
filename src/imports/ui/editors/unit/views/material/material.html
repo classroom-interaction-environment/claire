@@ -1,14 +1,16 @@
 <template name="uematerial">
-    <div class="my-4 clearfix">
-		<span class="float-right">
-			<button class="btn btn-sm btn-secondary uematerial-select-button" disabled="{{#unless selectEntries}}disabled{{/unless}}">
+    <div class="my-2 clearfix ue-material">
+		<span class="float-end">
+          {{#if selectEntries}}
+			<button class="btn btn-sm btn-secondary uematerial-select-button">
                 {{i18n 'actions.add'}}
                 {{#with selectEntries}}
-                    <span class="badge badge-pill text-light">
+                    <span class="badge bg-pill text-light">
                         {{this.count}}
                     </span>
                 {{/with}}
             </button>
+            {{/if}}
 			<button class="btn btn-sm btn-success uematerial-insert-button">
 				<i class="fa fa-fw fa-plus"></i> {{i18n 'actions.create'}}
 			</button>
@@ -22,7 +24,7 @@
                        data-target="{{entry.name}}">
                         {{i18n entry.label}}
                         {{#with entryCount entry.fieldName}}
-                            <span class="badge badge-light badge-pill">
+                            <span class="badge bg-light bg-pill">
                                 {{this}}
                             </span>
                         {{/with}}
@@ -30,7 +32,6 @@
                 </li>
             {{/each}}
         </ul>
-    </div>
 
     {{#unless loadComplete}}
         {{> loading type="data"}}
@@ -39,7 +40,7 @@
             <table class="table material-table">
                 <tbody>
                 {{#each entry in entries}}
-                    <tr class="uematerial-entry bg-white {{#if isTarget entry._id}}border border-primary{{/if}}"
+                    <tr class="uematerial-entry bg-white align-middle {{#if isTarget entry._id}}border border-primary{{/if}}"
                         data-target="{{entry._id}}">
 
                         <td>
@@ -49,7 +50,7 @@
                         {{! custom list renderer for material }}
                         {{> Template.dynamic template=listRendererTemplate data=(withUnitDoc entry)}}
 
-                        <td class="text-right no-wrap">
+                        <td class="text-end no-wrap">
                             {{#if preview}}
                                 {{> actionButton
                                         type="outline-secondary"
@@ -127,7 +128,7 @@
                             {{> Template.dynamic
                                     template=listRendererTemplate
                                     data=(selectEntryModalData entry)}}
-                            <td class="text-right no-wrap">
+                            <td class="text-end no-wrap">
                                 {{> actionButton type="outline-secondary"
                                         class="btn-sm uematerial-add-button"
                                         data-target=(entry._id)
@@ -148,7 +149,7 @@
             {{#modal id="uematerial-create-modal" large=true static=true}}
                 {{#mheader dismiss=true title=(label "create") class="bg-success text-white"}}{{/mheader}}
                 {{#with createInfo}}
-                    <div class="card-body">
+                    <div class="modal-body">
                         <i class="fa fa-fw fa-info-circle"></i> {{i18n this}}
                     </div>
                     <hr>
@@ -159,17 +160,17 @@
                         type=(formState)}}
                 {{#mfooter}}
                     {{#unless processing true}}
-                        <button class="btn btn-success mr-auto" type="submit" form="createMaterialForm">
+                        <button class="btn btn-success me-auto" type="submit" form="createMaterialForm">
                             {{i18n 'actions.create'}}
                         </button>
-                        <button class="btn btn-secondary ml-auto uematerial-cancel-insert-button">
+                        <button class="btn btn-secondary ms-auto uematerial-cancel-insert-button">
                             {{i18n 'actions.cancel'}}
                         </button>
                     {{else}}
-                        <button class="btn btn-success mr-auto disabled" disabled="disabled">
+                        <button class="btn btn-success me-auto disabled" disabled="disabled">
                             <i class="fa fa-fw fa-sync fa-spin"></i> {{i18n 'actions.create'}}
                         </button>
-                        <button class="btn btn-secondary ml-auto disabled" disabled="disabled">
+                        <button class="btn btn-secondary ms-auto disabled" disabled="disabled">
                             {{i18n 'actions.cancel'}}
                         </button>
                     {{/unless}}
@@ -199,17 +200,17 @@
                 {{/with}}
                 {{#mfooter}}
                     {{#unless processing true}}
-                        <button class="btn btn-secondary mr-auto" type="submit" form="editMaterialForm">
+                        <button class="btn btn-secondary me-auto" type="submit" form="editMaterialForm">
                             {{i18n 'actions.update'}}
                         </button>
-                        <button class="btn btn-secondary ml-auto" data-dismiss="modal">
+                        <button class="btn btn-secondary ms-auto" data-bs-dismiss="modal">
                             {{i18n 'actions.cancel'}}
                         </button>
                     {{else}}
-                        <button class="btn btn-secondary mr-auto disabled" type="submit" disabled="disabled">
+                        <button class="btn btn-secondary me-auto disabled" type="submit" disabled="disabled">
                             <i class="fa fa-fw fa-sync fa-spin"></i> {{i18n 'actions.update'}}
                         </button>
-                        <button class="btn btn-secondary ml-auto disabled" disabled="disabled">
+                        <button class="btn btn-secondary ms-auto disabled" disabled="disabled">
                             {{i18n 'actions.cancel'}}
                         </button>
                     {{/unless}}
@@ -233,7 +234,7 @@
                     {{/with}}
                 {{/mbody}}
                 {{#mfooter}}
-                    <button class="btn btn-secondary" data-dismiss="modal">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">
                         {{i18n "actions.close"}}
                     </button>
                 {{/mfooter}}
@@ -253,7 +254,7 @@
                         </span>
                             <span>
                                 {{#if linkedWithPhase this phase}}
-                                    <span class="mr-2"><i class="fa fa-fw fa-check"></i> {{i18n "common.linked"}}</span>
+                                    <span class="me-2"><i class="fa fa-fw fa-check"></i> {{i18n "common.linked"}}</span>
                                     {{>actionButton icon="minus" type="secondary" class="uematerial-phaselink-button"
                                             title=(i18n "editor.unit.material.unlinkFromPhase") data-phase=phase._id blocked=(linkingPhase phase._id)}}
                                 {{else}}
@@ -272,10 +273,11 @@
                 {{#mbody}}{{> loading}}{{/mbody}}
             {{/with}}
             {{#mfooter}}
-                <button class="btn btn-secondary" data-dismiss="modal">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
                     {{i18n "actions.close"}}
                 </button>
             {{/mfooter}}
         {{/modal}}
     {{/unless}}
+    </div>
 </template>

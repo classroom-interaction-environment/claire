@@ -1,7 +1,7 @@
 /* global AutoForm */
-AutoForm.addInputType('iconSelect', {
-  template: 'afIconSelect',
-  valueOut () {
-    return this.val()
-  }
-})
+AutoForm.addInputType("iconSelect", {
+	template: "afIconSelect",
+	valueOut() {
+		return this.val();
+	},
+});

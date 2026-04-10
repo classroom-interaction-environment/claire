@@ -57,6 +57,7 @@
     "title": "Kod ile kayıt olun"
   },
   "common": {
+    "help": "Yardım",
     "deprecated": "Eski / artık kullanılmıyor",
     "startedAt": "Başladı:",
     "completedAt": "Tamamlandı:",

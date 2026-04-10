@@ -1,3 +1,3 @@
-import { UserUtils } from '../../contexts/system/accounts/users/UserUtils'
+import { Hierarchy } from "./roles/Hierarchy";
 
-export const getMinimalRole = () => UserUtils.roles.student
+export const getMinimalRole = () => Hierarchy.student;

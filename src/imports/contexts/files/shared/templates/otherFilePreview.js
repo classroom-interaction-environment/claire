@@ -1,1 +1,1 @@
-import './otherFilePreview.html'
+import "./otherFilePreview.html";

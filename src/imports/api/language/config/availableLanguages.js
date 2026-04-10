@@ -1,5 +1,5 @@
-import de from './de'
-import en from './en'
-import tr from './tr'
+import de from "./de";
+import en from "./en";
+import tr from "./tr";
 
-module.exports = { de, en, tr }
+module.exports = { de, en, tr };

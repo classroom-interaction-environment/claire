@@ -1,2 +1,2 @@
-import '../../both/plugins/loadDefaultResponseProcessors'
-import './h5p'
+import "../../both/plugins/loadDefaultResponseProcessors";
+// import './h5p'

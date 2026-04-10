@@ -1,11 +1,7 @@
-import { ResponseDataTypes } from '../../../../../../api/plugins/ResponseDataTypes'
+import { ResponseDataTypes } from "../../../../../../api/plugins/ResponseDataTypes";
 
-const {
-  dichotome,
-  numerical,
-  singleChoice,
-  multipleChoice
-} = ResponseDataTypes
+const { dichotome, numerical, singleChoice, multipleChoice } =
+	ResponseDataTypes;
 
 /**
  * Gets the correct pie chart values from the results,
@@ -18,71 +14,66 @@ const {
  * @return {{values: Array, labels: Array, sampleSize: number}}
  */
 export const getPieChartValues = ({ results, choices, dataType }) => {
-  let sampleSize = 0
-  let values
-  let labels = []
+	let sampleSize = 0;
+	let values;
+	let labels = [];
 
-  // single-dimension data types
+	// single-dimension data types
 
-  if ([dichotome, singleChoice].includes(dataType)) {
-    values = []
-    values.length = choices.length
-    values.fill(0)
+	if ([dichotome, singleChoice].includes(dataType)) {
+		values = [];
+		values.length = choices.length;
+		values.fill(0);
 
-    results.forEach(result => {
-      const { response } = result
-      if (!response || response.length === 0) return
-      const value = response[0]
-      const index = choices.indexOf(value)
-      values[index]++
-      sampleSize++
-    })
+		results.forEach((result) => {
+			const { response } = result;
+			if (!response || response.length === 0) return;
+			const value = response[0];
+			const index = choices.indexOf(value);
+			values[index]++;
+			sampleSize++;
+		});
 
-    labels = choices
-  }
+		labels = choices;
+	} else if (numerical === dataType) {
+		values = {};
+		results.forEach((result) => {
+			const { response } = result;
+			if (!response || response.length === 0) return;
 
-  else if (numerical === dataType) {
-    values = {}
-    results.forEach(result => {
-      const { response } = result
-      if (!response || response.length === 0) return
+			const value = response[0];
 
-      const value = response[0]
+			if (!values[value]) {
+				values[value] = 0;
+			}
 
-      if (!values[value]) {
-        values[value] = 0
-      }
+			values[value]++;
+			sampleSize++;
+		});
 
-      values[value]++
-      sampleSize++
-    })
+		labels = Object.keys(values);
+	}
 
-    labels = Object.keys(values)
-  }
+	// two-dimension datatypes
+	else if ([multipleChoice].includes(dataType)) {
+		values = [];
+		values.length = choices.length;
+		values.fill(0);
 
-  // two-dimension datatypes
+		results.forEach((result) => {
+			const { response } = result;
+			if (!response || response.length === 0) return;
+			response.forEach((value) => {
+				const index = choices.indexOf(value);
+				values[index]++;
+			});
+			sampleSize++;
+		});
 
-  else if ([multipleChoice].includes(dataType)) {
-    values = []
-    values.length = choices.length
-    values.fill(0)
+		labels = choices;
+	} else {
+		throw new TypeError(`Unexpected dataType ${dataType}`);
+	}
 
-    results.forEach(result => {
-      const { response } = result
-      if (!response || response.length === 0) return
-      response.forEach(value => {
-        const index = choices.indexOf(value)
-        values[index]++
-      })
-      sampleSize++
-    })
-
-    labels = choices
-  }
-
-  else {
-    throw new TypeError(`Unexpected dataType ${dataType}`)
-  }
-
-  return { values, labels, sampleSize }
-}
+	return { values, labels, sampleSize };
+};

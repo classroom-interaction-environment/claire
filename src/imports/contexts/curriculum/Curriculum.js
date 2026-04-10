@@ -1,37 +1,40 @@
-import { Meteor } from 'meteor/meteor'
-import { getCollection } from '../../api/utils/getCollection'
-import { DefaultCurriculumSchema, DefaultCurriculumFields } from './curriculum/defaultSchema'
-import { createContextRegistry } from '../../infrastructure/datastructures/createContextRegistry'
+import { Meteor } from "meteor/meteor";
+import { getCollection } from "../../api/utils/getCollection";
+import {
+	DefaultCurriculumSchema,
+	DefaultCurriculumFields,
+} from "./curriculum/defaultSchema";
+import { createContextRegistry } from "../../infrastructure/datastructures/createContextRegistry";
 
-const curriculumContexts = new Map()
+const curriculumContexts = new Map();
 
 export const Curriculum = createContextRegistry({
-  name: 'Curriculum',
-  map: curriculumContexts,
-  setIdentity (context) {
-    context.isCurriculum = true
-  },
-  hasIdentity (context) {
-    return context.isCurriculum === true
-  },
+	name: "Curriculum",
+	map: curriculumContexts,
+	setIdentity(context) {
+		context.isCurriculum = true;
+	},
+	hasIdentity(context) {
+		return context.isCurriculum === true;
+	},
 
-  helpers: {},
+	helpers: {},
 
-  getDefaultSchema (isFilesContext) {
-    return DefaultCurriculumSchema(isFilesContext)
-  },
+	getDefaultSchema(isFilesContext) {
+		return DefaultCurriculumSchema(isFilesContext);
+	},
 
-  getDefaultPublicFields (isFilesContext) {
-    return DefaultCurriculumFields(isFilesContext)
-  }
-})
+	getDefaultPublicFields(isFilesContext) {
+		return DefaultCurriculumFields(isFilesContext);
+	},
+});
 
-Curriculum.load = function ({ name }, query, callback) {
-  const context = curriculumContexts.get(name)
-  Meteor.call(context.methods.all.name, query, callback)
-}
+Curriculum.load = ({ name }, query, callback) => {
+	const context = curriculumContexts.get(name);
+	Meteor.call(context.methods.all.name, query, callback);
+};
 
-Curriculum.flush = function ({ name }, ids) {
-  const Collection = getCollection(name)
-  return Collection._collection.remove({ _id: ids })
-}
+Curriculum.flush = ({ name }, ids) => {
+	const Collection = getCollection(name);
+	return Collection._collection.remove({ _id: ids });
+};

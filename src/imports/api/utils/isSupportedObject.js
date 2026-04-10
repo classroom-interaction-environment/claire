@@ -1,4 +1,4 @@
-import { isObject } from './check/isObject'
+import { isObject } from "./check/isObject";
 
 /**
  * A supported property (like schema, methods, publications) is an Object with
@@ -7,4 +7,5 @@ import { isObject } from './check/isObject'
  * @return {boolean}
  */
 
-export const isSupportedObject = obj => isObject(obj) && Object.keys(obj).length > 0
+export const isSupportedObject = (obj) =>
+	isObject(obj) && Object.keys(obj).length > 0;

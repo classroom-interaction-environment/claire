@@ -1,8 +1,6 @@
-import './config'
-import './userPresence'
-import './facts'
-import './emailTemplates'
-import './roles'
-import './admin'
-import './fixtures'
-import './inform'
+import "./config";
+import "./userPresence";
+import "./facts";
+import "./emailTemplates";
+import "./roles";
+import "./inform";

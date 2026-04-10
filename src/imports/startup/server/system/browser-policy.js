@@ -1,6 +1,6 @@
-import { cspOptions } from '../../../api/csp/cspOptions'
-import { WebApp } from 'meteor/webapp'
-import helmet from 'helmet'
+import { cspOptions } from "../../../api/csp/cspOptions";
+import { WebApp } from "meteor/webapp";
+import helmet from "helmet";
 
 /*
  * This sets up a default content security policy that also conforms with
@@ -8,8 +8,7 @@ import helmet from 'helmet'
  *
  * TODO: read extended CSP options from installed plugins
  */
-const externalHostUrls = [
-  'https://h5p.org'
-]
+const externalHostUrls = ["https://h5p.org"];
 
-WebApp.connectHandlers.use(helmet(cspOptions(externalHostUrls)))
+const csp = helmet(cspOptions(externalHostUrls));
+WebApp.handlers.use(csp);

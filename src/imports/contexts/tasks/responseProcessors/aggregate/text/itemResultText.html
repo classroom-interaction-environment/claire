@@ -6,9 +6,9 @@
                     <li class="list-group-item d-flex justify-content-between">
                         <div class="w-100 {{#if shouldBeHidden
                                                 result.createdBy}}passive{{/if}}">
-                            <span class="text-left d-block">{{result.response}}</span>
+                            <span class="text-start d-block">{{result.response}}</span>
                             {{#if showUser result.createdBy}}
-                                <small class="text-left d-block">
+                                <small class="text-start d-block">
                                     {{username result.createdBy}}
                                 </small>
                             {{/if}}
@@ -22,7 +22,7 @@
                                     type="outline-secondary"
                                     class="dropdown-toggle boder-0"
                                     blocked=(saving result.createdBy)
-                                    data-toggle="dropdown"
+                                    data-bs-toggle="dropdown"
                                     aria-haspopup="true"
                                     aria-expanded="false"}}
                             <div class="dropdown-menu dropdown-menu-right">

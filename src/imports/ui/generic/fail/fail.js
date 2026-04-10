@@ -1,8 +1,8 @@
-import { Template } from 'meteor/templating'
-import './fail.html'
+import { Template } from "meteor/templating";
+import "./fail.html";
 
 Template.fail.helpers({
-  title (err) {
-    return err.error || err.message
-  }
-})
+	title(err) {
+		return err.error || err.message;
+	},
+});

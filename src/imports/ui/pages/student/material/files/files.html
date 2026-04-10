@@ -1,4 +1,5 @@
 <template name="files">
+    {{> routeInfo}}
     {{#unless loadComplete}}
         {{> loading type="data"}}
     {{else}}

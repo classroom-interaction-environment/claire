@@ -9,7 +9,7 @@
                             <td class="no-wrap">
                                 <h5>{{schoolClass.title}}</h5>
                             </td>
-                            <td class="text-right no-wrap">
+                            <td class="text-end no-wrap">
                                 {{#if loadComplete}}
                                     {{#actionButton
                                             type="outline-secondary"
@@ -69,7 +69,7 @@
                             {{#each lesson in this}}
                                 {{#lessonListRenderer
                                         lesson=lesson
-                                        liClass="ml-4"
+                                        liClass="ms-4"
                                         showIcon=true
                                         showPocket=true
                                         showTime=true}}

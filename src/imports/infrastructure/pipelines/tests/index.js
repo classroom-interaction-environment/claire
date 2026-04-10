@@ -1,14 +1,14 @@
 /* eslint-env mocha */
-import { onClientExec, onServerExec } from '../../../api/utils/archUtils'
+import { onClientExec, onServerExec } from "../../../api/utils/archUtils";
 
-describe('pipelines', function () {
-  import './createPipeline.tests'
+describe("pipelines", () => {
+	require("./createPipeline.tests");
 
-  onServerExec(function () {
-    import '../server/buildPipeline.tests'
-  })
+	onServerExec(() => {
+		require("../server/buildPipeline.tests");
+	});
 
-  onClientExec(function () {
-    import '../client/buildPipeline.tests'
-  })
-})
+	onClientExec(() => {
+		require("../client/buildPipeline.tests");
+	});
+});

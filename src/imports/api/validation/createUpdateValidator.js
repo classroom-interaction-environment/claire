@@ -1,4 +1,4 @@
-import { Schema } from '../schema/Schema'
+import { Schema } from "../schema/Schema";
 
 /**
  * Creates a validator function from a given schema (with defaults),
@@ -6,18 +6,20 @@ import { Schema } from '../schema/Schema'
  * @param schema
  * @return {function(*=): *}
  */
-export const createUpdateValidator = schema => {
-  const updateDocBaseSchema = Object.assign({}, Schema.getDefault(), schema)
-  const updateDocSchema = {}
+export const createUpdateValidator = (schema) => {
+	const updateDocBaseSchema = Object.assign({}, Schema.getDefault(), schema);
+	const updateDocSchema = {};
 
-  Object.keys(updateDocBaseSchema).forEach(key => {
-    updateDocSchema[key] = Object.assign({}, updateDocBaseSchema[key], { optional: true })
-  })
+	Object.keys(updateDocBaseSchema).forEach((key) => {
+		updateDocSchema[key] = Object.assign({}, updateDocBaseSchema[key], {
+			optional: true,
+		});
+	});
 
-  const updateSchema = Schema.create({
-    _id: { type: String },
-    doc: Schema.create(updateDocSchema)
-  })
+	const updateSchema = Schema.create({
+		_id: { type: String },
+		doc: Schema.create(updateDocSchema),
+	});
 
-  return updateDoc => updateSchema.validate(updateDoc)
-}
+	return (updateDoc) => updateSchema.validate(updateDoc);
+};

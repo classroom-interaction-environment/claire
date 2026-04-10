@@ -1,1 +1,1 @@
-import './info.html'
+import "./info.html";

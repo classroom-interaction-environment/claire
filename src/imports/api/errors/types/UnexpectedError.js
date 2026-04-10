@@ -1,13 +1,13 @@
-import { Meteor } from 'meteor/meteor'
+import { Meteor } from "meteor/meteor";
 
-const name = 'errors.unexpected'
+const name = "errors.unexpected";
 
 export class UnexpectedError extends Meteor.Error {
-  static get name () {
-    return name
-  }
+	static get name() {
+		return name;
+	}
 
-  constructor (reason, details) {
-    super(name, reason, details)
-  }
+	constructor(reason, details) {
+		super(name, reason, details);
+	}
 }

@@ -1,7 +1,7 @@
-import { Router } from './Router'
+import { Router } from "./Router";
 
 export const createRedirect = (targetRoute, conditionalFn) => () => {
-  if (conditionalFn()) {
-    Router.go(targetRoute)
-  }
-}
+	if (conditionalFn()) {
+		Router.go(targetRoute);
+	}
+};

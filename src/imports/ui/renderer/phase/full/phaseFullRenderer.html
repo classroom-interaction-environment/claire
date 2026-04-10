@@ -25,7 +25,7 @@
 
                 {{! TITLE + DESCRIPTION }}
                 <td class="wrap-cell white-space-normal w-25">
-                    <span class="font-weight-bold">{{phaseDoc.title}}</span>
+                    <span class="fw-bold">{{phaseDoc.title}}</span>
                     <p>{{phaseDoc.plot}}</p>
                 </td>
 
@@ -53,7 +53,7 @@
                         {{#with reference this}}
                             <div class="d-flex align-items-baseline p-1">
                                 {{> icon name=this.icon class="text-muted"}}
-                                <span class="ml-1">
+                                <span class="ms-1">
                                 {{#if this.isFilesCollection}}
                                     {{this.doc.name}}
                                 {{else}}

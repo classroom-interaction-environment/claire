@@ -53,7 +53,7 @@
                         <div class="card-body d-flex align-items-baseline py-0">
                             {{> tooltip icon="filter" title=(i18n "wizard.prepare.filterByDimension")}}
 
-                            <div class="ml-2">
+                            <div class="ms-2">
                                 {{#each dim in allDimension}}
                                     {{#unless dimensionDisabled dim._id}}
                                         {{>dimension
@@ -97,7 +97,7 @@
                                             {{#with unitsForPocket pocket._id}}
                                                 <span>{{count this}} {{i18n
                                                         "curriculum.units"}}</span>
-                                                <span class="ml-auto">{{sumField
+                                                <span class="ms-auto">{{sumField
                                                         this "period"}} {{i18n
                                                         "time.min"}}</span>
                                             {{else}}
@@ -108,11 +108,11 @@
                                     </li>
                                     {{#unless pocketOpen pocket._id}}
                                         <div class="w-100 text-center mb-1">
-                                            {{> actionButton class="pocket-toggle btn-block" type="outline-primary" icon="chevron-down" data-target=pocket._id}}
+                                            {{> actionButton class="pocket-toggle w-100" type="outline-primary" icon="chevron-down" data-target=pocket._id}}
                                         </div>
                                     {{else}}
                                         <div class="w-100 text-center mb-1">
-                                            {{> actionButton class="pocket-toggle btn-block" type="outline-primary" icon="chevron-up" data-target=pocket._id}}
+                                            {{> actionButton class="pocket-toggle w-100" type="outline-primary" icon="chevron-up" data-target=pocket._id}}
                                         </div>
                                         {{#with unitsForPocket pocket._id}}
                                             {{#each unit in this}}
@@ -186,7 +186,7 @@
                                                             {{else}}
                                                                 {{#tooltip
                                                                         title=(i18n "lesson.states.completed")}}
-                                                                    <div class="badge-success badge badge-pill">
+                                                                    <div class="bg-success badge bg-pill">
                                                                         {{> icon name="check" fw=true}}
                                                                     </div>
                                                                 {{/tooltip}}
@@ -228,7 +228,7 @@
                                 flush=true}}
                             {{#with reference this}}
                                 {{> actionButton
-                                        class="ml-auto phase-material-preview-btn"
+                                        class="ms-auto phase-material-preview-btn"
                                         sm=true
                                         title=(i18n this.label)
                                         icon=this.icon
@@ -242,7 +242,7 @@
                                     sm=true
                                     type="outline-secondary"
                                     title=(i18n "actions.preview")
-                                    class="ml-auto preview-material-button"}}
+                                    class="ms-auto preview-material-button"}}
                             --}}
                         {{/nonPhaseMaterial}}
                     {{/with}}
@@ -258,7 +258,7 @@
                                                 {{! if we link a plot we add a
                                                     collapse to show it --}}
                                                 {{#if phase.plot}}
-                                                <a data-toggle="collapse"
+                                                <a data-bs-toggle="collapse"
                                                    href="#collapseExample{{@index}}"
                                                    role="button"
                                                    aria-expanded="false"
@@ -291,7 +291,7 @@
                                                     {{/with}}
                                                 {{/each}}
                                             </td>
-                                            <td class="text-right no-wrap">
+                                            <td class="text-end no-wrap">
                                                 {{phase.period}} {{i18n
                                                     "time.min"}}
                                             </td>
@@ -311,7 +311,7 @@
                 <div class="card-footer d-flex justify-content-between">
                     {{# actionButton
                             type="primary"
-                            class="w-50 complete-phases-edit-button mr-1"
+                            class="w-50 complete-phases-edit-button me-1"
                             block=submitting}}
                         <i class="fa fa-fw fa-check"></i>
                         <span>{{i18n "wizard.prepare.completeAndEdit"}}</span>
@@ -319,7 +319,7 @@
                     {{/actionButton}}
                     {{> actionButton
                             type="outline-primary"
-                            class="w-50 complete-phases-button ml-1"
+                            class="w-50 complete-phases-button ms-1"
                             block=submitting
                             icon="check"
                             label=(i18n "wizard.prepare.completeWithoutEdit")}}
@@ -343,7 +343,7 @@
             {{/mbody}}
             {{/with}}
             {{#mfooter}}
-                <button class="btn btn-secondary" data-dismiss="modal">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
                     {{i18n "actions.close"}}
                 </button>
             {{/mfooter}}

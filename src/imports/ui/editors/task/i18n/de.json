@@ -29,7 +29,41 @@
       "confirmDeletePage": "Möchten Sie die Seite wirklich löschen? Alle ungespeicherten Inhalte gehen dann verloren. Fortfahren und löschen?",
       "moveEntry": "Element verschieben",
       "create": "Neue Aufgabe erstellen",
-      "editInTaskEditor": "Im Aufgaben-Editor bearbeiten"
+      "editInTaskEditor": "Im Aufgaben-Editor bearbeiten",
+      "guide": {
+        "welcome": {
+          "title": "Willkommen im Bereich \"Aufgaben\"",
+          "text": "Hier etstellen und bearbeiten Sie den Inhalt Ihrer Aufgabe. Eine kurze Einführung gibt einen Überblick über die verschiedenen Funktionen."
+        },
+        "pages": {
+          "title": "Seiteninhalte",
+          "text": "Dies ist ihr zentraler Arbeitsbereich. Eine Aufgabe ist das wichtigste Interaktionsformat mit den Lernenden. Generell besteht eine Aufgabe aus verschiedenen \"Elementen\". Diese können hier hinzugefügt, geordnet und bearbeitet werden."
+        },
+        "elements": {
+          "title": "Aufgaben \"Elemente\"",
+          "text": "Aufgabenelemente können beispielsweise ein Text sein oder eine Datei, die innerhalb der Aufgabe angezeigt werden soll. Der Bereich \"Lernendenaktion\" bietet verschiedene Interaktionsformate."
+        },
+        "items": {
+          "title": "Lernendenaktion",
+          "text": "Lernendenaktionen sind bspw. Texteingaben, Auswahlformate, numerische Eingaben, Dateiuploads und gemeinsame Textfelder.&nbsp;Diese Elemente ermöglichen aktive Mitarbeit und direkte Rückmeldungen im Unterrict. Wird ein Element ausgewählt, müssen Pflichtangaben ausgefüllt werden, bevor diese erstellt werden können."
+        },
+        "listing": {
+          "title": "Elementliste",
+          "text": "Alle hinzugefügten Elemente erscheinen in einer Liste. Auf der rechten Seite jedes Elements befinden sich Schaltflächen, mit denen Sie diese verschieben, bearbeiten oder vollständig löschen können. Neue Elemente können entweder ganz oben oder ganz unten in der Liste hinzugefügt werden."
+        },
+        "summary": {
+          "title": "Vorschau",
+          "text": "In der Vorschau können Sie sich die Aufgabe in einer Dektop oder einer mobilen Ansicht anzeigen lassen, so wie Lernende sie späeter verwenden werden. Nutzen Sie die Vorschau, um Darstellung und Bedienung zu prüfen."
+        },
+        "units": {
+          "title": "Verknüpfte Sequenzen",
+          "text": "Hier binden Sie die Aufgabe in weitere Unterrichtssequenzen ein. Dabei wird die Aufgabe mit einer anderen Sequenz verknüpft. Veränderungen, die sie bei einer der Aufgaben vornehmen, werden auch auf die jeweils andere übertragen."
+        },
+        "leave": {
+          "title": "Bearbeitung beenden",
+          "text": "Wenn Sie fertig sind, können Sie mit \"Bearbeitung beenden\" zurück zur Aufgabenübersicht zurückkehren. Ihre Änderungen werden automatisch zwischengespeichert. Sie können auch über die Reiter zu einem anderen Bereich wechseln."
+        }
+      }
     }
   }
 }

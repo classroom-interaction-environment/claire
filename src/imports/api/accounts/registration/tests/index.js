@@ -1,8 +1,8 @@
 /* eslint-env mocha */
-describe('registration', function () {
-  import './PasswordConfig.tests'
-  import './UserFactory.tests'
-  import './registerUserSchema'
-  import './rollbackAccount.tests'
-  import './getEnrollmentExpiration.tests'
-})
+describe("registration", () => {
+	require("./PasswordConfig.tests");
+	require("./UserFactory.tests");
+	require("./registerUserSchema");
+	require("./rollbackAccount.tests");
+	require("./getEnrollmentExpiration.tests");
+});

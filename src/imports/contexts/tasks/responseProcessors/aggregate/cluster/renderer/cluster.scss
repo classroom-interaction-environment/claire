@@ -1,3 +1,7 @@
+.break-only-space {
+  word-break: break-word;
+}
+
 .disable-cluster {
   pointer-events: none;
 }
@@ -9,6 +13,10 @@
   right: 0;
   top: 0;
   z-index: 1099;
+}
+
+.preview-root {
+  cursor: pointer;
 }
 
 .cluster-spawn {
@@ -30,6 +38,7 @@
   position: absolute;
   top: 0;
   touch-action: none;
+  animation: fadeIn 0.7s ease-in-out;
 }
 
 .draggable-transition {
@@ -119,6 +128,7 @@
   overflow: hidden;
   width: auto;
   word-wrap: normal;
+  padding: 18px !important;
 }
 
 .fit {
@@ -128,10 +138,9 @@
 }
 
 .text-container {
-  height: 100px;
+  max-width: 75vw;
   overflow-x: auto;
   overflow-y: hidden;
-  width: 100px;
   z-index: 1032;
 }
 
@@ -140,15 +149,12 @@
 }
 
 .text-entry {
-  display: block;
   height: 100%;
   width: 100%;
 }
 
 .text {
-  display: block;
-  font-size: 12px;
-  word-break: keep-all !important;
+  font-size: 24px;
 }
 
 .no-select {

@@ -1,6 +1,6 @@
-import { ReactiveDict } from 'meteor/reactive-dict'
+import { ReactiveDict } from "meteor/reactive-dict";
 
 export const Shared = {
-  cache: new ReactiveDict(),
-  updatePage: null
-}
+	cache: new ReactiveDict(),
+	updatePage: null,
+};

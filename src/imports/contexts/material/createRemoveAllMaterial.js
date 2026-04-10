@@ -1,7 +1,7 @@
-import { check } from 'meteor/check'
-import { getCollection } from '../../api/utils/getCollection'
-import { createMaterialQuery } from './createMaterialQuery'
-import { unitMaterialIds } from '../curriculum/curriculum/unit/unitMaterialIds'
+import { check } from "meteor/check";
+import { getCollection } from "../../api/utils/getCollection";
+import { createMaterialQuery } from "./createMaterialQuery";
+import { unitMaterialIds } from "../curriculum/curriculum/unit/unitMaterialIds";
 
 /**
  * Creates a function that removes all linked Material for a given unit doc.
@@ -13,28 +13,31 @@ import { unitMaterialIds } from '../curriculum/curriculum/unit/unitMaterialIds'
  * @return {Function} a function that removes all Material for a given Unit doc
  */
 export const createRemoveAllMaterial = ({ isCurriculum = false } = {}) => {
-  check(isCurriculum, Boolean)
+	check(isCurriculum, Boolean);
 
-  /**
-   * Removes all material
-   */
-  return function removeAllMaterial ({ unitDoc, userId }) {
-    const unitMaterial = unitMaterialIds(unitDoc)
+	/**
+	 * Removes all material
+	 */
+	return async ({ unitDoc, userId }) => {
+		const unitMaterial = unitMaterialIds(unitDoc);
+		const materialContextNames = Object.keys(unitMaterial);
 
-    Object.keys(unitMaterial).forEach(materialContext => {
-      const materialDocIds = unitMaterial[materialContext]
+		for (const materialCtxName of materialContextNames) {
+			const materialDocIds = unitMaterial[materialCtxName];
 
-      if (!materialDocIds?.length) {
-        unitMaterial[materialContext] = 0
-        return
-      }
+			if (materialDocIds?.length) {
+				const materialQuery = createMaterialQuery(
+					unitMaterial[materialCtxName],
+					userId,
+					isCurriculum,
+				);
+				unitMaterial[materialCtxName] =
+					await getCollection(materialCtxName).removeAsync(materialQuery);
+			} else {
+				unitMaterial[materialCtxName] = 0;
+			}
+		}
 
-      const MaterialCollection = getCollection(materialContext)
-      const materialQuery = createMaterialQuery(unitMaterial[materialContext], userId, isCurriculum)
-
-      unitMaterial[materialContext] = MaterialCollection.remove(materialQuery)
-    })
-
-    return unitMaterial
-  }
-}
+		return unitMaterial;
+	};
+};
