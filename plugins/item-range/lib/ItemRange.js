@@ -111,7 +111,7 @@ export const ItemRange = {
     }
   },
   load: async () => {
-    const loadExtension = await import('meteor/muqube:autoform-nouislider')
+    const loadExtension = await import('meteor/jkuester:autoform-nouislider')
     return loadExtension.default()
   }
 }
