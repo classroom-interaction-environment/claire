@@ -1,0 +1,11 @@
+@import "../../src/node_modules/bootstrap/scss/functions";
+@import "../../src/node_modules/bootstrap/scss/variables";
+
+@each $color, $value in $theme-colors {
+  .btn-outline-#{$color}:hover {
+    color: $white;
+  }
+  .btn-#{$color}:hover {
+    color: $white;
+  }
+}
