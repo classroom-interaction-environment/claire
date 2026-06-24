@@ -55,6 +55,7 @@ Template.confirm.events({
 		event.preventDefault();
 		completeDialog(false, templateInstance);
 	},
+	"shown.bs.modal"(_event, templateInstance) {},
 	"hidden.bs.modal"(_event, templateInstance) {
 		// empty the input if present on hidden
 		// because in case of reopening the modal
@@ -91,15 +92,13 @@ Template.confirm.onRendered(function () {
 			return console.warn("[confirm]: has no target");
 		}
 
+		console.debug(`get target: ${target}`);
 		const modal = this.$(target) || window.$(target);
 		if (!modal || !modal.get(0)) {
-			return errorState.set(
-				new Error(`Expected target by selector "${target}" on modal show`),
-			);
+			return;
 		}
 
 		modal.modal("show");
-		viewState.set("visible");
 
 		if (state.get("codeRequired")) {
 			setTimeout(() => this.$(".confirm-input").focus(), 500);
@@ -123,7 +122,7 @@ function codeIsValid() {
 	return result.get() === state.get("code");
 }
 
-export const confirmDialog = function confirmDialog({
+export const confirmDialog = ({
 	target = "#confirm-modal",
 	title = "actions.confirm",
 	type = "secondary",
@@ -131,7 +130,7 @@ export const confirmDialog = function confirmDialog({
 	textOptions,
 	codeRequired = false,
 	codeSize = 4,
-}) {
+}) => {
 	const options = {
 		target,
 		title,
