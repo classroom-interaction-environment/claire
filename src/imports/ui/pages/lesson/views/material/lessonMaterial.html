@@ -46,13 +46,20 @@
                 {{! general phase information (title, plot, period) }}
                 <li class="list-group-item d-flex justify-content-between mt-1">
                     <div class="flex-fill text-primary">
-                        {{#if phase.plot}}
+                        {{#if or phase.plot phase.notes}}
                             <a data-bs-toggle="collapse" href="#phase-collapse-{{@index}}" role="button"
-                               aria-expanded="false" aria-controls="phase-collapse-{{@index}}">
-                                {{phase.title}}
+                               aria-expanded="false" aria-controls="phase-collapse-{{@index}}" class="d-flex align-items-center me-2">
+                                <span>{{phase.title}}</span>
+                                <span class="ms-auto">
+                                {{#if phase.plot}}<span class="badge bg-warning">{{i18n "phase.plot"}}</span>{{/if}}
+                                {{#if phase.notes}}<span class="badge bg-warning">{{i18n "phase.notes"}}</span>{{/if}}
+                                </span>
                             </a>
                             <div class="collapse" id="phase-collapse-{{@index}}">
-                                <div class="card-body">{{phase.plot}}</div>
+                                <div class="card-body">
+                                    {{#if phase.plot}}<div class="d-block w-100">{{i18n "phase.plot"}}: {{phase.plot}}</div>{{/if}}
+                                    {{#if phase.notes}}<div class="d-block w-100">{{i18n "phase.notes"}}: {{phase.notes}}</div>{{/if}}
+                                </div>
                             </div>
                         {{else}}
                             {{phase.title}}

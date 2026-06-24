@@ -13,7 +13,6 @@ import { TaskResults } from "../../../../../contexts/tasks/results/TaskResults";
 import { dataTarget } from "../../../../utils/dataTarget";
 import { printHTMLElement } from "../../../../utils/printHtmlElement";
 import { confirmDialog } from "../../../../components/confirm/confirm";
-import { delayedCallback } from "../../../../utils/delayedCallback";
 import { getMaterialContexts } from "../../../../../contexts/material/initMaterial";
 import { getCollection } from "../../../../../api/utils/getCollection";
 import { resolveMaterialReference } from "../../../../../contexts/material/resolveMaterialReference";

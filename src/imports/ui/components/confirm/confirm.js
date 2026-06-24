@@ -92,7 +92,6 @@ Template.confirm.onRendered(function () {
 			return console.warn("[confirm]: has no target");
 		}
 
-		console.debug(`get target: ${target}`);
 		const modal = this.$(target) || window.$(target);
 		if (!modal || !modal.get(0)) {
 			return;
