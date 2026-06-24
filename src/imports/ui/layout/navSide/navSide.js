@@ -4,6 +4,8 @@ import { Router } from "../../../api/routes/Router";
 import { SubsManager } from "../../subscriptions/SubsManager";
 import { Unit } from "../../../contexts/curriculum/curriculum/unit/Unit";
 import { Task } from "../../../contexts/curriculum/curriculum/task/Task";
+import { Settings } from "../../../contexts/system/settings/Settings";
+import { callMethod } from "../../controllers/document/callMethod";
 import { dataTarget } from "../../utils/dataTarget";
 import { getParam } from "../../../api/routes/params/getParam";
 import navLanguage from "./i18n/navLanguage";
@@ -15,8 +17,6 @@ import "../../components/profileImage/profileImage";
 import "../../components/beamer/beamer";
 import "./navSide.html";
 import "./navSide.scss";
-import { Settings } from "../../../contexts/system/settings/Settings";
-import { callMethod } from "../../controllers/document/callMethod";
 
 const API = Template.navSide.setDependencies({
 	language: navLanguage,

@@ -12,28 +12,21 @@ const debug = createLog({ name: "routes/teacher", type: "debug" });
 Router.setDefaultTarget(teacherContainer);
 
 // if the user is a curriculum user, we first load the CurriculumRoutes
-userIsCurriculum(Meteor.userId())
-	.catch(setFatalError)
-	.then((isCurriculum) => {
-		if (isCurriculum) {
-			debug("load curriculum routes");
-			import("../../../api/routes/curriculum/CurriculumRoutes")
-				.then(({ CurriculumRoutes }) => {
-					Object.assign(TeacherRoutes, CurriculumRoutes);
-				})
-				.catch((e) => console.error(e))
-				.finally(() => {
-					loadRoutes(TeacherRoutes);
-				});
-		}
+const loadCurriculumRoutes = async () => {
+	const isCurriculum = await userIsCurriculum(Meteor.userId());
+	if (isCurriculum) {
+		debug("load curriculum routes");
+		const { CurriculumRoutes } = await import(
+			"../../../api/routes/curriculum/CurriculumRoutes"
+		);
+		Object.assign(TeacherRoutes, CurriculumRoutes);
+	}
 
-		// for "normal" teachers we only load the TeacherRoutes
-		else {
-			loadRoutes(TeacherRoutes);
-		}
-	});
+	// for "normal" teachers we only load the TeacherRoutes
+	loadRoutes(TeacherRoutes);
+};
 
-function loadRoutes(target) {
+const loadRoutes = (target) => {
 	debug("load teacher routes");
 	Object.keys(target).forEach((key) => {
 		Routes[key] = target[key];
@@ -44,4 +37,6 @@ function loadRoutes(target) {
 		route.key = key;
 		Router.register(route);
 	});
-}
+};
+
+loadCurriculumRoutes().catch(setFatalError);
