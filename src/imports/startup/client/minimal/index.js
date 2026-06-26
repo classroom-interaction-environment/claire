@@ -15,6 +15,7 @@ setTimeout(async () => {
 	await import("./fontawesome");
 }, 50);
 
+// TODO  move out from this module to wherever it belongs
 const globalDragDropHandler = (e) => {
 	e.preventDefault();
 };

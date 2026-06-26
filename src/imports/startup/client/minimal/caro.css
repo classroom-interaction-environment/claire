@@ -131,6 +131,7 @@ form {
 .list-group-item,
 .list-group-item:hover {
   z-index: auto;
+  background-color: #f8f8f8;
 }
 
 .overflow-auto {

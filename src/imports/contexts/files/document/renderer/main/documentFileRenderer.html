@@ -1,7 +1,7 @@
 <template name="documentFileRenderer">
   <div class="w-100 text-center">
     <div class="py-2">{{file.name}}</div>
-    <div class="pdf-target"></div>
+    <div class="pdf-target" id="document-file-{{targetId}}"></div>
       {{#unless rendered}}
           {{#if hasThumbnail file}}
             <div>

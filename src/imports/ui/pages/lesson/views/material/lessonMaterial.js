@@ -13,7 +13,6 @@ import { TaskResults } from "../../../../../contexts/tasks/results/TaskResults";
 import { dataTarget } from "../../../../utils/dataTarget";
 import { printHTMLElement } from "../../../../utils/printHtmlElement";
 import { confirmDialog } from "../../../../components/confirm/confirm";
-import { delayedCallback } from "../../../../utils/delayedCallback";
 import { getMaterialContexts } from "../../../../../contexts/material/initMaterial";
 import { getCollection } from "../../../../../api/utils/getCollection";
 import { resolveMaterialReference } from "../../../../../contexts/material/resolveMaterialReference";
@@ -95,6 +94,12 @@ Template.lessonMaterial.onCreated(function () {
 	this.isOnBeamer = (referenceId, itemId) => {
 		const { lessonDoc } = this.data;
 		const lessonId = lessonDoc?._id;
+		console.debug(
+			"is on beamer",
+			referenceId,
+			itemId,
+			Beamer.doc.has({ referenceId, lessonId, itemId }),
+		);
 		return lessonId && Beamer.doc.has({ referenceId, lessonId, itemId });
 	};
 
@@ -124,9 +129,7 @@ Template.lessonMaterial.onCreated(function () {
 
 	this.references = new ReactiveDict();
 	const addReference = (reference) => {
-		console.debug("add ref?");
 		if (!this.references.get(reference.document)) {
-			console.debug("=> yes, add ref", reference);
 			const refDoc = resolveMaterialReference(reference);
 			if (!refDoc) {
 				console.warn("could not resolve", reference.document);
@@ -152,7 +155,6 @@ Template.lessonMaterial.onCreated(function () {
 		if (allRefs.size === 0) {
 			return;
 		}
-		console.debug(allRefs);
 		allRefs.forEach((ref) => {
 			addReference(ref);
 		});
@@ -190,7 +192,6 @@ Template.lessonMaterial.helpers({
 		if (!material) {
 			return null;
 		}
-
 		const ctx = Material.get(material.name);
 		const downloadable = ctx?.material?.downloadable;
 		const downloading = instance.isDownloading(materialId, group);
@@ -204,7 +205,17 @@ Template.lessonMaterial.helpers({
 		const presentButtonDisabled = !Beamer.actions.get();
 		const showResults = instance.showResults(materialId, groupId);
 		const resultButtonDisabled = instance.resultButtonDisabled(material.name);
-		const isOnBeamer = instance.isOnBeamer(material);
+		console.debug(material);
+		const isOnBeamer =
+			material.isTaskContent && material.doc?.pages?.length
+				? material.doc.pages.some((page) =>
+						page.content.some(
+							(entry) =>
+								entry.type === "item" &&
+								instance.isOnBeamer(materialId, entry.itemId),
+						),
+					)
+				: instance.isOnBeamer(materialId);
 
 		return {
 			materialId,
@@ -223,7 +234,12 @@ Template.lessonMaterial.helpers({
 		};
 	},
 	showResults(materialId, groupId) {
-		return Template.instance().showResults(materialId, groupId);
+		const results = Template.instance().showResults(materialId, groupId);
+		const taskResults = getCollection(TaskResults.name)
+			.find({ taskId: materialId })
+			.fetch();
+		console.debug({ results, taskResults });
+		return results;
 	},
 	isIdle() {
 		return Template.instance().isIdle();
@@ -550,7 +566,6 @@ Template.lessonMaterial.events({
 	// ===========================================================================
 	"click .lesson-show-results-button": async (event, templateInstance) => {
 		event.preventDefault();
-
 		const taskId = dataTarget(event, templateInstance, "reference");
 		const groupId = dataTarget(event, templateInstance, "group") || "";
 		const groupDoc = groupId && getCollection(Group.name).findOne(groupId);
@@ -640,19 +655,12 @@ Template.lessonMaterial.events({
 		const { lessonDoc } = templateInstance.data;
 		const lessonId = lessonDoc._id;
 
-		Beamer.doc.material(
-			{
-				lessonId,
-				referenceId,
-				context,
-				itemId,
-				responseProcessor,
-			},
-			delayedCallback(300, (err, _res) => {
+		Beamer.doc
+			.material({ lessonId, referenceId, context, itemId, responseProcessor })
+			.then(() => {
 				templateInstance.state.set("sendingToBeamer", null);
-				if (err) return API.notify(err);
-			}),
-		);
+			})
+			.catch(API.notify);
 	},
 	"click .select-item-rp-button"(event, templateInstance) {
 		event.preventDefault();

@@ -11,11 +11,11 @@ import { getCollection } from "../../../api/utils/getCollection";
 import { loadIntoCollection } from "../../../infrastructure/loading/loadIntoCollection";
 import { getLocalCollection } from "../../../infrastructure/collection/getLocalCollection";
 import { callMethod } from "../../controllers/document/callMethod";
+import { i18n } from "../../../api/language/language";
 import "../../components/color/selector/colorSelector";
 import "../../generic/print/print";
 import "./navBeamer.css";
 import "./navBeamer.html";
-import { i18n } from "../../../api/language/language";
 /*
  Beamer nav contains a nav menu to trigger global beamer actions.
  */
@@ -128,6 +128,10 @@ Template.navBeamer.onCreated(function onCreated() {
 			},
 		});
 	});
+	Beamer.doc
+		.background()
+		.then((background) => this.state.set({ background }))
+		.catch(console.error);
 });
 
 Template.navBeamer.helpers({
@@ -148,7 +152,7 @@ Template.navBeamer.helpers({
 		return gridLayouts;
 	},
 	background() {
-		return Beamer.doc.background();
+		return Template.getState("background");
 	},
 	onModal(type) {
 		return Template.instance().state.get("onModal") === type;
@@ -180,7 +184,8 @@ Template.navBeamer.events({
 		event.preventDefault();
 		const background = dataTarget(event, templateInstance);
 		try {
-			await Beamer.doc.background(background);
+			const newColor = await Beamer.doc.background(background);
+			templateInstance.state.set("background", newColor);
 		} catch (err) {
 			API.notify(err);
 		}

@@ -1,6 +1,5 @@
 <template name="navBeamer">
-  <nav class="navbar navbar-expand-sm {{#with
-          background}}bg-{{this.className}} text-{{this.text}} navbar-{{this.nav}} {{/with}} fixed-top">
+  <nav class="navbar navbar-expand-sm {{#with background}}bg-{{this.className}} text-{{this.text}} navbar-{{this.nav}} {{/with}} fixed-top">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">
           {{#if mainLogo}}
@@ -105,6 +104,7 @@
         {{/if}}
     </div>
   </nav>
+    {{#if loadComplete}}
     {{#modal id="beamer-select-modal" large=true}}
         {{#mbody}}
             {{#if onModal "color"}}
@@ -124,4 +124,5 @@
             {{/if}}
         {{/mbody}}
     {{/modal}}
+    {{/if}}
 </template>

@@ -270,10 +270,10 @@ onClientExec(() => {
 
 	/**
 	 * Check if material reference exists in the beamer document.
-	 * @param lessonId
-	 * @param referenceId
-	 * @param itemId
-	 * @param context
+	 * @param lessonId {string}
+	 * @param referenceId {string}
+	 * @param itemId {string=}
+	 * @param context {string=}
 	 * @return {*|null}
 	 */
 	Beamer.doc.has = ({ lessonId, referenceId, itemId, context }) => {

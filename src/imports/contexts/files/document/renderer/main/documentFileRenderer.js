@@ -34,7 +34,8 @@ Template.documentFileRenderer.onRendered(function () {
 		this.state.set({ pdfUrl });
 
 		if (PDFObject.supportsPDFs) {
-			PDFObject.embed(pdfUrl, document.querySelector(".pdf-target"), {
+			const selector = `#document-file-${data._id}`;
+			PDFObject.embed(pdfUrl, document.querySelector(selector), {
 				height: "60vh",
 				title: data.name,
 				pdfOpenParams: {
@@ -70,6 +71,9 @@ Template.documentFileRenderer.helpers({
 			file: documentFile,
 			name: DocumentFiles.name,
 		});
+	},
+	targetId() {
+		return Template.instance().data._id;
 	},
 	file() {
 		return Template.instance().data;

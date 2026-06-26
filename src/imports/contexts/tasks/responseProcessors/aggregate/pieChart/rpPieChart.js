@@ -16,6 +16,7 @@ Template.rpPieChart.setDependencies({});
 
 Template.rpPieChart.onRendered(function () {
 	const { api } = this.data;
+	console.debug(this.data);
 	const plotTarget = this.$(".sc-plot-target").get(0);
 
 	// expensive init at first render
@@ -27,6 +28,7 @@ Template.rpPieChart.onRendered(function () {
 
 	this.autorun(() => {
 		const data = Template.currentData();
+		console.debug("RELOAD RP PieChart", data);
 		const { choices = [], results, api } = data;
 		const dataType = api.dataType();
 		const { values, labels, sampleSize } = getPieChartValues({

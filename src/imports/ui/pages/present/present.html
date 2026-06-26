@@ -132,8 +132,7 @@
                                             because we only evaluate / present
                                             on an item level
                                         --}}
-                                            {{#with responseProcessor
-                                                    reference}}
+                                            {{#with responseProcessor reference}}
                                                 {{> Template.dynamic template=this.template data=this.data}}
                                             {{/with}}
                                         {{/unless}}
