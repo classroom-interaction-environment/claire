@@ -277,20 +277,7 @@ Template.present.onCreated(function () {
 	// ----------------------------------------------------------------------------
 	const cachedRefs = new Map();
 
-	this.autorun(() => {
-		const beamerDoc = Beamer.doc.get();
-		const resolvedReferences = this.state.get("resolvedReferences");
-		const itemsComplete = this.state.get("itemsComplete");
-		const initialized = taskInit.get();
-
-		if (
-			!Item.isInitialized() ||
-			!beamerDoc ||
-			!initialized ||
-			!resolvedReferences ||
-			!itemsComplete
-		)
-			return;
+	this.buildResponseData = async ({ resolvedReferences }) => {
 		API.debug("load and cache associated items and their response processors");
 
 		cachedRefs.forEach((cacheId) => {
@@ -393,6 +380,25 @@ Template.present.onCreated(function () {
 					cachedRefs.set(itemId, { responseProcessor });
 				});
 			});
+	};
+
+	this.autorun(() => {
+		const beamerDoc = Beamer.doc.get();
+		const resolvedReferences = this.state.get("resolvedReferences");
+		const itemsComplete = this.state.get("itemsComplete");
+		const initialized = taskInit.get();
+
+		if (
+			!Item.isInitialized() ||
+			!beamerDoc ||
+			!initialized ||
+			!resolvedReferences ||
+			!itemsComplete
+		) {
+			return;
+		}
+
+		this.buildResponseData({ resolvedReferences }).catch((e) => API.notify(e));
 	});
 
 	this.autorun(() => {
@@ -495,12 +501,16 @@ Template.present.helpers({
 		if (!rpInit.get()) {
 			return;
 		}
+
 		const instance = Template.instance();
 		const rp = instance.state.get(itemId);
 		if (!rp) return;
 
 		// Also, api is cached, so it's safe to create here
 		rp.data.api = rp.data.api || ResponseProcessorAPI.create(rp.data, instance);
+
+		// make results reactive
+		rp.data.results = getCollection(TaskResults.name).find({ itemId }).fetch();
 
 		return rp;
 	},

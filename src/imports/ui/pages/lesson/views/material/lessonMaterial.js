@@ -234,7 +234,12 @@ Template.lessonMaterial.helpers({
 		};
 	},
 	showResults(materialId, groupId) {
-		return Template.instance().showResults(materialId, groupId);
+		const results = Template.instance().showResults(materialId, groupId);
+		const taskResults = getCollection(TaskResults.name)
+			.find({ taskId: materialId })
+			.fetch();
+		console.debug({ results, taskResults });
+		return results;
 	},
 	isIdle() {
 		return Template.instance().isIdle();
@@ -561,7 +566,6 @@ Template.lessonMaterial.events({
 	// ===========================================================================
 	"click .lesson-show-results-button": async (event, templateInstance) => {
 		event.preventDefault();
-
 		const taskId = dataTarget(event, templateInstance, "reference");
 		const groupId = dataTarget(event, templateInstance, "group") || "";
 		const groupDoc = groupId && getCollection(Group.name).findOne(groupId);

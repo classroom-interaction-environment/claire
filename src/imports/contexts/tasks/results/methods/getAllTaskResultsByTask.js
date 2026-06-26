@@ -21,7 +21,7 @@ export const getAllTaskResultsByTask = async ({
 		lessonId,
 		isStudent: true,
 	});
-	const isTeacherOfLesson = isTeacher(lessonId, classDoc);
+	const isTeacherOfLesson = isTeacher(userId, classDoc);
 	const query = { lessonId };
 
 	if (!isTeacherOfLesson) {

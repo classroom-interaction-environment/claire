@@ -70,7 +70,6 @@ Template.taskResultTable.helpers({
 	},
 	taskResultDoc(itemId, taskId, createdBy) {
 		return getCollection(TaskResults.name).findOne({
-			taskId,
 			itemId,
 			createdBy,
 		});
